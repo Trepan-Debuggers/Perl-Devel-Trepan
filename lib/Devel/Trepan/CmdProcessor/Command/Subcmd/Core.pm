@@ -1,0 +1,273 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# A base class for debugger subcommands.
+#
+use Exporter;
+use warnings;
+no warnings 'redefine';
+
+use lib '../../../../..';
+use Devel::Trepan::CmdProcessor::Command;
+
+package Devel::Trepan::CmdProcessor::Command::Subcmd;
+
+BEGIN {
+    @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MAX_ARGS $MIN_ABBREV 
+                      $MIN_ARGS $NAME $NEED_STACK $SHORT_HELP);
+}
+use strict;
+
+my $NotImplementedMessage = 
+    "This method must be overridden in a subclass";
+
+use vars qw(@SUBCMD_VARS @EXPORT @ISA @SUBCMD_ISA);
+use vars @SUBCMD_VARS;
+@ISA = qw(Exporter);
+
+@SUBCMD_ISA  = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+@EXPORT = @SUBCMD_VARS;
+
+# attr_reader :name
+
+$IN_LIST    = 1;  # Show item in help list of commands
+$RUN_CMD    = 1;  # Run subcommand for those subcommands like "show"
+                  # which append current settings to list output.
+$MIN_ARGS   = 0;
+$MAX_ARGS   = 0;
+$MIN_ABBREV = 1;
+$NEED_STACK = 0;
+$NAME       = 'your_command_name';
+
+
+# $cmd contains the command object that this
+# command is invoked through.  A debugger field gives access to
+# the stack frame and I/O.
+sub new($$$) 
+{
+    my ($class, $cmd, $name) = @_;
+    my $self = {cmd => $cmd};
+
+    # Convenience class access. We don't expect that any of these
+    # will change over the course of the program execution like
+    # errmsg(), msg(), and msg_nocr() might. (See the note below
+    # on these latter 3 methods.)
+    # 
+    $self->{dbgr} = $cmd->{dbgr};
+    $self->{proc} = $cmd->{proc};
+
+    # FIXME: Inheritence of vars is not working the way I had hoped.
+    # So this is a workaround.
+    my $base_prefix="Devel::Trepan::CmdProcessor::Command::Subcmd::";
+    for my $field (@SUBCMD_VARS) {
+	my $sigil = substr($field, 0, 1);
+	my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
+	if ($sigil eq '$') {
+	    $self->{lc $new_field} = 
+		eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
+	} elsif ($sigil eq '@') {
+	    $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
+	} else {
+	    die "Woah - bad sigil: $sigil";
+	}
+    }
+    # Done after above since $NAME is in @SUBCMD_VARS;
+    $self->{name} = $name;
+    $self->{short_help} ||= $self->{help};
+    bless $self, $class;
+    $self->set_name_prefix($class);
+    $self;
+}
+
+# Convenience short-hand for @proc.confirm
+sub confirm($$;$) {
+    my ($self, $msg, $default) = @_;
+    return($self->{proc}->confirm($msg, $default));
+}
+
+# Set a Boolean-valued debugger setting. 
+sub run_set_bool($$;$) 
+{
+    my ($self, $args, $default) = @_;
+    $default = 1 if scalar @_ < 3;
+    my $onoff_arg = @$args < 3 ? 'on' : $args->[2];
+    my $key = $self->subcmd_setting_key();
+    $self->{proc}{settings}{$key} = $self->{proc}->get_onoff($onoff_arg);
+    $self->run_show_bool();
+}
+
+# # set an Integer-valued debugger setting. 
+# sub run_set_int(arg, msg_on_error, min_value=nil, max_value=nil)
+#   if arg.strip.empty?
+#     errmsg('You need to supply a number.')
+#     return
+#   }
+#   val = @proc.get_an_int(arg, 
+#                          :max_value => max_value,
+#                          :min_value => min_value, 
+#                          :msg_on_error => msg_on_error
+#                          )
+#   if val
+#     settings[subcmd_setting_key] = val
+    #     run_show_int
+#   }
+# }
+
+# Generic subcommand showing a boolean-valued debugger setting.
+sub run_show_bool($;$)
+{
+    my ($self, $what) = @_;
+    my $key = $self->subcmd_setting_key();
+    my $val = $self->show_onoff($self->{proc}{settings}{$key});
+    $what = $self->{name} unless $what;
+    $self->{proc}->msg(sprintf "%s is %s.", $what, $val);
+}
+
+# Generic subcommand integer value display
+sub run_show_int($;$)
+{
+    my ($self, $what) = @_;
+    my $val = $self->{settings}{$self->subcmd_setting_key()};
+    unless ($what) {
+	my @what = @$self->{prefix};
+	pop @what;
+	$what = join(' ', @what);
+    }
+    $self->msg(sprintf "%s is %d.", $what, $val);
+}
+
+# Generic subcommand value display. Pass in a hash which may
+# which optionally contain:
+#
+#   :name - the String name of key in settings to use. If :value
+#           (described below) is set, then setting :name does
+#           nothing.
+#
+#   :what - the String name of what we are showing. If none is
+#           given, then we use the part of the SHORT_HELP string.
+# 
+#   :value - a String value associated with "what" above. If none
+#            is given, then we pick up the value from settings.
+# 
+sub run_show_val($;$)
+{
+    my ($self, $opts) = @_;
+    $opts ||= {};
+    my $what = exists $opts->{what}  ? $opts->{what}  : $self->{string_in_show};
+    my $name = exists $opts->{name}  ? $opts->{name}  : $self->{name};
+    my $val  = exists $opts->{value} ? $opts->{value} : $self->{settings}{$name};
+    my $msg = sprintf("%s is %s.", $what, $val);
+    $self->msg($msg);
+}
+
+# sub save_command_from_settings
+#   ["${subcmd_prefix_string} ${settings[subcmd_setting_key]}"]
+# }
+
+sub subcmd_prefix_string($) 
+{
+    my $self = shift;
+    join(' ', $self->{prefix});
+}
+
+sub subcmd_setting_key($) 
+{
+    my $self = shift;
+    return $self->{subcmd_setting_key} if $self->{subcmd_setting_key};
+    my @prefix = @{$self->{prefix}}; shift @prefix;
+    $self->{subcmd_setting_key} = join('', @prefix);
+}
+
+# Return 'on' for true and 'off' for false, and ?? for anything else.
+sub show_onoff($$)
+{ 
+    my ($self, $bool) = @_;
+    if (!defined($bool)) {
+	return 'unset';
+    } elsif ($bool) {
+	return 'on';
+    } else {
+	return 'off'
+    }
+}
+
+sub set_name_prefix($$) 
+{
+    my ($self, $class) = @_;
+    my @prefix = split(/::/, $class);
+    splice(@prefix, 0, 4); # Remove Devel::Trepan::CmdProcessor::Command
+    @prefix = map {lc $_} @prefix;
+    $self->{prefix}   = \@prefix;
+    $self->{cmd_str} = join(' ', @prefix);
+}
+
+sub string_in_show($) 
+{
+    my ($self, $bool) = @_;
+    my $skip_len = length('Show ');
+    ucfirst substr($self->{short_help}, $skip_len);
+}
+
+sub summary_help($$)
+{
+    my ($self, $subcmd_name) = @_;
+    my $msg = sprintf("%-12s: %s", $subcmd_name, $self->{short_help});
+    $self->msg_nocr($msg);
+}
+
+
+package Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd;
+use vars qw(@ISA);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+#   completion %w(on off)
+
+sub run($$) {
+    my ($self, $args) = @_;
+    $self->run_set_bool($args);
+}
+
+sub save_command($) {
+    my ($self) = @_;
+    my %settings = $self->{settings};
+    my $val    = $settings{$self->subcmd_setting_key()} ? 'on' : 'off';
+    [$self->subcmd_prefix_string . " ${val}"];
+}
+
+package Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd;
+use vars qw(@ISA);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+sub run($)
+{
+    my ($self, $args) = @_;
+    $self->run_show_bool($self->string_in_show());
+}
+
+package Devel::Trepan::CmdProcessor::Command::ShowIntSubcmd;
+use vars qw(@ISA);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+
+sub run($) {
+    my ($self, $args) = @_;
+    my $doc;
+    if ($self->{short_help}) {
+        $doc = $self->{short_help};
+    } else {
+	my $len = length($self->{help}) - 6;
+        $doc = ucfirst substr($self->{help}, 5, $len);
+    }
+    $self->run_show_int($doc);
+}
+
+if (__FILE__ eq $0) {
+    # Demo it.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    my %cmds = %{$proc->{commands}};
+    print join(', ', keys %cmds), "\n";
+    my $subcmd = 
+	Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
+    print join(', ', keys %{$subcmd->{settings}}), "\n";
+    print $subcmd->show_onoff($subcmd->{settings}->{autoeval}), "\n";
+    # $subcmd->run_set_int('', 'Just a test');
+}
+
+1;

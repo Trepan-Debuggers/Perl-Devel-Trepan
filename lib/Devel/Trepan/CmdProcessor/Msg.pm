@@ -12,8 +12,10 @@ require Devel::Trepan::Util;
 require Devel::Trepan::CmdProcessor;
 package Devel::Trepan::CmdProcessor;
 
-use vars qw(@EXPORT @ISA);
+use vars qw(@EXPORT @ISA $HAVE_TERM_ANSIColor);
 @ISA = qw(Exporter);
+
+$HAVE_TERM_ANSIColor = eval "use Term::ANSIColor; 1";
 
 # attr_accessor :ruby_highlighter
 
@@ -38,10 +40,9 @@ sub errmsg($$;$) {
     } else {
 	$message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     }
-#    if ($self->{settings}{highlight} )# && defined?(Term::ANSIColor))
-#      $message = 
-#        Term::ANSIColor.italic + message + Term::ANSIColor.reset 
-#    }
+    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+	$message = color('underscore') . $message . color('reset');
+    }
     $self->{interfaces}->[-1]->errmsg($message);
 }
 
@@ -91,10 +92,9 @@ sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    # if ($self->{settings}{highlight} && defined(Term::ANSIColor))
-    #  $message = 
-    #    Term::ANSIColor.bold + message + Term::ANSIColor.reset 
-    #}
+    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+	$message = color('bold') . $message . color('reset');
+    }
     $self->{interfaces}->[-1]->msg($message);
 }
 

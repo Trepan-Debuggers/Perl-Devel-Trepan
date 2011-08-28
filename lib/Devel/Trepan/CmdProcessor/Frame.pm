@@ -10,22 +10,24 @@ use English;
 sub frame_setup($$$)
 {
     my ($self, $frame_ary) = @_;
-    my ( $pkg, $file, $line, $subroutine, $hasargs,
+    # Note fields should match what is in backtrace() of
+    # Devel::Trepan::DB::Backtrace.pm
+
+    my ( $pkg, $file, $line, $fn, $hasargs,
 	 $wantarray, $evaltext, $is_require, $hints, $bitmask, 
 	 $hinthash
 	) = @$frame_ary;
     $self->{frame} = {
-	pkg => $pkg,
-	file => $file,
-	line => $line,
-	subroutine => $subroutine,
-	hasargs => $hasargs,
-	wantarray => $wantarray,
-	evaltext => $evaltext,
+	pkg        => $pkg,
+	file       => $file,
+	line       => $line,
+	fn         => $fn,
+	hasargs    => $hasargs,
+	wantarray  => $wantarray,
+	evaltext   => $evaltext,
 	is_require => $is_require,
-	hints => $hints,
-	bitmask => $bitmask,
-	hinthash => $hinthash
+	hints      => $hints,
+	bitmask    => $bitmask,
     };
 
     # $self->{stack_size} = $stack_size;

@@ -4,11 +4,18 @@ use warnings; no warnings 'redefine';
 no warnings 'once';
 use English;
 
+use constant SINGLE_STEPPING_EVENT =>  1;
+use constant DEEP_RECURSION_EVENT  =>  4;
+use constant RETURN_EVENT          => 32;
+
+use vars qw($return_value @return_value);
+
 my ($deep);
 
 BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
     $DB::ret = '';    # return value of last sub executed in scalar context
+    $DB::return_type = 'undef';
     $deep = 100;      # Max stack depth before we complain.
 }
 
@@ -49,11 +56,11 @@ sub sub {
     $stack[-1] = $single;
 
     # Turn off all flags except single-stepping.
-    $DB::single &= 1;
+    $DB::single &= SINGLE_STEPPING_EVENT;
 
     # If we've gotten really deeply recursed, turn on the flag that will
     # make us stop with the 'deep recursion' message.
-    $DB::single |= 4 if $#stack == $deep;
+    $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
 
     if ($DB::sub eq 'DESTROY' or
 	substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
@@ -62,7 +69,6 @@ sub sub {
 	$DB::ret = undef;
     }
     elsif (wantarray) {
-
         # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
         # back here when the sub is finished.
@@ -70,7 +76,11 @@ sub sub {
 
         # Pop the single-step value back off the stack.
         $single |= $stack[ $stack_depth-- ];
-
+	if ($single & RETURN_EVENT) {
+	    $DB::return_type = 'array';
+	    @DB::return_value = @ret;
+	    DB::DB() ;
+	}
 	@ret;
     }
     else {
@@ -86,6 +96,11 @@ sub sub {
 
         # Pop the single-step value back off the stack.
         $single |= $stack[ $stack_depth-- ];
+	if ($single & RETURN_EVENT) {
+	    $DB::return_type = defined $ret ? 'scalar' : 'undef';
+	    $DB::return_value = $ret;
+	    DB::DB() ;
+	}
 
         # Return the appropriate scalar value.
 	$ret;
@@ -124,11 +139,11 @@ sub lsub : lvalue {
     $stack[-1] = $single;
     
     # Turn off all flags except single-stepping.
-    $single &= 1;
+    $single &= SINGLE_STEPPING_EVENT;
     
     # If we've gotten really deeply recursed, turn on the flag that will
     # make us stop with the 'deep recursion' message.
-    $single |= 4 if $stack_depth == $deep;
+    $single |= DEEP_RECURSION_EVENT if $stack_depth == $deep;
     
     # Pop the single-step value back off the stack.
     $single |= $stack[ $stack_depth-- ];

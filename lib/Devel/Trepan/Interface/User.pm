@@ -123,7 +123,8 @@ sub read_history($)
 sub save_history($)
 {
     my $self = shift;
-    if ($self->{histfile} && $self->{opts}->{history_save} && $self->has_gnu_readline) {
+    if ($self->{histfile} && $self->{opts}->{history_save} && $self->has_gnu_readline &&
+	$self->{input}->{readline}) {
     	$self->{input}->{readline}->StifleHistory($self->{opts}->{histsize});
     	$self->{input}->{readline}->WriteHistory($self->{histfile});
     }

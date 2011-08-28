@@ -4,18 +4,18 @@
 # Documentation is at the __END__
 #
 
-use lib '../../..';
+use lib '../..';
 
 package DB;
 use warnings; no warnings 'redefine';
 use English;
 use vars qw(@stack $usrctxt $running $caller $eval_result $evalarg
-            $event);
-# "private" globals
+            $event $return_type @ret $ret $return_value @return_value);
 
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Sub;
 
+# "private" globals
 my ($ready, $deep, @saved, @skippkg, @clients);
 my $preeval = {};
 my $posteval = {};
@@ -24,7 +24,7 @@ my $ineval = {};
 ####
 #
 # Globals - must be defined at startup so that clients can refer to 
-# them right after a C<use DB;>
+# them right after a C<use Devel::Trepan::DB;>
 #
 ####
 
@@ -117,87 +117,89 @@ sub DB {
 	$tid = eval { "[".threads->tid."]" };
     }
 
-  return unless $ready;
-  &save;
-  $DB::caller = [caller];
-  ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
-   $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
-   $DB::hinthash
-  ) = @{$DB::caller};
-  #  print "+++2 ", $evaltext, "\n" if $evaltext;
-
-  return if @skippkg and grep { $_ eq $DB::package } @skippkg;
-
-  $usrctxt = "package $DB::package;";		# this won't let them modify, alas
-  local(*DB::dbline) = "::_<$DB::filename";
-
-  my ($stop, $action);
-  if (exists $DB::dbline{$DB::lineno} and 
-      ($stop,$action) = split(/\0/,$DB::dbline{$DB::lineno})) {
-    if ($stop eq '1') {
-      $event = 'brkpt';
-      $DB::signal |= 1;
-    }
-    else {
-      $stop = 0 unless $stop;			# avoid un_init warning
-      $evalarg = "\$DB::signal |= do { $stop; }"; &eval;
-      if ($DB::dbline{$DB::lineno} =~ /;9($|\0)/) {
-	  $DB::event = 'tbrkpt';
-	  # clear any temp breakpt
-	  $DB::dbline{$DB::lineno} =~ s/;9($|\0)/$1/;
-      }
-    }
-  }
-  if ($DB::signal) {
-      $event ||= 'signal';
-  } elsif ($DB::trace  || $DB::single) {
-      $event ||= 'line';
-  } else {
-      $event = 'unknown';
-  }
-  
-  if ($DB::single || $DB::trace || $DB::signal) {
-    $DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
-    DB->loadfile($DB::filename, $DB::lineno);
-  }
-  $evalarg = $action, &eval if $action;
-  if ($DB::single || $DB::signal) {
-    _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
-    $DB::single = 0;
-    $DB::signal = 0;
-    $running = 0;
+    return unless $ready;
+    &save;
+    $DB::caller = [caller];
+    ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
+     $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
+     $DB::hinthash
+    ) = @{$DB::caller};
+    #  print "+++2 ", $evaltext, "\n" if $evaltext;
     
-    &eval if ($evalarg = DB->prestop);
-    my $c;
-    for $c (@clients) {
-      # perform any client-specific prestop actions
-      &eval if ($evalarg = $c->cprestop);
-      
-      # Now sit in an event loop until something sets $running
-      my $after_eval = 0;
-      do {
-	# call client event loop; must not block
-	$c->idle($after_eval);
-	$after_eval = 0;
-	if ($running == 2) { 
-          # client wants something eval-ed
-	  $eval_result = &DB::eval_with_return if $evalarg;
-	  $after_eval = 1;
-	  $running = 0;
+    return if @skippkg and grep { $_ eq $DB::package } @skippkg;
+    
+    $usrctxt = "package $DB::package;";		# this won't let them modify, alas
+    local(*DB::dbline) = "::_<$DB::filename";
+    
+    my ($stop, $action);
+    if (exists $DB::dbline{$DB::lineno} and 
+	($stop,$action) = split(/\0/,$DB::dbline{$DB::lineno})) {
+	if ($stop eq '1') {
+	    $event = 'brkpt';
+	    $DB::signal |= 1;
 	}
-      } until $running;
-      
-      # perform any client-specific poststop actions
-      &eval if ($evalarg = $c->cpoststop);
+	else {
+	    $stop = 0 unless $stop;			# avoid un_init warning
+	    $evalarg = "\$DB::signal |= do { $stop; }"; &eval;
+	    if ($DB::dbline{$DB::lineno} =~ /;9($|\0)/) {
+		$DB::event = 'tbrkpt';
+		# clear any temp breakpt
+		$DB::dbline{$DB::lineno} =~ s/;9($|\0)/$1/;
+	    }
+	}
     }
-    &eval if ($evalarg = DB->poststop);
+    if ($DB::signal) {
+	$event ||= 'signal';
+    } elsif ($DB::single & (32|64)) {
+	$event ||= 'return';
+    } elsif ($DB::trace  || $DB::single) {
+	$event ||= 'line';
+    } else {
+	$event = 'unknown';
   }
-  $event = undef;
-  ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-   $OUTPUT_FIELD_SEPARATOR, 
-   $INPUT_RECORD_SEPARATOR, 
-   $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-  ();
+    
+    if ($DB::single || $DB::trace || $DB::signal) {
+	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
+	DB->loadfile($DB::filename, $DB::lineno);
+    }
+    $evalarg = $action, &eval if $action;
+    if ($DB::single || $DB::signal) {
+	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
+	$DB::single = 0;
+	$DB::signal = 0;
+	$running = 0;
+	
+	&eval if ($evalarg = DB->prestop);
+	my $c;
+	for $c (@clients) {
+	    # perform any client-specific prestop actions
+	    &eval if ($evalarg = $c->cprestop);
+	    
+	    # Now sit in an event loop until something sets $running
+	    my $after_eval = 0;
+      do {
+	  # call client event loop; must not block
+	  $c->idle($after_eval);
+	  $after_eval = 0;
+	  if ($running == 2) { 
+	      # client wants something eval-ed
+	      $eval_result = &DB::eval_with_return if $evalarg;
+	      $after_eval = 1;
+	      $running = 0;
+	  }
+      } until $running;
+	    
+	    # perform any client-specific poststop actions
+	    &eval if ($evalarg = $c->cpoststop);
+	}
+	&eval if ($evalarg = DB->poststop);
+    }
+    $event = undef;
+    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
+     $OUTPUT_FIELD_SEPARATOR, 
+     $INPUT_RECORD_SEPARATOR, 
+     $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
+    ();
 }
   
 ####
@@ -357,18 +359,43 @@ sub cont {
   $running = 1;
 }
 
-####
-# XXX caller must experimentally determine $i (since it depends
-# on how many client call frames are between this call and the DB call).
-# Such is life.
-#
-sub ret {
+# stop before finishing the current subroutine
+sub finish($;$$) {
   my $s = shift;
-  my $i = shift;      # how many levels to get to DB sub
-  $i = 0 unless defined $i;
-  $stack[$#stack-$i] |= 1;
+  # how many levels to get to DB sub?
+  my $count = scalar @_ >= 1 ?  shift : 1;
+  my $scan_for_DB_sub = scalar @_ >= 1 ?  shift : 1;
+
+  if ($scan_for_DB_sub) {
+      my $i = 0;
+      while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+	  if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
+	      $i -= 3;
+	      last;
+	  }
+      }
+      $count += $i;
+  }
+
+  $stack[$#stack-$count] |= (SINGLE_STEPPING_EVENT | RETURN_EVENT);
   $DB::single = 0;
   $running = 1;
+}
+
+sub return_value($) 
+{
+    if ('undef' eq $DB::return_type) {
+	return undef;
+    } elsif ('array' eq $DB::return_type) {
+	return @DB::return_value;
+    } else {
+	return $DB::return_value;
+    }
+}
+
+sub return_type($) 
+{
+    $DB::return_type;
 }
 
 sub _outputall {
@@ -681,7 +708,7 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->cont([WHERE])       # run some more (until BREAK or another breakpt)
     CLIENT->step()              # single step
     CLIENT->next()              # step over
-    CLIENT->ret()               # return from current subroutine
+    CLIENT->finish()            # stop before finishing the current subroutine
     CLIENT->backtrace()         # return the call stack description
     CLIENT->ready()             # call when client setup is done
     CLIENT->trace_toggle()      # toggle subroutine call trace mode
@@ -841,7 +868,7 @@ ask DB not to stop in these packages
 
 =item CLIENT->cont()
 
-continue some more (until a breakpt is reached)
+continue some more (until a breakpoint is reached)
 
 =item CLIENT->step()
 

@@ -102,7 +102,7 @@ sub ok_for_running ($$$$) {
     #   return;
     # }
 
-    if ($cmd->{need_stack}) { # && !@frame
+    if ($cmd->{need_stack} && !defined $self->{frame}) {
         $self->errmsg("Command '$name' requires a running stack frame.");
         return;
     }
@@ -210,7 +210,7 @@ sub process_commands($$$)
     $self->{leave_cmd_loop} = 0;
     while (!$self->{leave_cmd_loop}) {
 	# begin
-	last if $self->process_command_and_quit;
+	$self->process_command_and_quit;
 	# rescue systemexit
 	#  @dbgr.stop
 	#  raise

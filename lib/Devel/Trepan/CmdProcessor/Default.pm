@@ -30,7 +30,7 @@ use constant DEFAULT_SETTINGS => {
                              # -1 means compute value. 0
                              # means hide none. Less than 0 means show
                              # all stack entries.
-    hightlight    => 0,      # Use terminal highlight? 
+    highlight     => 1,      # Use terminal highlight? 
       
     maxlist       => 10,     # Number of source lines to list 
     maxstack      => 10,     # backtrace limit

@@ -6,7 +6,6 @@
 use lib '../../..';
 package Devel::Trepan::CmdProcessor;
 
-# require 'rubygems'
 # require 'linecache'
 
 # require_relative '../app/cmd_parse'
@@ -31,34 +30,38 @@ use strict;
 #     include Trepan::ThreadHelper
 #     include Trepan::Condition
 
-#     # Check that arg is an Integer between opts[:min_value] and
-#     # opts[:max_value]
-#     sub get_an_int(arg, opts={})
-#       ret_value = get_int_noerr(arg)
-#       if !ret_value
-#         if opts[:msg_on_error]
-#           errmsg(opts[:msg_on_error])
-#         else
-#           errmsg("Expecting an integer, got: #{arg}.")
-#         }
-#         return nil
-#       }
-#       if opts[:min_value] and ret_value < opts[:min_value]
-#         errmsg("Expecting integer value to be at least %d; got %d." %
-#                [opts[:min_value], ret_value])
-#         return nil
-#       elsif opts[:max_value] and ret_value > opts[:max_value]
-#         errmsg("Expecting integer value to be at most %d; got %d." %
-#                [opts[:max_value], ret_value])
-#         return nil
-#       }
-#       return ret_value
-#     }
+# Check that arg is an Integer between opts->{min_value} and
+# opts->{max_value}
+sub get_an_int($$$)
+{
+    my ($self, $arg, $opts) = @_;
+    $opts ||= {};
+    my $ret_value = $self->get_int_noerr($arg);
+    if (! defined $ret_value) {
+        if ($opts->{msg_on_error}) {
+	    $self->errmsg($opts->{msg_on_error});
+	} else {
+	    $self->errmsg("Expecting an integer, got: ${arg}.");
+        }
+        return undef;
+    }
+    if ($opts->{min_value} and $ret_value < $opts->{min_value}) {
+	my $msg = sprintf("Expecting integer value to be at least %d; got %d.",
+			  $opts->{min_value}, $ret_value);
+        $self->errmsg($msg);
+        return undef;
+    } elsif ($opts->{max_value} and $ret_value > $opts->{max_value}) {
+	my $msg = sprintf("Expecting integer value to be at most %d; got %d.",
+			  $opts->{max_value}, $ret_value);
+        $self->errmsg($msg);
+	return undef;
+    }
+    return $ret_value;
+}
 
-#     unless defined?(DEFAULT_GET_INT_OPTS)
-#       DEFAULT_GET_INT_OPTS = {
-#         :min_value => 0, :default => 1, :cmdname => nil, :max_value => nil}
-#     }
+use constant DEFAULT_GET_INT_OPTS => {
+    min_value => 0, default => 1, cmdname => undef, max_value => undef
+};
 
 #     # If argument parameter 'arg' is not given, then use what is in
 #     # opts[:default]. If String 'arg' evaluates to an integer between
@@ -109,16 +112,21 @@ use strict;
 #       args.map{|arg| get_an_int(arg, opts)}.compact
 #     }
     
-#     # Eval arg and it is an integer return the value. Otherwise
-#     # return nil
-#     sub get_int_noerr(arg)
-#       b = @frame ? @frame.binding : nil
-#       val = Integer(eval(arg, b))
-#     rescue SyntaxError
-#       nil
-#     rescue 
-#       nil
-#     }
+# Eval arg and it is an integer return the value. Otherwise
+# return undef;
+sub get_int_noerr($$)
+{
+    my ($self, $arg) = @_;
+    my $val = eval { 
+	no warnings 'all';
+	eval($arg);
+    };
+    if (defined $val) {
+	return $val =~ /^[+-]?\d+$/ ? $val : undef;
+    } else {
+	return undef;
+    }
+}
 
 #     sub get_thread_from_string(id_or_num_str)
 #       if id_or_num_str == '.'
@@ -378,9 +386,13 @@ if (__FILE__ eq $0) {
     for my $val (@onoff) {
 	printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
     }
-#     %w(1 1E bad 1+1 -5).each do |val| 
-#       puts "get_int_noerr(#{val}) = #{cmdproc.get_int_noerr(val).inspect}" 
-#     }
+
+    for my $val (qw(1 1E bad 1+1 -5)) {
+	my $result = get_int_noerr('bogus', $val);
+	$result //= '<undef>';
+	print "get_int_noerr(${val}) = $result\n";
+    }
+
 #     sub foo; 5 }
 #     sub cmdproc.errmsg(msg)
 #       puts msg

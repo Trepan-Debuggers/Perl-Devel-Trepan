@@ -10,6 +10,7 @@ use lib '../../../../..';
 use Devel::Trepan::CmdProcessor::Command;
 
 package Devel::Trepan::CmdProcessor::Command::Subcmd;
+use Devel::Trepan::CmdProcessor::Validate;
 
 BEGIN {
     @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MAX_ARGS $MIN_ABBREV 
@@ -95,22 +96,24 @@ sub run_set_bool($$;$)
     $self->run_show_bool();
 }
 
-# # set an Integer-valued debugger setting. 
-# sub run_set_int(arg, msg_on_error, min_value=nil, max_value=nil)
-#   if arg.strip.empty?
-#     errmsg('You need to supply a number.')
-#     return
-#   }
-#   val = @proc.get_an_int(arg, 
-#                          :max_value => max_value,
-#                          :min_value => min_value, 
-#                          :msg_on_error => msg_on_error
-#                          )
-#   if val
-#     settings[subcmd_setting_key] = val
-    #     run_show_int
-#   }
-# }
+# set an Integer-valued debugger setting. 
+sub run_set_int($$$;$$)
+{
+    my ($self, $arg, $msg_on_error, $min_value, $max_value) = @_;
+    if ($arg =~/^\s*$/) {
+    	$self->{proc}->errmsg('You need to supply a number.');
+    	return undef;
+    }
+    my $val = $self->{proc}->get_an_int($arg, 
+					{max_value => $max_value,
+					 min_value => $min_value, 
+					 msg_on_error => $msg_on_error
+					});
+    if (defined ($val)) {
+    	$self->{settings}->{subcmd_setting_key} = $val;
+        $self->run_show_int();
+    }
+}
 
 # Generic subcommand showing a boolean-valued debugger setting.
 sub run_show_bool($;$)
@@ -267,7 +270,7 @@ if (__FILE__ eq $0) {
 	Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
     print join(', ', keys %{$subcmd->{settings}}), "\n";
     print $subcmd->show_onoff($subcmd->{settings}->{autoeval}), "\n";
-    # $subcmd->run_set_int('', 'Just a test');
+    $subcmd->run_set_int($proc, 'Just a test');
 }
 
 1;

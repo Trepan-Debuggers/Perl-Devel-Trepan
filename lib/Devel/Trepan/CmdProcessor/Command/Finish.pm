@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
-use lib '../../../../..';
+use lib '../../../..';
 
 # require_relative '../running'
 # require_relative '../../app/breakpoint' # FIXME: possibly temporary
@@ -44,9 +44,22 @@ local $MAX_ARGS     = 1;  # Need at most this many
 sub run($$) {
     my ($self, $args) = @_;
     
-    my $count = scalar @$args > 1 ? $args->[1] : 1;
+    my ($opts, $level_count) = ({}, 1);
+    if (scalar @$args != 1) {
+	# Form is not "finish" which means "finish 1"
+	my $count_str = $args->[1];
+	$opts = {
+	    msg_on_error => 
+		"The '${NAME}' command argument must eval to an integer. Got: ${count_str}",
+		min_value => 1
+	};
+	my $count = $self->{proc}->get_an_int($count_str, $opts);
+	return unless defined $count;
+	$level_count = $count;
+    }
+
     $self->{proc}->{leave_cmd_loop} = 1;
-    $self->{dbgr}->finish($count);
+    $self->{dbgr}->finish($level_count);
 }
 
 unless (caller) {

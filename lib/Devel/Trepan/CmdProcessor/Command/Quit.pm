@@ -46,8 +46,8 @@ sub run($$)
     my ($self, $args) = @_;
     my @args = @$args;
     my $unconditional = 0;
-    if (scalar(@args) > 1 && $args[-1] eq 'unconditionally') {
-        shift @args;
+    if (scalar(@args) > 1 && $args->[-1] eq 'unconditionally') {
+        pop @args;
 	$unconditional = 1;
     } elsif (substr($args[0], -1) eq '!') {
         $unconditional = 1;
@@ -71,10 +71,10 @@ sub run($$)
     exit $exitrc;
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
-    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    my $cmd = Devel::Trepan::CmdProcessor::Command::Quit->new($proc);
+    my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
+    my $cmd = __PACKAGE__->new($proc);
     my $child_pid = fork;
     if ($child_pid == 0) { 
 	$cmd->run([$NAME, 'unconditionally']);

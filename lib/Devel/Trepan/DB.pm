@@ -150,7 +150,7 @@ sub DB {
     }
     if ($DB::signal) {
 	$event ||= 'signal';
-    } elsif ($DB::single & (32|64)) {
+    } elsif ($DB::single & RETURN_EVENT) {
 	$event ||= 'return';
     } elsif ($DB::trace  || $DB::single) {
 	$event ||= 'line';

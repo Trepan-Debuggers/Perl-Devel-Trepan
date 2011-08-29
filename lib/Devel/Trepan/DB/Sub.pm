@@ -80,6 +80,7 @@ sub sub {
 	    $DB::return_type = 'array';
 	    @DB::return_value = @ret;
 	    DB::DB() ;
+	    return @DB::return_value;
 	}
 	@ret;
     }
@@ -100,6 +101,7 @@ sub sub {
 	    $DB::return_type = defined $ret ? 'scalar' : 'undef';
 	    $DB::return_value = $ret;
 	    DB::DB() ;
+	    return $DB::return_value;
 	}
 
         # Return the appropriate scalar value.

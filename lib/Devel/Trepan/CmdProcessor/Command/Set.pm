@@ -52,10 +52,10 @@ if (__FILE__ eq  $0) {
     my $cmd = Devel::Trepan::CmdProcessor::Command::Set->new($proc, $NAME);
     # require_relative '../mock'
     # dbgr, cmd = MockDebugger::setup
-    $cmd->run([$cmd->{name}]);
-    # $cmd->run([$cmd->{name}, 'autolist']);
-    # $cmd->run([$cmd->{name}, 'autoeval', 'off']);
-    $cmd->run([$cmd->{name}, 'basename']);
+    $cmd->run([$cmd->name]);
+    # $cmd->run([$cmd->name, 'autolist']);
+    # $cmd->run([$cmd->name, 'autoeval', 'off']);
+    $cmd->run([$cmd->name, 'basename']);
 }
 
 1;

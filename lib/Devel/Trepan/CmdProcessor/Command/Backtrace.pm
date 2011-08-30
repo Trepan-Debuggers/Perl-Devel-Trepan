@@ -53,7 +53,7 @@ sub run($$)
     if (scalar @$args > 1) {
         $count = 
 	    $proc->get_an_int($args->[1], 
-			      {cmdname   => $self->{name},
+			      {cmdname   => $self->name,
 			       min_value => 1});
 	return unless defined $count;
     }

@@ -69,6 +69,7 @@ sub new($$) {
     $self->{aliases} = @ary ? [@ary] : [];
     no strict 'refs';
     *{"${class}::Category"} = eval "sub { ${class}::CATEGORY() }";
+    *{"${class}::name"} = eval "sub { \$${class}::NAME }";
     my $short_help = eval "${class}::SHORT_HELP()";
     $self->{short_help} = $short_help if $short_help;
     bless $self, $class;

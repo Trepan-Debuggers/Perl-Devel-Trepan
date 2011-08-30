@@ -5,10 +5,18 @@ use Devel::Trepan::CmdProcessor;
 use vars qw(@ISA);
 @ISA = qw(DB);
 
-Devel::Trepan::Core->register();
-Devel::Trepan::Core->ready();
+__PACKAGE__->register();
+__PACKAGE__->ready();
 
 my $cmdproc;
+
+# Not used by debugger, but here for
+# testing and OO completness.
+sub new() {
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+}
 
 # Called by DB to initialize us.
 sub init() {
@@ -38,7 +46,7 @@ sub warning($)
 }
 
 sub awaken($) {
-    $cmdproc = Devel::Trepan::CmdProcessor->new(undef, Devel::Trepan::Core);
+    $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__);
     $main::TREPAN_CMDPROC = $cmdproc;
 }
     

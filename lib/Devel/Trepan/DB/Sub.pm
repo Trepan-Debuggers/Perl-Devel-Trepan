@@ -1,4 +1,6 @@
 # Derived from perl5db.pl
+# Tracks calls and returns and stores some stack frame
+# information.
 package DB;
 use warnings; no warnings 'redefine';
 no warnings 'once';
@@ -8,7 +10,7 @@ use constant SINGLE_STEPPING_EVENT =>  1;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
 
-use vars qw($return_value @return_value);
+use vars qw($return_value @return_value @stack);
 
 my ($deep);
 
@@ -17,6 +19,12 @@ BEGIN {
     $DB::ret = '';    # return value of last sub executed in scalar context
     $DB::return_type = 'undef';
     $deep = 100;      # Max stack depth before we complain.
+
+    # $stack_depth is to track the current stack depth using the
+    # auto-stacked-variable trick. It is 'local'ized repeatedly as
+    # a simple way to keep track of #stack.
+    $stack_depth = 0;
+    @stack = (0);     # Per-frame debugger flags
 }
 
 ####

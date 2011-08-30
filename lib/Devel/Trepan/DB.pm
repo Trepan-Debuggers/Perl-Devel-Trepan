@@ -9,7 +9,7 @@ use lib '../..';
 package DB;
 use warnings; no warnings 'redefine';
 use English;
-use vars qw(@stack $usrctxt $running $caller $eval_result $evalarg
+use vars qw($usrctxt $running $caller $eval_result $evalarg
             $event $return_type @ret $ret $return_value @return_value);
 
 use Devel::Trepan::DB::Backtrace;
@@ -70,7 +70,6 @@ BEGIN {
     # initialize private globals to avoid warnings
     
     $running = 1;         # are we running, or are we stopped?
-    @stack = (0);
     @clients = ();
     $ready = 0;
     @saved = ();
@@ -93,10 +92,6 @@ BEGIN {
 	*lock  = sub(*) {};
 	*share = sub(*) {};
     }
-
-    # Used to track the current stack depth using the auto-stacked-variable
-    # trick.
-    $stack_depth = 0;      # Localized repeatedly; simple way to track $#stack
 
     # Don't print return values on exiting a subroutine.
     $doret = -2;

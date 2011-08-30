@@ -42,7 +42,7 @@ sub run($$) {
 if (__FILE__ eq $0) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    # my $cmd = Devel::Trepan::CmdProcessor::Command::Break->new($proc);
+    # my $cmd = __PACKAGE__->new($proc);
     # $cmd->run([$NAME]);
 }
 

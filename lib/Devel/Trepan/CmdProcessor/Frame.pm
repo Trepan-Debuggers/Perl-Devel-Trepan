@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use lib '../../..';
+use Devel::Trepan::DB::Sub;
 
 package Devel::Trepan::CmdProcessor;
 use English;
@@ -17,7 +18,20 @@ sub frame_setup($$$)
 	 $wantarray, $evaltext, $is_require, $hints, $bitmask, 
 	 $hinthash
 	) = @$frame_ary;
-    $self->{frame} = {
+
+    my $stack_size = $DB::stack_depth;
+    my $i=0;
+    while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+	last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
+    }
+    $stack_size -= ($i-3);
+    $self->{stack_size}  = $stack_size;
+    
+
+    $self->{frames} = ();  # place to cache frames
+    $#{$self->{frames}} = $stack_size-1;
+
+    my $frame = $self->{frame} = {
 	pkg        => $pkg,
 	file       => $file,
 	line       => $line,
@@ -29,8 +43,7 @@ sub frame_setup($$$)
 	hints      => $hints,
 	bitmask    => $bitmask,
     };
-
-    # $self->{stack_size} = $stack_size;
+    ${$self->{frames}}[-1] = $frame;
     $self->{frame_index} = 0;
     $self->{hide_level} = 0;
 }
@@ -79,7 +92,7 @@ sub print_stack_entry()
 	$self->msg("$wa=$fn$args from $file:$frame->{line}");
     } else {
 	# Non-short report includes full names.
-	$self->msg("$frame->{wantarray} = $s$args"
+	$self->msg("$prefix$frame->{wantarray} = $s$args"
 		   . " called from $file"
 		   . " line $frame->{line}");
     }
@@ -89,7 +102,7 @@ sub print_stack_trace_from_to($$$$$)
 {
     my ($self, $from, $to, $frames, $opts) = @_;
     for (my $i=$from; $i <= $to; $i++) {
-	my $prefix = '   '; # ($i == $opts->{current_pos}) ? '-->' : '   ';
+	my $prefix = ($i == $opts->{current_pos}) ? '-->' : '   ';
 	$prefix .= sprintf ' #%d ', $i;
 	$self->print_stack_entry($frames->[$i], $i, $prefix, $opts);
     }

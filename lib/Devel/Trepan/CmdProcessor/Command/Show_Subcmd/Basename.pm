@@ -4,7 +4,6 @@ use warnings; no warnings 'redefine'; no warnings 'once';
 use lib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Show::Basename;
-
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd);

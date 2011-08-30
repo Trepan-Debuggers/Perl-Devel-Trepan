@@ -87,7 +87,7 @@ sub run($$) {
 unless (caller()) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    my $cmd = Devel::Trepan::CmdProcessor::Command::Kill->new($proc);
+    my $cmd = __PACKAGE__->new($proc);
     print $cmd->{help}, "\n";
     print join(', ', @{$cmd->{aliases}}), "\n";
     print "min args: ", eval('$' . __PACKAGE__ . "::MIN_ARGS"), "\n";

@@ -30,12 +30,14 @@ for my $tuple (@data) {
     is(@got, @result, "matching on $prefix");
 }
 
-# [[ary, 'a'], [%w(aa aac), 'aa'], 
-#  [['ab'], 'ab'], [[], 'abc']].each do |result_keys, prefix|
-#     result = result_keys.map {|key| [key, hash[key]]}
-# assert_equal(result, complete_token_with_next(hash, prefix),
-# 	     "Trouble matching #{hash}.inspect on #{prefix.inspect}")
-#     end
-
-
-
+for my $tuple (
+    [\@ary, 'a'], 
+    [['aa', 'aac'], 'aa'], 
+    [['ab'], 'ab'], 
+    [[], 'abc']
+    ) {
+    my ($result_keys, $prefix) = @$tuple;
+    my @expect = map {[$_, $hash_ref->{$_}]} @$result_keys;
+    my @result = complete_token_with_next($hash_ref, $prefix);
+    is(@result, @expect, "matching ${prefix}");
+}

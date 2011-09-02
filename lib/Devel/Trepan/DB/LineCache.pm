@@ -109,7 +109,8 @@ sub clear_file_format_cache()
 	while (my $format, $lines = each %cache_info) {
 	    next if 'plain' eq $format;
 	    my $ref = $file_cache{$fname};
-	    $ref->lines($format) = undef;
+	    my $href = $ref->{lines};
+	    $href->{$format} = undef;
       }
     }
   }
@@ -166,12 +167,12 @@ sub checkcache(;$$)
 	next unless exists $file_cache{$filename};
 	my $path = $file_cache{$filename}->path;
 	if (-f  $path) {
-	    my @cache_info = $file_cache{$filename}->stat;
+	    my @cache_info = @$file_cache{$filename}->{stat};
 	    my @stat = stat($path);
 	    if (@cache_info) {
 		if (@stat && 
-		    (cache_info->size != stat->size or 
-		     cache_info->mtime != stat->mtime)) {
+		    ($cache_info->{size} != stat->size or 
+		     $cache_info->{mtime} != stat->mtime)) {
 		    push @result, $filename;
 		    update_cache($filename, $opts);
 		}
@@ -190,7 +191,7 @@ sub cache_script($;$)
     my ($script, $opts) = @_;
     $opts //= {};
     update_script_cache($script, $opts) unless 
-	(exists $script_cache[$script]);
+	(exists $script_cache{$script});
     $script;
 }
 
@@ -265,7 +266,7 @@ sub getline($$;$)
     $filename, $line_number = unmap_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
-	my $line = $lines->[$line_number-1];
+	my $line = $lines->[$line_number];
 	chomp $line;
         return $line;
     } else {
@@ -524,13 +525,11 @@ unless (caller) {
     printf "%s still has %d lines\n",  __FILE__,  scalar @$lines;
     my $lines = DB::LineCache::getlines(__FILE__);
     printf "%s also has %d lines\n",  $full_file,  scalar @$lines;
-    my $line = DB::LineCache::getline(__FILE__, 93);
-    printf "The 93rd line is:\n%s\n", $line ;
-    $line = DB::LineCache::getline(__FILE__, 6);
-    print "The 6th line is\n${line}\n" ;
-    
+    my $line_number = __LINE__;
+    my $line = DB::LineCache::getline(__FILE__, $line_number);
+    printf "The %d line is:\n%s\n", $line_number, $line ;
     DB::LineCache::remap_file('another_name', __FILE__);
-    print DB::LineCache::getline('another_name', 7), "\n";
+    print DB::LineCache::getline('another_name', __LINE__), "\n";
     
     printf "Files cached: %s\n", join(', ', DB::LineCache::cached_files);
     # LineCache::update_cache(__FILE__)

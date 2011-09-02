@@ -21,8 +21,6 @@ package Devel::Trepan::CmdProcessor;
 use warnings;
 use strict;
 
-#     attr_reader :dbgr_script_iseqs
-#     attr_reader :dbgr_iseqs
 #     attr_reader :file_exists_proc  # Like File.exists? but checks using
 #                                    # cached files
 
@@ -62,50 +60,61 @@ sub get_an_int($$$)
 use constant DEFAULT_GET_INT_OPTS => {
     min_value => 0, default => 1, cmdname => undef, max_value => undef
 };
+use Devel::Trepan::Util qw(hash_merge);
 
-#     # If argument parameter 'arg' is not given, then use what is in
-#     # opts[:default]. If String 'arg' evaluates to an integer between
-#     # least min_value and at_most, use that. Otherwise report an
-#     # error.  If there's a stack frame use that for bindings in
-#     # evaluation.
-#     sub get_int(arg, opts={})
+# # If argument parameter 'arg' is not given, then use what is in
+# # $opts->{default}. If String 'arg' evaluates to an integer between
+# # least min_value and at_most, use that. Otherwise report an
+# # error.  If there's a stack frame use that for bindings in
+# # evaluation.
+# sub get_int($$;$)
+# {
+#     my ($self, $arg, $opts)= @_;
+#     $opts ||={};
       
-#       return default unless arg
-#       opts = DEFAULT_GET_INT_OPTS.merge(opts)
-#       val = arg ? get_int_noerr(arg) : opts[:default]
-#       unless val
-#         if opts[:cmdname]
-#           errmsg(("Command '%s' expects an integer; " +
-#                   "got: %s.") % [opts[:cmdname], arg])
-#         else
-#           errmsg('Expecting a positive integer, got: %s' % arg)
+#     return $opts->{default} unless $arg;
+#     $opts = hash_merge($opts, DEFAULT_GET_INT_OPTS);
+#     my $val = $arg ? $self->get_int_noerr($arg) : $opts->{default};
+#     unless ($val) {
+#         if ($opts->{cmdname}) { 
+# 	    my $msg = sprintf("Command '%s' expects an integer; " +
+# 			      "got: %s.", $opts->{cmdname}, $arg);
+# 	    $self->errmsg($msg);
+#         } else {
+# 	    $self->errmsg('Expecting a positive integer, got: ${arg}');
 #         }
-#         return nil
+#         return undef;
 #       }
       
-#       if val < opts[:min_value]
-#         if opts[:cmdname]
-#           errmsg(("Command '%s' expects an integer at least" +
-#                   ' %d; got: %d.') %
-#                  [opts[:cmdname], opts[:min_value], opts[:default]])
-#         else
-#           errmsg(("Expecting a positive integer at least" +
-#                   ' %d; got: %d') %
-#                  [opts[:min_value], opts[:default]])
+#     if ($val < $opts->{min_value}) {
+#         if ($opts->{cmdname}) {
+#           my $msg = sprintf("Command '%s' expects an integer at least" .
+# 			    ' %d; got: %d.', 
+# 			    $opts->{cmdname}, $opts->{min_value}, 
+# 			    $opts->{default});
+# 	  $self->errmsg($msg);
+# 	} else {
+# 	    my $msg = sprintf("Expecting a positive integer at least" .
+# 			      ' %d; got: %d', 
+# 			      $opts->{min_value}, $opts->{default});  
+# 	    $self->errmsg($msg);
 #         }
-#         return nil
-#       elsif opts[:max_value] and val > opts[:max_value]
-#         if opts[:cmdname]
-#           errmsg(("Command '%s' expects an integer at most" +
-#                   ' %d; got: %d.') %
-#                  [opts[:cmdname], opts[:max_value], val])
-#         else
-#           errmsg(("Expecting an integer at most %d; got: %d") %
-#                  [opts[:max_value], val])
+#         return undef;
+# 	elsif ($self->opts{max_value} and $val > $self->opts{max_value}) {
+# 	    if ($self->opts{cmdname}) {
+# 		my $msg = sprintf("Command '%s' expects an integer at most" .
+# 				  ' %d; got: %d', $opts->{cmdname},
+# 				  $opts->{max_value}, $val);
+# 		$self->errmsg($msg);
+# 	    }
+#         } else {
+# 	    my $msg = sprintf("Expecting an integer at most %d; got: %d",
+# 			      $opts->{:max_value}, $val);
+#           $self->errmsg($msg);
 #         }
-#         return nil
+#         return undef;
 #       }
-#       return val
+#       return $val
 #     }
 
 #     sub get_int_list(args, opts={})

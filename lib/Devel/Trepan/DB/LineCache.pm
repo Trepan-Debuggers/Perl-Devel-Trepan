@@ -46,6 +46,10 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
+## FIXME:: Make conditional
+use Syntax::Highlight::Perl::Improved;
+my $perl_formatter = new Syntax::Highlight::Perl::Improved;
+
 ## struct(stat => '$', lines => '%', path => '$', sha1 => '$');
 
 # The file cache. The key is a name as would be given by Ruby for
@@ -54,10 +58,6 @@ use File::stat;
 my %file_cache;
 my %script_cache;
 
-
-# Used for syntax highlighting
-my $perl_highlighter = undef;
-  
 # Maps a string filename (a String) to a key in %file_cache (a
 # String).
 #
@@ -288,11 +288,14 @@ sub getlines($;$)
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
 	my %lines = %{$file_cache{$filename}->{lines}};
-	if ($opts->{output} && ! exist %{$lines->{$format}}) {
-	    $lines->{$format} = 
-		split(/\n/, join("\n", 
-				 highlight_string($lines->{plain}, $format))
-		);
+	if ($opts->{output} && ! exists $lines{$format}) {
+	    my $lines_aref = $lines{plain};
+	    my @lines = @$lines_aref;
+	    # my $raw_text = join("\n", @lines);
+	    my $raw_text = join('', @lines);
+	    my $formatted_text = highlight_string($raw_text);
+	    ## print $formatted_text;
+	    $lines{$format} = split(/\n/, $formatted_text);
 	}
 	return $lines{$format};
     } else {
@@ -308,18 +311,10 @@ sub getlines($;$)
     }
 }
 
-sub highlight_string($$)
+sub highlight_string($)
 {
-    my ($string, $output_type) = @_;
-    # require 'rubygems'
-    # begin
-    #   require 'coderay'
-    #   require 'term/ansicolor'
-    # rescue LoadError
-    #   return string
-    # }
-    # $perl_highlighter ||= CodeRay::Duo[:ruby, output_type]
-    # $perl_highlighter.encode(string)
+    my ($string) = shift;
+    $perl_formatter->format_string($string);
   }
 
  # Return full filename path for filename
@@ -463,7 +458,7 @@ sub update_cache($;$)
 	    $lines{plain} = $raw_lines;
 	    $lines{$opts->{output}} =
 		split("\n", 
-		      highlight_string(join('', @$raw_lines), $opts->{output})) if $opts->{output};
+		      highlight_string(join('', @$raw_lines))) if $opts->{output};
 	    my $entry = {
 		stat  => $stat,
 		lines => \%lines,
@@ -496,7 +491,7 @@ sub update_cache($;$)
     %lines = {plain => \@lines};
     close FH;
     $lines[$opts->{output}] = 
-        split(/\n/, highlight_string($raw_string, $opts->{output})) 
+        split(/\n/, highlight_string($raw_string)) 
 	if $opts->{output};
     my $stat = File::stat::stat($path);
     my $entry = {
@@ -541,6 +536,11 @@ unless (caller) {
     my $stat = DB::LineCache::stat(__FILE__);
     printf("stat info size: %d, ctime %s, mode %o\n", 
 	   $stat->size, $stat->ctime, $stat->mode);
+
+    ## use Enbugger; Enbugger->stop;
+    my $lines = DB::LineCache::getlines(__FILE__, {output=>'term'});
+    print $lines, "\n";
+
     #   "#{DB::LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
     sub yes_no($) 
 	       { 

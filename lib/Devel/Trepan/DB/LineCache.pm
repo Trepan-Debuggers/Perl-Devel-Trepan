@@ -33,6 +33,7 @@ source lines.
 =cut
 
 use Digest::SHA1;
+use English;
 ## require 'set'
 
 use version; $VERSION = '0.1.0';
@@ -41,17 +42,16 @@ use version; $VERSION = '0.1.0';
 package DB::LineCache;
 
 use Cwd 'abs_path';
-use Class::Struct;
+use File::Basename;
+use File::Spec;
 
-struct(stat => '@', line_numbers => '%', path => '$', sha1 => '$');
+## struct(stat => '@', lines => '%', path => '$', sha1 => '$');
 
-my $info = DB::LineCache->new;
- 
 # The file cache. The key is a name as would be given by Ruby for
 # __FILE__. The value is a LineCacheInfo object.
 
-my %file_cache = {};
-my %script_cache = {};
+my %file_cache;
+my %script_cache;
 
 
 # Used for syntax highlighting
@@ -70,9 +70,9 @@ my $perl_highlighter = undef;
 # probably want to remap not only the file name but also line
 # ranges. Will probably use this for that, but I'm not sure.
 
-my %file2file_remap = {};
-my %file2file_remap_lines = {};
-my %script2file = {};
+my %file2file_remap;
+my %file2file_remap_lines;
+my %script2file;
 
 sub remove_script_temps() 
 {
@@ -89,8 +89,8 @@ sub clear_file_cache(;$)
 {
     if (scalar @_ == 1) {
 	my $filename = shift;
-	if ($file_cache[$filename]) {
-	    delete $file_cache[$filename];
+	if ($file_cache{$filename}) {
+	    delete $file_cache{$filename};
 	}
     } else {
 	%file_cache = {};
@@ -108,7 +108,7 @@ sub clear_file_format_cache()
     while ((my $fname, $cache_info)= each %file_cache) {
 	while (my $format, $lines = each %cache_info) {
 	    next if 'plain' eq $format;
-	    my $ref = $file_cache[$fname];
+	    my $ref = $file_cache{$fname};
 	    $ref->lines($format) = undef;
       }
     }
@@ -123,7 +123,7 @@ sub clear_file_format_cache()
     while ((my $fname, $cache_info) = each %file_cache) {
 	while ((my $format, $lines) = each %{$cache_info->lines}) {
 	    next if 'plain' eq $format;
-	    my $ref = $file_cache[$fname];
+	    my $ref = $file_cache{$fname};
 	    $ref->lines($format) = undef;
 	}
     }
@@ -155,7 +155,7 @@ sub checkcache(;$$)
     my @filenames;
     if (defined $filename) {
 	@filenames = keys %file_cache;
-    } elsif (exist $file_cache[$filename]) {
+    } elsif (exists $file_cache{$filename}) {
 	@filenames = ($filename);
     } else {
 	return undef;
@@ -163,10 +163,10 @@ sub checkcache(;$$)
 
     my @result = ();
     for my $filename (@filenames) {
-	next unless exist $file_cache[$filename];
-	my $path = $file_cache[$filename]->path;
+	next unless exists $file_cache{$filename};
+	my $path = $file_cache{$filename}->path;
 	if (-f  $path) {
-	    my @cache_info = $file_cache[$filename]->stat;
+	    my @cache_info = $file_cache{$filename}->stat;
 	    my @stat = stat($path);
 	    if (@cache_info) {
 		if (@stat && 
@@ -210,14 +210,14 @@ sub cache_file($;$$)
 {
     my ($filename, $reload_on_change, $opts) = @_;
     $opts //={};
-    if (exists $file_cache[$filename]) {
+    if (exists $file_cache{$filename}) {
 	checkcache($filename) if $reload_on_change;
     } else {
 	$opts->{$use_perl_d_file} //= 1;
 	update_cache($filename, $opts);
     }
-    if (exists $file_cache[$filename]) {
-	$file_cache[$filename]->path;
+    if (exists $file_cache{$filename}) {
+	$file_cache{$filename}{path};
     } else {
 	return undef;
     }
@@ -227,7 +227,7 @@ sub cache_file($;$$)
 sub is_cached($)
 { 
     my $file_or_script = shift;
-    exists $file_cache[unmap_file($file_or_script)];
+    exists $file_cache{unmap_file($file_or_script)};
 }
 
 sub is_cached_script($)
@@ -241,7 +241,7 @@ sub is_empty($)
 {
     my $filename = shift;
     $filename=unmap_file($filename);
-    my $ref = $file_cache[$filename];
+    my $ref = $file_cache{$filename};
     $ref->lines(plain);
 }
 
@@ -263,70 +263,76 @@ sub getline($$;$)
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = unmap_file($file_or_script);
     $filename, $line_number = unmap_file_line($filename, $line_number);
-    my @lines = getlines(filename, opts);
-    if (@lines && $line_number > 0 && $line_number <= scalar @lines) {
-        return $lines[$line_number-1];
+    my $lines = getlines($filename, $opts);
+    if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
+	my $line = $lines->[$line_number-1];
+	chomp $line;
+        return $line;
     } else {
         return undef;
     }
 }
 
-# # Read lines of +filename+ and cache the results. However +filename+ was
-# # previously cached use the results from the cache. Return undef
-# # if we can't get lines
-#   sub getlines(filename, opts=false)
-#     if opts.kind_of?(Hash)
-#       reload_on_change, use_perl_d_file = 
-#         [opts[:reload_on_change], opts[:use_perl_d_file]]
-#     else
-#       reload_on_change, use_perl_d_file = [opts, false]
-#       opts = {:reload_on_change => reload_on_change}
-#     }
-#     checkcache(filename) if reload_on_change
-#     format = opts[:output] || :plain
-#     if @@file_cache.member?(filename)
-#       lines = $file_cache[filename].lines
-#       if opts[:output] && !lines[format]
-#         lines[format] = 
-#           highlight_string(lines[:plain].join(''), format).split(/\n/)
-#       }
-#       return lines[format]
-#     else
-#       opts[:use_perl_d_file] = 1
-#       update_cache(filename, opts)
-#       if @@file_cache.member?(filename)
-#         return $file_cache[filename].lines[format]
-#       else
-#         return undef
-#       }
-#     }
-#   }
+# Read lines of +filename+ and cache the results. However +filename+ was
+# previously cached use the results from the cache. Return undef
+# if we can't get lines
+sub getlines($;$)
+{
+    my ($filename, $opts) = @_;
+    $opts //= {use_perl_d_file => 1};
+    ($reload_on_change, $use_perl_d_file) = 
+        ($opts->{reload_on_change}, $opts->{use_perl_d_file});
+    checkcache($filename) if $reload_on_change;
+    my $format = $opts->{output} || 'plain';
+    if (exists $file_cache{$filename}) {
+	my %lines = %{$file_cache{$filename}->{lines}};
+	if ($opts->{output} && ! exist %{$lines->{$format}}) {
+	    $lines->{$format} = 
+		split(/\n/, join("\n", 
+				 highlight_string($lines->{plain}, $format))
+		);
+	}
+	return $lines{$format};
+    } else {
+	$opts->{use_perl_d_file} = 1;
+	update_cache($filename, $opts);
+	if (exists $file_cache{$filename}) {
+	    my $entry = $file_cache{$filename};
+	    my %lines = %{$entry->{lines}};
+	    return $lines{$format};
+	} else {
+	    return undef;
+	}
+    }
+}
 
-#   sub highlight_string(string, output_type)
-#     require 'rubygems'
-#     begin
-#       require 'coderay'
-#       require 'term/ansicolor'
-#     rescue LoadError
-#       return string
-#     }
-#     $perl_highlighter ||= CodeRay::Duo[:ruby, output_type]
-#     $perl_highlighter.encode(string)
-#   }
+sub highlight_string($$)
+{
+    my ($string, $output_type) = @_;
+    # require 'rubygems'
+    # begin
+    #   require 'coderay'
+    #   require 'term/ansicolor'
+    # rescue LoadError
+    #   return string
+    # }
+    # $perl_highlighter ||= CodeRay::Duo[:ruby, output_type]
+    # $perl_highlighter.encode(string)
+  }
 
  # Return full filename path for filename
 sub path($)
 {
     my $filename = shift;
     $filename = unmap_file($filename);
-    return undef unless exists $file_cache[$filename];
-    $file_cache[$filename]->path();
+    return undef unless exists $file_cache{$filename};
+    $file_cache{$filename}->path();
 }
 
 sub remap_file($$)
 { 
     my ($from_file, $to_file) = @_;
-    $file2file_remap[$from_file] = $to_file;
+    $file2file_remap{$from_file} = $to_file;
     cache_file($to_file);
 }
 
@@ -343,64 +349,64 @@ sub remap_file_lines($$$$)
   
 #   # Return SHA1 of filename.
 #   sub sha1(filename)
-#     filename = unmap_file(filename)
-#     return undef unless @@file_cache.member?(filename)
-#     return $file_cache[filename].sha1.hexdigest if 
-#       $file_cache[filename].sha1
-#     sha1 = Digest::SHA1.new
-#     $file_cache[filename].lines[:plain].each do |line|
-#       sha1 << line + "\n"
+#     filename = unmap_file(filename);
+#     return undef unless @@file_cache.member?(filename);
+#     return $file_cache{filename}->sha1.hexdigest if 
+#       $file_cache{filename}->sha1;
+#     sha1 = Digest::SHA1.new;
+#     $file_cache{filename}->lines{plain}.each do |line|
+#       sha1 << line + "\n";
 #     }
-#     $file_cache[filename].sha1 = sha1
-#     sha1.hexdigest
+#     $file_cache{filename}->sha1 = sha1;
+#     sha1.hexdigest;
 #   }
       
 #   # Return the number of lines in filename
-#   sub size(file_or_script)
-#     cache(file_or_script)
+#   sub size($file_or_script)
+#     cache($file_or_script);
 #     if file_or_script.kind_of?(String)
-#       file_or_script = unmap_file(file_or_script)
-#       return undef unless @@file_cache.member?(file_or_script)
-#       $file_cache[file_or_script].lines[:plain].length
+#       $file_or_script = unmap_file(file_or_script);
+#       return undef unless @@file_cache.member?(file_or_script);
+#       scalar @{$file_cache{$file_or_script}->lines{plain}};
 #     else
-#       return undef unless @@script_cache.member?(file_or_script)
-#       @@script_cache[file_or_script].lines[:plain].length
+#       return undef unless @@script_cache.member?(file_or_script);
+#       scalar @{$script_cache{$file_or_script}->lines{plain}};
 #     }
 #   }
 
 #   # Return File.stat in the cache for filename.
 #   sub stat(filename)
 #     return undef unless @@file_cache.member?(filename)
-#     $file_cache[filename].stat
+#     $file_cache{filename}->stat;
 #   }
-#   module_function :stat
 
 #   # Return an Array of breakpoints in filename.
 #   # The list will contain an entry for each distinct line event call
 #   # so it is possible (and possibly useful) for a line number appear more
 #   # than once.
 #   sub trace_line_numbers(filename, reload_on_change=false)
-#     fullname = cache(filename, reload_on_change)
-#     return undef unless fullname
-#     e = $file_cache[filename]
+#     fullname = cache(filename, reload_on_change);
+#     return undef unless fullname;
+#     e = $file_cache{filename};
 #     unless e.line_numbers
 #       e.line_numbers = 
-#         TraceLineNumbers.lnums_for_str_array(e.lines[:plain])
-#       e.line_numbers = false unless e.line_numbers
+#         TraceLineNumbers.lnums_for_str_array(e.lines[:plain]);
+#       e.line_numbers = false unless e.line_numbers;
 #     }
-#     e.line_numbers
+#     e.line_numbers;
 #   }
     
-#   sub unmap_file(file)
-#     $file2file_remap[file] ? $file2file_remap[file] : file
-#   }
-#   alias :map_file :unmap_file
+sub unmap_file($)
+{ 
+    my $file = shift;
+    $file2file_remap{$file} ? $file2file_remap{$file} : $file
+  }
 
 sub unmap_file_line($$)
 {
     my ($file, $line) = @_;
-    if ($file2file_remap_lines[$file]) {
-	for my $triplet (@$file2file_remap_lines[$file]) {
+    if (exists $file2file_remap_lines{$file}) {
+	for my $triplet (@$file2file_remap_lines{$file}) {
 	    my ($from_file, $range_ref, $start) = @$triplet;
 	    my @range = @$range_ref;
 	    if ( $range[0]  >= $line && $range[-1] <= $line) {
@@ -409,7 +415,7 @@ sub unmap_file_line($$)
 	    }
 	}
     }
-    return [$file, $line];
+    return ($file, $line);
 }
 
 #   # UPDATE a cache entry.  If something is wrong, return undef. Return
@@ -438,25 +444,31 @@ sub update_cache($;$)
 
     return undef unless $filename;
 
-    delete $file_cache[$filename];
+    delete $file_cache{$filename};
 
     my $path = abs_path($filename);
     
     if ($use_perl_d_file) {
 	my @list = ($filename);
-	push @list, $file2file_remap[$path] if exists $file2file_remap[$path];
+	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
 	    my @stat;
-	    if (scalar @{"_<$name"}) {
+	    if (scalar @{"main::_<$name"}) {
 		@stat = stat($path);
 	    }
-	    my @raw_lines = @{"_<$name"};
-	    %lines = {plain => @raw_lines};
-	    $lines[$opts->{output}] =
+	    my $raw_lines = \@{"main::_<$name"};
+	    %lines = {};
+	    $lines{plain} = $raw_lines;
+	    $lines{$opts->{output}} =
 		split("\n", 
-		      highlight_string(join("\n", @raw_lines), $opts->{output})) if $opts->{output};
-	    $file_cache[$filename] = DB::LineCacheInfo->(@stat, undef, %lines, $path, undef);
-	    $file2file_remap[$path] = $filename;
+		      highlight_string(join('', @$raw_lines), $opts->{output})) if $opts->{output};
+	    my $entry = {
+		stat  => \@stat,
+		lines => \%lines,
+		path  => $path
+	    };
+	    $file_cache{$filename}  = $entry;
+	    $file2file_remap{$path} = $filename;
           return 1
         }
     }
@@ -470,7 +482,7 @@ sub update_cache($;$)
 	    $path = File::Spec::catfile->($dirname, $filename);
 	    if ( -f $path) {
 		@stat = stat($path);
-		break
+		last
 	    }
 	}
 	return 0 unless @stat
@@ -479,49 +491,72 @@ sub update_cache($;$)
     seek FH, 0, 0;
     my @lines = <FH>;
     $raw_string = join("\n", @lines);
-    %lines = {plain => @lines};
+    %lines = {plain => \@lines};
     close FH;
     $lines[$opts->{output}] = 
-        split(/\n/, highlight_string($raw_string, opts->{output})) 
+        split(/\n/, highlight_string($raw_string, $opts->{output})) 
 	if $opts->{output};
-    $file_cache[$filename] = LineCacheInfo.new(stat($path), undef, %lines,
-                                               $path, undef);
-    $file2file_remap[$path] = $filename;
+    my @stat = stat($path);
+    my $entry = {
+		stat  => \@stat,
+		lines => \%lines,
+		path  => $path
+	    };
+    $file_cache{$filename} = $entry;
+    $file2file_remap{$path} = $filename;
     return 1;
 }
 
 # example usage
 unless (caller) {
-  #   sub yes_no($) { my $var = shift;  return $var ? "" : "not "; }
-
-  #  my $lines = LineCache::getlines(__FILE__);
-  # print "#{__FILE__} has #{LineCache.size(__FILE__)} lines\n";
-  # line = LineCache::getline(__FILE__, 6)
-  # print "The 6th line is\n#{line}" 
-  # line = LineCache::remap_file(__FILE__, 'another_name')
-  # print LineCache::getline('another_name', 7)
-
-  # print("Files cached: #{LineCache::cached_files.inspect}")
-  # LineCache::update_cache(__FILE__)
-  # LineCache::checkcache(__FILE__)
-  # print "#{__FILE__} has #{LineCache::size(__FILE__)} lines"
-  # print "#{__FILE__} trace line numbers:\n" + 
-  #   "#{LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
-  # print("#{__FILE__} is %scached." % 
-  #      yes_no(LineCache::cached?(__FILE__)))
-  # print LineCache::stat(__FILE__).inspect
-  # print "Full path: #{LineCache::path(__FILE__)}"
-  # LineCache::checkcache # Check all files in the cache
-  # LineCache::clear_file_cache 
-  # print("#{__FILE__} is now %scached." % 
-  #      yes_no(LineCache::cached?(__FILE__)))
-  # digest = SCRIPT_LINES__.select{|k,v| k =~ /digest.rb$/}
-  # print digest.first[0] if digest
-  # line = LineCache::getline(__FILE__, 7)
-  # print "The 7th line is\n#{line}" 
-  # LineCache::remap_file_lines(__FILE__, 'test2', (10..20), 6)
-  # print LineCache::getline('test2', 10)
-  # print "Remapped 10th line of test2 is\n#{line}" 
+    BEGIN {
+	use English;
+	$PERLDB |= 0x400;
+    };  # Turn on saving @{_<$filename};
+    my $file=__FILE__;
+    my $fullfile = abs_path($file);
+    print scalar(@{"main::_<$file"}), "\n";
+    
+    my $lines = DB::LineCache::getlines(__FILE__);
+    printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
+    my $full_file = abs_path(__FILE__);
+    my $lines = DB::LineCache::getlines(__FILE__);
+    printf "%s still has %d lines\n",  __FILE__,  scalar @$lines;
+    my $lines = DB::LineCache::getlines(__FILE__);
+    printf "%s also has %d lines\n",  $full_file,  scalar @$lines;
+    my $line = DB::LineCache::getline(__FILE__, 93);
+    printf "The 93rd line is:\n%s\n", $line ;
+    $line = DB::LineCache::getline(__FILE__, 6);
+    print "The 6th line is\n${line}\n" ;
+    
+    DB::LineCache::remap_file('another_name', __FILE__);
+    print DB::LineCache::getline('another_name', 7), "\n";
+    
+    printf "Files cached: %s\n", join(', ', DB::LineCache::cached_files);
+    # LineCache::update_cache(__FILE__)
+    # LineCache::checkcache(__FILE__)
+    # print "#{__FILE__} has #{LineCache::size(__FILE__)} lines"
+    # print "#{__FILE__} trace line numbers:\n" + 
+    #   "#{LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
+    sub yes_no($) 
+	       { 
+		   my $var = shift;  return $var ? "" : "not "; 
+	       };
+    # print("#{__FILE__} is %scached." % 
+    #      yes_no(LineCache::cached?(__FILE__)))
+    # print LineCache::stat(__FILE__).inspect
+    # print "Full path: #{LineCache::path(__FILE__)}"
+    # LineCache::checkcache # Check all files in the cache
+    # LineCache::clear_file_cache 
+    # print("#{__FILE__} is now %scached." % 
+    #      yes_no(LineCache::cached?(__FILE__)))
+    # digest = SCRIPT_LINES__.select{|k,v| k =~ /digest.rb$/}
+    # print digest.first[0] if digest
+    # line = LineCache::getline(__FILE__, 7)
+    # print "The 7th line is\n#{line}" 
+    # LineCache::remap_file_lines(__FILE__, 'test2', (10..20), 6)
+    # print LineCache::getline('test2', 10)
+    # print "Remapped 10th line of test2 is\n#{line}" 
 }
 
 1;

@@ -44,8 +44,9 @@ package DB::LineCache;
 use Cwd 'abs_path';
 use File::Basename;
 use File::Spec;
+use File::stat;
 
-## struct(stat => '@', lines => '%', path => '$', sha1 => '$');
+## struct(stat => '$', lines => '%', path => '$', sha1 => '$');
 
 # The file cache. The key is a name as would be given by Ruby for
 # __FILE__. The value is a LineCacheInfo object.
@@ -165,14 +166,14 @@ sub checkcache(;$$)
     my @result = ();
     for my $filename (@filenames) {
 	next unless exists $file_cache{$filename};
-	my $path = $file_cache{$filename}->path;
+	my $path = $file_cache{$filename}->{path};
 	if (-f  $path) {
-	    my @cache_info = @$file_cache{$filename}->{stat};
-	    my @stat = stat($path);
-	    if (@cache_info) {
-		if (@stat && 
-		    ($cache_info->{size} != stat->size or 
-		     $cache_info->{mtime} != stat->mtime)) {
+	    my $cache_info = $file_cache{$filename}->{stat};
+	    my $stat = File::stat::stat($path);
+	    if ($cache_info) {
+		if ($stat && 
+		    ($cache_info->{size} != $stat->size or 
+		     $cache_info->{mtime} != $stat->mtime)) {
 		    push @result, $filename;
 		    update_cache($filename, $opts);
 		}
@@ -362,24 +363,24 @@ sub remap_file_lines($$$$)
 #     sha1.hexdigest;
 #   }
       
-#   # Return the number of lines in filename
-#   sub size($file_or_script)
-#     cache($file_or_script);
-#     if file_or_script.kind_of?(String)
-#       $file_or_script = unmap_file(file_or_script);
-#       return undef unless @@file_cache.member?(file_or_script);
-#       scalar @{$file_cache{$file_or_script}->lines{plain}};
-#     else
-#       return undef unless @@script_cache.member?(file_or_script);
-#       scalar @{$script_cache{$file_or_script}->lines{plain}};
-#     }
-#   }
+# Return the number of lines in filename
+sub size($)
+{
+    my $file_or_script = shift;
+    cache($file_or_script);
+    $file_or_script = unmap_file($file_or_script);
+    return undef unless exists $file_cache{$file_or_script};
+    my $lines = $file_cache{$file_or_script}->{lines};
+    scalar @{$lines->{plain}};
+}
 
-#   # Return File.stat in the cache for filename.
-#   sub stat(filename)
-#     return undef unless @@file_cache.member?(filename)
-#     $file_cache{filename}->stat;
-#   }
+# Return File.stat in the cache for filename.
+sub stat($)
+{ 
+    my $filename = shift;
+    return undef unless exists $file_cache{$filename};
+    $file_cache{$filename}->{stat};
+}
 
 #   # Return an Array of breakpoints in filename.
 #   # The list will contain an entry for each distinct line event call
@@ -453,9 +454,9 @@ sub update_cache($;$)
 	my @list = ($filename);
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
-	    my @stat;
+	    my $stat;
 	    if (scalar @{"main::_<$name"}) {
-		@stat = stat($path);
+		$stat = File::stat::stat($path);
 	    }
 	    my $raw_lines = \@{"main::_<$name"};
 	    %lines = {};
@@ -464,7 +465,7 @@ sub update_cache($;$)
 		split("\n", 
 		      highlight_string(join('', @$raw_lines), $opts->{output})) if $opts->{output};
 	    my $entry = {
-		stat  => \@stat,
+		stat  => $stat,
 		lines => \%lines,
 		path  => $path
 	    };
@@ -475,18 +476,18 @@ sub update_cache($;$)
     }
       
     if ( -f $path ) {
-	@stat = stat($path);
+	$stat = File::stat::stat($path);
     } elsif (basename($filename) eq $filename) {
 	# try looking through the search path.
-	@stat = undef;
+	$stat = undef;
 	for my $dirname (@INC) {
 	    $path = File::Spec::catfile->($dirname, $filename);
 	    if ( -f $path) {
-		@stat = stat($path);
-		last
+		$stat = File::stat::stat($path);
+		last;
 	    }
 	}
-	return 0 unless @stat
+	return 0 unless $stat
     }
     open(FH, '<', $path);
     seek FH, 0, 0;
@@ -497,9 +498,9 @@ sub update_cache($;$)
     $lines[$opts->{output}] = 
         split(/\n/, highlight_string($raw_string, $opts->{output})) 
 	if $opts->{output};
-    my @stat = stat($path);
+    my $stat = File::stat::stat($path);
     my $entry = {
-		stat  => \@stat,
+		stat  => $stat,
 		lines => \%lines,
 		path  => $path
 	    };
@@ -532,19 +533,22 @@ unless (caller) {
     print DB::LineCache::getline('another_name', __LINE__), "\n";
     
     printf "Files cached: %s\n", join(', ', DB::LineCache::cached_files);
-    # LineCache::update_cache(__FILE__)
-    # LineCache::checkcache(__FILE__)
-    # print "#{__FILE__} has #{LineCache::size(__FILE__)} lines"
+    DB::LineCache::update_cache(__FILE__);
+    ## DB::LineCache::checkcache(__FILE__);
+    printf "I said %s has %d lines!\n", __FILE__, DB::LineCache::size(__FILE__);
     # print "#{__FILE__} trace line numbers:\n" + 
-    #   "#{LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
+
+    my $stat = DB::LineCache::stat(__FILE__);
+    printf("stat info size: %d, ctime %s, mode %o\n", 
+	   $stat->size, $stat->ctime, $stat->mode);
+    #   "#{DB::LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
     sub yes_no($) 
 	       { 
 		   my $var = shift;  return $var ? "" : "not "; 
 	       };
     # print("#{__FILE__} is %scached." % 
     #      yes_no(LineCache::cached?(__FILE__)))
-    # print LineCache::stat(__FILE__).inspect
-    # print "Full path: #{LineCache::path(__FILE__)}"
+    # print "Full path: #{DB::LineCache::path(__FILE__)}"
     # LineCache::checkcache # Check all files in the cache
     # LineCache::clear_file_cache 
     # print("#{__FILE__} is now %scached." % 

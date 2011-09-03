@@ -4,9 +4,29 @@ use strict;
 use warnings;
 use lib '../../..';
 use Devel::Trepan::DB::Sub;
+use Devel::Trepan::Complete;
 
 package Devel::Trepan::CmdProcessor;
 use English;
+
+sub frame_complete($$;$)
+{
+    my ($self, $prefix, $direction) = @_;
+    $direction //= 1;
+    my ($low, $high) = $self->frame_low_high($direction);
+    my @ary = ($low..$high);
+    Devel::Trepan::Complete::complete_token(@ary, $prefix);
+}
+
+sub frame_low_high($;$)
+{
+    my ($self, $direction) = @_;
+    $direction //= 1;
+    my $stack_size = $self->{stack_size};
+    my ($low, $high) = (-$stack_size, $stack_size-1);
+    ($low, $high) = ($high, $low) if ($direction < 0);
+    return ($low, $high);
+}
 
 sub frame_setup($$$)
 {
@@ -126,4 +146,6 @@ sub print_stack_trace($$$)
 	$self->print_stack_trace_from_to(0, $n-1, $frame, $opts);
     }
 }
+
+
 1;

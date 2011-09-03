@@ -209,57 +209,61 @@ sub complete($$$)
     	  $match_hash->{$pair->[0]} = $pair->[1];
       }
     }
+    if (scalar(@match_pairs) > 1) {
+    	# FIXME: figure out what to do here.
+    	# Matched multiple items in the middle of the string
+    	# We can't handle this so do nothing.
+    	return ();
+      # return match_pairs.map do |name, cmd|
+      #   ["#{name} #{args[1..-1].join(' ')}"]
+      # }
+    }
+    # match_pairs.size == 1
     return ('');
-    # if (scalar(@match_pairs) > 1) {
-    # 	# FIXME: figure out what to do here.
-    # 	# Matched multiple items in the middle of the string
-    # 	# We can't handle this so do nothing.
-    # 	return ();
-    #   # return match_pairs.map do |name, cmd|
-    #   #   ["#{name} #{args[1..-1].join(' ')}"]
-    #   # }
-    # }
-    # # match_pairs.size == 1
     # $self->next_complete($line, $next_blank_pos, $match_pairs[0]->[1], 
-    # 	  		   $last_token);
+    # 			 $token);
 }
 
-# sub next_complete(str, next_blank_pos, cmd, last_token) 
+# sub next_complete($$$$$)
 # {
-#     next_blank_pos, token = Trepan::Complete.next_token(str, next_blank_pos)
-#     return [] if token.empty? && !last_token.empty?
+#     my($str, $next_blank_pos, $cmd, $last_token) = @_;
+#     my $token;
+#     ($next_blank_pos, $token) = 
+# 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
+#     return () unless $token && $last_token;
     
-#     if cmd.respond_to?(:complete_token_with_next) 
-#       match_pairs = cmd.complete_token_with_next(token)
-#       return [] if match_pairs.empty?
-#       if str[next_blank_pos..-1].rstrip.empty? && 
-#           (token.empty? || token == last_token)
-#         return match_pairs.map { |completion, junk| completion }
-#       else
-#         if match_pairs.size == 1
-#           return next_complete(str, next_blank_pos, match_pairs[0][1], 
-#                                last_token)
-#         else
-#           # FIXME: figure out what to do here.
-#           # Matched multiple items in the middle of the string
-#           # We can't handle this so do nothing.
-#           return []
-#         }
-#       }
-#       elsif (cmd.respond_to?(:complete)) {
-#       matches = cmd.complete(token);
-#       return [] if matches.empty?
-#       if str[next_blank_pos..-1].rstrip.empty? && 
-#           (token.empty? || token == last_token)
-#         return matches;
-#       else {
-#         # FIXME: figure out what to do here.
-#         # Matched multiple items in the middle of the string
-#         # We can't handle this so do nothing.
-#         return [];
-#       }
+#     if ($cmd->can("complete_token_with_next")) {
+# 	my @match_pairs = $cmd->complete_token_with_next($token);
+# 	return () unless scalar @match_pairs;
+# 	if (substr($str($next_blank_pos) && 
+# 		   ($token || $token eq $last_token)) {
+# 	    return match_pairs.map { |completion, junk| completion };
+# 	} else {
+# 	    if (scalar @match_pairs == 1) {
+# 		return $self->next_complete($str, $next_blank_pos, 
+# 					    match_pairs[0]->[1], 
+# 					    $last_token);
+# 	    } else {
+# 		# FIXME: figure out what to do here.
+# 		# Matched multiple items in the middle of the string
+# 		# We can't handle this so do nothing.
+# 		return ();
+# 	    }
+# 	}
+#     } elsif ($cmd->can('complete')) {
+# 	@matches = $cmd->complete($token);
+# 	return () unless scalar @matches;
+# 	if (str[next_blank_pos..-1].rstrip.empty? && 
+# 	    (token.empty? || token == last_token)) {
+# 	    return matches;
+# 	} else {
+# 	    # FIXME: figure out what to do here.
+# 	    # Matched multiple items in the middle of the string
+# 	    # We can't handle this so do nothing.
+# 	    return ();
+# 	}
 #     } else {
-#       return [];
+# 	return ();
 #     }
 # }
 

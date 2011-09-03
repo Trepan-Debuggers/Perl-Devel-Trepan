@@ -31,11 +31,11 @@ use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Print backtrace of stack frames';
 our $MAX_ARGS     = 1;  # Need at most this many
 
-# sub complete($$)
-# { 
-#     my ($self, $prefix) = @_;
-#     $self->{proc}->frame_complete($prefix, undef);
-# }
+sub complete($$)
+{ 
+    my ($self, $prefix) = @_;
+    $self->{proc}->frame_complete($prefix);
+}
   
 # This method runs the command
 sub run($$)

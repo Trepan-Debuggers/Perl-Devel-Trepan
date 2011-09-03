@@ -334,19 +334,22 @@ sub remap_file_lines($$$$)
     push @$ary_ref, [$from_file, @range, $start];
 }
   
-#   # Return SHA1 of filename.
-#   sub sha1(filename)
-#     filename = unmap_file(filename);
-#     return undef unless @@file_cache.member?(filename);
-#     return $file_cache{filename}->sha1.hexdigest if 
-#       $file_cache{filename}->sha1;
-#     sha1 = Digest::SHA1.new;
-#     $file_cache{filename}->lines{plain}.each do |line|
-#       sha1 << line + "\n";
-#     }
-#     $file_cache{filename}->sha1 = sha1;
-#     sha1.hexdigest;
-#   }
+# Return SHA1 of filename.
+sub DB::LineCache::sha1($)
+{
+    my $filename = shift;
+    $filename = unmap_file($filename);
+    return undef unless exists $file_cache{$filename};
+    my $sha1 = $file_cache{$filename}->{sha1};
+    return $sha1->hexdigest if exists $file_cache{$filename}->{sha1};
+    $sha1 = Digest::SHA1->new;
+    my $line_ary = $file_cache{$filename}->{lines_href}->{plain};
+    for my $line (@$line_ary) {
+	$sha1->add($line);
+    }
+    $file_cache{filename}->{sha1} = $sha1;
+    $sha1->hexdigest;
+  }
       
 # Return the number of lines in filename
 sub size($)
@@ -360,7 +363,7 @@ sub size($)
 }
 
 # Return File.stat in the cache for filename.
-sub DB::stat($)
+sub DB::LineCache::stat($)
 { 
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
@@ -525,6 +528,7 @@ unless (caller) {
     DB::LineCache::update_cache(__FILE__);
     ## DB::LineCache::checkcache(__FILE__);
     printf "I said %s has %d lines!\n", __FILE__, DB::LineCache::size(__FILE__);
+    printf "SHA1 of %s is:\n%s\n", __FILE__, DB::LineCache::sha1(__FILE__);
     # print "#{__FILE__} trace line numbers:\n" + 
 
     my $stat = DB::LineCache::stat(__FILE__);

@@ -48,4 +48,18 @@ for my $pair
 	is(uniq_abbrev(\@list, $name), $expect);
 }
 
-
+note 'Test extract expression';
+for my $pair (
+    ['if (condition("if"))', 'condition("if")'], 
+    ['if (condition("if")) {', 'condition("if")'], 
+    ['if(condition("if")){', 'condition("if")'], 
+    ['until (until_termination)', 'until_termination'],
+    ['until (until_termination){', 'until_termination'],
+    ['return return_value', 'return_value'],
+    ['return return_value;', 'return_value'],
+    ['nothing to be done', 'nothing to be done'], 
+    ['my ($a,$b) = (5,6);', '($a,$b) = (5,6)'],
+    ) {
+    my ($stmt, $expect) = @$pair;
+    is(extract_expression($stmt), $expect);
+}

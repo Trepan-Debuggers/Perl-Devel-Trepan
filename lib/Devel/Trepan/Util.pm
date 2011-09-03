@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 package Devel::Trepan::Util;
 use vars qw(@EXPORT @EXPORT_OK @ISA);
-@EXPORT    = qw( hash_merge safe_repr uniq_abbrev);
+@EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression);
 @ISA = qw(Exporter);
 
 # Hash merge like Ruby has.
@@ -40,6 +40,36 @@ sub uniq_abbrev($$)
     scalar @candidates == 1 ? $candidates[0] : $name;
 }
 
+# extract the "expression" part of a line of source code.
+# 
+sub extract_expression($)
+{
+    my $text = shift;
+    if ($text =~ /^\s*(?:if|elsif|unless)\s*\(/) {
+        $text =~ s/^\s*(?:if|elsif|unless)\s*\(//;
+        $text =~ s/\s*\)\s*\{?\s*$//;
+    } elsif ($text =~ /^\s*(?:until|while)\s*\(/) {
+        $text =~ s/^\s*(?:until|while)\s*\(//;
+        $text =~ s/\s*\)\{?\s*$//;
+    } elsif ($text =~ /^\s*return\s+/) {
+        # EXPRESSION in: return EXPRESSION
+        $text =~ s/^\s*return\s+//;
+        $text =~ s/;\s*$//;
+    } elsif ($text =~ /^\s*my\s*(.+(\((?:.+)\s*\)\s*=.*);.*$)/) {
+        # my (...) = ...;
+	$text =~ s/^\s*my\s*(\((?:.+)\)\s*=.*)[^;]*;.*$/$1/;
+    # } elsif ($text =~ /^\s*case\s+/) {
+    #     # EXPRESSION in: case EXPESSION
+    #     $text =~ s/^\s*case\s*//;
+    # } elsif ($text =~ /^\s*def\s*.*\(.+\)/) {
+    #     $text =~ s/^\s*sub\s*.*\((.*)\)/\(\1\)/;
+    } elsif ($text =~ /^\s*[A-Za-z_][A-Za-z0-9_\[\]]*\s*=[^=>]/) {
+        # RHS of an assignment statement.
+        $text =~ s/^\s*[A-Za-z_][A-Za-z0-9_\[\]]*\s*=//;
+    }
+    return $text;
+}
+
 
 unless (caller) {
     my $default_config = {a => 1, b => 'c'};
@@ -68,6 +98,21 @@ unless (caller) {
     for my $name (qw(dis disas u upper foo)) {
 	printf("uniq_abbrev of %s is %s\n", $name, 
 	       uniq_abbrev(\@list, $name));
+    }
+    # ------------------------------------
+    # extract_expression
+    for my $stmt (
+	'if (condition("if"))', 
+	'if (condition("if")) {', 
+	'if(condition("if")){', 
+	'until (until_termination)',
+	'until (until_termination){',
+	'return return_value',
+	'return return_value;',
+	'nothing to be done',
+	'my ($a,$b) = (5,6);',
+	) {
+	print extract_expression($stmt), "\n";
     }
 }
 

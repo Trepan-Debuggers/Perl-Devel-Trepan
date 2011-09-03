@@ -32,9 +32,11 @@ my $builder = Module::Build->new(
     needs_compiler      => 1,
     release_status      => 'testing',
     requires => {
-	'ExtUtils::PkgConfig'     => '1.03',
-        'Test::More'              => 0,
-        'version'                 => 0,
+	'ExtUtils::PkgConfig'               => '1.03',
+        'Digest::SHA1'                      => 0,
+        'Syntax::Highlight::Perl::Improved' => 0,
+        'Test::More'                        => 0,
+        'version'                           => 0,
     },
     sign                => 1,
     );

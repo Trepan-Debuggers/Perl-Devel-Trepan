@@ -53,6 +53,7 @@ sub backtrace($;$$$) {
     	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
     	    last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
     	}
+	$i--;
     }
 
     $count += $i;

@@ -112,8 +112,11 @@ sub print_stack_entry()
 	$self->msg("$wa=$fn$args from $file:$frame->{line}");
     } else {
 	# Non-short report includes full names.
-	$self->msg("$prefix$frame->{wantarray} = $s$args"
-		   . " called from $file"
+	# Lose the DB::DB hook call if frame is 0.
+	my $call_str = ($i != 0) ? 
+	    "$frame->{wantarray} = $s$args called from " : '';
+	$self->msg("$prefix$call_str"
+		   . $file
 		   . " line $frame->{line}");
     }
 }

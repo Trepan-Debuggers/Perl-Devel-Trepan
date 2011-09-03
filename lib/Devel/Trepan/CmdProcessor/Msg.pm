@@ -48,8 +48,8 @@ sub errmsg($$;$) {
 
 sub msg($$;$) {
     my($self, $message, $opts) = @_;
-    $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    # $message = $self->perl_format($message) if $self->{opts}{code};
+    $message = $self->safe_rep($message) unless $opts->{unlimited};
+    # $message = $self->perl_format($message) if $opts->{code};
     $self->{interfaces}->[-1]->msg($message) if 
 	defined $self->{interfaces}->[-1];
 

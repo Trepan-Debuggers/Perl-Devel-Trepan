@@ -289,24 +289,25 @@ sub getlines($;$)
     checkcache($filename) if $reload_on_change;
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
-	my %lines = %{$file_cache{$filename}->{lines}};
-	if ($opts->{output} && ! exists $lines{$format}) {
+	my $lines_href = $file_cache{$filename}->{lines_href};
+	my $lines_aref = $lines_href->{$format};
+	if ($opts->{output} && 0 == scalar @$lines_aref) {
 	    my @formatted_lines = ();
-	    my $lines_aref = $lines{plain};
+	    my $lines_aref = $lines_href->{plain};
 	    for my $line (@$lines_aref) {
 		push @formatted_lines, highlight_string($line);
 		## print $formatted_text;
 	    }
-	    $lines{$format} = @formatted_lines;
-	    return @formatted_lines;
+	    $lines_href->{$format} = \@formatted_lines;
+	    return \@formatted_lines;
 	} else {
-	    return @$lines{'plain'};
+	    return $lines_aref;
 	}
     } else {
 	$opts->{use_perl_d_file} = 1;
 	update_cache($filename, $opts);
 	if (exists $file_cache{$filename}) {
-	    return getlines($lines, $opts);
+	    return getlines($filename, $opts);
 	} else {
 	    return undef;
 	}
@@ -369,8 +370,8 @@ sub size($)
     cache($file_or_script);
     $file_or_script = unmap_file($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
-    my $lines = $file_cache{$file_or_script}->{lines};
-    scalar @{$lines->{plain}};
+    my $lines_href = $file_cache{$file_or_script}->{lines_href};
+    scalar @{$lines_href->{plain}};
 }
 
 # Return File.stat in the cache for filename.
@@ -448,7 +449,7 @@ sub update_cache($;$)
     delete $file_cache{$filename};
 
     my $path = abs_path($filename);
-    
+    my $lines_href;
     if ($use_perl_d_file) {
 	my @list = ($filename);
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
@@ -458,15 +459,15 @@ sub update_cache($;$)
 		$stat = File::stat::stat($path);
 	    }
 	    my $raw_lines = \@{"main::_<$name"};
-	    %lines = {};
-	    $lines{plain} = $raw_lines;
-	    $lines{$opts->{output}} =
+	    $lines_href = {};
+	    $lines_href->{plain} = $raw_lines;
+	    $lines_href->{$opts->{output}} =
 		split("\n", 
 		      highlight_string(join('', @$raw_lines))) if $opts->{output};
 	    my $entry = {
-		stat  => $stat,
-		lines => \%lines,
-		path  => $path
+		stat       => $stat,
+		lines_href => $lines_href,
+		path       => $path
 	    };
 	    $file_cache{$filename}  = $entry;
 	    $file2file_remap{$path} = $filename;
@@ -492,16 +493,16 @@ sub update_cache($;$)
     seek FH, 0, 0;
     my @lines = <FH>;
     $raw_string = join("\n", @lines);
-    %lines = {plain => \@lines};
+    $lines_href = {plain => \@lines};
     close FH;
-    $lines[$opts->{output}] = 
+    $lines_href->{$opts->{output}} = 
         split(/\n/, highlight_string($raw_string)) 
 	if $opts->{output};
     my $stat = File::stat::stat($path);
     my $entry = {
-		stat  => $stat,
-		lines => \%lines,
-		path  => $path
+		stat       => $stat,
+		lines_href => $lines_href,
+		path       => $path
 	    };
     $file_cache{$filename} = $entry;
     $file2file_remap{$path} = $filename;
@@ -541,8 +542,8 @@ unless (caller) {
     printf("stat info size: %d, ctime %s, mode %o\n", 
 	   $stat->size, $stat->ctime, $stat->mode);
 
-    my @lines = DB::LineCache::getlines(__FILE__, {output=>'term'});
-    print join("\n", @lines), "\n";
+    my $lines_aref = DB::LineCache::getlines(__FILE__, {output=>'term'});
+    print join("\n", @$lines_aref), "\n";
 
     #   "#{DB::LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
     sub yes_no($) 

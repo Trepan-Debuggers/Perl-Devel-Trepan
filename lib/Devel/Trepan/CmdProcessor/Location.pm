@@ -7,18 +7,14 @@ use lib '../../..';
 # require_relative '../app/default'
 
 package Devel::Trepan::CmdProcessor;
+use English;
 
-#require 'rubygems'; 
 #require 'pathname'  # For cleanpath
 use File::Basename;
-#require 'linecache'
-#require 'require_relative'
-#require_relative 'disassemble'
+use Devel::Trepan::DB::LineCache;
 #require_relative 'msg'
 #require_relative 'frame'
 #require_relative '../app/file'
-#require_relative 'virtual'
-#class Trepan::CmdProcessor < Trepan::VirtualCmdProcessor
 
 my $EVENT2ICON = {
     'brkpt'          => 'xx',
@@ -41,25 +37,26 @@ sub canonic_file($$;$)
     # For now we want resolved filenames 
     if ($self->{settings}{basename}) {
 	return basename($filename);
-    # } elsif ($resolve) {
-    # 	$filename = LineCache::map_file($filename);
-    # 	return abs_path $filename;
+    } elsif ($resolve) {
+    	$filename = DB::LineCache::map_file($filename);
+    	return abs_path $filename;
     } else {
 	return $filename;
     }
 }
 
 # Return the text to the current source line.
-sub current_source_text($)
+sub current_source_text(;$)
 {
-    my $self = shift;
-    # my $opts = {reload_on_change => $self->{settings}{reload}};
-    # FIXME: loc_and_text should call this rather than the other
-    # way around.
-    # $loc, $junk, $text = loc_and_text(source_location_info, $opts);
-    no warnings;
-    my $text = $DB::dbline[$DB::lineno]; chomp($text);
-    use warnings;
+    my ($self, $opts) = @_;
+    $opts //= {};
+    my $filename    = $self->{frame}{file};
+    my $line_number = $self->{frame}{line};
+    my $text;
+    { local $WARNING=0;
+      ## $text = $DB::dbline[$DB::lineno]; chomp($text);
+      $text = DB::LineCache::getline($filename, $line_number, $opts); 
+    }
     return $text;
 }
   
@@ -147,13 +144,14 @@ sub format_location($;$$$)
     "${ev} (${loc})"
 }
 
-sub print_location($)
+sub print_location($;$)
 {
-    my $self = shift;
+    my ($self,$opts) = @_;
+    $opts //= {output => $self->{settings}{highlight}};
     my $loc  = $self->format_location;
     $self->msg(${loc});
 
-    my $text = $self->current_source_text();
+    my $text = $self->current_source_text($opts);
     if ($text) {
 	$self->msg($text, {unlimited => 1});
     }
@@ -182,5 +180,13 @@ unless (caller()) {
     }
     my @call_values = foo();
     $proc->frame_setup(\@call_values, 0);
+    $proc->{event} = 'return';
     print $proc->format_location, "\n";
+    print $proc->current_source_text({output=>'term'}), "\n";
+    # See if cached line is the same
+    print $proc->current_source_text({output=>'term'}), "\n";
+    # Try unhighligted line.
+    print $proc->current_source_text, "\n";
 }
+
+1;

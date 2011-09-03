@@ -45,3 +45,4 @@
 
 # Avoid archives of this distribution
 \bDevel-Trepan-[\d\.\_]+
+^MYMETA.yml$

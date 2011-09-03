@@ -453,15 +453,6 @@ sub files {
 }
 
 ####
-# returns reference to an array holding the lines in currently
-# loaded file
-#
-sub lines {
-  my $s = shift;
-  return \@DB::dbline;
-}
-
-####
 # loadfile($file, $line)
 #
 sub loadfile {
@@ -709,7 +700,6 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->trace_toggle()      # toggle subroutine call trace mode
     CLIENT->subs([SUBS])        # return subroutine information
     CLIENT->files()             # return list of all files known to DB
-    CLIENT->lines()             # return lines in currently loaded file
     CLIENT->loadfile(FILE,LINE) # load a file and let other clients know
     CLIENT->lineevents()        # return info on lines with actions
     CLIENT->set_break([WHERE],[COND])

@@ -108,27 +108,11 @@ sub clear_file_cache(;$)
 # syntax marked.
 sub clear_file_format_cache() 
 {
-    while ((my $fname, $cache_info)= each %file_cache) {
-	while (my $format, $lines = each %cache_info) {
-	    next if 'plain' eq $format;
-	    my $ref = $file_cache{$fname};
-	    my $href = $ref->{lines};
-	    $href->{$format} = undef;
-      }
-    }
-  }
-
-# Remove syntax-formatted lines in the cache. Use this
-# when you change the CodeRay syntax or Token formatting
-# and want to redo how files may have previously been 
-# syntax marked.
-sub clear_file_format_cache() 
-{
     while ((my $fname, $cache_info) = each %file_cache) {
 	while ((my $format, $lines) = each %{$cache_info->lines}) {
 	    next if 'plain' eq $format;
 	    my $ref = $file_cache{$fname};
-	    $ref->lines($format) = undef;
+	    $ref->{lines_href}->{$format} = undef;
 	}
     }
 }
@@ -246,7 +230,7 @@ sub is_empty($)
     my $filename = shift;
     $filename=unmap_file($filename);
     my $ref = $file_cache{$filename};
-    $ref->lines(plain);
+    $ref->{lines_href}->{plain};
 }
 
 # Get line +line_number+ from file named +filename+. Return undef if
@@ -266,7 +250,7 @@ sub getline($$;$)
     $opts //= {};
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = unmap_file($file_or_script);
-    $filename, $line_number = unmap_file_line($filename, $line_number);
+    ($filename, $line_number) = unmap_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
 	my $line = $lines->[$line_number];
@@ -280,6 +264,7 @@ sub getline($$;$)
 # Read lines of +filename+ and cache the results. However +filename+ was
 # previously cached use the results from the cache. Return undef
 # if we can't get lines
+sub getlines($;$);
 sub getlines($;$)
 {
     my ($filename, $opts) = @_;
@@ -375,7 +360,7 @@ sub size($)
 }
 
 # Return File.stat in the cache for filename.
-sub stat($)
+sub DB::stat($)
 { 
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
@@ -461,9 +446,11 @@ sub update_cache($;$)
 	    my $raw_lines = \@{"main::_<$name"};
 	    $lines_href = {};
 	    $lines_href->{plain} = $raw_lines;
-	    $lines_href->{$opts->{output}} =
-		split("\n", 
-		      highlight_string(join('', @$raw_lines))) if $opts->{output};
+	    if ($opts->{output}) {
+		my $highlight_lines = highlight_string(join('', @$raw_lines));
+		my @highlight_lines = split(/\n/, $highlight_lines);
+		$lines_href->{$opts->{output}} = \@highlight_lines;
+	    }
 	    my $entry = {
 		stat       => $stat,
 		lines_href => $lines_href,
@@ -495,9 +482,11 @@ sub update_cache($;$)
     $raw_string = join("\n", @lines);
     $lines_href = {plain => \@lines};
     close FH;
-    $lines_href->{$opts->{output}} = 
-        split(/\n/, highlight_string($raw_string)) 
-	if $opts->{output};
+    if ($opts->{output}) {
+	my $highlight_lines = highlight_string(join('', @$raw_lines));
+	my @highlight_lines = split(/\n/, $highlight_lines);
+	$lines_href->{$opts->{output}} = \@highlight_lines;
+    }
     my $stat = File::stat::stat($path);
     my $entry = {
 		stat       => $stat,
@@ -522,12 +511,12 @@ unless (caller) {
     my $lines = DB::LineCache::getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
     my $full_file = abs_path(__FILE__);
-    my $lines = DB::LineCache::getlines(__FILE__);
+    $lines = DB::LineCache::getlines(__FILE__);
     printf "%s still has %d lines\n",  __FILE__,  scalar @$lines;
-    my $lines = DB::LineCache::getlines(__FILE__);
+    $lines = DB::LineCache::getlines(__FILE__);
     printf "%s also has %d lines\n",  $full_file,  scalar @$lines;
     my $line_number = __LINE__;
-    my $line = DB::LineCache::getline(__FILE__, $line_number);
+    $line = DB::LineCache::getline(__FILE__, $line_number);
     printf "The %d line is:\n%s\n", $line_number, $line ;
     DB::LineCache::remap_file('another_name', __FILE__);
     print DB::LineCache::getline('another_name', __LINE__), "\n";

@@ -28,26 +28,26 @@ local $NEED_STACK     = 0;
 $MAX_ARGS             = 1000;
 $MIN_ARGS             = 0;
 
-# sub run($$) 
-# {
-#     my ($self, $args) = @_;
-#     my $first;
-#     if (scalar @args > 1) {
-# 	$first = lc $args->[1];
-# 	$alen = length('auto');
-# 	splice(@$args, 1, 2) = ('auto', substr($first, $alen)) if
-# 	    index($first, 'auto') == 0 && length($first) > $alen;
-#     }
-#     super
-# }
+sub run($$) 
+{
+    my ($self, $args) = @_;
+    my $first;
+    if (scalar @$args > 1) {
+	$first = lc $args->[1];
+	my $alen = length('auto');
+	splice(@$args, 1, 2, ('auto', substr($first, $alen))) if
+	    index($first, 'auto') == 0 && length($first) > $alen;
+    }
+    $self->SUPER::run($args);
+}
 
 if (__FILE__ eq  $0) {
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
-    my $cmd = Devel::Trepan::CmdProcessor::Command::Show->new($proc, $NAME);
+    my $cmd = __PACKAGE__->new($proc, $NAME);
     # require_relative '../mock'
     # dbgr, cmd = MockDebugger::setup
-    $cmd->run([$cmd->name])
+    $cmd->run([$NAME])
 }
 
 1;

@@ -6,6 +6,7 @@ use lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Set::Highlight;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use Devel::Trepan::DB::LineCache;
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd);
 # Values inherited from parent
@@ -24,7 +25,7 @@ sub run($$)
 { 
     my ($self, $args) = @_;
     if (scalar @$args == 3 && 'reset' eq $args->[2]) {
-	## LineCache::clear_file_format_cache
+	DB::LineCache::clear_file_format_cache;
 	$self->{proc}->{settings}{highlight} = 'term';
     } else {
 	$self->SUPER::run($args);

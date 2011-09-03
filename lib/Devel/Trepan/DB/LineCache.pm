@@ -30,6 +30,7 @@ source lines.
 
   LineCache::clear_file_cache
   LineCache::update_cache   # Check for modifications of all cached files.
+
 =cut
 
 use Digest::SHA1;
@@ -46,9 +47,10 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
+use lib '../../..';
 ## FIXME:: Make conditional
-use Syntax::Highlight::Perl::Improved;
-my $perl_formatter = new Syntax::Highlight::Perl::Improved;
+use Devel::Trepan::DB::Colors;
+my $perl_formatter = Devel::Trepan::DB::Colors::setup();
 
 ## struct(stat => '$', lines => '%', path => '$', sha1 => '$');
 
@@ -289,22 +291,22 @@ sub getlines($;$)
     if (exists $file_cache{$filename}) {
 	my %lines = %{$file_cache{$filename}->{lines}};
 	if ($opts->{output} && ! exists $lines{$format}) {
+	    my @formatted_lines = ();
 	    my $lines_aref = $lines{plain};
-	    my @lines = @$lines_aref;
-	    # my $raw_text = join("\n", @lines);
-	    my $raw_text = join('', @lines);
-	    my $formatted_text = highlight_string($raw_text);
-	    ## print $formatted_text;
-	    $lines{$format} = split(/\n/, $formatted_text);
+	    for my $line (@$lines_aref) {
+		push @formatted_lines, highlight_string($line);
+		## print $formatted_text;
+	    }
+	    $lines{$format} = @formatted_lines;
+	    return @formatted_lines;
+	} else {
+	    return @$lines{'plain'};
 	}
-	return $lines{$format};
     } else {
 	$opts->{use_perl_d_file} = 1;
 	update_cache($filename, $opts);
 	if (exists $file_cache{$filename}) {
-	    my $entry = $file_cache{$filename};
-	    my %lines = %{$entry->{lines}};
-	    return $lines{$format};
+	    return getlines($lines, $opts);
 	} else {
 	    return undef;
 	}
@@ -314,7 +316,9 @@ sub getlines($;$)
 sub highlight_string($)
 {
     my ($string) = shift;
-    $perl_formatter->format_string($string);
+    $string = $perl_formatter->format_string($string);
+    chomp $string;
+    $string;
   }
 
  # Return full filename path for filename
@@ -537,9 +541,8 @@ unless (caller) {
     printf("stat info size: %d, ctime %s, mode %o\n", 
 	   $stat->size, $stat->ctime, $stat->mode);
 
-    ## use Enbugger; Enbugger->stop;
-    my $lines = DB::LineCache::getlines(__FILE__, {output=>'term'});
-    print $lines, "\n";
+    my @lines = DB::LineCache::getlines(__FILE__, {output=>'term'});
+    print join("\n", @lines), "\n";
 
     #   "#{DB::LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
     sub yes_no($) 

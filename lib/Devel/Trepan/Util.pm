@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 package Devel::Trepan::Util;
-use vars qw(@EXPORT @EXPORT_OK @ISA);
+use vars qw(@EXPORT @ISA);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression);
 @ISA = qw(Exporter);
 

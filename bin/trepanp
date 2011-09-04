@@ -1,12 +1,29 @@
 #!/usr/bin/env perl
-# Standalone routine to invoke program under the debugger.
-use English;
-use File::Basename;
-use File::Spec;
-use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
-# Process options in @ARGV; 
+# Standalone routine to invoke a Perl program under the debugger.
 
-# FIXME: Syntax check program.
+# The usual boilerplate...
+use strict; use warnings; use English;
+
+use File::Basename; use File::Spec;
+
+use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
+use lib TREPAN_DIR;
+use Devel::Trepan::Options;
+
+my $opts = Devel::Trepan::Options::process_options(\@ARGV);
+
 die "You need a Perl program to run" unless @ARGV;
 
+# Resolve program name if it is not readable
+$ARGV[0] = whence_file $ARGV[0] unless (-r $ARGV[0]);
+
+# Check that the debugged Perl program is syntactically valid.
+my $cmd = "$EXECUTABLE_NAME -c " . join(' ', @ARGV) . " 2>&1";
+my $output = `$cmd`;
+my $rc = $? >>8;
+print "$output\n" if $rc;
+exit $rc if $rc;
+
+# And just when you thought we'd never get around to actually 
+# doing something...
 exec ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);

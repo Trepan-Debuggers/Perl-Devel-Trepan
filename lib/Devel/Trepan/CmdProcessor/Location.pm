@@ -53,10 +53,7 @@ sub current_source_text(;$)
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
-    { local $WARNING=0;
-      ## $text = $DB::dbline[$DB::lineno]; chomp($text);
-      $text = DB::LineCache::getline($filename, $line_number, $opts); 
-    }
+    $text = DB::LineCache::getline($filename, $line_number, $opts); 
     return $text;
 }
   
@@ -133,14 +130,13 @@ sub format_location($;$$$)
     $frame_index //= $self->{frame_index};
     my $text       = undef;
     my $ev         = '  ';
-    if (defined($self->{event}) || 0 == $frame_index) {
+    if (defined($self->{event}) && 0 == $frame_index) {
     	$ev = $EVENT2ICON->{$self->{event}};
     }
 
     $self->{line_no}  = $self->{frame}{line};
     
     my $loc = $self->source_location_info;
-    # $loc, @line_no, text = loc_and_text(loc)
     "${ev} (${loc})"
 }
 

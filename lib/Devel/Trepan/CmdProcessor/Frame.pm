@@ -26,7 +26,6 @@ sub adjust_frame($$$)
 	    $self->print_stack_trace_from_to($frame_num, $frame_num, $self->{frames}, $opts);
 	    $self->print_location ;
 	}
-        $self->{line_no} = $self->line();
         $self->{frame};
     } else {
         undef
@@ -52,26 +51,6 @@ sub frame_low_high($;$)
     return ($low, $high);
 }
 
-sub frame2hash
-{
-    # Note fields should match what is in backtrace() of
-    # Devel::Trepan::DB::Backtrace.pm
-    my ($self, $pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require, $hints,
-	$bitmask) = @_;
-    return {
-	pkg        => $pkg,
-	file       => $file,
-	line       => $line,
-	fn         => $fn,
-	hasargs    => $hasargs,
-	wantarray  => $wantarray,
-	evaltext   => $evaltext,
-	is_require => $is_require,
-	hints      => $hints,
-	bitmask    => $bitmask,
-    };
-}
-
 sub frame_setup($$$)
 {
     my ($self, $frame_ary) = @_;
@@ -85,11 +64,11 @@ sub frame_setup($$$)
     $self->{stack_size}  = $stack_size;
     
 
-    $self->{frames} = ();  # place to cache frames
+    $self->{frames} = [];  # place to cache frames
     $#{$self->{frames}} = $stack_size-1;
 
-    my $frame = $self->{frame} = $self->frame2hash(@$frame_ary);
-    ${$self->{frames}}[0] = $frame;
+    my @frames = $self->{dbgr}->backtrace(1);
+    $self->{frame} = $self->{frames}->[0] = $frames[0];
     $self->{frame_index} = 0;
     $self->{hide_level} = 0;
 }
@@ -119,12 +98,12 @@ sub get_frame($$$)
         return (undef, undef);
     }
 
-    my @frames = @{$self->{frames}};
-    unless ($frames[$frame_num]) {
-	@frames = $self->{dbgr}->backtrace(0);
-	$self->{frame} = $frames[$frame_num];
-	$self->{frames}[$frame_num] = $self->{frame};
+    my $frames = $self->{frames};
+    unless ($frames->[$frame_num]) {
+	my @new_frames = $self->{dbgr}->backtrace(0);
+	$self->{frames}->[$frame_num] = $new_frames[$frame_num];
     }
+    $self->{frame} = $frames->[$frame_num];
     return ($self->{frame}, $frame_num);
 }
 
@@ -137,6 +116,7 @@ sub line($)
 sub print_stack_entry()
 {
     my ($self, $frame, $i, $prefix, $opts) = @_;
+    $opts->{maxstack} //= 1e9;
     # Set the separator so arrays print nice.
     local $LIST_SEPARATOR = ', ';
 
@@ -146,17 +126,18 @@ sub print_stack_entry()
     # Put in a filename header if short is off.
     $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
     
+    my $not_last_frame = $i != ($self->{stack_size}-1);
     my $s;
     my $args =
 	defined $frame->{args}
     ? "(@{ $frame->{args} })"
 	: '';
-    if ($i != 0) {
+    if ($not_last_frame) {
 	# Grab and stringify the arguments if they are there.
 	
 	# Shorten them up if $opts->{maxtrace} says they're too long.
-	$args = ( substr $args, 0, $opts->{maxstack} - 3 ) . '...'
-	    if length $args > $opts->{maxstack};
+	$args = ( substr($args, 0, $opts->{maxstack}) - 3 ) . '...'
+	    if length($args) > $opts->{maxstack};
 	
 	# Get the actual sub's name, and shorten to $maxtrace's requirement.
 	$s = $frame->{fn};
@@ -172,11 +153,11 @@ sub print_stack_entry()
     } else {
 	# Non-short report includes full names.
 	# Lose the DB::DB hook call if frame is 0.
-	my $call_str = ($i != 0) ? 
-	    "$frame->{wantarray} = $s$args called from " : '';
+	my $call_str = $not_last_frame ? 
+	    "$frame->{wantarray} = $s$args in " : '';
 	$self->msg("$prefix$call_str"
 		   . $file
-		   . " line $frame->{line}");
+		   . " at line $frame->{line}");
     }
 }
     

@@ -73,7 +73,7 @@ sub backtrace($;$$$) {
     # number of stack frames, or we run out - caller() returns nothing - we
     # quit.
     # Up the stack frame index to go back one more level each time.
-    while ($i < $count and 
+    while ($i <= $count and 
 	   ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
 	$i++;
         # Go through the arguments and save them for later.
@@ -148,18 +148,27 @@ sub backtrace($;$$$) {
         # Stick the collected information into @callstack a hash reference.
         push(@callstack,
 	     {
-		 wantarray => $wantarray,
-		 fn        => $fn,
 		 args      => $args_ary,
-		 file      => $file,
-		 line      => $line,
 		 evaltext  => $evaltext,
+		 file      => $file,
+		 fn        => $fn,
+		 line      => $line,
+		 pkg       => $pkg,
+		 wantarray => $wantarray,
 	     }
 	    );
 	
         # Stop processing frames if the user hit control-C.
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
+    if ($scan_for_DB_sub) {
+	for (my $i=1; $i <= $#callstack; $i++) {
+	    $callstack[$i-1]->{args} = $callstack[$i]->{args};
+	    $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
+	}
+	# $callstack[$i]{args} = undef;
+	# $callstack[$i]{fn}   = undef;
+    }
 
     @callstack;
 }

@@ -89,10 +89,10 @@ Type "help" followed by a class name for a list of help items in that class.
 Type "help aliases" for a list of current aliases.
 Type "help macros" for a list of current macros.
 Type "help *" for the list of all commands, macros and aliases.
-Type "help all" for the list of all commands.
+Type "help all" for a brief description of all commands.
 Type "help REGEXP" for the list of commands matching /^${REGEXP}/.
 Type "help CLASS *" for the list of all commands in class CLASS.
-Type "help" followed by command name for full documentation.
+Type "help" followed by a command name for full documentation.
 ';
     $self->msg($final_msg);
 }
@@ -120,6 +120,7 @@ sub run($$)
 	} elsif ($cmd_name =~ /^all$/i) {
 	    for my $category (sort keys %{$CATEGORIES}) {
 		$self->show_category($category, []);
+		$self->msg('');
 	    }
         } elsif ($CATEGORIES->{$cmd_name}) {
 	    splice(@$args,0,2);
@@ -176,13 +177,11 @@ sub show_category($$$)
 	while (my ($key, $value) = each(%{$self->{proc}{commands}})) {
 	    push(@commands, $key) if $value->Category eq $category;
 	}
-
 	$self->msg($self->columnize_commands([sort @commands]));
 	return;
     }
     
     $self->section("Command class: ${category}");
-    $self->msg('');
     my %commands = %{$self->{proc}{commands}};
     for my $name (sort keys %commands) {
     	next if $category ne $commands{$name}->Category;

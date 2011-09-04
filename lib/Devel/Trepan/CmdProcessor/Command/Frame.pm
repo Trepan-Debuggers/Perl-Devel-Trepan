@@ -56,8 +56,7 @@ sub run($$)
 	max_value => $high
     };
     my $frame_num = $proc->get_an_int($position_str, $opts);
-    return unless $frame_num;
-      
+    return unless defined $frame_num;
     $proc->adjust_frame($frame_num, 1);
 }
 

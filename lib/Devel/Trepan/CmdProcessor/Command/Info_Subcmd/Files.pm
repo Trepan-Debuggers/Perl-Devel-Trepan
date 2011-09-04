@@ -4,6 +4,7 @@ use warnings; no warnings 'redefine'; no warnings 'once';
 use lib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Files;
+use Cwd 'abs_path';
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::DB::LineCache;
@@ -75,6 +76,59 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
+    my @args = @$args; shift @args; shift @args;
+    push(@args, '.') if scalar @args == 0;
+    if ($args[0] eq '*') {
+	$proc->section('Cached files:');
+	my @primary = DB::LineCache::cached_files();
+	@primary = sort @primary;
+	$proc->msg($self->{cmd}->columnize_commands(\@primary));
+	return;
+    }
+    my $filename = pop @args;
+    if ($filename eq '.') {
+        my $frame_file = $proc->{frame}->{file};
+	$filename = DB::LineCache::unmap_file($frame_file) ||
+	    abs_path($frame_file);
+    }
+    @args = @DEFAULT_FILE_ARGS if 0 == scalar @args;
+
+    my $m = $filename;
+    my $canonic_name = $proc->canonic_file($filename);
+    $canonic_name = DB::LineCache::unmap_file($canonic_name) || $canonic_name;
+    if (DB::LineCache::is_cached($canonic_name)) {
+	$m .= " is cached in debugger";
+	if ($canonic_name ne $filename) {
+	    $m .= (" as:\n  " + $canonic_name);
+	}
+	$m .= '.';
+	$proc->msg($m);
+    # } elsif (!(matches = find_scripts(filename)).empty?) {
+    # 	if (matches.size > 1) {
+    # 	    $self->msg("Multiple files found:");
+    # 	    matches.sort.each { |match_file| msg "\t%s" % match_file }
+    # 	    return;
+    # 	} else {
+    # 	    $self->msg('File "%s" just now cached.' % filename);
+    # 	    LineCache::cache(matches[0]);
+    # 	    LineCache::remap_file(filename, matches[0]);
+    # 	    canonic_name = matches[0];
+    # 	}
+    } else {
+      # my @matches = file_list.select{|try| try.end_with?(filename)}
+      # if (scalar(@matches) > 1) {
+      # 	  $self->msg("Multiple files found ending filename string:");
+      # 	  matches.sort.each { |match_file| msg "\t%s" % match_file };
+      #   return
+      # } elsif (1 == scalar(@matches)) {
+      # 	  my $canonic_name = LineCache::map_file(matches[0]);
+      # 	  $m .= " matched debugger cache file:\n  "  . $canonic_name;
+      # 	  $proc->msg($m);
+      # 	 } else {
+      # 	     $self->msg($m + ' is not cached in debugger.');
+      # 	     return;
+      # 	 }
+    }
     $proc->msg("Not finished yet...");
 }
 

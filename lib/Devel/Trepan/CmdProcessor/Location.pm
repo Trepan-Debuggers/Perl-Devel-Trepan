@@ -8,6 +8,7 @@ use lib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 use English;
+use Cwd 'abs_path';
 
 #require 'pathname'  # For cleanpath
 use File::Basename;
@@ -38,7 +39,7 @@ sub canonic_file($$;$)
     if ($self->{settings}{basename}) {
 	return basename($filename);
     } elsif ($resolve) {
-    	$filename = DB::LineCache::map_file($filename);
+    	$filename = DB::LineCache::unmap_file($filename);
     	return abs_path $filename;
     } else {
 	return $filename;

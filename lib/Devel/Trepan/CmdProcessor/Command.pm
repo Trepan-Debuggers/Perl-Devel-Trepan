@@ -12,6 +12,15 @@ use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
 use strict;
 package Devel::Trepan::CmdProcessor::Command;
 
+sub declared ($) {
+    use constant 1.01;              # don't omit this!
+    my $name = shift;
+    $name =~ s/^::/main::/;
+    my $pkg = caller;
+    my $full_name = $name =~ /::/ ? $name : "${pkg}::$name";
+    $constant::declared{$full_name};
+}
+
 use vars qw(@CMD_VARS @EXPORT @ISA @CMD_ISA @ALIASES);
 BEGIN {
     @CMD_VARS = qw($HELP $MAX_ARGS $MIN_ARGS $NAME 
@@ -22,7 +31,7 @@ use vars @CMD_VARS;
 
 @CMD_ISA  = qw(Devel::Trepan::CmdProcessor::Command);
 @EXPORT = qw(&set_name @CMD_ISA $MAX_ARGS $MIN_ARGS $NEED_RUNNING 
-             $NEED_STACK @CMD_VARS);
+             $NEED_STACK @CMD_VARS declared);
 
 
 $MIN_ARGS = 0;   # run()'s args array must be at least this many

@@ -219,55 +219,55 @@ sub complete($$$)
       # }
     }
     # match_pairs.size == 1
-    return ('');
-    # $self->next_complete($line, $next_blank_pos, $match_pairs[0]->[1], 
-    # 			 $token);
+    my @ret = $self->next_complete($line, $next_blank_pos, 
+				      $match_pairs[0]->[1], 
+				      $token);
+    return @ret;
 }
 
-# sub next_complete($$$$$)
-# {
-#     my($str, $next_blank_pos, $cmd, $last_token) = @_;
-#     my $token;
-#     ($next_blank_pos, $token) = 
-# 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
-#     return () unless $token && $last_token;
+sub next_complete($$$$$)
+{
+    my($self, $str, $next_blank_pos, $cmd, $last_token) = @_;
+    my $token;
+    ($next_blank_pos, $token) = 
+	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
+    return () unless $token && $last_token;
     
-#     if ($cmd->can("complete_token_with_next")) {
-# 	my @match_pairs = $cmd->complete_token_with_next($token);
-# 	return () unless scalar @match_pairs;
-# 	if (substr($str($next_blank_pos) && 
-# 		   ($token || $token eq $last_token)) {
-# 	    return match_pairs.map { |completion, junk| completion };
-# 	} else {
-# 	    if (scalar @match_pairs == 1) {
-# 		return $self->next_complete($str, $next_blank_pos, 
-# 					    match_pairs[0]->[1], 
-# 					    $last_token);
-# 	    } else {
-# 		# FIXME: figure out what to do here.
-# 		# Matched multiple items in the middle of the string
-# 		# We can't handle this so do nothing.
-# 		return ();
-# 	    }
-# 	}
-#     } elsif ($cmd->can('complete')) {
-# 	@matches = $cmd->complete($token);
-# 	return () unless scalar @matches;
-# 	if (str[next_blank_pos..-1].rstrip.empty? && 
-# 	    (token.empty? || token == last_token)) {
-# 	    return matches;
-# 	} else {
-# 	    # FIXME: figure out what to do here.
-# 	    # Matched multiple items in the middle of the string
-# 	    # We can't handle this so do nothing.
-# 	    return ();
-# 	}
-#     } else {
-# 	return ();
-#     }
-# }
+    if ($cmd->can("complete_token_with_next")) {
+	my @match_pairs = $cmd->complete_token_with_next($token);
+	return () unless scalar @match_pairs;
+	if (substr($str, $next_blank_pos) && 
+		   ($token || $token eq $last_token)) {
+	    return map {$_->[0]} @match_pairs;
+	} else {
+	    if (scalar @match_pairs == 1) {
+		return $self->next_complete($str, $next_blank_pos, 
+					    $match_pairs[0]->[1], 
+					    $token);
+	    } else {
+		# FIXME: figure out what to do here.
+		# Matched multiple items in the middle of the string
+		# We can't handle this so do nothing.
+		return ();
+	    }
+	}
+    } elsif ($cmd->can('complete')) {
+	my @matches = $cmd->complete($token);
+	return () unless scalar @matches;
+	if (substr($str, $next_blank_pos) =~ /\s*$/ && $token ) {
+	    return @matches;
+	} else {
+	    # FIXME: figure out what to do here.
+	    # Matched multiple items in the middle of the string
+	    # We can't handle this so do nothing.
+	    return ();
+	}
+    } else {
+	return ();
+    }
+}
 
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $cmdproc = Devel::Trepan::CmdProcessor->new;
     require Array::Columnize;
@@ -283,8 +283,9 @@ if (__FILE__ eq $0) {
     $cmdproc->run_cmd([]);     # Invalid - empty Array
     $cmdproc->run_cmd(['help', '*']);
     # cmdproc.run_cmd(['list', 5]);  # Invalid - nonstring arg
-    printf "complete('d') => %s\n", join(',  ', $cmdproc->complete("s", 's', 0, 1));
-    # print cmdproc.complete("sho d", 'd');
+    printf "complete('s') => %s\n", join(',  ', $cmdproc->complete("s", 's', 0, 1));
+    my @c = $cmdproc->complete("help un", 'help un', 0, 6);
+    printf "complete('help un') => %s\n", join(', ', @c);
     # print cmdproc.complete('', '');
 }
 

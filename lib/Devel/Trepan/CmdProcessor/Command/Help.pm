@@ -1,14 +1,10 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
-use warnings; no warnings 'redefine';
-
 use lib '../../../..';
 
-# require_relative '../command'
-# require_relative '../../app/complete'
-
 package Devel::Trepan::CmdProcessor::Command::Help;
+use warnings; no warnings 'redefine';
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
@@ -36,7 +32,9 @@ info line command.
 HELP
 
 use constant ALIASES => ('?');
-my $CATEGORIES = {
+
+BEGIN {
+    eval "use constant CATEGORIES => {
     'breakpoints' => 'Making the program stop at certain points',
     'data'        => 'Examining data',
     'files'       => 'Specifying and examining files',
@@ -45,6 +43,7 @@ my $CATEGORIES = {
     'support'     => 'Support facilities',
     'stack'       => 'Examining the call stack',
     'syntax'      => 'Debugger command syntax'
+    };" unless declared('CATEGORIES');
 };
 
 use constant CATEGORY   => 'support';
@@ -56,13 +55,20 @@ use File::Spec;
 my $ROOT_DIR = dirname(__FILE__);
 my $HELP_DIR = File::Spec->catfile($ROOT_DIR, 'Help');
 
-#   sub complete(prefix)
-#     matches = Trepan::Complete.complete_token(CATEGORIES.keys + %w(* all) + 
-#                                               @proc.commands.keys, prefix)
-#     aliases = Trepan::Complete.complete_token_filtered(@proc.aliases, prefix, 
-#                                                        matches)
-#     (matches + aliases).sort
-#   }    
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    my $proc = $self->{proc};
+    my @candidates = (keys %{CATEGORIES()}, qw(* all), 
+		      keys %{$proc->{commands}});
+    my @matches = 
+	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+    # my @aliases = 
+    # 	Devel::Trepan::Complete::complete_token_filtered($proc->{aliases}, 
+    # 							 $prefix, \@matches);
+    # sort (@matches, @aliases);
+    sort @matches;
+}    
 
 # sub complete_token_with_next($$)
 #     my ($self, $prefix) = @_;
@@ -81,8 +87,8 @@ my $HELP_DIR = File::Spec->catfile($ROOT_DIR, 'Help');
 sub list_categories($) {
     my $self = shift;
     $self->section('Help classes:');
-    for my $cat (sort(keys %$CATEGORIES)) {
-	$self->msg(sprintf "%-13s -- %s", $cat, $CATEGORIES->{$cat});
+    for my $cat (sort(keys %{CATEGORIES()})) {
+	$self->msg(sprintf "%-13s -- %s", $cat, CATEGORIES->{$cat});
     }
     my $final_msg = '
 Type "help" followed by a class name for a list of help items in that class.
@@ -118,11 +124,11 @@ sub run($$)
 	} elsif ($cmd_name =~ /^syntax$/i) {
 	    $self->show_command_syntax($args);
 	} elsif ($cmd_name =~ /^all$/i) {
-	    for my $category (sort keys %{$CATEGORIES}) {
+	    for my $category (sort keys %{CATEGORIES()}) {
 		$self->show_category($category, []);
 		$self->msg('');
 	    }
-        } elsif ($CATEGORIES->{$cmd_name}) {
+        } elsif (CATEGORIES->{$cmd_name}) {
 	    splice(@$args,0,2);
 	    $self->show_category($cmd_name, $args);
 	} elsif ($proc->{commands}{$cmd_name}
@@ -261,11 +267,13 @@ sub show_command_syntax($$)
 # }
 
 # Demo it.
-if (__FILE__ eq $0) {
-    require Devel::Trepan::CmdProcessor::Mock;
-    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    my $help_cmd = Devel::Trepan::CmdProcessor::Command::Help->new($proc);
+unless (caller) {
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $help_cmd = __PACKAGE__->new($proc);
     my $sep = '=' x 30 . "\n";
+    print join(', ', $help_cmd->complete('br')), "\n";
+    print join(', ', $help_cmd->complete('un')), "\n";
     $help_cmd->list_categories;
     print $sep;
     $help_cmd->run([$NAME, 'help']);
@@ -276,20 +284,16 @@ if (__FILE__ eq $0) {
     print $sep;
     $help_cmd->run([$NAME]);
     print $sep;
-#   cmd.run %W(${cmd.name} fdafsasfda)
-#   print $sep;
-#   cmd.run [cmd.name]
-#   print $sep;
+    $help_cmd->run([$NAME, 'fdafsasfda']);
+    print $sep;
     $help_cmd->run([$NAME, 'running', '*']);
     print $sep;
     $help_cmd->run([$NAME, 'syntax']);
     print $sep;
-#   cmd.run %W(${cmd.name} s.*)
+#   $help_cmd->run %W(${$NAME} s.*)
 #   print $sep;
-#   cmd.run %W(${cmd.name} s<>)
+#   $help_cmd->run %W(${$NAME} s<>)
 #   print $sep;
-#   p cmd.complete('br')
-#   p cmd.complete('un')
 }
 
 1;

@@ -34,8 +34,13 @@ use vars qw(@EXPORT @ISA $eval_result);
 
 sub new($;$$$) {
     my ($class, $interfaces, $dbgr, $settings) = @_;
-    my $intf = Devel::Trepan::Interface::User->new;
-    $interfaces ||= [$intf];
+    my $intf;
+    if (defined $interfaces) {
+	$intf = $interfaces->[0];
+    } else {
+	$intf = Devel::Trepan::Interface::User->new;
+	$interfaces = [$intf];
+    }
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
     $self->{dbgr}         = $dbgr;
     $self->{event}        = undef;

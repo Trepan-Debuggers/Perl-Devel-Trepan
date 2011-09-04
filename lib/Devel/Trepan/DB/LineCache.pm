@@ -41,6 +41,7 @@ use version; $VERSION = '0.1.0';
 # A package to read and cache lines of a Ruby program. 
 package DB::LineCache;
 no warnings 'once';
+no warnings 'redefine';
 
 use Cwd 'abs_path';
 use File::Basename;
@@ -345,6 +346,7 @@ sub DB::LineCache::sha1($)
     $sha1 = Digest::SHA1->new;
     my $line_ary = $file_cache{$filename}->{lines_href}->{plain};
     for my $line (@$line_ary) {
+	next unless defined $line;
 	$sha1->add($line);
     }
     $file_cache{filename}->{sha1} = $sha1;

@@ -8,24 +8,24 @@ use warnings;
 no warnings 'redefine';
 
 use lib '../../../../..';
-package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
+package Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr;
 
 use File::Basename;
 use File::Spec;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+
+## FIXME core is not exporting properly.
+use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 use strict;
-use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS);
-@ISA = @CMD_ISA;
-use vars @CMD_VARS;  # Value inherited from parent
+## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core. 
+use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS 
+            @SUBCMD_ISA @SUBCMD_VARS);
+@ISA = @SUBCMD_ISA;
+use vars @SUBCMD_VARS;  # Value inherited from parent
 
-#  include Trepan::Help
-
-$MIN_ARGS      = 0;
-$MAX_ARGS      = undef;
-$NAME          = '?'; # FIXME: Need to define this, but should 
-                      # pick this up from class/file name.
-$NEED_STACK    = 0;
+## $MIN_ARGS      = 0;
+## $MAX_ARGS      = undef;
+## $NEED_STACK    = 0;
 
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command
@@ -47,7 +47,7 @@ sub new($$)
     my $excluded_cmd_vars = {'$HELP' => 1, 
 			     '$NAME'=>2, '$MIN_ARGS' => 2, 
                              '$MAX_ARGS'=>2};
-    for my $field (@CMD_VARS) {
+    for my $field (@SUBCMD_VARS) {
 	next if exists $excluded_cmd_vars->{$field} && 
 	    $excluded_cmd_vars->{$field} == 2;
 	my $sigil = substr($field, 0, 1);
@@ -67,7 +67,7 @@ sub new($$)
     my $short_help = eval "${class}::SHORT_HELP()";
     $self->{short_help} = $short_help if $short_help;
     bless $self, $class;
-    $self->load_debugger_subcommands;
+    $self->load_debugger_subsubcommands;
     $self;
 }
 
@@ -78,7 +78,7 @@ sub new($$)
 # those files and for each class name, we will create an instance of
 # that class. The set of TrepanCommand class instances form set of
 # possible debugger commands.
-sub load_debugger_subcommands($$)
+sub load_debugger_subsubcommands($$)
 {
     my ($self) = @_;
     $self->{cmd_names}     = ();
@@ -100,7 +100,7 @@ sub load_debugger_subcommands($$)
 		push @{$self->{cmd_basenames}}, $basename;
 	    }
 	    if (eval "require '$pm'; 1") {
-		$self->setup_subcommand($parent_name, $basename);
+		$self->setup_subsubcommand($parent_name, $basename);
 	    } else {
 		$self->errmsg("Trouble reading ${pm}:");
 		$self->errmsg($@);
@@ -109,7 +109,7 @@ sub load_debugger_subcommands($$)
     }
 }
 
-sub setup_subcommand($$$$) 
+sub setup_subsubcommand($$$$) 
 {
     my ($self, $parent_name, $name) = @_;
     my $cmd_obj;
@@ -209,12 +209,9 @@ sub list($) {
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
 
-sub complete_token_with_next($$;$)
-{
-    my ($self, $prefix, $cmd_prefix) = @_;
-    my $subcmds = $self->{subcmds};
-    Devel::Trepan::Complete::complete_token_with_next($subcmds, $prefix);
-}
+#   sub complete_token_with_next(prefix)
+#     Trepan::Complete.complete_token_with_next(@subcmds.subcmds, prefix)
+#   }
 
 sub run($$) 
 {
@@ -245,9 +242,8 @@ unless(caller) {
     require Devel::Trepan::CmdProcessor;
     my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $mgr = __PACKAGE__->new($cmdproc);
-    print $mgr, "\n";
-    print join(', ', %{$mgr->{subcmds}}), "\n";
-    $mgr->lookup('a');
+    # print cmd.complete('d'), "\n";
+    # print cmd.subcmds.lookup('ar').prefix, "\n";
     # print cmd.subcmds.lookup('a'), "\n";
 }
 

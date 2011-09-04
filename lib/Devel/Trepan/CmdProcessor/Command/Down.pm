@@ -3,13 +3,11 @@ use warnings; no warnings 'redefine';
 
 use lib '../../../..';
 
-# Debugger "down" command. Is the same as the "up" command with the 
-# direction (set by DIRECTION) reversed.
 package Devel::Trepan::CmdProcessor::Command::Down;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Up ;
+use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
 
-use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command::Up);
+use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
@@ -31,16 +29,25 @@ our $NEED_STACK   = 1;
 sub complete($$)
 { 
     my ($self, $prefix) = @_;
-    $self->{proc}->frame_complete($prefix, $self->{direction});
+    $self->{proc}->frame_complete($prefix, -1);
 }
   
-sub new($$)
+# This method runs the command
+sub run($$)
 {
-    my ($class, $proc) = @_;
-    my $self = Devel::Trepan::CmdProcessor::Command::new($class, $proc);
-    $self->{direction} = -1; # +1 for down.
-    bless $self, $class;
-    $self;
+    my ($self, $args) = @_;
+    my $proc = $self->{proc};
+    my $count_str = $args->[1] // 1;
+    my ($low, $high) = $proc->frame_low_high(0);
+    my $opts= {
+	'msg_on_error' => 
+	    "The '${NAME}' command requires a frame number. Got: ${count_str}",
+	min_value => $low, 
+	max_value => $high
+    };
+    my $count = $proc->get_an_int($count_str, $opts);
+    return unless defined $count;
+    $proc->adjust_frame(-$count, 0);
 }
 
 unless (caller) {

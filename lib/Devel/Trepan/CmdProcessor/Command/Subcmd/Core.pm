@@ -14,7 +14,8 @@ use Devel::Trepan::CmdProcessor::Validate;
 
 BEGIN {
     @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MAX_ARGS $MIN_ABBREV 
-                      $MIN_ARGS $NAME $NEED_STACK $SHORT_HELP);
+                      $MIN_ARGS $NAME $NEED_STACK $SHORT_HELP @SUBCMD_VARS
+                      @SUBCMD_ISA);
 }
 use strict;
 

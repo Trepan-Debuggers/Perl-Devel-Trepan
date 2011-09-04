@@ -32,18 +32,9 @@ our $NEED_STACK   = 1;
 sub complete($$)
 { 
     my ($self, $prefix) = @_;
-    $self->{proc}->frame_complete($prefix, $self->{direction});
+    $self->{proc}->frame_complete($prefix, 1);
 }
   
-sub new($$)
-{
-    my ($class, $proc) = @_;
-    my $self = Devel::Trepan::CmdProcessor::Command::new($class, $proc);
-    $self->{direction} = +1; # -1 for down.
-    bless $self, $class;
-    $self;
-}
-
 # This method runs the command
 sub run($$)
 {
@@ -59,7 +50,7 @@ sub run($$)
     };
     my $count = $proc->get_an_int($count_str, $opts);
     return unless defined $count;
-    $proc->adjust_frame($self->{direction} * $count, 0);
+    $proc->adjust_frame($count, 0);
 }
 
 unless (caller) {

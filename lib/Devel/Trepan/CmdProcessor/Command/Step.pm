@@ -56,7 +56,7 @@ See also the commands:
 'finish' for other ways to progress execution.
 HELP
 
-use constant ALIASES  => qw(s step+ step- step< step> s> s< s+ s- s<>);
+use constant ALIASES  => qw(s step+ step- s+ s-);
 use constant CATEGORY => 'running';
 use constant SHORT_HELP => 'Step program (possibly entering called functions)';
 local $NEED_RUNNING = 1;
@@ -122,7 +122,6 @@ sub run($$) {
     # end
     # @proc.step(step_count, opts, condition)
     $self->{proc}->{leave_cmd_loop} = 1;
-    no warnings;
     $self->{dbgr}->step();
 }
 

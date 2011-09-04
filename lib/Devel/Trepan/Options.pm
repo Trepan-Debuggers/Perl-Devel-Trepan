@@ -57,6 +57,7 @@ sub process_options($)
 # If we can't find anything return the string given.
 sub whence_file($)
 {
+    my $prog_script = shift;
     return $prog_script if -r $prog_script;
     for my $dirname (File::Spec->path()) {
 	my $prog_script_try = File::Spec->catfile($dirname, $prog_script);

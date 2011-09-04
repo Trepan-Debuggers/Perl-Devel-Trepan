@@ -25,8 +25,7 @@ sub run($$)
     my @bt = $proc->{dbgr}->backtrace(0, 1);
     my $frame = $bt[0] || $proc->{frame};
 
-    # FIXME: Use be selected index rather than 0.
-    my $m = sprintf("Frame %2d", 0);
+    my $m = sprintf("Frame %2d", $proc->{frame_index});
     $proc->section($m);
     my @titles = qw(package function file line);
     my $i=-1;
@@ -43,7 +42,6 @@ sub run($$)
     }
     my $args_ary = $frame->{args};
     if ($args_ary) {
-
 	$m = sprintf "  args: %s", join(', ', @$args_ary);
 	$proc->msg($m);
     }

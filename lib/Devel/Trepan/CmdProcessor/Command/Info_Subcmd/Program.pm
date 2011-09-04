@@ -13,7 +13,7 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show debugger name and version";
+our $HELP = 'Information about debugged program and its environment';
 our $MIN_ABBREV = length('pr');
 
 sub run($$) 
@@ -21,13 +21,18 @@ sub run($$)
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     # my $frame = $proc->{frame};
-    my $m = sprintf "Program stop event: %s.", $proc->{event};
+    my $m;
+    if (defined($DB::ini_dollar0) && $DB::ini_dollar0) {
+	$m = sprintf "Program: %s.", $DB::ini_dollar0;
+	$proc->msg($m);
+    }
+    $m = sprintf "Program stop event: %s.", $proc->{event};
     $proc->msg($m);
-    # if ('return' eq $proc->{event}) {
-    # 	$self->msg 'R=> %s' % $proc->{frame}.sp(1);
-    # } elsif ('raise'eq  @proc.event) {
-    # 	$self->msg($proc->core.hook_arg) if $proc->core.hook_arg;
-    # }
+    if ('return' eq $proc->{event}) {
+	$proc->{commands}{info}->run(['info', 'return']);
+    } elsif ('raise' eq  $proc->{event}) {
+    	# $self->msg($proc->core.hook_arg) if $proc->core.hook_arg;
+    }
 
     # if ($proc->brkpt) {
     # 	$m = sprintf('It is stopped at %sbreakpoint %d.',

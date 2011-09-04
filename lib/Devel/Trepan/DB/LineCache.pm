@@ -35,12 +35,12 @@ source lines.
 
 use Digest::SHA1;
 use English;
-## require 'set'
 
 use version; $VERSION = '0.1.0';
 
 # A package to read and cache lines of a Ruby program. 
 package DB::LineCache;
+no warnings 'once';
 
 use Cwd 'abs_path';
 use File::Basename;

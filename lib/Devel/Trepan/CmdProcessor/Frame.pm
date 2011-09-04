@@ -9,6 +9,30 @@ use Devel::Trepan::Complete;
 package Devel::Trepan::CmdProcessor;
 use English;
 
+sub adjust_frame($$$)
+{
+    my ($self, $frame_num, $absolute_pos) = @_;
+    my $frame;
+    ($frame, $frame_num) = $self->get_frame($frame_num, $absolute_pos);
+    if ($frame) {
+        $self->{frame} = $frame;
+        $self->{frame_index} = $frame_num;
+        unless ($self->{settings}{traceprint}) {
+	    my $opts = {
+		basename    => $self->{settings}{basename},
+		current_pos => $frame_num,
+		maxwidth    => $self->{settings}{maxwidth},
+	    };
+	    $self->print_stack_trace_from_to($frame_num, $frame_num, $self->{frames}, $opts);
+	    $self->print_location ;
+	}
+        $self->{line_no} = $self->line();
+        $self->{frame};
+    } else {
+        undef
+    }
+}
+
 sub frame_complete($$;$)
 {
     my ($self, $prefix, $direction) = @_;
@@ -28,16 +52,29 @@ sub frame_low_high($;$)
     return ($low, $high);
 }
 
+sub frame2hash
+{
+    # Note fields should match what is in backtrace() of
+    # Devel::Trepan::DB::Backtrace.pm
+    my ($self, $pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require, $hints,
+	$bitmask) = @_;
+    return {
+	pkg        => $pkg,
+	file       => $file,
+	line       => $line,
+	fn         => $fn,
+	hasargs    => $hasargs,
+	wantarray  => $wantarray,
+	evaltext   => $evaltext,
+	is_require => $is_require,
+	hints      => $hints,
+	bitmask    => $bitmask,
+    };
+}
+
 sub frame_setup($$$)
 {
     my ($self, $frame_ary) = @_;
-    # Note fields should match what is in backtrace() of
-    # Devel::Trepan::DB::Backtrace.pm
-
-    my ( $pkg, $file, $line, $fn, $hasargs,
-	 $wantarray, $evaltext, $is_require, $hints, $bitmask, 
-	 $hinthash
-	) = @$frame_ary;
 
     my $stack_size = $DB::stack_depth;
     my $i=0;
@@ -51,27 +88,46 @@ sub frame_setup($$$)
     $self->{frames} = ();  # place to cache frames
     $#{$self->{frames}} = $stack_size-1;
 
-    my $frame = $self->{frame} = {
-	pkg        => $pkg,
-	file       => $file,
-	line       => $line,
-	fn         => $fn,
-	hasargs    => $hasargs,
-	wantarray  => $wantarray,
-	evaltext   => $evaltext,
-	is_require => $is_require,
-	hints      => $hints,
-	bitmask    => $bitmask,
-    };
-    ${$self->{frames}}[-1] = $frame;
+    my $frame = $self->{frame} = $self->frame2hash(@$frame_ary);
+    ${$self->{frames}}[0] = $frame;
     $self->{frame_index} = 0;
     $self->{hide_level} = 0;
 }
+
 sub filename($)
 {
     my $self = shift;
     $self->{frame}->{filename};
 }
+
+sub get_frame($$$) 
+{
+    my ($self, $frame_num, $absolute_pos) = @_;
+    my $stack_size = $self->{stack_size};
+
+    if ($absolute_pos) {
+        $frame_num += $stack_size if $frame_num < 0;
+    } else {
+        $frame_num += $self->{frame_index};
+    }
+
+    if ($frame_num < 0) {
+        $self->errmsg('Adjusting would put us beyond the newest frame.');
+        return (undef, undef);
+    } elsif ($frame_num >= $stack_size) {
+        $self->errmsg('Adjusting would put us beyond the oldest frame.');
+        return (undef, undef);
+    }
+
+    my @frames = @{$self->{frames}};
+    unless ($frames[$frame_num]) {
+	@frames = $self->{dbgr}->backtrace(0);
+	$self->{frame} = $frames[$frame_num];
+	$self->{frames}[$frame_num] = $self->{frame};
+    }
+    return ($self->{frame}, $frame_num);
+}
+
 sub line($)
 {
     my $self = shift;
@@ -84,26 +140,29 @@ sub print_stack_entry()
     # Set the separator so arrays print nice.
     local $LIST_SEPARATOR = ', ';
 
-    # Grab and stringify the arguments if they are there.
-    my $args =
-	defined $frame->{args}
-    ? "(@{ $frame->{args} })"
-	: '';
-    
-    # Shorten them up if $opts->{maxtrace} says they're too long.
-    $args = ( substr $args, 0, $opts->{maxstack} - 3 ) . '...'
-	if length $args > $opts->{maxstack};
-    
     # Get the file name.
     my $file = $frame->{file};
 
     # Put in a filename header if short is off.
     $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
     
-    # Get the actual sub's name, and shorten to $maxtrace's requirement.
-    my $s = $frame->{fn};
-    $s = ( substr $s, 0, $opts->{maxstack} - 3 ) . '...' 
-	if length($s) > $opts->{maxstack};
+    my $s;
+    my $args =
+	defined $frame->{args}
+    ? "(@{ $frame->{args} })"
+	: '';
+    if ($i != 0) {
+	# Grab and stringify the arguments if they are there.
+	
+	# Shorten them up if $opts->{maxtrace} says they're too long.
+	$args = ( substr $args, 0, $opts->{maxstack} - 3 ) . '...'
+	    if length $args > $opts->{maxstack};
+	
+	# Get the actual sub's name, and shorten to $maxtrace's requirement.
+	$s = $frame->{fn};
+	$s = ( substr $s, 0, $opts->{maxstack} - 3 ) . '...' 
+	    if length($s) > $opts->{maxstack};
+    }
     
     # Short report uses trimmed file and sub names.
     my $wa = $frame->{wantarray};
@@ -149,6 +208,5 @@ sub print_stack_trace($$$)
 	$self->print_stack_trace_from_to(0, $n-1, $frame, $opts);
     }
 }
-
 
 1;

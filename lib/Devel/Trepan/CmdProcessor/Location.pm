@@ -136,7 +136,7 @@ sub format_location($;$$$)
     if (defined($self->{event}) || 0 == $frame_index) {
     	$ev = $EVENT2ICON->{$self->{event}};
     }
-    
+
     $self->{line_no}  = $self->{frame}{line};
     
     my $loc = $self->source_location_info;

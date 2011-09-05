@@ -167,9 +167,12 @@ sub run($$)
 
 	if ($arg eq 'all' || $arg eq 'ctime') {
 	    unless ($seen{ctime}) {
-		my $ctime = DB::LineCache::stat($canonic_name)->ctime;
-		$ctime = localtime($ctime);
-		$proc->msg("Creation time:\t$ctime");
+		my $stat = DB::LineCache::stat($canonic_name);
+		if (defined $stat) {
+		    my $ctime = DB::LineCache::stat($canonic_name)->ctime;
+		    $ctime = localtime($ctime);
+		    $proc->msg("Creation time:\t$ctime");
+		}
 	    }
 	    $processed_arg = $seen{ctime} = 1;
 	}

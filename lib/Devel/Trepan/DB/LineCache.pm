@@ -349,7 +349,7 @@ sub DB::LineCache::sha1($)
 	next unless defined $line;
 	$sha1->add($line);
     }
-    $file_cache{filename}->{sha1} = $sha1;
+    $file_cache{$filename}->{sha1} = $sha1;
     $sha1->hexdigest;
   }
       
@@ -361,6 +361,7 @@ sub size($)
     $file_or_script = unmap_file($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
     my $lines_href = $file_cache{$file_or_script}->{lines_href};
+    return undef unless defined $lines_href;
     scalar @{$lines_href->{plain}};
 }
 
@@ -381,7 +382,7 @@ sub trace_line_numbers($;$)
     my ($filename, $reload_on_change) = @_;
     my $fullname = cache($filename, $reload_on_change);
     return undef unless $fullname;
-    my $trace_nums_ary = $file_cache{filename}->{trace_nums};
+    my $trace_nums_ary = $file_cache{$filename}->{trace_nums};
     return @$trace_nums_ary if $trace_nums_ary;
     my $lines_ary = $file_cache{$filename}->{lines_href}->{plain};
     my @lines = @$lines_ary;
@@ -390,7 +391,7 @@ sub trace_line_numbers($;$)
 	next unless defined $lines[$i];
 	push @result, $i unless $lines[$i] == 0;
     }
-    $file_cache{filename}->{trace_nums} = \@result;
+    $file_cache{$filename}->{trace_nums} = \@result;
     return @result;
   }
     

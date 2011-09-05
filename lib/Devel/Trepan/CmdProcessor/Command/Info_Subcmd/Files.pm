@@ -85,7 +85,7 @@ sub run($$)
 	$proc->msg($self->{cmd}->columnize_commands(\@primary));
 	return;
     }
-    my $filename = pop @args;
+    my $filename = shift @args;
     if ($filename eq '.') {
         my $frame_file = $proc->{frame}->{file};
 	$filename = DB::LineCache::unmap_file($frame_file) ||
@@ -126,8 +126,8 @@ sub run($$)
 	  }
 	  return
       } elsif (1 == scalar(@matches)) {
-      	  my $canonic_name = DB::LineCache::unmap_file($matches[0]);
-      	  $m .= " matched debugger cache file:\n  "  . $canonic_name;
+      	  $canonic_name = DB::LineCache::unmap_file($matches[0]);
+      	  $m .= " matched debugger cache file:\n\t"  . $canonic_name;
       	  $proc->msg($m);
       	 } else {
       	     $proc->msg($m . ' is not cached in debugger.');
@@ -155,21 +155,21 @@ sub run($$)
 	    $processed_arg = $seen{sha1} = 1;
 	}
 
-	# if ($arg eq 'all' || $arg eq 'brkpts') {
-	#     unless ($seen{brkpts}) {
-	# 	$proc->msg("Possible breakpoint line numbers:");
-	# 	my @lines = LineCache.trace_line_numbers($canonic_name);
-	# 	my $fmt_lines = $self->{cmd}->columnize_numbers(@lines);
-	# 	$proc->msg($fmt_lines);
-	#     }
-	#     $processed_arg = $seen{brkpts} = 1;
-	# }
+	if ($arg eq 'all' || $arg eq 'brkpts') {
+	    unless ($seen{brkpts}) {
+		$proc->msg("Possible breakpoint line numbers:");
+		my @lines = DB::LineCache::trace_line_numbers($canonic_name);
+		my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
+		$proc->msg($fmt_lines);
+	    }
+	    $processed_arg = $seen{brkpts} = 1;
+	}
 
 	if ($arg eq 'all' || $arg eq 'ctime') {
 	    unless ($seen{ctime}) {
 		my $ctime = DB::LineCache::stat($canonic_name)->ctime;
 		$ctime = localtime($ctime);
-		$proc->msg("create time:\t\n$ctime");
+		$proc->msg("Creation time:\t$ctime");
 	    }
 	    $processed_arg = $seen{ctime} = 1;
 	}
@@ -179,19 +179,21 @@ sub run($$)
 		my $stat = DB::LineCache::stat($canonic_name);
 		if (defined($stat)) {
 		    my $mtime = localtime($stat->mtime);
-		    $proc->msg("modifiy time:\t$mtime");
+		    $proc->msg("Modify time:\t$mtime");
 		}
 	    }
 	    $processed_arg = $seen{mtime} = 1;
 	}
       
-	if ($arg eq 'all' || $arg eq 'stat') {
-	    unless ($seen{stat}) {
-		my $stat = DB::LineCache::stat($canonic_name)->stat;
-		$proc->msg("Stat info\n:\t%$stat");
-	    }
-	    $processed_arg = $seen{stat} = 1;
-	}
+	# if ($arg eq 'all' || $arg eq 'stat') {
+	#     unless ($seen{stat}) {
+	# 	require Enbugger; Enbugger->stop;
+	# 	my $stat = DB::LineCache::stat($canonic_name);
+	# 	my $msg = sprintf "File attributes:\t%s", join(', ', @$stat);
+	# 	$proc->msg($msg);
+	#     }
+	#     $processed_arg = $seen{stat} = 1;
+	# }
       
 	unless ($processed_arg) {
 	    $proc->errmsg("I don't understand sub-option \"$arg\"");

@@ -25,11 +25,11 @@ use constant DEFAULT_USER_OPTS => {
     
     # The below are only used if we want and have readline support.
     # See method Trepan::GNU_readline? below.
-    histsize => 256,                    # Use gdb's default setting
-    file_history   => '.trepanp_hist',  # where history file lives
-                                        # Note a directory will 
-                                        # be appended
-    history_save   => 1                 # do we save the history?
+    histsize => 256,                     # Use gdb's default setting
+    file_history   => '.trepanpl_hist',  # where history file lives
+                                         # Note a directory will 
+                                         # be appended
+    history_save   => 1                  # do we save the history?
   };
 
 sub new($;$$$) {

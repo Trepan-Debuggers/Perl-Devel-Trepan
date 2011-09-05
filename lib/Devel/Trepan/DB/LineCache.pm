@@ -40,6 +40,7 @@ use version; $VERSION = '0.1.0';
 
 # A package to read and cache lines of a Ruby program. 
 package DB::LineCache;
+use strict; use warnings;
 no warnings 'once';
 no warnings 'redefine';
 
@@ -64,7 +65,7 @@ my %script_cache;
 # Maps a string filename (a String) to a key in %file_cache (a
 # String).
 #
-# One important use of @@file2file_remap is mapping the a full path
+# One important use of %file2file_remap is mapping the a full path
 # of a file into the name stored in @@file_cache or given by Ruby's
 # __FILE__. Applications such as those that get input from users,
 # may want canonicalize a file name before looking it up. This map
@@ -109,8 +110,8 @@ sub clear_file_cache(;$)
 # syntax marked.
 sub clear_file_format_cache() 
 {
-    while ((my $fname, $cache_info) = each %file_cache) {
-	while ((my $format, $lines) = each %{$cache_info->lines}) {
+    while (my ($fname, $cache_info) = each %file_cache) {
+	while (my($format, $lines) = each %{$cache_info->lines}) {
 	    next if 'plain' eq $format;
 	    my $ref = $file_cache{$fname};
 	    $ref->{lines_href}->{$format} = undef;
@@ -120,7 +121,7 @@ sub clear_file_format_cache()
 
 # Clear the script cache entirely.
 sub clear_script_cache() {
-    $script_cache = {};
+    %script_cache = {};
 }
 
 # Return an array of cached file names
@@ -202,7 +203,7 @@ sub cache_file($;$$)
     if (exists $file_cache{$filename}) {
 	checkcache($filename) if $reload_on_change;
     } else {
-	$opts->{$use_perl_d_file} //= 1;
+	$opts->{use_perl_d_file} //= 1;
 	update_cache($filename, $opts);
     }
     if (exists $file_cache{$filename}) {
@@ -270,14 +271,14 @@ sub getlines($;$)
 {
     my ($filename, $opts) = @_;
     $opts //= {use_perl_d_file => 1};
-    ($reload_on_change, $use_perl_d_file) = 
+    my ($reload_on_change, $use_perl_d_file) = 
         ($opts->{reload_on_change}, $opts->{use_perl_d_file});
     checkcache($filename) if $reload_on_change;
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
 	my $lines_href = $file_cache{$filename}->{lines_href};
 	my $lines_aref = $lines_href->{$format};
-	if ($opts->{output} && 0 == scalar @$lines_aref) {
+	if ($opts->{output} && !defined $lines_aref) {
 	    my @formatted_lines = ();
 	    my $lines_aref = $lines_href->{plain};
 	    for my $line (@$lines_aref) {
@@ -327,9 +328,9 @@ sub remap_file($$)
 sub remap_file_lines($$$$)
 {
     my ($from_file, $to_file, $range_ref, $start) = @_;
-    @range = @$range_ref;
+    my @range = @$range_ref;
     $to_file = $from_file unless $to_file;
-    my $ary_ref = ${$file2file_remap_lines[$to_file]} //= [];
+    my $ary_ref = ${$file2file_remap_lines{$to_file}} //= [];
     # FIXME: need to check for overwriting ranges: whether
     # they intersect or one encompasses another.
     push @$ary_ref, [$from_file, @range, $start];
@@ -372,21 +373,27 @@ sub DB::LineCache::stat($)
     $file_cache{$filename}->{stat};
 }
 
-#   # Return an Array of breakpoints in filename.
-#   # The list will contain an entry for each distinct line event call
-#   # so it is possible (and possibly useful) for a line number appear more
-#   # than once.
-#   sub trace_line_numbers(filename, reload_on_change=false)
-#     fullname = cache(filename, reload_on_change);
-#     return undef unless fullname;
-#     e = $file_cache{filename};
-#     unless e.line_numbers
-#       e.line_numbers = 
-#         TraceLineNumbers.lnums_for_str_array(e.lines[:plain]);
-#       e.line_numbers = false unless e.line_numbers;
-#     }
-#     e.line_numbers;
-#   }
+# Return an Array of breakpoints in filename.
+# The list will contain an entry for each distinct line event call
+# so it is possible (and possibly useful) for a line number appear more
+# than once.
+sub trace_line_numbers($;$)
+{
+    my ($filename, $reload_on_change) = @_;
+    my $fullname = cache($filename, $reload_on_change);
+    return undef unless $fullname;
+    my $trace_nums_ary = $file_cache{filename}->{trace_nums};
+    return @$trace_nums_ary if $trace_nums_ary;
+    my $lines_ary = $file_cache{$filename}->{lines_href}->{plain};
+    my @lines = @$lines_ary;
+    my @result = ();
+    for (my $i=1; $i <= $#lines; $i++) {
+	next unless defined $lines[$i];
+	push @result, $i unless $lines[$i] == 0;
+    }
+    $file_cache{filename}->{trace_nums} = \@result;
+    return @result;
+  }
     
 sub unmap_file($)
 { 
@@ -398,7 +405,8 @@ sub unmap_file_line($$)
 {
     my ($file, $line) = @_;
     if (exists $file2file_remap_lines{$file}) {
-	for my $triplet (@$file2file_remap_lines{$file}) {
+	my $triplet_ref = $file2file_remap_lines{$file};
+	for my $triplet (@$triplet_ref) {
 	    my ($from_file, $range_ref, $start) = @$triplet;
 	    my @range = @$range_ref;
 	    if ( $range[0]  >= $line && $range[-1] <= $line) {
@@ -445,10 +453,12 @@ sub update_cache($;$)
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
 	    my $stat;
+	    no strict;
 	    if (scalar @{"main::_<$name"}) {
 		$stat = File::stat::stat($path);
 	    }
 	    my $raw_lines = \@{"main::_<$name"};
+	    use strict;
 	    $lines_href = {};
 	    $lines_href->{plain} = $raw_lines;
 	    if ($opts->{output}) {
@@ -467,6 +477,7 @@ sub update_cache($;$)
         }
     }
       
+    my $stat;
     if ( -f $path ) {
 	$stat = File::stat::stat($path);
     } elsif (basename($filename) eq $filename) {
@@ -484,15 +495,14 @@ sub update_cache($;$)
     open(FH, '<', $path);
     seek FH, 0, 0;
     my @lines = <FH>;
-    $raw_string = join("\n", @lines);
     $lines_href = {plain => \@lines};
     close FH;
     if ($opts->{output}) {
-	my $highlight_lines = highlight_string(join('', @$raw_lines));
+	my $highlight_lines = highlight_string(join('', @lines));
 	my @highlight_lines = split(/\n/, $highlight_lines);
 	$lines_href->{$opts->{output}} = \@highlight_lines;
     }
-    my $stat = File::stat::stat($path);
+    $stat = File::stat::stat($path);
     my $entry = {
 		stat       => $stat,
 		lines_href => $lines_href,
@@ -511,7 +521,9 @@ unless (caller) {
     };  # Turn on saving @{_<$filename};
     my $file=__FILE__;
     my $fullfile = abs_path($file);
+    no strict;
     print scalar(@{"main::_<$file"}), "\n";
+    use strict;
     
     my $lines = DB::LineCache::getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
@@ -521,7 +533,7 @@ unless (caller) {
     $lines = DB::LineCache::getlines(__FILE__);
     printf "%s also has %d lines\n",  $full_file,  scalar @$lines;
     my $line_number = __LINE__;
-    $line = DB::LineCache::getline(__FILE__, $line_number);
+    my $line = DB::LineCache::getline(__FILE__, $line_number);
     printf "The %d line is:\n%s\n", $line_number, $line ;
     DB::LineCache::remap_file('another_name', __FILE__);
     print DB::LineCache::getline('another_name', __LINE__), "\n";
@@ -538,9 +550,15 @@ unless (caller) {
 	   $stat->size, $stat->ctime, $stat->mode);
 
     my $lines_aref = DB::LineCache::getlines(__FILE__, {output=>'term'});
-    print join("\n", @$lines_aref), "\n";
+    print join("\n", @$lines_aref), "\n" if defined $lines_aref;
 
-    #   "#{DB::LineCache::trace_line_numbers(__FILE__).to_a.sort.inspect}"
+    print("trace nums: ", join(', ',
+			       DB::LineCache::trace_line_numbers(__FILE__)),
+	  "\n");
+    $lines_aref = DB::LineCache::getlines(__FILE__, {output=>'term'});
+    print("trace nums again: ", join(', ',
+			       DB::LineCache::trace_line_numbers(__FILE__)),
+	  "\n");
     sub yes_no($) 
 	       { 
 		   my $var = shift;  return $var ? "" : "not "; 

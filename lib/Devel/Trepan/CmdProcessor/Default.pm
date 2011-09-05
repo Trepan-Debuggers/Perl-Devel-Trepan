@@ -38,7 +38,7 @@ use constant DEFAULT_SETTINGS => {
                              # will be truncated to this length when
                              # printed
     maxwidth      => ($ENV{'COLUMNS'} || 80),
-    prompt        => 'trepanp', # core part of prompt. Additional info like
+    prompt        => 'trepanpl', # core part of prompt. Additional info like
                              # debug nesting and 
     reload        => 0,      # Reread source file if we determine
                              # it has changed?

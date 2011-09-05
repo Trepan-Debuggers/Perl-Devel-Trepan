@@ -12,7 +12,7 @@ use vars qw(@EXPORT @ISA);
 
 use constant DEFAULT_OPTIONS => {
     initial_dir  => undef, # If --cd option was given, we save it here.
-    nx           => 0,     # Don't run user startup file (e.g. .trepanprc)
+    nx           => 0,     # Don't run user startup file (e.g. .trepanplrc)
 
     # Default values used only when 'server' or 'client'
     # (out-of-process debugging)

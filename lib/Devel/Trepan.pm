@@ -12,7 +12,7 @@ use lib '..';
 
 use Devel::Trepan::Core;
 
-use constant PROGRAM => 'trepanp';
+use constant PROGRAM => 'trepanpl';
 
 sub show_version {
     PROGRAM . ", version $Devel::Trepan::VERSION";

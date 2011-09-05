@@ -58,7 +58,11 @@ sub process_options($)
 sub whence_file($)
 {
     my $prog_script = shift;
-    return $prog_script if -r $prog_script;
+
+    # If we have an relative or absolute file name, don't do anything.
+    my $first_char = substr($prog_script, 0, 1);
+    return $prog_script if index('./', $first_char) != -1;
+
     for my $dirname (File::Spec->path()) {
 	my $prog_script_try = File::Spec->catfile($dirname, $prog_script);
 	return $prog_script_try if -r $prog_script_try;

@@ -17,8 +17,6 @@ use Devel::Trepan::DB::Sub;
 
 # "private" globals
 my ($ready, $deep, @saved, @skippkg, @clients);
-my $preeval = {};
-my $posteval = {};
 my $ineval = {};
 
 ####
@@ -70,6 +68,7 @@ BEGIN {
     # initialize private globals to avoid warnings
     
     $running = 1;         # are we running, or are we stopped?
+    $in_debugger = 0;
     @clients = ();
     $ready = 0;
     @saved = ();
@@ -112,7 +111,8 @@ sub DB {
 	$tid = eval { "[".threads->tid."]" };
     }
 
-    return unless $ready;
+    return unless $ready && !$in_debugger;
+    local $in_debugger = 1;
     &save;
     $DB::caller = [caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
@@ -138,7 +138,7 @@ sub DB {
 	    $evalarg = "\$DB::signal |= do { $stop; }"; &eval;
 	    if ($DB::dbline{$DB::lineno} =~ /;9($|\0)/) {
 		$DB::event = 'tbrkpt';
-		# clear any temp breakpt
+		# clear any temporary breakpoint
 		$DB::dbline{$DB::lineno} =~ s/;9($|\0)/$1/;
 	    }
 	}
@@ -155,7 +155,7 @@ sub DB {
     
     if ($DB::single || $DB::trace || $DB::signal) {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
-	DB->loadfile($DB::filename, $DB::lineno);
+	loadfile($DB::filename, $DB::lineno);
     }
     $evalarg = $action, &eval if $action;
     if ($DB::single || $DB::signal) {
@@ -164,30 +164,22 @@ sub DB {
 	$DB::signal = 0;
 	$running = 0;
 	
-	&eval if ($evalarg = DB->prestop);
 	my $c;
 	for $c (@clients) {
-	    # perform any client-specific prestop actions
-	    &eval if ($evalarg = $c->cprestop);
-	    
 	    # Now sit in an event loop until something sets $running
 	    my $after_eval = 0;
-      do {
-	  # call client event loop; must not block
-	  $c->idle($after_eval);
-	  $after_eval = 0;
-	  if ($running == 2) { 
-	      # client wants something eval-ed
-	      $eval_result = &DB::eval_with_return if $evalarg;
-	      $after_eval = 1;
-	      $running = 0;
-	  }
-      } until $running;
-	    
-	    # perform any client-specific poststop actions
-	    &eval if ($evalarg = $c->cpoststop);
+	    do {
+		# call client event loop; must not block
+		$c->idle($after_eval);
+		$after_eval = 0;
+		if ($running == 2) { 
+		    # client wants something eval-ed
+		    $eval_result = &DB::eval_with_return if $evalarg;
+		    $after_eval = 1;
+		    $running = 0;
+		}
+	    } until $running;
 	}
-	&eval if ($evalarg = DB->poststop);
     }
     $event = undef;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
@@ -372,7 +364,9 @@ sub finish($;$$) {
       $count += $i;
   }
 
-  $stack[$#stack-$count] |= (SINGLE_STEPPING_EVENT | RETURN_EVENT);
+  my $index = $#stack-$count;
+  $index = 0 if $index < 0;
+  $stack[$index] |= (SINGLE_STEPPING_EVENT | RETURN_EVENT);
   $DB::single = 0;
   $running = 1;
 }
@@ -456,7 +450,6 @@ sub files {
 # loadfile($file, $line)
 #
 sub loadfile {
-  my $s = shift;
   my($file, $line) = @_;
   if (!defined $main::{'_<' . $file}) {
     my $try;
@@ -612,23 +605,9 @@ sub clr_actions {
   }
 }
 
-sub prestop {
-  my ($client, $val) = @_;
-  return defined($val) ? $preeval->{$client} = $val : $preeval->{$client};
-}
-
-sub poststop {
-  my ($client, $val) = @_;
-  return defined($val) ? $posteval->{$client} = $val : $posteval->{$client};
-}
-
 #
 # "pure virtual" methods
 #
-
-# client-specific pre/post-stop actions.
-sub cprestop {}
-sub cpoststop {}
 
 # client complete startup
 sub awaken {}
@@ -708,8 +687,6 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->set_action(WHERE,ACTION)
     CLIENT->clr_actions([LIST])
     CLIENT->evalcode(STRING)  # eval STRING in executing code's context
-    CLIENT->prestop([STRING]) # execute in code context before stopping
-    CLIENT->poststop([STRING])# execute in code context before resuming
 
     # These methods you should define; They will be called by the DB
     # when appropriate. The stub versions provided do nothing. You should
@@ -882,11 +859,6 @@ of these methods.
 
 Called after debug API inits itself.
 
-=item CLIENT->prestop([STRING])
-
-Usually inherited from DB package.  If no arguments are passed,
-returns the prestop action string.
-
 =item CLIENT->stop()
 
 Called when execution stops (w/ args file, line).
@@ -896,11 +868,6 @@ Called when execution stops (w/ args file, line).
 Called while stopped (can be a client event loop or REPL). If called
 after the idle program requested an eval to be performed, BOOLEAN will be
 true. False otherwise. See evalcode below
-
-=item CLIENT->poststop([STRING])
-
-Usually inherited from DB package.  If no arguments are passed,
-returns the poststop action string.
 
 =item CLIENT->evalcode(STRING)
 

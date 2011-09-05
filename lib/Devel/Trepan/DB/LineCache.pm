@@ -11,7 +11,7 @@ DB::LineCache - package to read and cache lines of a Perl program.
 
 The LineCache package allows one to get any line from any file,
 caching lines of the file on first access to the file. Although the 
-file may be any file, the common use is when the file is a Ruby
+file may be any file, the common use is when the file is a Perl
 script since parsing of the file is done to figure out where the
 statement boundaries are.
 
@@ -20,26 +20,26 @@ are read from a single file, in particular in a debugger to show
 source lines.
 
   use 'DB::LineCache'
-  lines = LineCache::getlines('/tmp/myruby.rb')
+  lines = DB::LineCache::getlines('/tmp/myperl.pl')
   # The following lines have same effect as the above.
   $: << '/tmp'
-  Dir.chdir('/tmp') {lines = LineCache::getlines('myruby.rb')
+  Dir.chdir('/tmp') {lines = DB::LineCache::getlines('myperl.pl')
 
-  line = LineCache::getline('/tmp/myruby.rb', 6)
-  # Note lines[6] == line (if /tmp/myruby.rb has 6 lines)
+  line = DB::LineCache::getline('/tmp/myperl.pl', 6)
+  # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
 
-  LineCache::clear_file_cache
-  LineCache::update_cache   # Check for modifications of all cached files.
+  DB::LineCache::clear_file_cache
+  DB::LineCache::update_cache   # Check for modifications of all cached files.
 
 =cut
 
 use Digest::SHA1;
-use English;
 
 use version; $VERSION = '0.1.0';
 
-# A package to read and cache lines of a Ruby program. 
+# A package to read and cache lines of a Perl program. 
 package DB::LineCache;
+use English;
 use strict; use warnings;
 no warnings 'once';
 no warnings 'redefine';
@@ -66,7 +66,7 @@ my %script_cache;
 # String).
 #
 # One important use of %file2file_remap is mapping the a full path
-# of a file into the name stored in @@file_cache or given by Ruby's
+# of a file into the name stored in %file_cache or given by Perl's
 # __FILE__. Applications such as those that get input from users,
 # may want canonicalize a file name before looking it up. This map
 # gives a way to do that.
@@ -104,14 +104,13 @@ sub clear_file_cache(;$)
     }
 }
 
-# Remove syntax-formatted lines in the cache. Use this
-# when you change the CodeRay syntax or Token formatting
-# and want to redo how files may have previously been 
-# syntax marked.
+# Remove syntax-formatted lines in the cache. Use this when you change
+# the Syntax::Highlight::Perl colors and want to redo how files may
+# have previously been syntax marked.
 sub clear_file_format_cache() 
 {
     while (my ($fname, $cache_info) = each %file_cache) {
-	while (my($format, $lines) = each %{$cache_info->lines}) {
+	while (my($format, $lines) = each %{$cache_info->{lines_href}}) {
 	    next if 'plain' eq $format;
 	    my $ref = $file_cache{$fname};
 	    $ref->{lines_href}->{$format} = undef;
@@ -432,10 +431,9 @@ sub unmap_file_line($$)
 #     return 1
 #   }
 
-# Update a cache entry.  If something's
-# wrong, return undef. Return 1 if the cache was updated and false
-# if not.  If use_perl_d_file is 1, use that as the source for the
-# lines of the file
+# Update a cache entry.  If something's wrong, return undef. Return 1
+# if the cache was updated and false if not.  If use_perl_d_file is 1,
+# use that as the source for the lines of the file
 sub update_cache($;$) 
 {
     my ($filename, $opts) = @_;
@@ -453,7 +451,7 @@ sub update_cache($;$)
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
 	    my $stat;
-	    no strict;
+	    no strict; # Avoid string as ARRAY ref error message
 	    if (scalar @{"main::_<$name"}) {
 		$stat = File::stat::stat($path);
 	    }
@@ -461,10 +459,14 @@ sub update_cache($;$)
 	    use strict;
 	    $lines_href = {};
 	    $lines_href->{plain} = $raw_lines;
-	    if ($opts->{output}) {
+	    if ($opts->{output} && defined($raw_lines)) {
+		# Some lines in $raw_lines may be undefined
+		no strict; no warnings;
+		local $WARNING=0;
 		my $highlight_lines = highlight_string(join('', @$raw_lines));
 		my @highlight_lines = split(/\n/, $highlight_lines);
 		$lines_href->{$opts->{output}} = \@highlight_lines;
+		use strict; use warnings;
 	    }
 	    my $entry = {
 		stat       => $stat,

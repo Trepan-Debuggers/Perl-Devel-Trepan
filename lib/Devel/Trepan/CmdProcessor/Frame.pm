@@ -135,14 +135,14 @@ sub print_stack_entry()
     if ($not_last_frame) {
 	# Grab and stringify the arguments if they are there.
 	
-	# Shorten them up if $opts->{maxtrace} says they're too long.
-	$args = ( substr($args, 0, $opts->{maxstack}) - 3 ) . '...'
-	    if length($args) > $opts->{maxstack};
+	# Shorten them up if $opts->{maxwidth} says they're too long.
+	$args = substr($args, 0, $opts->{maxwidth}-3) . '...'
+	    if length($args) > $opts->{maxwidth};
 	
-	# Get the actual sub's name, and shorten to $maxtrace's requirement.
+	# Get the actual sub's name, and shorten to $maxwidth's requirement.
 	$s = $frame->{fn};
-	$s = ( substr $s, 0, $opts->{maxstack} - 3 ) . '...' 
-	    if length($s) > $opts->{maxstack};
+	$s = substr($s, 0, $opts->{maxwidth}-3) . '...' 
+	    if length($s) > $opts->{maxwidth};
     }
     
     # Short report uses trimmed file and sub names.
@@ -155,9 +155,15 @@ sub print_stack_entry()
 	# Lose the DB::DB hook call if frame is 0.
 	my $call_str = $not_last_frame ? 
 	    "$frame->{wantarray} = $s$args in " : '';
-	$self->msg("$prefix$call_str"
-		   . $file
-		   . " at line $frame->{line}");
+	my $prefix_call = "$prefix$call_str";
+	my $file_line   = $file . " at line $frame->{line}";
+	
+	if (length($prefix_call) + length($file_line) <= $opts->{maxwidth}) {
+	    $self->msg($prefix_call . $file_line);
+	} else {
+	    $self->msg($prefix_call);
+	    $self->msg("\t" . $file_line);
+	}
     }
 }
     

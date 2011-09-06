@@ -40,7 +40,7 @@ config_data:
 diff: 
 	perl Build --makefile_env_macros 1 diff
 
-#: Create distrubution tarball
+#: Create distribution tarball
 dist:
 	perl Build --makefile_env_macros 1 dist
 

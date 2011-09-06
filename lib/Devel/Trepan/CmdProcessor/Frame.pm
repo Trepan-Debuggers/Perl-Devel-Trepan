@@ -60,7 +60,17 @@ sub frame_setup($$$)
     while (my ($pkg, $file, $line, $fn) = caller($i++)) {
 	last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
     }
-    $stack_size -= ($i-3);
+    if ($stack_size <= 0) {
+	# Dynamic debugging didn't set $DB::stack_depth correctly.
+	my $j=$i;
+	while (caller($j++)) {
+	    $stack_size++;
+	}
+	$stack_size++;
+	$DB::stack_depth = $j;
+    } else {
+	$stack_size -= ($i-3);
+    }
     $self->{stack_size}  = $stack_size;
     
 

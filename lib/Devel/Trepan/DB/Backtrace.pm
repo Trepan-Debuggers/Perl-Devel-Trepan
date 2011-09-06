@@ -38,7 +38,6 @@ stack frame. Each has the following keys and values:
 # NOTE: this routine needs to be in package DB for us to be able to pick up the
 # subroutine args.
 sub backtrace($;$$$) {
-
     my ($self, $skip, $count, $scan_for_DB_sub) = @_;
     $skip //= 0;  $count //= 1e9;
 

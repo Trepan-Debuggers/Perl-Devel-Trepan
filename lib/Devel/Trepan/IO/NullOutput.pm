@@ -14,7 +14,7 @@ use Exporter;
 package Devel::Trepan::IO::NullOutput;
 use lib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
-use Devel::Trepan::IO::OutputBase;
+use Devel::Trepan::IO;
 
 use vars qw(@EXPORT @ISA);
 @ISA = qw(Devel::Trepan::IO::OutputBase Exporter);

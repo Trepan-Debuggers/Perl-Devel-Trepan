@@ -37,9 +37,9 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     if (scalar @$args == 1) {
-	$proc->{commands}->['show']->run(['show', ${NAME}]);
+	$proc->{commands}->{show}->run(['show', ${NAME}]);
     } elsif (scalar @$args == 2) {
-	$proc->{commands}->['show']->run(['show', ${NAME}, $args->[1]]);
+	$proc->{commands}->{show}->run(['show', ${NAME}, $args->[1]]);
     } else {
 	my ($junk, $al, $command) = @$args;
 	my $old_command = $proc->{aliases}{$al};

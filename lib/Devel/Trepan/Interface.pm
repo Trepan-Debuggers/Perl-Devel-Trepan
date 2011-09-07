@@ -88,7 +88,8 @@ sub errmsg($;$$) {
 sub is_input_eof($) {
     my $self = shift;
     return 1 unless defined $self->{input};
-    return $self->{input}->is_eof;
+    my $input = $self->{input};
+    $input->can("is_eof") ? $input->is_eof : $input->eof;
 }
 
 #     # Return true if interface is interactive.

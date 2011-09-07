@@ -60,6 +60,7 @@ use constant ALIASES  => qw(s step+ step- s+ s-);
 use constant CATEGORY => 'running';
 use constant SHORT_HELP => 'Step program (possibly entering called functions)';
 local $NEED_RUNNING = 1;
+our $MIN_ARGS = 0;
 
 my $Keyword_to_related_cmd = {
     'out'  => 'finish',

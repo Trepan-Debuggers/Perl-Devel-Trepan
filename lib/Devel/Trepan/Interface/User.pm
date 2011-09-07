@@ -3,8 +3,7 @@
 
 # Interface when communicating with the user.
 
-use warnings; no warnings 'once';
-use strict;
+use warnings; no warnings 'once'; use strict; 
 use Exporter;
 
 package Devel::Trepan::Interface::User;

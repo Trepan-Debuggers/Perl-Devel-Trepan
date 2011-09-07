@@ -10,16 +10,14 @@
 # Some ideas originiated as part of Matt Fleming's 2006 Google Summer of
 # Code project.
 
-use strict;
+use strict; use warnings;
 use Exporter;
-use warnings;
-
-use lib '../../..';
+use lib '../..';
 
 package Devel::Trepan::IO::InputBase;
 
 use Devel::Trepan::Util qw(hash_merge);
-use vars qw(@EXPORT @EXPORT_OK);
+use vars qw(@EXPORT);
 
 @EXPORT = qw(DEFAULT_OPTS);
 
@@ -65,13 +63,58 @@ sub is_interactive() {
     0;
 }
 
-if (__FILE__ eq $0) {
+# This is an abstract class that specifies debugger output.
+package Devel::Trepan::IO::OutputBase;
+
+#    attr_accessor :flush_after_write
+#    attr_reader   :output
+
+sub new($$;$)
+{
+    my ($class, $out, $opts) = @_;
+    $opts //= {};
+
+    my $self = {
+	output => $out,
+	flush_after_write => 0,
+	eof               => 0
+    };
+    bless $self, $class;
+    $self
+}
+
+sub close($)
+{
+    my $self = shift;
+    $self->{output}->close if $self->{output};
+    $self->{eof} = 1;
+}
+
+sub is_eof($) { $_->[0]->{eof} || $_->[0]->eof }
+
+## sub flush($) { $_->[0]->{output}->flush }
+## FIXME: this isn't quite right. 
+sub flush($) {$_->[0]->{output}->autoflush = 1 }
+
+# Use this to set where to write to. output can be a 
+# file object or a string. This code raises IOError on error.
+sub write
+{
+    my $self = shift;
+    $self->{output}->print(@_);
+}
+
+# used to write to a debugger that is connected to this
+# `str' written will have a newline added to it
+#
+sub writeline($$)
+{
+    my ($self, $msg) = @_;
+    $self->{output}->write("${msg}\n")
+}
+
+unless (caller) {
     my $in = Devel::Trepan::IO::InputBase->new(*main::STDIN);
-    if (scalar(@ARGV) > 0) {
-	print "Enter some text: ";
-	my $line = $in->readline;
-	print "You entered ${line}";
-    }
 }
 
 1;

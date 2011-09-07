@@ -12,7 +12,7 @@ package Devel::Trepan::Interface;
 use lib '../..';
 use vars qw(@EXPORT @ISA @YN);
 @ISA = qw(Exporter);
-@EXPORT = qw(YES NO YES_OR_NO @YN);
+@EXPORT = qw(YES NO YES_OR_NO @YN readline close new);
 
 use Devel::Trepan::IO::Input;
 use Devel::Trepan::IO::Output;
@@ -30,7 +30,7 @@ use constant YES => qw(y yes oui si yep ja);
 use constant NO => qw(n no non nope nein);
 push(@YN, NO);
 
-sub new($;$$$) {
+sub new {
     my($class, $inp, $out, $opts)  = @_;
     $opts ||= {};
     my $input_opts = {

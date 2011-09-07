@@ -5,8 +5,7 @@
 # input or GNU Readline.
 # 
 
-use warnings;
-use strict;
+use warnings; use strict;
 use Exporter;
 use Term::ReadLine;
 
@@ -14,7 +13,7 @@ package Devel::Trepan::IO::Input;
 
 use lib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
-use Devel::Trepan::IO::InputBase;
+use Devel::Trepan::IO;
 
 use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
 @ISA = qw(Devel::Trepan::IO::InputBase Exporter);

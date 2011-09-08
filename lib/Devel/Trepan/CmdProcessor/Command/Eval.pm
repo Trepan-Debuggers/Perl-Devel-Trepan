@@ -39,13 +39,20 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
+Normally, eval runs in a scalar context and so the result is a
+scalar. However you can force the type of the result by adding the
+apprpropriate sigil @, %, or \$.
+
 Examples:
 
 ${NAME} 1+2  # 3
+${NAME}\$ 3   # Same as above, but the return type is explicit
 ${NAME} \$v
 ${NAME}      # Run current source-code line
 ${NAME}?     # but strips off leading 'if', 'while', ..
-             # from command 
+          # from command 
+${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
+             # an array converted to a scalar.
 
 See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.

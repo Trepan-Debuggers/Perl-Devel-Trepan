@@ -7,9 +7,12 @@
 use lib '../..';
 
 package DB;
+use feature 'switch';
 use warnings; no warnings 'redefine';
 use English;
-use vars qw($usrctxt $running $caller $eval_result $evalarg
+use vars qw($usrctxt $running $caller 
+            $eval_result @eval_result %eval_result
+            $eval_str $eval_opts
             $event $return_type @ret $ret $return_value @return_value);
 
 use Devel::Trepan::DB::Backtrace;
@@ -60,7 +63,16 @@ BEGIN {
     $DB::bitmask = '';
     $DB::hinthash = '';
     $DB::caller = [];
-    $DB::eval_result = undef;
+
+    # When we want to evaluate a string in the context of the running
+    # program we use these:
+    $eval_str = '';             # The string to eval
+    $eval_opts = {};            # Options controlling how we want the
+				# eval to take place
+    $DB::eval_result = undef;   # Place for result if scalar;
+    @DB::eval_result = ();      # place for result if array
+    %DB::eval_result = ();      # place for result if hash.
+    
     $DB::event = undef;  # The reason we have entered the debugger
     
     $DB::VERSION = '1.03rocky';
@@ -74,7 +86,6 @@ BEGIN {
     @saved = ();
     @skippkg = ();
     $usrctxt = '';
-    $evalarg = '';
     
     # ensure we can share our non-threaded variables or no-op
     if ($ENV{PERL5DB_THREADED}) {
@@ -135,7 +146,7 @@ sub DB {
 	}
 	else {
 	    $stop = 0 unless $stop;			# avoid un_init warning
-	    $evalarg = "\$DB::signal |= do { $stop; }"; &eval;
+	    $eval_str = "\$DB::signal |= do { $stop; }"; &eval;
 	    if ($DB::dbline{$DB::lineno} =~ /;9($|\0)/) {
 		$DB::event = 'tbrkpt';
 		# clear any temporary breakpoint
@@ -157,7 +168,7 @@ sub DB {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
 	loadfile($DB::filename, $DB::lineno);
     }
-    $evalarg = $action, &eval if $action;
+    $eval_str = $action, &eval if $action;
     if ($DB::single || $DB::signal) {
 	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
 	$DB::single = 0;
@@ -172,9 +183,22 @@ sub DB {
 		# call client event loop; must not block
 		$c->idle($after_eval);
 		$after_eval = 0;
-		if ($running == 2) { 
+		if ($running == 2 && defined($eval_str)) { 
 		    # client wants something eval-ed
-		    $eval_result = &DB::eval_with_return if $evalarg;
+		    given ($eval_opts->{return_type}) {
+			when ('$') {
+			    $eval_result = &DB::eval_with_return;
+			}
+			when ('@') {
+			    &DB::eval_with_return;
+			}
+			when ('%') {
+			    %eval_result = &DB::eval_with_return;
+			} 
+			default {
+			    $eval_result = &DB::eval_with_return;
+			}
+		    }
 		    $after_eval = 1;
 		    $running = 0;
 		}
@@ -190,14 +214,14 @@ sub DB {
 }
   
 ####
-# this takes its argument via $evalarg to preserve current @_
+# this takes its argument via $eval_str to preserve current @_
 #    
 sub eval {
   ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
    $OUTPUT_FIELD_SEPARATOR, 
    $INPUT_RECORD_SEPARATOR, 
    $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-  eval "$usrctxt $evalarg; &DB::save";
+  eval "$usrctxt $eval_str; &DB::save";
   _warnall($@) if $@;
 }
 
@@ -208,15 +232,43 @@ sub eval_with_return {
    $INPUT_RECORD_SEPARATOR, 
    $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
   use strict;
-  my $eval_result = eval "$usrctxt $evalarg";
+  given ($eval_opts->{return_type}) {
+      when ('$') {
+	  eval "$usrctxt \$DB::eval_result=$eval_str";
+	  $eval_result = eval "$usrctxt $eval_str";
+      }
+      when ('@') {
+	  eval "$usrctxt \@DB::eval_result=$eval_str";
+      }
+      when ('%') {
+	  eval "$usrctxt \%DB::eval_result=$eval_str";
+      } 
+      default {
+	  $eval_result = eval "$usrctxt $eval_str";
+      }
+  }
+
   my $EVAL_ERROR_SAVE = $EVAL_ERROR;
   eval "$usrctxt &DB::save";
   if ($EVAL_ERROR_SAVE) {
       _warnall($EVAL_ERROR_SAVE);
-      $evalarg = '';
+      $eval_str = '';
       return undef;
   } else {
-      return $eval_result;
+      given ($eval_opts->{return_type}) {
+	  when ('$') {
+	      return $eval_result;
+	  }
+	  when ('$') {
+	      return @eval_result;
+	  }
+	  when ('%') {
+	      return %eval_result;
+	  } 
+	  default {
+	      return $eval_result;
+	  }
+      }
   }
 }
 
@@ -618,10 +670,10 @@ sub skippkg {
 }
 
 sub evalcode {
-  my ($client, $val) = @_;
-  if (defined $val) {
+  my ($client, $expr) = @_;
+  if (defined $expr) {
     $running = 2;    # hand over to DB() to evaluate in its context
-    $ineval->{$client} = $val;
+    $ineval->{$client} = $expr;
   }
   return $ineval->{$client};
 }

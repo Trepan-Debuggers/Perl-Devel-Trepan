@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+use feature 'switch';
 package Devel::Trepan::Util;
 use vars qw(@EXPORT @ISA);
-@EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression);
+@EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression
+                 parse_eval_suffix);
 @ISA = qw(Exporter);
 
 # Hash merge like Ruby has.
@@ -70,6 +72,13 @@ sub extract_expression($)
     return $text;
 }
 
+sub parse_eval_suffix($)
+{
+    my $cmd = shift;
+    my $suffix = substr($cmd, -1);
+    return ( index('%@$', $suffix) != -1) ? $suffix : '';
+}
+
 
 unless (caller) {
     my $default_config = {a => 1, b => 'c'};
@@ -113,6 +122,10 @@ unless (caller) {
 	'my ($a,$b) = (5,6);',
 	) {
 	print extract_expression($stmt), "\n";
+    }
+
+    for my $cmd qw(eval eval$ eval% eval@ evaluate% none) {
+	printf "parse_eval_suffix($cmd) => '%s'\n", parse_eval_suffix($cmd);
     }
 }
 

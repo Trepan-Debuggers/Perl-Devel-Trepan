@@ -1,4 +1,6 @@
 use Exporter;
+use feature 'switch';
+use Data::Dumper;
 use lib '../..';
 require Devel::Trepan::Interface::User;
 require Devel::Trepan::CmdProcessor::Virtual;
@@ -9,6 +11,7 @@ require Devel::Trepan::CmdProcessor::Frame;
 require Devel::Trepan::CmdProcessor::Location;
 require Devel::Trepan::CmdProcessor::Load unless
     defined $Devel::Trepan::CmdProcessor::Load_seen;
+require Devel::Trepan::CmdProcessor::Running;
 require Devel::Trepan::CmdProcessor::Validate;
 use strict;
 use warnings;
@@ -50,6 +53,7 @@ sub new($;$$$) {
     $self->{leave_cmd_loop} = undef;
     $self->{settings} = hash_merge($settings, DEFAULT_SETTINGS());
     $self->load_cmds_initialize;
+    $self->running_initialize;
     if ($intf->has_completion) {
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
@@ -170,9 +174,36 @@ sub process_commands($$$)
 {
     my ($self, $frame, $is_eval, $event) = @_;
     if ($is_eval) {
-	$DB::eval_result = '<undef>' unless defined $DB::eval_result;
-	$self->msg("D => $DB::eval_result");
+	my $val_str;
+	given ($DB::eval_opts->{return_type}) {
+	    when ('$') {
+		$DB::eval_result = '<undef>' unless defined $DB::eval_result;
+		$self->msg("\$D => $DB::eval_result");
+	    }
+	    when ('@') {
+		if (defined @DB::eval_result) {
+		    $val_str = Data::Dumper::Dumper(\@DB::eval_result);
+		} else {
+		    $val_str = '<undef>'
+		}
+		$self->msg("\@D =>\n\@\{$val_str}");
+	    } 
+	    when ('%') {
+		if (defined %DB::eval_result) {
+		    $val_str = Data::Dumper::Dumper(%DB::eval_result);
+		} else {
+		    $val_str = '<undef>'
+		}
+		$self->msg("\%D =>\n\@{$val_str}");
+	    } 
+	    default {
+		$self->msg("D => $DB::eval_result");
+	    }
+	}
+	
+	$DB::eval_opts->{return_type} = '';
 	$DB::eval_result = undef;
+	@DB::eval_result = undef;
     } else {
 	$self->frame_setup($frame);
 	$self->{event} = $event;
@@ -303,7 +334,7 @@ sub run_command($$)
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
 	no warnings 'once';
-	$DB::evalarg = $self->{dbgr}->evalcode($current_command);
+	$DB::eval_str = $self->{dbgr}->evalcode($current_command);
 	$self->{leave_cmd_loop} = 1;
 	# $value = '<undef>' unless defined $value;
 	# $self->msg("D => $value");

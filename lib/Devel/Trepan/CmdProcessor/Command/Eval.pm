@@ -51,7 +51,7 @@ See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 
-use constant ALIASES    => qw(eval? ev? ev);
+use constant ALIASES    => qw(eval? ev? ev eval@ eval$ eval% ev@ ev$ ev%);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 local $NEED_STACK       => 1;
@@ -75,9 +75,11 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $text;
+    my $cmd_name = $args->[0];
     if (1 == scalar @$args) {
 	$text  = $self->{proc}->current_source_text();
-	if ('?' eq substr($args->[0], -1)) {
+	if ('?' eq substr($cmd_name, -1)) {
+	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
 	    $text = Devel::Trepan::Util::extract_expression($text);
 	    $self->{proc}->msg("eval: ${text}");
 	}
@@ -85,9 +87,12 @@ sub run($$)
 	$text = $self->{proc}->{cmd_argstr};
     }
     {
+	my $opts->{return_type} = parse_eval_suffix($cmd_name);
 	my $dbgr = $self->{proc}->{dbgr};
 	no warnings 'once';
-	$DB::evalarg = $dbgr->evalcode($text);
+	$DB::eval_str = $dbgr->evalcode($text);
+	$DB::eval_opts = $opts;
+	$DB::result_opts = $opts;
 	$self->{proc}->{leave_cmd_loop} = 1;
     }
 }

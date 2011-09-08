@@ -63,3 +63,17 @@ for my $pair (
     my ($stmt, $expect) = @$pair;
     is(extract_expression($stmt), $expect);
 }
+
+note 'Test parse_eval_suffix';
+for my $pair (
+    ['eval',  ''],
+    ['eval$', '$'],
+    ['eval%', '%'],
+    ['eval@', '@'],
+    ['evaluate%', '%'],
+    ['none', '']) {
+    is(parse_eval_suffix($pair->[0]), parse_eval_suffix($pair->[1]),
+       sprintf("parse_eval_suffix(%s) => '%s' should be '%s'", 
+	       $pair->[0], parse_eval_suffix($pair->[0]), $pair->[1]));
+}
+

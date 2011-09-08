@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings;
 
 # Trepan command input validation routines.  A String type is
 # usually passed in as the argument to validation routines.
@@ -18,8 +20,7 @@ package Devel::Trepan::CmdProcessor;
 # require_relative 'virtual'
 
 package Devel::Trepan::CmdProcessor;
-use warnings;
-use strict;
+
 
 #     attr_reader :file_exists_proc  # Like File.exists? but checks using
 #                                    # cached files
@@ -372,7 +373,7 @@ sub get_onoff($$;$$)
 #   }
 # }
 
-if (__FILE__ eq $0) {
+unless (caller) {
 #   # Demo it.
 #   if !(ARGV.size == 1 && ARGV[0] == 'noload')
 #     ARGV[0..-1]    = ['noload']

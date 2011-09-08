@@ -11,11 +11,10 @@ use feature 'switch';
 use warnings; no warnings 'redefine';
 use English;
 use vars qw($usrctxt $running $caller 
-            $eval_result @eval_result %eval_result
-            $eval_str $eval_opts
-            $event $return_type @ret $ret $return_value @return_value);
+            $event @ret $ret $return_value @return_value);
 
 use Devel::Trepan::DB::Backtrace;
+use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
 
 # "private" globals
@@ -64,15 +63,6 @@ BEGIN {
     $DB::hinthash = '';
     $DB::caller = [];
 
-    # When we want to evaluate a string in the context of the running
-    # program we use these:
-    $eval_str = '';             # The string to eval
-    $eval_opts = {};            # Options controlling how we want the
-				# eval to take place
-    $DB::eval_result = undef;   # Place for result if scalar;
-    @DB::eval_result = ();      # place for result if array
-    %DB::eval_result = ();      # place for result if hash.
-    
     $DB::event = undef;  # The reason we have entered the debugger
     
     $DB::VERSION = '1.03rocky';
@@ -187,16 +177,18 @@ sub DB {
 		    # client wants something eval-ed
 		    given ($eval_opts->{return_type}) {
 			when ('$') {
-			    $eval_result = &DB::eval_with_return;
+			    $eval_result = 
+				&DB::eval_with_return($usrctxt, @saved);
 			}
 			when ('@') {
-			    &DB::eval_with_return;
+			    &DB::eval_with_return($usrctxt, @saved);
 			}
 			when ('%') {
-			    %eval_result = &DB::eval_with_return;
+			    &DB::eval_with_return($usrctxt, @saved);
 			} 
 			default {
-			    $eval_result = &DB::eval_with_return;
+			    $eval_result = 
+				&DB::eval_with_return($usrctxt, @saved);
 			}
 		    }
 		    $after_eval = 1;
@@ -223,53 +215,6 @@ sub eval {
    $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
   eval "$usrctxt $eval_str; &DB::save";
   _warnall($@) if $@;
-}
-
-sub eval_with_return {
-  no strict;
-  ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-   $OUTPUT_FIELD_SEPARATOR, 
-   $INPUT_RECORD_SEPARATOR, 
-   $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-  use strict;
-  given ($eval_opts->{return_type}) {
-      when ('$') {
-	  eval "$usrctxt \$DB::eval_result=$eval_str";
-	  $eval_result = eval "$usrctxt $eval_str";
-      }
-      when ('@') {
-	  eval "$usrctxt \@DB::eval_result=$eval_str";
-      }
-      when ('%') {
-	  eval "$usrctxt \%DB::eval_result=$eval_str";
-      } 
-      default {
-	  $eval_result = eval "$usrctxt $eval_str";
-      }
-  }
-
-  my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-  eval "$usrctxt &DB::save";
-  if ($EVAL_ERROR_SAVE) {
-      _warnall($EVAL_ERROR_SAVE);
-      $eval_str = '';
-      return undef;
-  } else {
-      given ($eval_opts->{return_type}) {
-	  when ('$') {
-	      return $eval_result;
-	  }
-	  when ('$') {
-	      return @eval_result;
-	  }
-	  when ('%') {
-	      return %eval_result;
-	  } 
-	  default {
-	      return $eval_result;
-	  }
-      }
-  }
 }
 
 =head1 RESTART SUPPORT

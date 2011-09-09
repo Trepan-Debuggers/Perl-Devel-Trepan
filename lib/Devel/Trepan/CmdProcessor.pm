@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+use feature ":5.10";  # Includes "state" feature.
 use Exporter;
 use feature 'switch';
 use Data::Dumper;
@@ -23,6 +26,10 @@ use Devel::Trepan::Util qw(hash_merge);
 
 use vars qw(@EXPORT @ISA $eval_result);
 @ISA = qw(Exporter);
+
+BEGIN {
+    @DB::D = ();  # Place to save eval results;
+}
 
 # sub sample_completion() {
 #     my ($text, $line, $start, $end) = @_;
@@ -173,31 +180,42 @@ sub process_command_and_quit($)
 sub process_commands($$$)
 {
     my ($self, $frame, $is_eval, $event) = @_;
+    state $last_i = 0;
     if ($is_eval) {
 	my $val_str;
+	my $prefix="\$DB::D[$last_i] =";
 	given ($DB::eval_opts->{return_type}) {
 	    when ('$') {
-		$DB::eval_result = '<undef>' unless defined $DB::eval_result;
-		$self->msg("\$D => $DB::eval_result");
+		if (defined $DB::eval_result) {
+		    $DB::D[$last_i++] = $DB::eval_result;
+		} else {
+		    $DB::eval_result = '<undef>' ;
+		}
+		$self->msg("$prefix $DB::eval_result");
 	    }
 	    when ('@') {
 		if (defined @DB::eval_result) {
 		    $val_str = Data::Dumper::Dumper(\@DB::eval_result);
+		    @{$DB::D[$last_i++]} = @DB::eval_result;
 		} else {
 		    $val_str = '<undef>'
 		}
-		$self->msg("\@D =>\n\@\{$val_str}");
+		$self->msg("$prefix\n\@\{$val_str}");
 	    } 
 	    when ('%') {
 		if (defined %DB::eval_result) {
+		    $DB::D[$last_i++] = \%DB::eval_result;
 		    $val_str = Data::Dumper::Dumper(%DB::eval_result);
 		} else {
 		    $val_str = '<undef>'
 		}
-		$self->msg("\%D =>\n\@{$val_str}");
+		$self->msg("$prefix\n\%{$val_str}");
 	    } 
 	    default {
-		$self->msg("D => $DB::eval_result");
+		if (defined $DB::eval_result) {
+		    $DB::D[$last_i++] = $DB::eval_result;
+		    $self->msg("$prefix $DB::eval_result");
+		}
 	    }
 	}
 	

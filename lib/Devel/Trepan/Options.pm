@@ -18,7 +18,7 @@ use constant DEFAULT_OPTIONS => {
     # (out-of-process debugging)
     port         => 1954,
     host         => 'localhost', 
-    readline     => 1,  # Try to use GNU Readline?
+    readline     => 1,       # Try to use GNU Readline?
 
 };
 

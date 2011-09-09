@@ -25,6 +25,8 @@ use constant DEFAULT_SETTINGS => {
     directory     =>         # last-resort path-search for files
     '$cdir:$cwd',            # that are not fully qualified.
     
+    evaldisplay  => 'tidy',  # use Data::Dumper (dumper) or
+	                     # Data::Dumper::Perltidy::Dumper (tidy) ?
     hidestack     => -1,     # Fixnum. How many hidden outer
                              # debugger stack frames to hide?
                              # -1 means compute value. 0

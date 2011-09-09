@@ -31,8 +31,8 @@ given we will the following translations occur:
    return expr [;]               => expr
    my (expr) = val ;             => expr = val 
    my var = val ;                => var = val 
-   case expr                     => expr
-   def fn(params)                => (params)
+   given expr                    => expr
+   sub fn(params)                => (params)
    var = expr                    => expr
 
 The above is done via regular expression. No fancy parsing is done, say,
@@ -58,7 +58,7 @@ See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 
-use constant ALIASES    => qw(eval? ev? ev eval@ eval$ eval% ev@ ev$ ev%);
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%?);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 local $NEED_STACK       => 1;

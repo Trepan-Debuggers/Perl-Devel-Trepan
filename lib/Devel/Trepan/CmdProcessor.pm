@@ -3,7 +3,11 @@
 use feature ":5.10";  # Includes "state" feature.
 use Exporter;
 use feature 'switch';
-use Data::Dumper;
+use warnings; use strict;
+
+# Showing eval results can be done using either data dump package.
+require Data::Dumper; require Data::Dumper::Perltidy;
+
 use lib '../..';
 require Devel::Trepan::Interface::User;
 require Devel::Trepan::CmdProcessor::Virtual;
@@ -22,7 +26,7 @@ no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor;
 use English;
-use Devel::Trepan::Util qw(hash_merge);
+use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 
 use vars qw(@EXPORT @ISA $eval_result);
 @ISA = qw(Exporter);
@@ -86,7 +90,7 @@ sub compute_prompt($)
 	    '(' x $self->{debug_nest}, $thread_str, ')' x $self->{debug_nest});
 }
 
-sub finalize($)
+sub DESTROY($)
 {
     my $self = shift;
     # breakpoint_finalize
@@ -184,10 +188,20 @@ sub process_commands($$$)
     if ($is_eval) {
 	my $val_str;
 	my $prefix="\$DB::D[$last_i] =";
+
+	# Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
+	# Having a non-empty @ARGV will cause Tidy to croak.
+	local @ARGV=();
+
+	my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
+	    ? \&Data::Dumper::Perltidy::Dumper
+	    : \&Data::Dumper::Dumper;
 	given ($DB::eval_opts->{return_type}) {
 	    when ('$') {
 		if (defined $DB::eval_result) {
 		    $DB::D[$last_i++] = $DB::eval_result;
+		    $val_str = $fn->($DB::eval_result);
+		    chomp $val_str;
 		} else {
 		    $DB::eval_result = '<undef>' ;
 		}
@@ -195,7 +209,8 @@ sub process_commands($$$)
 	    }
 	    when ('@') {
 		if (defined @DB::eval_result) {
-		    $val_str = Data::Dumper::Dumper(\@DB::eval_result);
+		    $val_str = $fn->(\@DB::eval_result);
+		    chomp $val_str;
 		    @{$DB::D[$last_i++]} = @DB::eval_result;
 		} else {
 		    $val_str = '<undef>'
@@ -205,7 +220,8 @@ sub process_commands($$$)
 	    when ('%') {
 		if (defined %DB::eval_result) {
 		    $DB::D[$last_i++] = \%DB::eval_result;
-		    $val_str = Data::Dumper::Dumper(%DB::eval_result);
+		    $val_str = $fn->(%DB::eval_result);
+		    chomp $val_str;
 		} else {
 		    $val_str = '<undef>'
 		}
@@ -213,9 +229,13 @@ sub process_commands($$$)
 	    } 
 	    default {
 		if (defined $DB::eval_result) {
-		    $DB::D[$last_i++] = $DB::eval_result;
-		    $self->msg("$prefix $DB::eval_result");
+		    $DB::D[$last_i++] = $fn->($DB::eval_result);
+		    $val_str = $fn->($DB::eval_result);
+		    chomp $val_str;
+		} else {
+		    $val_str = '<undef>'
 		}
+		$self->msg("$prefix ${val_str}");
 	    }
 	}
 	
@@ -331,9 +351,9 @@ sub run_command($$)
 
 	my %aliases = %{$self->{aliases}};
 	$run_cmd_name = $aliases{$cmd_name} if exists $aliases{$cmd_name};
-        
-        # $run_cmd_name = uniq_abbrev(keys %commands, $run_cmd_name) if
-	#     !$command[$run_cmd_name] && $self->{settings}{abbrev};
+
+        $run_cmd_name = uniq_abbrev([keys %commands], $run_cmd_name) if
+	    !$commands{$run_cmd_name} && $self->{settings}{abbrev};
           
 	if ($commands{$run_cmd_name}) {
 	    my $cmd = $commands{$run_cmd_name};
@@ -354,8 +374,6 @@ sub run_command($$)
 	no warnings 'once';
 	$DB::eval_str = $self->{dbgr}->evalcode($current_command);
 	$self->{leave_cmd_loop} = 1;
-	# $value = '<undef>' unless defined $value;
-	# $self->msg("D => $value");
 	return;
     }
     $self->undefined_command($cmd_name);
@@ -366,14 +384,11 @@ sub run_command($$)
 sub undefined_command($$) {
     my ($self, $cmd_name) = @_;
     my $msg = sprintf 'Undefined command: "%s". Try "help".', $cmd_name;
-#      begin 
-         $self->errmsg($msg);
-#      rescue
-#        print STDERR $msg;
-#      }
+    eval { $self->errmsg($msg); };
+    print STDERR $msg  if $EVAL_ERROR;
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     my $proc  = Devel::Trepan::CmdProcessor->new;
     print $proc->{class}, "\n";
     print join(', ', @{$proc->{interfaces}}), "\n";

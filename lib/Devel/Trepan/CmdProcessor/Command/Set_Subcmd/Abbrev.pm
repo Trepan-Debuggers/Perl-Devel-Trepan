@@ -11,7 +11,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Set whether to confirm potentially dangerous operations.";
+our $HELP = "Set whether to confirm potentially dangerous operations";
 our $MIN_ABBREV = length('ab');
 
 if (__FILE__ eq $0) {

@@ -33,6 +33,7 @@ my $builder = Module::Build->new(
     release_status      => 'testing',
     requires => {
 	'ExtUtils::PkgConfig'               => '1.03',
+	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,

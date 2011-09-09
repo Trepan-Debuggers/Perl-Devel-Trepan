@@ -37,7 +37,7 @@ sub frame_complete($$;$)
     $direction //= 1;
     my ($low, $high) = $self->frame_low_high($direction);
     my @ary = ($low..$high);
-    Devel::Trepan::Complete::complete_token(@ary, $prefix);
+    Devel::Trepan::Complete::complete_token(\@ary, $prefix);
 }
 
 sub frame_low_high($;$)

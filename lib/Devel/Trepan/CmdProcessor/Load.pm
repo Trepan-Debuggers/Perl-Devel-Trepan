@@ -166,8 +166,12 @@ sub complete($$$)
     my ($self, $text, $line, $start, $end) = @_;
     $self->{leading_str} = $line;
     
-    state ($last_line, $last_start, $last_end, @last_return);
+    state ($last_line, $last_start, $last_end, @last_return, $last_token);
     $last_line //= '';  $last_start //= -1; $last_end //= -1; 
+    $last_token //= '';
+    $last_token = '' unless 
+	$last_start < length($line) &&
+	0 == index(substr($line, $last_start), $last_token);
     # print "\ntext: $text, line: $line, start: $start, end: $end\n";
     # print "\nlast_line: $last_line, last_start: $last_start, last_end: $last_end\n";
     if ($last_start == $start && $last_end == $end && $last_line eq $line) {
@@ -176,15 +180,18 @@ sub complete($$$)
     ($last_line, $last_start, $last_end) = ($line, $start, $end);
 
     my @commands = sort keys %{$self->{commands}};
-    my ($next_blank_pos, $token) = Devel::Trepan::Complete::next_token($line, 0);
-    if (!$token) { # && !$last_token { 
+    my ($next_blank_pos, $token) = 
+	Devel::Trepan::Complete::next_token($line, $start);
+    # require Enbugger; Enbugger->stop;
+    if (!$token && !$last_token) { 
 	@last_return = @commands;
-	my $first_word = $last_return[0];
-	$last_line = $line . $first_word;
-	$last_end += length($first_word);
+	$last_token = $last_return[0];
+	$last_line = $line . $last_token;
+	$last_end += length($last_token);
 	return (@commands);
     }
 
+    $token ||= $last_token;
     my @match_pairs = complete_token_with_next($self->{commands}, $token);
 
     my $match_hash = {};
@@ -196,19 +203,21 @@ sub complete($$$)
 							$token, $match_hash,
 							$self->{commands});
     push @match_pairs, @alias_pairs;
-    if ($next_blank_pos >= length($line)) {
-	@last_return = sort map {$_->[0]} @match_pairs;
-	my $first_word = $last_return[0];
-	if (defined($first_word)) {
-	    $last_line = $line . $first_word;
-	    $last_end += length($first_word);
-	}
-	return @last_return;
-    } else {
-      for my $pair (@alias_pairs) {
-    	  $match_hash->{$pair->[0]} = $pair->[1];
-      }
-    }
+    # if ($next_blank_pos >= length($line)) {
+    # 	@last_return = sort map {$_->[0]} @match_pairs;
+    # 	$last_token = $last_return[0];
+    # 	if (defined($last_token)) {
+    # 	    $last_line = $line . $last_token;
+    # 	    $last_end += length($last_token);
+    # 	}
+    # 	print "\nlast_return: $last_return[0]\n";
+	
+    # 	return @last_return;
+    # } else {
+    #   for my $pair (@alias_pairs) {
+    # 	  $match_hash->{$pair->[0]} = $pair->[1];
+    #   }
+    # }
     if (scalar(@match_pairs) > 1) {
     	# FIXME: figure out what to do here.
     	# Matched multiple items in the middle of the string
@@ -220,8 +229,8 @@ sub complete($$$)
     }
     # match_pairs.size == 1
     my @ret = $self->next_complete($line, $next_blank_pos, 
-				      $match_pairs[0]->[1], 
-				      $token);
+				   $match_pairs[0]->[1], 
+				   $token);
     return @ret;
 }
 
@@ -231,7 +240,7 @@ sub next_complete($$$$$)
     my $token;
     ($next_blank_pos, $token) = 
 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
-    return () unless $token && $last_token;
+    return () if !$token && !$last_token;
     
     if ($cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);

@@ -47,7 +47,16 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $position_str = $args->[1];
+    my $position_str;
+
+    if (scalar @$args == 1) {
+	# Form is: "frame" which means "frame 0"
+	$position_str = '0';
+    } elsif (scalar @$args == 2) {
+	# Form is: "frame position"
+	$position_str = $args->[1];
+    }
+
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
 	'msg_on_error' => 

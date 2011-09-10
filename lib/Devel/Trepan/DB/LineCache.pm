@@ -389,7 +389,9 @@ sub trace_line_numbers($;$)
     my @result = ();
     for (my $i=1; $i <= $#lines; $i++) {
 	next unless defined $lines[$i];
+	no warnings 'numeric';
 	push @result, $i unless $lines[$i] == 0;
+	use warnings 'numeric'
     }
     $file_cache{$filename}->{trace_nums} = \@result;
     return @result;
@@ -398,6 +400,7 @@ sub trace_line_numbers($;$)
 sub unmap_file($)
 { 
     my $file = shift;
+    return undef unless defined($file);
     $file2file_remap{$file} ? $file2file_remap{$file} : $file
   }
 
@@ -445,7 +448,7 @@ sub update_cache($;$)
 
     delete $file_cache{$filename};
 
-    my $path = abs_path($filename);
+    my $path = abs_path($filename) || $filename;
     my $lines_href;
     if ($use_perl_d_file) {
 	my @list = ($filename);

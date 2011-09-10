@@ -40,7 +40,7 @@ sub canonic_file($$;$)
 	return basename($filename);
     } elsif ($resolve) {
     	$filename = DB::LineCache::unmap_file($filename);
-    	return abs_path $filename;
+    	return abs_path($filename) || $filename;
     } else {
 	return $filename;
     }

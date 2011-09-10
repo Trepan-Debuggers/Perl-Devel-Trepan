@@ -7,7 +7,9 @@ use Exporter;
 package Devel::Trepan::Complete;
 use vars qw(@ISA @EXPORT);
 @ISA = qw(Exporter);
-@EXPORT = qw(complete_token complete_token_with_next complete_token_filtered_with_next);
+@EXPORT = qw(complete_token complete_token_with_next 
+             next_token
+             complete_token_filtered_with_next);
 
 # Return an Array of String found from Array of String
 # +complete_ary+ which start out with String +prefix+.
@@ -28,8 +30,9 @@ sub complete_token_with_next($$;$)
     my $cmd_prefix_len = length($cmd_prefix);
     my @result = ();
     while (my ($cmd_name, $cmd_obj) = each %{$complete_hash}) {
-        push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj] if 
-	    0 == index($cmd_name, $cmd_prefix . $prefix);
+	if  (0 == index($cmd_name, $cmd_prefix . $prefix)) {
+	    push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj] 
+	}
     }
     sort {$a->[0] cmp $b->[0]} @result;
 }
@@ -65,23 +68,27 @@ sub complete_token_filtered_with_next($$$$)
     @result;
   }
 
-# Find the next token in str string from start_pos, we return
+# Find the next token in str string from start_pos. We return
 # the token and the next blank position after the token or 
-# str.size if this is the last token. Tokens are delimited by
+# length($str) if this is the last token. Tokens are delimited by
 # white space.
 sub next_token($$)
 {
     my ($str, $start_pos) = @_;
     my $look_at = substr($str, $start_pos);
+    my $strlen = length($look_at);
+    return (1, '') if 0 == $strlen;
     my $next_nonblank_pos = $start_pos;
-    if ($look_at =~ /(\s*)\S/) {
+    my $next_blank_pos;
+    if ($look_at =~ /^(\s*)(\S+)\s*/) {
 	$next_nonblank_pos += length($1);
-    }
-    my $next_blank_pos = $next_nonblank_pos;
-    if (substr($str, $next_nonblank_pos) =~ /(\S*)\s/) {
-	$next_blank_pos += length($1);
+	$next_blank_pos = $next_nonblank_pos+length($2);
+    } elsif ($look_at =~ /^(\s+)$/) {
+	return ($start_pos + length($1), '');
+    } elsif ($look_at =~/^(\S+)\s*/) {
+	$next_blank_pos = $next_nonblank_pos + length($1);
     } else {
-	$next_blank_pos = length($str);
+	die "Something is wrong in next_token";
     }
     my $token_size = $next_blank_pos - $next_nonblank_pos;
     return ($next_blank_pos, substr($str, $next_nonblank_pos, $token_size));
@@ -104,9 +111,9 @@ unless (caller) {
     print   "0123456789012345678\n";
     my $x = '  now is  the  time';
     print "$x\n";
-    for my $pos (0, 2, 5, 8, 9, 13, 19) { 
+    for my $pos (0, 2, 5, 6, 8, 9, 13, 18, 19) { 
 	my @ary = next_token($x, $pos);
-	printf "next_token($pos) = %d, %s\n", $ary[0], $ary[1];
+	printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
     }
   # p complete_token(global_variables.map{|g| g.to_s}, '$s')
 }

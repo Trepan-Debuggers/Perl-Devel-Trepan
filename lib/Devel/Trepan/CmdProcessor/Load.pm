@@ -180,9 +180,9 @@ sub complete($$$)
     ($last_line, $last_start, $last_end) = ($line, $start, $end);
 
     my @commands = sort keys %{$self->{commands}};
-    my ($next_blank_pos, $token) = 
-	Devel::Trepan::Complete::next_token($line, $start);
     # require Enbugger; Enbugger->stop;
+    my ($next_blank_pos, $token) = 
+	Devel::Trepan::Complete::next_token($line, 0);
     if (!$token && !$last_token) { 
 	@last_return = @commands;
 	$last_token = $last_return[0];
@@ -203,21 +203,19 @@ sub complete($$$)
 							$token, $match_hash,
 							$self->{commands});
     push @match_pairs, @alias_pairs;
-    # if ($next_blank_pos >= length($line)) {
-    # 	@last_return = sort map {$_->[0]} @match_pairs;
-    # 	$last_token = $last_return[0];
-    # 	if (defined($last_token)) {
-    # 	    $last_line = $line . $last_token;
-    # 	    $last_end += length($last_token);
-    # 	}
-    # 	print "\nlast_return: $last_return[0]\n";
-	
-    # 	return @last_return;
-    # } else {
-    #   for my $pair (@alias_pairs) {
-    # 	  $match_hash->{$pair->[0]} = $pair->[1];
-    #   }
-    # }
+    if ($next_blank_pos >= length($line)) {
+    	@last_return = sort map {$_->[0]} @match_pairs;
+    	$last_token = $last_return[0];
+    	if (defined($last_token)) {
+    	    $last_line = $line . $last_token;
+    	    $last_end += length($last_token);
+    	}
+    	return @last_return;
+    } else {
+      for my $pair (@alias_pairs) {
+    	  $match_hash->{$pair->[0]} = $pair->[1];
+      }
+    }
     if (scalar(@match_pairs) > 1) {
     	# FIXME: figure out what to do here.
     	# Matched multiple items in the middle of the string
@@ -237,6 +235,7 @@ sub complete($$$)
 sub next_complete($$$$$)
 {
     my($self, $str, $next_blank_pos, $cmd, $last_token) = @_;
+
     my $token;
     ($next_blank_pos, $token) = 
 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
@@ -263,7 +262,7 @@ sub next_complete($$$$$)
     } elsif ($cmd->can('complete')) {
 	my @matches = $cmd->complete($token);
 	return () unless scalar @matches;
-	if (substr($str, $next_blank_pos) =~ /\s*$/ && $token ) {
+	if (substr($str, $next_blank_pos) =~ /\s*$/ ) {
 	    return @matches;
 	} else {
 	    # FIXME: figure out what to do here.
@@ -293,6 +292,8 @@ unless (caller) {
     $cmdproc->run_cmd(['help', '*']);
     # cmdproc.run_cmd(['list', 5]);  # Invalid - nonstring arg
     printf "complete('s') => %s\n", join(',  ', $cmdproc->complete("s", 's', 0, 1));
+    printf "complete('') => %s\n", join(',  ', $cmdproc->complete("", '', 0, 1));
+    printf "complete('help se') => %s\n", join(',  ', $cmdproc->complete("help se", 'help se', 0, 1));
     my @c = $cmdproc->complete("help un", 'help un', 0, 6);
     printf "complete('help un') => %s\n", join(', ', @c);
     # print cmdproc.complete('', '');

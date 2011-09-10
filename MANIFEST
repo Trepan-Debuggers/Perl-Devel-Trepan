@@ -36,6 +36,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
@@ -44,6 +45,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Version.pm
@@ -62,6 +64,7 @@ lib/Devel/Trepan/CmdProcessor/Load.pm
 lib/Devel/Trepan/CmdProcessor/Location.pm
 lib/Devel/Trepan/CmdProcessor/Mock.pm
 lib/Devel/Trepan/CmdProcessor/Msg.pm
+lib/Devel/Trepan/CmdProcessor/Running.pm
 lib/Devel/Trepan/CmdProcessor/Validate.pm
 lib/Devel/Trepan/CmdProcessor/Virtual.pm
 lib/Devel/Trepan/Complete.pm
@@ -69,6 +72,7 @@ lib/Devel/Trepan/Core.pm
 lib/Devel/Trepan/DB.pm
 lib/Devel/Trepan/DB/Backtrace.pm
 lib/Devel/Trepan/DB/Colors.pm
+lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
 lib/Devel/Trepan/DB/Sub.pm
 lib/Devel/Trepan/Interface.pm

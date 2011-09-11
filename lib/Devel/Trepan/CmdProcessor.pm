@@ -109,7 +109,7 @@ sub ok_for_running ($$$$) {
         $self->errmsg($msg);
 	return;
     }
-    my $max_args = exists $cmd->{mzx_args} ? $cmd->{max_args} : 10000;
+    my $max_args = exists $cmd->{max_args} ? $cmd->{max_args} : 10000;
     if ($max_args && $nargs > $max_args) {
 	my $mess = 
 	    sprintf("Command '%s' needs at most %d argument(s); " .

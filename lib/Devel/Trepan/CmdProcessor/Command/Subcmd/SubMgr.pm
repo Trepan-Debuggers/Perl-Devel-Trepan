@@ -37,10 +37,14 @@ $NEED_STACK    = 0;
 sub new($$)
 {
     my ($class, $proc, $name) = @_;
+    my @prefix = split('::', $class);
+    shift @prefix; shift @prefix; shift @prefix; shift @prefix;
     my $self = {
 	subcmds => {},
 	name    => $name,
 	proc    => $proc,
+	prefix  => \@prefix,
+	cmd_str => join(' ', map {lc $_} @prefix)
     };
     # Initialization
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::";
@@ -231,10 +235,10 @@ sub run($$)
     # Run that.
     my $subcmd = $self->lookup($subcmd_prefix);
     if ($subcmd) {
-      if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd}->{name},
-					$args_len-2)) {
-	  $subcmd->run($args);
-      }
+	if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
+					  $args_len-2)) {
+	    $subcmd->run($args);
+	}
     } else {
 	$self->{proc}->undefined_subcmd($self->{name}, $subcmd_prefix);
     }
@@ -246,8 +250,7 @@ unless(caller) {
     my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $mgr = __PACKAGE__->new($cmdproc);
     print $mgr, "\n";
-    print join(', ', %{$mgr->{subcmds}}), "\n";
-    $mgr->lookup('a');
+    print "subcmds: ", join(', ', keys %{$mgr->{subcmds}}), "\n";
     # print cmd.subcmds.lookup('a'), "\n";
 }
 

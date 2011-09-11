@@ -12,9 +12,9 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $HELP = "Set whether to confirm potentially dangerous operations.";
-our $MIN_ABBREV = length('co');
+our $MIN_ABBREV = length('con');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 

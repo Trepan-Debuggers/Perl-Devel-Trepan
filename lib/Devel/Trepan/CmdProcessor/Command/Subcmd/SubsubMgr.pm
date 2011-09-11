@@ -5,10 +5,10 @@
 # require_relative '../../../app/complete'
 
 use warnings;
-no warnings 'redefine';
 
 use lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr;
+no warnings 'redefine';
 
 use File::Basename;
 use File::Spec;
@@ -20,7 +20,7 @@ use strict;
 ## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core. 
 use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS 
             @SUBCMD_ISA @SUBCMD_VARS);
-@ISA = @SUBCMD_ISA;
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 use vars @SUBCMD_VARS;  # Value inherited from parent
 
 ## $MIN_ARGS      = 0;
@@ -34,20 +34,25 @@ use vars @SUBCMD_VARS;  # Value inherited from parent
 # Initialize show subcommands. Note: instance variable name
 # has to be setcmds ('set' + 'cmds') for subcommand completion
 # to work.
-sub new($$)
+sub new($$$)
 {
-    my ($class, $proc, $name) = @_;
+    my ($class, $parent, $name) = @_;
+    my @prefix = split('::', $class);
+    shift @prefix; shift @prefix; shift @prefix; shift @prefix;
     my $self = {
 	subcmds => {},
 	name    => $name,
-	proc    => $proc,
+	proc    => $parent->{proc},
+	prefix  => \@prefix,
+	cmd_str => join(' ', map {lc $_} @prefix)
     };
     # Initialization
-    my $base_prefix="Devel::Trepan::CmdProcessor::Command::";
+    my $parent_name = ucfirst $parent->{name};
+    my $base_prefix="Devel::Trepan::CmdProcessor::Command::$parent_name";
     my $excluded_cmd_vars = {'$HELP' => 1, 
 			     '$NAME'=>2, '$MIN_ARGS' => 2, 
                              '$MAX_ARGS'=>2};
-    for my $field (@SUBCMD_VARS) {
+    for my $field (@Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS) {
 	next if exists $excluded_cmd_vars->{$field} && 
 	    $excluded_cmd_vars->{$field} == 2;
 	my $sigil = substr($field, 0, 1);
@@ -55,15 +60,11 @@ sub new($$)
 	if ($sigil eq '$') {
 	    my $lc_field = lc $new_field;
 	    $self->{$lc_field} = eval "\$${class}::${new_field}";
-	    next if exists $excluded_cmd_vars->{$field} || 
-		exists $self->{$lc_field};
-	    $self->{$lc_field} = "\$${base_prefix}${new_field}";
 	}
     }
     my @ary = eval "${class}::ALIASES()";
     $self->{aliases} = @ary ? [@ary] : [];
     no strict 'refs';
-    *{"${class}::Category"} = eval "sub { ${class}::CATEGORY() }";
     my $short_help = eval "${class}::SHORT_HELP()";
     $self->{short_help} = $short_help if $short_help;
     bless $self, $class;
@@ -86,8 +87,9 @@ sub load_debugger_subsubcommands($$)
     $self->{cmd_basenames} = ();
     my $cmd_dir = dirname(__FILE__);
     my $parent_name = ucfirst $self->{name};
-    my $subcmd_dir = File::Spec->catfile($cmd_dir, '..', 
-					 $parent_name . '_Subcmd');
+    my @path = ($cmd_dir, '..', @{$self->{prefix}},
+		$parent_name . '_Subcmd');
+    my $subcmd_dir = File::Spec->catfile(@path);
     if (-d $subcmd_dir) {
 	my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
 	for my $pm (@files) {
@@ -169,7 +171,7 @@ sub short_help($$$;$)
 	    $self->{proc}->msg($prefix . $entry->{short_help});
 	}
     } else {
-        $self->{proc}->undefined_subcmd("help", $subcmd_name);
+        $self->{proc}->undefined_subcmd($self->{cmd_str}, $subcmd_name);
     }
 }
 
@@ -217,19 +219,20 @@ sub run($$)
 {
     my ($self, $args) = @_;
     $self->{last_args} = $args;
+    # require Enbugger; Enbugger->stop;
     my $args_len = scalar @$args;
-    if ($args_len < 2 || $args_len == 2 && $args->[-1] eq '*') {
-	$self->{proc}->summary_list($self->{name}, $self->{subcmds});
+    if ($args_len < 3 || $args_len == 3 && $args->[-1] eq '*') {
+	$self->{proc}->summary_list($self->{cmd_str}, $self->{subcmds});
 	return 0;
     }
 
-    my $subcmd_prefix = $args->[1];
-    # We were given: cmd subcmd ...
+    my $subcmd_prefix = $args->[2];
+    # We were given: cmd subcmd  subcmd ...
     # Run that.
     my $subcmd = $self->lookup($subcmd_prefix);
     if ($subcmd) {
-      if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd}->{name},
-					$args_len-2)) {
+      if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
+					$args_len-3)) {
 	  $subcmd->run($args);
       }
     } else {
@@ -240,11 +243,13 @@ sub run($$)
 unless(caller) {
     # Demo it.
     require Devel::Trepan::CmdProcessor;
-    my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
-    my $mgr = __PACKAGE__->new($cmdproc);
-    # print cmd.complete('d'), "\n";
-    # print cmd.subcmds.lookup('ar').prefix, "\n";
-    # print cmd.subcmds.lookup('a'), "\n";
+    require Devel::Trepan::CmdProcessor::Command::Set;
+    my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
+    my $set_cmd = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'Set');
+    my $mgr = __PACKAGE__->new($proc, $set_cmd);
+    print $mgr, "\n";
+    print join(', ', %{$mgr->{subcmds}}), "\n";
+    $set_cmd->lookup('a');
 }
 
 1;

@@ -68,7 +68,7 @@ sub new($$$)
     my $short_help = eval "${class}::SHORT_HELP()";
     $self->{short_help} = $short_help if $short_help;
     bless $self, $class;
-    $self->load_debugger_subsubcommands;
+    $self->load_debugger_subsubcommands($parent);
     $self;
 }
 
@@ -81,20 +81,24 @@ sub new($$$)
 # possible debugger commands.
 sub load_debugger_subsubcommands($$)
 {
-    my ($self) = @_;
+    my ($self,$parent) = @_;
     $self->{cmd_names}     = ();
     $self->{subcmd_names}  = ();
     $self->{cmd_basenames} = ();
     my $cmd_dir = dirname(__FILE__);
     my $parent_name = ucfirst $self->{name};
-    my @path = ($cmd_dir, '..', @{$self->{prefix}},
+    my $cmd_name    = $self->{prefix}->[0];
+    my @path = ($cmd_dir, '..', "${cmd_name}_Subcmd",
 		$parent_name . '_Subcmd');
     my $subcmd_dir = File::Spec->catfile(@path);
     if (-d $subcmd_dir) {
 	my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
 	for my $pm (@files) {
 	    my $basename = basename($pm, '.pm');
-	    my $item = sprintf("%s::%s", ucfirst($parent_name), ucfirst($basename));
+	    my $item = sprintf("%s::%s::%s", 
+			       ucfirst($cmd_name),
+			       ucfirst($parent_name), 
+			       ucfirst($basename));
 	    if (-d File::Spec->catfile(dirname($pm), $basename . '_Subcmd')) {
 		push @{$self->{subcmd_names}}, $item;
 	    } else {
@@ -102,10 +106,11 @@ sub load_debugger_subsubcommands($$)
 		push @{$self->{cmd_basenames}}, $basename;
 	    }
 	    if (eval "require '$pm'; 1") {
-		$self->setup_subsubcommand($parent_name, $basename);
+		$self->setup_subsubcommand($parent, $item, $basename);
 	    } else {
-		$self->errmsg("Trouble reading ${pm}:");
-		$self->errmsg($@);
+		my $proc = $parent->{proc};
+		$proc->errmsg("Trouble reading ${pm}:");
+		$proc->errmsg($@);
 	    }
 	}
     }
@@ -113,23 +118,25 @@ sub load_debugger_subsubcommands($$)
 
 sub setup_subsubcommand($$$$) 
 {
-    my ($self, $parent_name, $name) = @_;
+    my ($self, $parent, $cmd_prefix, $name) = @_;
+    my $parent_name = $parent->{name};
     my $cmd_obj;
     my $cmd_name = lc $name;
     my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" . 
-	"${parent_name}::${name}->new(\$self, '$cmd_name'); 1";
+	"${cmd_prefix}->new(\$self, '$cmd_name'); 1";
     if (eval $new_cmd) {
 	# Add to hash of commands, and list of subcmds
 	$self->{subcmds}->{$cmd_name} = $cmd_obj;
 	$self->add($cmd_obj, $cmd_name);
     } else {
-	$self->errmsg("Error instantiating $name");
-	$self->errmsg($@);
+	my $proc = $parent->{proc};
+	$proc->errmsg("Error instantiating $name");
+	$proc->errmsg($@);
     }
 
 }
 
-# Find subcmd in self.subcmds
+# Find subcmd in self->subcmds
 sub lookup($$;$) 
 {
     my ($self, $subcmd_prefix, $use_regexp) = @_;

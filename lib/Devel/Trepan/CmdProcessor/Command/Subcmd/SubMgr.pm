@@ -193,16 +193,55 @@ sub add($$;$)
     push @{$self->{cmdlist}}, $subcmd_name;
 }
 
-# FIXME: remove this completely.
-# help for subcommands
-# Note: format of help is compatible with ddd.
-sub help()
+sub help($$)
 {
-    # Not used. But may be tested for.
+    my ($self, $args) = @_;
+    if (scalar @$args <= 2) {
+	# "help cmd". Give the general help for the command part.
+	return $self->{help};
+    }
+
+    my $subcmd_name = $args->[2];
+    my @help_text = ();
+    my $subcmds_ref = $self->{subcmds};
+    my @subcmds     = $self->list();
+
+    if ('*' eq $subcmd_name) {
+	@help_text = (sprintf("List of subcommands for command '%s':", 
+			     $self->{name}));
+	push @help_text, $self->{cmd}->columnize_commands(\@subcmds);
+	return @help_text;
+    }
+
+    # "help cmd subcmd". Give help specific for that subcommand.
+    my $cmd = $self->lookup($subcmd_name, 0);
+    if (defined $cmd) { 
+	if ($cmd->can("help")) {
+	    return $cmd->help($args);
+	} else {
+	    return $cmd->{help};
+	}
+    } else {
+	my $proc = $self->{proc};
+	my @matches = sort(grep /^#{subcmd_name}/, @subcmds);
+	my $name = $self->{name};
+	if (0 == scalar @matches) { 
+	    $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");
+	    return undef;
+	} elsif (1 == scalar @matches) {
+	    $args->[-1] = $matches[0];
+	    $self->help($args);
+	} else {
+	    @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
+	    my @sort_matches = sort @matches;
+	    push @help_text, $self->{cmd}->columnize_commands(\@sort_matches);
+	    return @help_text;
+	}
+    }
 }
 
 sub list($) {
-    my $self->shift;
+    my $self = shift;
     sort keys %{$self->{subcmds}};
 }
 

@@ -13,6 +13,7 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+our $MAX_ARGS = 10000;
 our $HELP = <<"HELP";
 ${NAME} [command [subcommand]|expression]
 
@@ -139,7 +140,9 @@ sub run($$)
 		$real_name = $proc->{aliases}->{$cmd_name};
 	    }
 	    my $cmd_obj = $proc->{commands}{$real_name};
-	    my $help_text = $cmd_obj->{help};
+	    my $help_text = 
+		$cmd_obj->can("help") ? $cmd_obj->help($args) 
+		: $cmd_obj->{help};
 	    if ($help_text) {
 		$self->msg($help_text) ;
 		if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {

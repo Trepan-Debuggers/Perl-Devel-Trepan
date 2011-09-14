@@ -220,9 +220,9 @@ sub summary_help($$)
 }
 
 
-package Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd;
+package Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd;
 use vars qw(@ISA);
-@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 #   completion %w(on off)
 
 sub run($$) {
@@ -237,28 +237,24 @@ sub save_command($) {
     [$self->subcmd_prefix_string . " ${val}"];
 }
 
-package Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd;
+package Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd;
 use vars qw(@ISA);
-@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 sub run($)
 {
     my ($self, $args) = @_;
     $self->run_show_bool($self->string_in_show());
 }
 
-package Devel::Trepan::CmdProcessor::Command::ShowIntSubcmd;
+package Devel::Trepan::CmdProcessor::Command::ShowIntSubsubcmd;
 use vars qw(@ISA);
-@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
+@ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
 sub run($) {
     my ($self, $args) = @_;
-    my $doc;
-    if ($self->{short_help}) {
-        $doc = $self->{short_help};
-    } else {
-	my $len = length($self->{help}) - 6;
-        $doc = ucfirst substr($self->{help}, 5, $len);
-    }
+    my $doc = $self->{short_help};
+    my $len = length($doc) - 5;
+    $doc = ucfirst substr($doc, 5, $len);
     $self->run_show_int($doc);
 }
 

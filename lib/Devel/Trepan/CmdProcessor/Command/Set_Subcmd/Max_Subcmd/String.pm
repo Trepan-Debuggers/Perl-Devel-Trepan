@@ -3,7 +3,7 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use lib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Set::Max::Width;
+package Devel::Trepan::CmdProcessor::Command::Set::Max::String;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
 use strict;
@@ -13,11 +13,17 @@ use vars qw(@ISA @SUBCMD_VARS);
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
-our $HELP = 'Set max[imum] width NUMBER
-
-Set number of characters the debugger thinks are in a line.';
 our $IN_LIST      = 1;
-our $MIN_ABBREV   = length('wid');
+our $HELP         = 'Set max st[ring] NUMBER
+
+Sometimes the string representation of an object is very long. This
+setting limits how much of the string representation you want to
+see. However if the string has an embedded newline then we will assume
+the output is intended to be formated as is.
+';
+
+our $MIN_ABBREV   = length('str');
+our $SHORT_HELP   = "Set maximum chars in a string before truncation";
 
 sub run($$)
 {
@@ -38,10 +44,10 @@ unless (caller) {
   # dbgr, set_cmd = MockDebugger::setup('set')
   # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
   #                                                     set_cmd)
-  # cmd_ary       = Trepan::SubSubcommand::SetMaxWidth::PREFIX
+  # cmd_ary       = Trepan::SubSubcommand::SetMaxString::PREFIX
   # cmd_name      = cmd_ary.join(' ')
-  # subcmd        = Trepan::SubSubcommand::SetMaxWidth.new(set_cmd.proc,
-  #                                                        max_cmd,
+  # subcmd        = Trepan::SubSubcommand::SetMaxStringa.new(set_cmd.proc,
+    #                                                        max_cmd,
   #                                                        cmd_name)
   # prefix_run = cmd_ary[1..-1]
   # subcmd.run(prefix_run)

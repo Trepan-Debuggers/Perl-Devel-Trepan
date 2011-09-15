@@ -34,6 +34,9 @@ lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
 lib/Devel/Trepan/CmdProcessor/Command/Restart.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm

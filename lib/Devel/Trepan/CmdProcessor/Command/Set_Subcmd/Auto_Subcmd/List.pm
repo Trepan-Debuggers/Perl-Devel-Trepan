@@ -3,34 +3,20 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use lib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Set::Max::List;
+package Devel::Trepan::CmdProcessor::Command::Set::Auto::List;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd);
 # Values inherited from parent
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = "Set max list NUMBER
-
-Set number of source-code lines to list by default.";
-our $MIN_ABBREV   = length('lis');
-our $SHORT_HELP   = 'Set number of lines to list';
-
-sub run($$)
-{
-    my ($self, $args) = @_;
-    my @args = @$args;
-    shift @args; shift @args; shift @args;
-    my $num_str = join(' ', @args);
-    $self->run_set_int($num_str, 
-		       "The '$self->{cmd_str}' command requires a line width", 
-		       0);
-}
-
+our $MIN_ABBREV   = length('li');
+our $SHORT_HELP   = "Set to run a 'list' command each time we enter the debugger";
+ 
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

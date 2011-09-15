@@ -91,9 +91,9 @@ sub run_set_bool($$;$)
 {
     my ($self, $args, $default) = @_;
     $default = 1 if scalar @_ < 3;
-    my $onoff_arg = @$args < 3 ? 'on' : $args->[2];
-    my $key = $self->subcmd_setting_key();
-    $self->{proc}{settings}{$key} = $self->{proc}->get_onoff($onoff_arg);
+    my $onoff_arg = @$args < 4 ? 'on' : $args->[3];
+    my $key = $self->{subcmd_setting_key};
+    $self->{proc}->{settings}{$key} = $self->{proc}->get_onoff($onoff_arg);
     $self->run_show_bool();
 }
 
@@ -122,10 +122,11 @@ sub run_set_int($$$;$$)
 sub run_show_bool($;$)
 {
     my ($self, $what) = @_;
-    my $key = $self->subcmd_setting_key();
-    my $val = $self->show_onoff($self->{proc}{settings}{$key});
-    $what = $self->{name} unless $what;
-    $self->{proc}->msg(sprintf "%s is %s.", $what, $val);
+    my $proc = $self->{proc};
+    my $key = $self->{subcmd_setting_key};
+    my $val = $self->show_onoff($proc->{settings}{$key});
+    $what = $self->{cmd_str} unless $what;
+    $proc->msg(sprintf "%s is %s.", $what, $val);
 }
 
 # Generic subcommand integer value display

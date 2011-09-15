@@ -110,7 +110,7 @@ sub ok_for_running ($$$$) {
 	return;
     }
     my $max_args = exists $cmd->{max_args} ? $cmd->{max_args} : 10000;
-    if ($max_args && $nargs > $max_args) {
+    if (defined($max_args) && $nargs > $max_args) {
 	my $mess = 
 	    sprintf("Command '%s' needs at most %d argument(s); " .
 		    "got %d.", $name, $max_args, $nargs);

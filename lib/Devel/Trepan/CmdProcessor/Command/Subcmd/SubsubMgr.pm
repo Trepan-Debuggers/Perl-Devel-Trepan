@@ -281,10 +281,10 @@ sub run($$)
     # Run that.
     my $subcmd = $self->lookup($subcmd_prefix);
     if ($subcmd) {
-      if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
-					$args_len-3)) {
-	  $subcmd->run($args);
-      }
+	if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
+					  $args_len-3)) {
+	    $subcmd->run($args);
+	}
     } else {
 	$self->{proc}->undefined_subcmd($self->{name}, $subcmd_prefix);
     }

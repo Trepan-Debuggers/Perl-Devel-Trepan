@@ -51,6 +51,9 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm

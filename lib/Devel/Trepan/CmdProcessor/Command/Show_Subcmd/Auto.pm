@@ -5,13 +5,13 @@ use lib '../../../../..';
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
 
-package Devel::Trepan::CmdProcessor::Command::Set::Auto;
+package Devel::Trepan::CmdProcessor::Command::Show::Auto;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('au');
-our $HELP   = 'Set controls for things with some sort of "automatic" default behavior';
+our $HELP   = 'Show controls for things with some sort of "automatic" default behavior';
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 

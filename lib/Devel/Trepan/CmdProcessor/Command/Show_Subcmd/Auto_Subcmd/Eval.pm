@@ -3,24 +3,25 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use lib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval;
+package Devel::Trepan::CmdProcessor::Command::Show::Auto::Eval;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd);
 # Values inherited from parent
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
+our $MAX_ARGS     = 0;
 our $HELP         = <<"HELP";
 
 Evaluate unrecognized debugger commands.
 
 Often inside the debugger, one would like to be able to run arbitrary
 Ruby commands without having to preface Python expressions with \"print\" or
-\"eval\". Setting \"auto eval\" on will cause unrecognized debugger
+\"eval\". Showing \"auto eval\" on will cause unrecognized debugger
 commands to be evaluated as a Perl expression. 
 
 Note that if this is set, on error the message shown on type a bad
@@ -48,24 +49,22 @@ problem. Another possibility is to go into a real Ruby shell via the
 HELP
 
 our $MIN_ABBREV   = length('ev');
-our $MAX_ARGS     = 1;
-our $SHORT_HELP   = "Set evaluation of unrecognized debugger commands";
+our $SHORT_HELP   = "Show evaluation of unrecognized debugger commands";
  
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'
-  # name = File.basename(__FILE__, '.rb')
 
-  # dbgr, set_cmd = MockDebugger::setup('set')
-  # $max_cmd       = __PACKAGE__->new(dbgr.core.processor, $set_cmd)
-  # $cmd_ary       = Trepan::SubSubcommand::SetMaxList::PREFIX
-  # $cmd_name      = cmd_ary.join(' ')
-  # $subcmd        = __PACKAGE__->new($set_cmd->{proc}, $max_cmd, $cmd_name);
-  # $prefix_run = cmd_ary[1..-1]
-  # $subcmd->run(prefix_run);
-  # $subcmd-.run(prefix_run, qw(0));
-  # $subcmd->run(prefix_run, qw(20));
-  # $subcmd->summary_help(name);
+  # dbgr, set_cmd = MockDebugger::setup('set');
+  # $max_cmd       = __PACKAGE__->new(dbgr.core.processor, $set_cmd);
+  # $cmd_ary       = __PACKAGE__->{prefix};
+  # $cmd_name      = cmd_ary.join(' ');
+  # $subcmd        = __PACAKGE__->new(set_cmd.proc, max_cmd, cmd_name);
+  # prefix_run = cmd_ary[1..-1]
+  # $subcmd->run(prefix_run)
+  # $subcmd->run(($prefix_run, qw(0)));
+  # $subcmd->run(($prefix_run, qw(20)));
+  # $subcmd->summary_help($name);
   # print
   # print '-' x 20;
   # print $subcmd->save_command

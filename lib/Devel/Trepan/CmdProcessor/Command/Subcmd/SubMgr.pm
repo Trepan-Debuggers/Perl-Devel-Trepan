@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
-# require_relative '../../help'
 # require_relative '../../../app/complete'
 
-use warnings;
-no warnings 'redefine';
+use warnings; no warnings 'redefine';
 
 use lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
@@ -209,8 +207,8 @@ sub help($$)
     if ('*' eq $subcmd_name) {
 	@help_text = (sprintf("List of subcommands for command '%s':", 
 			     $self->{name}));
-	push @help_text, $self->{cmd}->columnize_commands(\@subcmds);
-	return @help_text;
+	push @help_text, $self->columnize_commands(\@subcmds);
+	return join("\n", @help_text);
     }
 
     # "help cmd subcmd". Give help specific for that subcommand.

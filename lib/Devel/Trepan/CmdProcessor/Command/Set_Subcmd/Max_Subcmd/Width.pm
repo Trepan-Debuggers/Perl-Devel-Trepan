@@ -13,7 +13,7 @@ use vars qw(@ISA @SUBCMD_VARS);
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
-our $HELP = 'Set max[imum] width NUMBER
+our $HELP = 'Set max width NUMBER
 
 Set number of characters the debugger thinks are in a line.';
 our $IN_LIST      = 1;

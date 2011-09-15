@@ -1,5 +1,6 @@
 bin/trepanpl
 Build.PL
+example/eval.pl
 example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
@@ -38,6 +39,11 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/List.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
@@ -47,12 +53,18 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/List.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Stack.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/String.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Version.pm
 lib/Devel/Trepan/CmdProcessor/Command/Source.pm
 lib/Devel/Trepan/CmdProcessor/Command/Step.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm
+lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm
 lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm
 lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm

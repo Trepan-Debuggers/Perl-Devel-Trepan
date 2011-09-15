@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
-# require_relative '../../help'
 # require_relative '../../../app/complete'
 
-use warnings;
+use warnings; no warnings 'redefine';
 
 use lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr;
@@ -23,9 +22,9 @@ use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 use vars @SUBCMD_VARS;  # Value inherited from parent
 
-## $MIN_ARGS      = 0;
-## $MAX_ARGS      = undef;
-## $NEED_STACK    = 0;
+# $MIN_ARGS      = 0;
+# $MAX_ARGS      = undef;
+# $NEED_STACK    = 0;
 
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command
@@ -43,6 +42,7 @@ sub new($$$)
 	subcmds => {},
 	name    => $name,
 	proc    => $parent->{proc},
+	parent  => $parent, 
 	prefix  => \@prefix,
 	cmd_str => join(' ', map {lc $_} @prefix)
     };
@@ -201,13 +201,56 @@ sub add($$;$)
 # FIXME: remove this completely.
 # help for subcommands
 # Note: format of help is compatible with ddd.
-sub help()
+sub help($$)
 {
-    # Not used. But may be tested for.
+    my ($self, $args) = @_;
+    if (scalar @$args <= 3) {
+	# "help cmd subcmd". Give the general help for the command part.
+	return $self->{help};
+    }
+
+    my $subcmd_name = $args->[3];
+    my @help_text = ();
+    my $subcmds_ref = $self->{subcmds};
+    my @subcmds     = $self->list();
+
+    if ('*' eq $subcmd_name) {
+	@help_text = (sprintf("List of subcommands for command '%s':", 
+			     $self->{cmd_str}));
+
+	push @help_text, $self->{parent}->columnize_commands(\@subcmds);
+	return join("\n", @help_text);
+    }
+
+    # "help cmd subcmd". Give help specific for that subcommand.
+    my $cmd = $self->lookup($subcmd_name, 0);
+    if (defined $cmd) { 
+	if ($cmd->can("help")) {
+	    return $cmd->help($args);
+	} else {
+	    return $cmd->{help};
+	}
+    } else {
+	my $proc = $self->{proc};
+	my @matches = sort(grep /^#{subcmd_name}/, @subcmds);
+	my $name = $self->{cmd_str};
+	if (0 == scalar @matches) { 
+	    $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");
+	    return undef;
+	} elsif (1 == scalar @matches) {
+	    $args->[-1] = $matches[0];
+	    $self->help($args);
+	} else {
+	    @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
+	    my @sort_matches = sort @matches;
+	    push @help_text, $self->{parent}->{cmd}->columnize_commands(\@sort_matches);
+	    return @help_text;
+	}
+    }
 }
 
 sub list($) {
-    my $self->shift;
+    my $self = shift;
     sort keys %{$self->{subcmds}};
 }
 

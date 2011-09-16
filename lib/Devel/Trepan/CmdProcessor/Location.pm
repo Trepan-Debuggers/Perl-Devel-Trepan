@@ -2,7 +2,7 @@
 use strict;
 use Exporter;
 use warnings;
-no warnings 'redefine';
+no warnings 'redefine'; no warnings 'once';
 use lib '../../..';
 # require_relative '../app/default'
 
@@ -10,12 +10,9 @@ package Devel::Trepan::CmdProcessor;
 use English;
 use Cwd 'abs_path';
 
-#require 'pathname'  # For cleanpath
 use File::Basename;
+use File::Spec;
 use Devel::Trepan::DB::LineCache;
-#require_relative 'msg'
-#require_relative 'frame'
-#require_relative '../app/file'
 
 my $EVENT2ICON = {
     'brkpt'          => 'xx',
@@ -54,25 +51,27 @@ sub current_source_text(;$)
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
-    $text = DB::LineCache::getline($filename, $line_number, $opts); 
+    $text = DB::LineCache::getline($filename, $line_number, 
+						  $opts); 
     return $text;
 }
   
-# sub resolve_file_with_dir($$)
-# {
-#     my ($self, $path_suffix) = @_;
-#     for my $dir (split(/:/, $self->settings{directory})) {
-#         if ('$cwd' eq $dir) {
-# 	    $dir = Dir.pwd;
-#         } elsif ('$cdir' eq $dir) {
-# 	    Rubinius::OS_STARTUP_DIR
-# 	}
-# 	next unless $dir && !-d ($dir);
-# 	my $try_file = File.join(dir, path_suffix);
-# 	return $try_file if -f $try_file;
-#     }
-#     return undef;
-# }
+sub resolve_file_with_dir($$)
+{
+    my ($self, $path_suffix) = @_;
+    my @dirs = @$self->{settings}{directory};
+    for my $dir (split(/:/, @dirs)) {
+        if ('$cwd' eq $dir) {
+	    $dir = `pwd`;
+        } elsif ('$cdir' eq $dir) {
+	    $dir = $DB::OS_STARTUP_DIR;
+	}
+	next unless $dir && !-d ($dir);
+	my $try_file = File::Spec->catfile($dir, $path_suffix);
+	return $try_file if -f $try_file;
+    }
+    return undef;
+}
   
 # # Get line +line_number+ from file named +filename+. Return "\n"
 # # there was a problem. Leading blanks are stripped off.
@@ -97,31 +96,28 @@ sub current_source_text(;$)
 #     return nil unless line
 #     return line.lstrip.chomp
 #   }
-  
-#   sub loc_and_text(loc, opts=
-#                    {:reload_on_change => @settings[:reload],
-#                      :output => @settings[:highlight]
-#                    })
-    
-#     vm_location = @frame.vm_location
-#     filename = vm_location.method.active_path
-#     line_no  = @frame.line
-#     static   = vm_location.static_scope
-#     opts[:compiled_method] = top_scope(@frame.method)
-    
-#     if @frame.eval?
-#       file = LineCache::map_script(static.script)
-#       text = LineCache::getline(static.script, line_no, opts)
-#       loc += " remapped ${canonic_file(file)}:${line_no}"
-#     else
-#       text = line_at(filename, line_no, opts)
-#       map_file, map_line = LineCache::map_file_line(filename, line_no)
-#       if [filename, line_no] != [map_file, map_line]
-#         loc += " remapped ${canonic_file(map_file)}:${map_line}"
-#       }
-#     }
-#     [loc, line_no, text]
-#   }
+
+sub text_at($;$) 
+{
+    my ($self, $opts) = @_;
+    $opts //= {
+	reload_on_change => $self->{settings}{reload},
+	output           => $self->{settings}{highlight},
+    };
+
+    my $line_no = $self->line();
+    my $text;
+    my $filename = $self->filename();
+    if (DB::LineCache::filename_is_eval($filename)) {
+	$filename = DB::LineCache::map_script($filename);
+	$text = DB::LineCache::getline($filename, $line_no, $opts);
+    } else {
+	$text = line_at($filename, $line_no, $opts);
+	my ($map_file, $map_line) = 
+	    DB::LineCache->unmap_file_line($filename, $line_no);
+    }
+    $text;
+  }
   
 sub format_location($;$$$)
 {
@@ -182,7 +178,7 @@ unless (caller()) {
     print $proc->current_source_text({output=>'term'}), "\n";
     # See if cached line is the same
     print $proc->current_source_text({output=>'term'}), "\n";
-    # Try unhighligted line.
+    # Try unhighlighted line.
     print $proc->current_source_text, "\n";
 }
 

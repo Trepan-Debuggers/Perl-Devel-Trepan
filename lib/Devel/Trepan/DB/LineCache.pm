@@ -421,19 +421,29 @@ sub unmap_file_line($$)
     return ($file, $line);
 }
 
-#   # UPDATE a cache entry.  If something is wrong, return undef. Return
-#   # 1 if the cache was updated and false if not. 
-#   sub update_script_cache(script, opts)
-#     # return false unless script_is_eval?(script)
-#     # string = opts[:string] || script.eval_source
-#     lines = {:plain => string.split(/\n/)}
-#     lines[opts[:output]] = highlight_string(string, opts[:output]) if
-#       opts[:output]
-#     @@script_cache[script] = 
-#       LineCacheInfo.new(undef, undef, lines, undef, opts[:sha1], 
-#                         opts[:compiled_method])
-#     return 1
-#   }
+sub filename_is_eval($)
+{
+    my $filename = shift;
+    return ($filename =~ /^\(eval \d+\)/);
+}
+
+# UPDATE a cache entry.  If something is wrong, return undef. Return
+# 1 if the cache was updated and false if not. 
+sub update_script_cache($$)
+{
+    my ($script, $opts) = @_;
+    return 0 unless filename_is_eval($script);
+    my $string = $opts->{string} || @{"_<$script"};
+    my $lines_href = {plain => split(/\n/, $string)};
+    $lines_href->{$opts->{output}} = highlight_string($string) if 
+	$opts->{output};
+
+    my $entry = {
+	lines_href => $lines_href,
+    };
+    $script_cache{$script} = $entry;
+    return 1;
+  }
 
 # Update a cache entry.  If something's wrong, return undef. Return 1
 # if the cache was updated and false if not.  If use_perl_d_file is 1,
@@ -565,10 +575,10 @@ unless (caller) {
     print("trace nums again: ", join(', ',
 			       DB::LineCache::trace_line_numbers(__FILE__)),
 	  "\n");
-    sub yes_no($) 
-	       { 
-		   my $var = shift;  return $var ? "" : "not "; 
-	       };
+    eval "printf \"filename_is_eval: %s, %s\n\", __FILE__, 
+          filename_is_eval(__FILE__);";
+    eval "update_script_cache(__FILE__, {}); 
+          print '+++', is_cached_script(__FILE__), \"\\n\"";
     # print("#{__FILE__} is %scached." % 
     #      yes_no(LineCache::cached?(__FILE__)))
     # print "Full path: #{DB::LineCache::path(__FILE__)}"

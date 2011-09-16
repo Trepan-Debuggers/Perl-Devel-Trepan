@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
+use strict; use warnings;
 use lib '../lib';
 
 use Test::More 'no_plan';
@@ -41,4 +40,7 @@ is($another_line, $expected_line, "Test getline via remap_file");
 
 my $sha1 = DB::LineCache::sha1(__FILE__);
 ok($sha1, "Got some sort of SHA1");
-
+eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, 'should pick up eval filename')";
+is($EVAL_ERROR, '', 'eval error on __FILE__ test');
+is(DB::LineCache::filename_is_eval(__FILE__), '', 
+   'should not be an eval filename');

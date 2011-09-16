@@ -11,7 +11,8 @@ use feature 'switch';
 use warnings; no warnings 'redefine';
 use English;
 use vars qw($usrctxt $running $caller 
-            $event @ret $ret $return_value @return_value);
+            $event @ret $ret $return_value @return_value
+            $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Eval;
@@ -34,6 +35,7 @@ BEGIN {
     @ini_INC = @INC;       # Save the contents of @INC before they are modified elsewhere.
     @ini_ARGV = @ARGV;
     $ini_dollar0 = $0;
+    $OS_STARTUP_DIR = `pwd`;
 
     # these are hardcoded in perl source (some are magical)
     

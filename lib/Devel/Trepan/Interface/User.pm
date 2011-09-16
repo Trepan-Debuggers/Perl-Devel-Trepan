@@ -89,7 +89,7 @@ sub confirm($$$) {
 	return $default if $self->{input}->is_eof;
 	chomp($response);
 	return $default if $response eq '';
-	$response = lc(unpack("A*", $response));
+	($response = lc(unpack("A*", $response))) =~ s/^\s+//;
 	# We don't catch "Yes, I'm sure" or "NO!", but I leave that 
 	# as an exercise for the reader.
 	last if grep(/^${response}$/, @YN);

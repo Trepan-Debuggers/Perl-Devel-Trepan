@@ -28,11 +28,11 @@ is($c[0], 'unalias');
 is(scalar @c, 1);
 is($c[0], 'basename');
 
-# my @c = complete_it("set basename");
-# is(scalar @c, 2);
-# @c = sort @c;
-# is($c[0], 'off');
-# is($c[1], 'on');
+@c = complete_it("set basename ");
+is(scalar @c, 2);
+@c = sort @c;
+is($c[0], 'off');
+is($c[1], 'on');
 
 @c = complete_it("set basename of");
 is(scalar @c, 1);
@@ -44,6 +44,8 @@ is(scalar @c, 0);
 @c = complete_it("set basename on ");
 is(scalar @c, 0);
 
+@c = complete_it("set ");
+cmp_ok(scalar @c, '>', 2, 'set commands populated');
 
 # FIXME: After we get string array I/O working and hooked
 # up ...

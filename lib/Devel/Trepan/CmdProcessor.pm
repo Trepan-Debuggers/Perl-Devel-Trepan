@@ -63,6 +63,7 @@ sub new($;$$$) {
     $self->{last_command} = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings} = hash_merge($settings, DEFAULT_SETTINGS());
+    $self->{step_count} = 0;
     $self->load_cmds_initialize;
     $self->running_initialize;
     if ($intf->has_completion) {
@@ -271,7 +272,7 @@ sub process_commands($$$)
 	#   @last_pos = (@frame_file, @frame_line,
 	# 	  	    @stack_size, @current_thread, @event);
 	# } else {
-	#    return if stepping_skip? || @stack_size <= @hide_level;
+	return if $self->is_stepping_skip(); # || @stack_size <= @hide_level;
 	#}
 	
 	$self->{prompt} = $self->compute_prompt;

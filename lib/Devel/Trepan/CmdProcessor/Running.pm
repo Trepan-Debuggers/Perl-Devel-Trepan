@@ -110,71 +110,71 @@ sub running_initialize($)
     $self->{stop_condition}  = undef;
     $self->{stop_events}     = undef;
     $self->{to_method}       = undef;
+    # FIXME: Use a struct;
+    $self->{last_pos}        = [undef, undef, undef, undef];
 }
 
-# sub is_stepping_skip()
-# {
+sub is_stepping_skip()
+{
 
-#     return 1 if @core.step_count < 0;
+    my $self = shift;
+    return 1 if $self->{step_count} < 0;
 
-#     if (@settings[:'debugskip']) {
-#         msg "diff: #{@different_pos}, event : #{@event}, #{@stop_events.inspect}" ;
-# 	msg "step_count  : #{@core.step_count}";
-# 	msg "next_level  : #{@next_level},    ssize : #{@stack_size}" ;
-#         msg "next_thread : #{@next_thread},   thread: #{Thread.current}";
-#     }
+    if ($self->{settings}{'debugskip'}) {
+        $self->msg("diff: $self->{different_pos}, event : $self->{event}");
+	$self->msg("step_count  : $self->{step_count}");
+    }
 
-#     return 1 if 
-#         !frame || (@next_level < @frame.stack_size &&
-#                    Thread.current == @next_thread);
-	
-#     new_pos = [@frame.source_container, frame_line,
-# 	       @stack_size, @current_thread, @event, @frame.pc_offset];
+    my $frame = $self->{frame};
+    # FIXME: use a struct;
+    my $new_pos = [$frame->{pkg}, $frame->{file}, $frame->{line}];
 
-#     skip_val = @stop_events && !@stop_events.member?(@event);
+    my $skip_val = 0;
 
-#     # If the last stop was a breakpoint, don't stop again if we are at
-#     # the same location with a line event.
-#     skip_val ||= (@last_pos[4] eq 'brkpt' && 
-# 		  @event eq 'line' &&
-# 		  @frame.pc_offset eq @last_pos[5]);
+    # # If the last stop was a breakpoint, don't stop again if we are at
+    # # the same location with a line event.
+
+    # $skip_val ||= ($self->{last_pos}->[4] eq 'brkpt' && 
+    # 		   $self->{event} eq 'line');
     
-#     if (@settings[:'debugskip']) {
-#         puts "skip: #{skip_val.inspect}, last: #{@last_pos}, new: #{new_pos}" 
-#     }
+    if ($self->{settings}{'debugskip'}) {
+        $self->msg("skip: $skip_val, last: $self->{last_pos}, new: $self->{new_pos}"); 
+    }
 
-#     @last_pos[2] = new_pos[2] if 'nostack' eq @different_pos;
-#     unless (skip_val)
-#         condition_met = 
-# 	if (@stop_condition) {
-# 	    puts 'stop_cond' if @settings[:'debugskip'];
-# 	    debug_eval_no_errmsg(@stop_condition);
-#     } elsif (@to_method) {
-# 	puts "method #{@frame.method} #{@to_method}" if 
-# 	    @setting->{'debugskip'};
-# 	@frame.method == @to_method;
-#     } else {
-# 	puts 'uncond' if @settings[:'debugskip'];
-# 	1;
-#     };
+    # @last_pos[2] = new_pos[2] if 'nostack' eq @different_pos;
+
+    my $condition_met;
+    # if (! $skip_val) {
+    # 	if (@stop_condition) {
+    # 	    puts 'stop_cond' if @settings[:'debugskip'];
+    # 	    debug_eval_no_errmsg(@stop_condition);
+    # } elsif (@to_method) {
+    # 	puts "method #{@frame.method} #{@to_method}" if 
+    # 	    @setting->{'debugskip'};
+    # 	@frame.method == @to_method;
+    # } else {
+    # 	puts 'uncond' if @settings[:'debugskip'];
+    # 	1;
+    # };
           
-#     msg("condition_met: #{condition_met}, last: #{@last_pos}, " +
-# 	"new: #{new_pos}, different #{@different_pos.inspect}") if 
-# 	@settings[:'debugskip'];
-#     skip_val = ((@last_pos[0..3] == new_pos[0..3] && @different_pos) ||
-# 		!condition_met);
+    # $self->msg("condition_met: #{condition_met}, last: #{@last_pos}, " .
+    # 	       "new: #{new_pos}, different #{@different_pos.inspect}") if 
+    # 	       $self->{settings}{'debugskip'};
 
-#     @last_pos = new_pos if !@stop_events || @stop_events.member?(@event);
+    # $skip_val = (($last_pos->[0] eq $new_pos->[0] 
+    # 		  && $settings->{different_pos}) ||
+    # 		!$condition_met);
 
-#     unless (skip_val) {
-#         # Set up the default values for the
-#         # next time we consider skipping.
-#         @different_pos = @settings[:different]
-#         @stop_events   = undef
-#       }
+    # @last_pos = new_pos if !@stop_events || @stop_events.member?(@event);
 
-#     return skip_val;
-# }
+    unless ($skip_val) {
+        # Set up the default values for the
+        # next time we consider skipping.
+        $self->{settings}{different_pos} = $self->{settings}{different};
+    }
+
+    return $skip_val;
+}
 
 1;
 

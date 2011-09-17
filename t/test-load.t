@@ -22,8 +22,11 @@ is($c[0], 'unalias');
 is(scalar @c, 1);
 is($c[0], 'basename');
 
-# @c = $cmdproc->complete("set basename ", 'set basename ', 0, 14);
-# printf "complete('set basename ') => %s\n", join(', ', @c);
+@c = $cmdproc->complete("set basename ", 'set basename ', 0, 14);
+is(scalar @c, 2);
+@c = sort @c;
+is($c[0], 'off');
+is($c[1], 'on');
 
 # FIXME: After we get string array I/O working and hooked
 # up ...

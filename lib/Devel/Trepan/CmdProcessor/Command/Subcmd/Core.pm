@@ -222,7 +222,13 @@ sub summary_help($$)
 package Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd;
 use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
-#   completion %w(on off)
+
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    return Devel::Trepan::Complete::complete_token(['on', 'off'], $prefix);
+}
+
 
 sub new($$$) {
     my ($class, $cmd, $name) = @_;

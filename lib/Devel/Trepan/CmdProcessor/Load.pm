@@ -243,7 +243,7 @@ sub next_complete($$$$$)
     if ($cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);
 	return () unless scalar @match_pairs;
-	if (substr($str, $next_blank_pos) && 
+	if ($next_blank_pos >= length($str) && 
 		   ($token || $token eq $last_token)) {
 	    return map {$_->[0]} @match_pairs;
 	} else {
@@ -251,8 +251,8 @@ sub next_complete($$$$$)
 		if ($next_blank_pos >= length($str) 
 		    && ' ' ne substr($str, length($str)-1)) {
 		    return map {$_->[0]} @match_pairs;
-		} elsif ($next_blank_pos == length($str) 
-		    && ' ' eq substr($str, length($str)-1)) {
+		} elsif (' ' eq substr($str, length($str)-1)) {
+		    $next_blank_pos = length($str)-1;
 		    return $self->next_complete($str, $next_blank_pos, 
 						$match_pairs[0]->[1], 
 						$token);

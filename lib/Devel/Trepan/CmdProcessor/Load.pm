@@ -180,7 +180,6 @@ sub complete($$$)
     ($last_line, $last_start, $last_end) = ($line, $start, $end);
 
     my @commands = sort keys %{$self->{commands}};
-    # require Enbugger; Enbugger->stop;
     my ($next_blank_pos, $token) = 
 	Devel::Trepan::Complete::next_token($line, 0);
     if (!$token && !$last_token) { 
@@ -249,9 +248,15 @@ sub next_complete($$$$$)
 	    return map {$_->[0]} @match_pairs;
 	} else {
 	    if (scalar @match_pairs == 1) {
-		return $self->next_complete($str, $next_blank_pos, 
-					    $match_pairs[0]->[1], 
-					    $token);
+		if ($next_blank_pos >= length($str) 
+		    && ' ' ne substr($str, length($str)-1)) {
+		    return map {$_->[0]} @match_pairs;
+		} elsif ($next_blank_pos == length($str) 
+		    && ' ' eq substr($str, length($str)-1)) {
+		    return $self->next_complete($str, $next_blank_pos, 
+						$match_pairs[0]->[1], 
+						$token);
+		}
 	    } else {
 		# FIXME: figure out what to do here.
 		# Matched multiple items in the middle of the string
@@ -290,12 +295,16 @@ unless (caller) {
     $cmdproc->run_cmd('foo');  # Invalid - not an Array
     $cmdproc->run_cmd([]);     # Invalid - empty Array
     $cmdproc->run_cmd(['help', '*']);
-    # cmdproc.run_cmd(['list', 5]);  # Invalid - nonstring arg
+    # $cmdproc->run_cmd(['list', 5]);  # Invalid - nonstring arg
     printf "complete('s') => %s\n", join(',  ', $cmdproc->complete("s", 's', 0, 1));
     printf "complete('') => %s\n", join(',  ', $cmdproc->complete("", '', 0, 1));
     printf "complete('help se') => %s\n", join(',  ', $cmdproc->complete("help se", 'help se', 0, 1));
     my @c = $cmdproc->complete("help un", 'help un', 0, 6);
     printf "complete('help un') => %s\n", join(', ', @c);
+    @c = $cmdproc->complete("set base", 'set base', 0, 8);
+    printf "complete('set base') => %s\n", join(', ', @c);
+    @c = $cmdproc->complete("set basename ", 'set basename ', 0, 14);
+    printf "complete('set basename ') => %s\n", join(', ', @c);
     # print cmdproc.complete('', '');
 }
 

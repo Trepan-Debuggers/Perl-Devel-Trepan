@@ -3,7 +3,6 @@
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use lib '../../../..';
-# use '../../app/complete'
 
 package Devel::Trepan::CmdProcessor::Command::Restart;
 use English;

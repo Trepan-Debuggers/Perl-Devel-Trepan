@@ -225,10 +225,10 @@ sub complete($$$)
       # }
     }
     # match_pairs.size == 1
-    my @ret = $self->next_complete($line, $next_blank_pos, 
-				   $match_pairs[0]->[1], 
-				   $token);
-    return @ret;
+    @last_return = $self->next_complete($line, $next_blank_pos, 
+					$match_pairs[0]->[1], 
+					$token);
+    return (@last_return);
 }
 
 sub next_complete($$$$$)
@@ -240,22 +240,22 @@ sub next_complete($$$$$)
 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
     return () if !$token && !$last_token;
     
-    if ($cmd->can("complete_token_with_next")) {
+    if (defined $cmd && $cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);
 	return () unless scalar @match_pairs;
-	if ($next_blank_pos >= length($str) && 
-		   ($token || $token eq $last_token)) {
+	if ($next_blank_pos >= length($str)) {
 	    return map {$_->[0]} @match_pairs;
 	} else {
 	    if (scalar @match_pairs == 1) {
 		if ($next_blank_pos >= length($str) 
 		    && ' ' ne substr($str, length($str)-1)) {
 		    return map {$_->[0]} @match_pairs;
-		} elsif (' ' eq substr($str, length($str)-1)) {
-		    $next_blank_pos = length($str)-1;
+		} elsif ($match_pairs[0]->[0] eq $token) {
 		    return $self->next_complete($str, $next_blank_pos, 
 						$match_pairs[0]->[1], 
 						$token);
+		} else {
+		    return ();
 		}
 	    } else {
 		# FIXME: figure out what to do here.
@@ -268,7 +268,12 @@ sub next_complete($$$$$)
 	my @matches = $cmd->complete($token);
 	return () unless scalar @matches;
 	if (substr($str, $next_blank_pos) =~ /\s*$/ ) {
-	    return @matches;
+	    if (1 == scalar(@matches) && $matches[0] eq $token) {
+		# Nothing more to complete.
+		return ();
+	    } else {
+		return @matches;
+	    }
 	} else {
 	    # FIXME: figure out what to do here.
 	    # Matched multiple items in the middle of the string
@@ -299,13 +304,20 @@ unless (caller) {
     printf "complete('s') => %s\n", join(',  ', $cmdproc->complete("s", 's', 0, 1));
     printf "complete('') => %s\n", join(',  ', $cmdproc->complete("", '', 0, 1));
     printf "complete('help se') => %s\n", join(',  ', $cmdproc->complete("help se", 'help se', 0, 1));
-    my @c = $cmdproc->complete("help un", 'help un', 0, 6);
-    printf "complete('help un') => %s\n", join(', ', @c);
-    @c = $cmdproc->complete("set base", 'set base', 0, 8);
-    printf "complete('set base') => %s\n", join(', ', @c);
-    @c = $cmdproc->complete("set basename ", 'set basename ', 0, 14);
-    printf "complete('set basename ') => %s\n", join(', ', @c);
-    # print cmdproc.complete('', '');
+
+sub complete_it($)
+{
+    my $str = shift;
+    my @c = $cmdproc->complete($str, $str, 0, length($str));
+    printf "complete('$str') => %s\n", join(', ', @c);
+    return @c;
+}
+
+    my @c = complete_it("set ");
+    @c = complete_it("set basename");
+    @c = complete_it("set basename ");
+    @c = complete_it("set basename o");
+    @c = complete_it("set basename on ");
 }
 
 1;

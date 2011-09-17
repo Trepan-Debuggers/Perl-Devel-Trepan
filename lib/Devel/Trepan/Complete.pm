@@ -115,7 +115,6 @@ unless (caller) {
 	my @ary = next_token($x, $pos);
 	printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
     }
-  # p complete_token(global_variables.map{|g| g.to_s}, '$s')
 }
 
 1;

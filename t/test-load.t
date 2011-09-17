@@ -15,18 +15,35 @@ my $cmdproc = Devel::Trepan::CmdProcessor->new;
 my $count = scalar(keys %{$cmdproc->{commands}});
 cmp_ok($count, '>', 0, 'commands populated');
 
-my @c = $cmdproc->complete("help un", 'help un', 0, 6);
+sub complete_it($)
+{
+    my $str = shift;
+    my @c = $cmdproc->complete($str, $str, 0, length($str));
+    return @c;
+}
+my @c = complete_it("help un");
 is(scalar @c, 1);
 is($c[0], 'unalias');
 @c = $cmdproc->complete("set base", 'set base', 0, 8);
 is(scalar @c, 1);
 is($c[0], 'basename');
 
-@c = $cmdproc->complete("set basename ", 'set basename ', 0, 14);
-is(scalar @c, 2);
-@c = sort @c;
+# my @c = complete_it("set basename");
+# is(scalar @c, 2);
+# @c = sort @c;
+# is($c[0], 'off');
+# is($c[1], 'on');
+
+@c = complete_it("set basename of");
+is(scalar @c, 1);
 is($c[0], 'off');
-is($c[1], 'on');
+
+@c = complete_it("set basename off");
+is(scalar @c, 0);
+
+@c = complete_it("set basename on ");
+is(scalar @c, 0);
+
 
 # FIXME: After we get string array I/O working and hooked
 # up ...

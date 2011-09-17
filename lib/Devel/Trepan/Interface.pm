@@ -138,17 +138,17 @@ sub readline($;$) {
 
 sub save_history($$) {}
 
-sub DESTROY {
-    my $self = shift;
-    if ($self->{output} && defined($self->{output}) && ! $self->{output}->is_closed) {
-	eval {
-	    $self->msg(sprintf("%sThat's all, folks...",
-			       (defined($Devel::Trepan::PROGRAM) ? 
-				"${Devel::Trepan::PROGRAM}: " : '')));
-	};
-    }
-    $self->close;
-}
+#sub DESTROY {
+#    my $self = shift;
+#    if ($self->{output} && defined($self->{output}) && ! $self->{output}->is_closed) {
+#	eval {
+#	    $self->msg(sprintf("%sThat's all, folks...",
+#			       (defined($Devel::Trepan::PROGRAM) ? 
+#				"${Devel::Trepan::PROGRAM}: " : '')));
+#	};
+#    }
+#    $self->close;
+#}
 
 # Demo
 if (__FILE__ eq $0) {

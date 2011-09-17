@@ -151,7 +151,7 @@ sub process_command_and_quit($)
 		    $intf_size = scalar @$intf_ary;
 		    $intf = $intf_ary->[-1];
 		    $self->{last_command} = '';
-		    $self->print_location;
+		    # $self->print_location;
 		} else {
 		    ## FIXME: think of something better.
 		    $self->run_command("quit!");

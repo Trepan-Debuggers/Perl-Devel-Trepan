@@ -129,14 +129,14 @@ sub save_history($)
     }
 }
 
-sub DESTROY($) 
-{
-    my $self = shift;
-    if ($HAVE_GNU_READLINE) {
-    	$self->save_history;
-    }
-    Devel::Trepan::Interface::DESTROY($self);
-}
+# sub DESTROY($) 
+# {
+#     my $self = shift;
+#     if ($HAVE_GNU_READLINE) {
+#     	$self->save_history;
+#     }
+#     Devel::Trepan::Interface::DESTROY($self);
+# }
 
 sub is_interactive($)
 {
@@ -158,6 +158,7 @@ sub has_gnu_readline($)
 
 sub read_command($;$) {
     my($self, $prompt)  = @_;
+    $prompt //= '(trepanpl) ';
     $self->readline($prompt);
 }
 

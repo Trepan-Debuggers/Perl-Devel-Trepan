@@ -6,12 +6,15 @@ use Getopt::Long qw(GetOptionsFromArray);
 use File::Spec;
 use lib '../..';
 
-use vars qw(@EXPORT @ISA);
-@EXPORT = qw( process_options whence_file);
+use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS);
+@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS);
 @ISA    = qw(Exporter);
 
-use constant DEFAULT_OPTIONS => {
+my $home = $ENV{'HOME'} || glob("~");
+my $initfile = File::Spec->catfile($home, '.treplrc');
+$DEFAULT_OPTIONS = {
     initial_dir  => undef, # If --cd option was given, we save it here.
+    initfile     => $initfile,
     nx           => 0,     # Don't run user startup file (e.g. .trepanplrc)
 
     # Default values used only when 'server' or 'client'
@@ -35,7 +38,7 @@ sub process_options($)
     $Getopt::Long::autoabbrev = 1;
     my ($argv) = @_;
     my ($show_version, $help);
-    my $opts = DEFAULT_OPTIONS;
+    my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
 	 'help'        => \$help,

@@ -93,7 +93,12 @@ sub run($$)
     # require Enbugger; Enbugger->stop;
     my $filename = $args->[-1];
     
-    my $expanded_file = abs_path($filename);
+    my $expanded_file = abs_path(glob($filename));
+    unless (defined $expanded_file && -f $expanded_file) {
+	my $mess = sprintf("Debugger command file '%s' is not found", $filename);
+	$self->errmsg($mess);
+	return 0;
+    }
     unless(-r $expanded_file) {
 	my $mess = sprintf("Debugger command file '%s' (%s) is not a readable file", $filename, $expanded_file);
 	$self->errmsg($mess);

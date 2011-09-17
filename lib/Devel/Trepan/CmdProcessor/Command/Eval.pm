@@ -20,7 +20,7 @@ Run code in the context of the current frame.
 
 The value of the expression is stored into a global variable so it
 may be used again easily. The name of the global variable is printed
-next to the inspect output of the value.
+next to the value.
 
 If no string is given, we run the string from the current source code
 about to be run. If the command ends ? (via an alias) and no string is
@@ -58,7 +58,7 @@ See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%?);
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 local $NEED_STACK       => 1;

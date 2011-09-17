@@ -45,11 +45,28 @@ sub warning($)
     $cmdproc->errmsg($msg);
 }
 
-sub awaken($) {
+sub awaken($;$) {
+    my ($self, $opts);
     $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__);
+    no warnings 'once';
     $main::TREPAN_CMDPROC = $cmdproc;
+    # Process options
+    if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
+	$opts = eval "$ENV{'TREPANPL_OPTS'}";
+    }
+    $opts //= {};
+    if (!$opts->{nx} && exists $opts->{initfile}) {
+	my $initfile = $opts->{initfile};
+	if (-f $initfile) {
+	    if (-r $initfile)  {
+		push @{$cmdproc->{cmd_queue}}, "source $initfile";
+	    } else {
+		print STDERR "Command file '$initfile' is not readable.\n";
+	    }
+	}
+    }
 }
     
-awaken('bogus');
+__PACKAGE__->awaken();
 
 1;

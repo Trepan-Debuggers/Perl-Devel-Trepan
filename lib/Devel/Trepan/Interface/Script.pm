@@ -31,14 +31,13 @@ sub new
 
     my $self = {};
     my $fh = IO::File->new($script_name, "r");
+    $self = Devel::Trepan::Interface->new($fh, $out, $opts);
     $self->{script_name}   = $script_name;
     $self->{input_lineno}  = 0;
-    $self->{input}         = $fh;
     $self->{buffer_output} = [];
     unless ($opts->{verbose} or $out) {
-	$out = Devel::Trepan::IO::StringArrayOutput->new($self->{buffer_output});
-    }
-    Devel::Trepan::Interface->new($self->{input}, $out, $self->{opts});
+	$self->{output} = Devel::Trepan::IO::StringArrayOutput->new($self->{buffer_output});
+    }    
     bless $self, $class;
     $self;
 }
@@ -120,11 +119,11 @@ sub readline($;$)
     return $line;
 }
 
-sub DESTROY($) 
-{
-    my $self = shift;
-    Devel::Trepan::Interface::DESTROY($self);
-}
+# sub DESTROY($) 
+# {
+#     my $self = shift;
+#     Devel::Trepan::Interface::DESTROY($self);
+# }
 
 # Demo
 unless (caller) {

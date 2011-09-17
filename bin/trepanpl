@@ -9,6 +9,7 @@ use File::Basename; use File::Spec;
 use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
 use lib TREPAN_DIR;
 use Devel::Trepan::Options;
+use Data::Dumper;
 
 my $opts = Devel::Trepan::Options::process_options(\@ARGV);
 
@@ -24,6 +25,7 @@ my $rc = $? >>8;
 print "$output\n" if $rc;
 exit $rc if $rc;
 
+$ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # And just when you thought we'd never get around to actually 
 # doing something...
 exec ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);

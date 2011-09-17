@@ -224,6 +224,14 @@ use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subcmd);
 #   completion %w(on off)
 
+sub new($$$) {
+    my ($class, $cmd, $name) = @_;
+    my $self = Devel::Trepan::CmdProcessor::Command::Subcmd::new($class, $cmd, $name);
+    $self->{max_args} = 1;
+    bless $self, $class;
+    $self;
+}
+
 sub run($$) {
     my ($self, $args) = @_;
     $self->run_set_bool($args);

@@ -13,7 +13,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $HELP = "set different [on|off|nostack]
 
-Set to make sure 'next/step' move to a new position.
+Set to make sure 'next' or 'step' moves to a new position.
 
 Each line often may contain many possible stopping points. In a
 debugger it is sometimes desirable to continue but stop only when the

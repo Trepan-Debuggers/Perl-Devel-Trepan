@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
+
 use feature 'switch';
 use lib '../../..';
 
+use Devel::Trepan::Position;
 package Devel::Trepan::CmdProcessor;
 use English;
+
+
 
 # attr_accessor :stop_condition  # String or nil. When not nil
 #                                # this has to eval non-nil
@@ -89,8 +93,8 @@ sub parse_next_step_suffix($$)
     my $opts = {};
     given (substr($step_cmd, -1)) {
 	when ('-') { $opts->{different_pos} = 0; }
-	when ('+') { $opts->{different_pos} = 'nostack'; }
-	when ('=') { $opts->{different_pos} = 1; }
+	when ('+') { $opts->{different_pos} = 1; } 
+	when ('=') { $opts->{different_pos} = $self->{settings}{different}; }
 	# when ('!') { $opts->{stop_events} = {'raise' => 1} };
 	# when ('<') { $opts->{stop_events} = {'return' => 1}; }
 	# when ('>') { 
@@ -110,10 +114,15 @@ sub running_initialize($)
     $self->{stop_condition}  = undef;
     $self->{stop_events}     = undef;
     $self->{to_method}       = undef;
-    # FIXME: Use a struct;
-    $self->{last_pos}        = [undef, undef, undef, undef];
+    $self->{last_pos}        = TrepanPosition->new(pkg => '',  filename => '',
+						   line =>'', event=>'');
 }
 
+# Should we not stop here? 
+# Some reasons for skipping: 
+# -  step count was given. 
+# - We want to make sure we stop on a different line
+# - We want to stop only when some condition is reached (step util ...). 
 sub is_stepping_skip()
 {
 
@@ -126,55 +135,57 @@ sub is_stepping_skip()
     }
 
     my $frame = $self->{frame};
-    # FIXME: use a struct;
-    my $new_pos = [$frame->{pkg}, $frame->{file}, $frame->{line}];
+
+    my $new_pos = TrepanPosition->new(pkg       => $frame->{pkg}, 
+				      filename  => $frame->{file}, 
+				      line      => $frame->{line},
+				      event     => $self->{event});
 
     my $skip_val = 0;
 
-    # # If the last stop was a breakpoint, don't stop again if we are at
-    # # the same location with a line event.
+    # If the last stop was a breakpoint, don't stop again if we are at
+    # the same location with a line event.
 
-    # $skip_val ||= ($self->{last_pos}->[4] eq 'brkpt' && 
-    # 		   $self->{event} eq 'line');
+    my $last_pos = $self->{last_pos};
+    # $skip_val ||= ($last_pos->event eq 'brkpt' && $self->{event} eq 'line');
     
     if ($self->{settings}{'debugskip'}) {
-        $self->msg("skip: $skip_val, last: $self->{last_pos}, new: $self->{new_pos}"); 
+        $self->msg("skip: $skip_val, last: $self->{last_pos}->inspect(), " . 
+		   "new: $new_pos->inspect()"); 
     }
 
-    # @last_pos[2] = new_pos[2] if 'nostack' eq @different_pos;
+    # @last_pos[2] = new_pos[2] if 'nostack' eq $self->{different_pos};
 
-    my $condition_met;
+    my $condition_met = 1;
     # if (! $skip_val) {
     # 	if (@stop_condition) {
     # 	    puts 'stop_cond' if @settings[:'debugskip'];
     # 	    debug_eval_no_errmsg(@stop_condition);
     # } elsif (@to_method) {
     # 	puts "method #{@frame.method} #{@to_method}" if 
-    # 	    @setting->{'debugskip'};
+    # 	    $self->{setting}{'debugskip'};
     # 	@frame.method == @to_method;
     # } else {
-    # 	puts 'uncond' if @settings[:'debugskip'];
+    # 	puts 'uncond' if $self->{settings}{'debugskip'};
     # 	1;
     # };
           
-    # $self->msg("condition_met: #{condition_met}, last: #{@last_pos}, " .
-    # 	       "new: #{new_pos}, different #{@different_pos.inspect}") if 
+    # $self->msg("condition_met: #{condition_met}, last: $self->{last_pos}, " .
+    # 	   "new: $new_pos->inspect(), different #{@different_pos.inspect}") if 
     # 	       $self->{settings}{'debugskip'};
 
-    # $skip_val = (($last_pos->[0] eq $new_pos->[0] 
-    # 		  && $settings->{different_pos}) ||
-    # 		!$condition_met);
+    $skip_val = (($last_pos->eq($new_pos) && !!$self->{different_pos}) 
+		 || !$condition_met);
 
-    # @last_pos = new_pos if !@stop_events || @stop_events.member?(@event);
+    $self->{last_pos} = $new_pos;
 
     unless ($skip_val) {
-        # Set up the default values for the
-        # next time we consider skipping.
-        $self->{settings}{different_pos} = $self->{settings}{different};
+        # Set up the default values for the next time we consider
+        # skipping.
+        $self->{different_pos} = $self->{settings}{different};
     }
 
     return $skip_val;
 }
 
 1;
-

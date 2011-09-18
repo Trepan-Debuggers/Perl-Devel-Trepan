@@ -272,8 +272,11 @@ sub process_commands($$$)
 	#   @last_pos = (@frame_file, @frame_line,
 	# 	  	    @stack_size, @current_thread, @event);
 	# } else {
-	return if $self->is_stepping_skip(); # || @stack_size <= @hide_level;
-	#}
+	if ($self->is_stepping_skip()) {
+            # || @stack_size <= @hide_level;
+	    $self->{dbgr}->step();
+	    return;
+	}
 	
 	$self->{prompt} = $self->compute_prompt;
 	

@@ -74,7 +74,8 @@ my $Keyword_to_related_cmd = {
 sub run($$) {
     my ($self, $args) = @_;
 
-    # opts = @proc.parse_next_step_suffix(args[0])
+    my $proc = $self->{proc};
+    my $opts = $proc->parse_next_step_suffix($args->[0]);
     # condition = nil
     # if args.size == 1
     #   # Form is: "step" which means "step 1"
@@ -122,6 +123,7 @@ sub run($$) {
     #   end
     # end
     # @proc.step(step_count, opts, condition)
+    $proc->{different_pos} = $opts->{different_pos};
     $self->{proc}->{leave_cmd_loop} = 1;
     $self->{dbgr}->step();
 }

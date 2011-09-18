@@ -16,7 +16,7 @@ use constant DEFAULT_SETTINGS => {
     
     basename      => 0,      # Show basename of filenames only
     confirm       => 1,      # Confirm potentially dangerous operations?
-    different     => 'nostack', # stop *only* when  different position? 
+    different     => 0,      # stop *only* when  different position? 
     
     debugdbgr     => 0,      # Debugging the debugger
     debugexcept   => 1,      # Internal debugging of command exceptions

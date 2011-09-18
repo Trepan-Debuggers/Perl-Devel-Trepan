@@ -77,15 +77,15 @@ sub frame_setup($$$)
     $#{$self->{frames}} = $stack_size-1;
 
     my @frames = $self->{dbgr}->backtrace(1);
-    $self->{frame} = $self->{frames}->[0] = $frames[0];
     $self->{frame_index} = 0;
     $self->{hide_level} = 0;
+    $self->{frame} = $frames[0];
 }
 
 sub filename($)
 {
     my $self = shift;
-    $self->{frame}->{filename};
+    $self->{frame}->{file};
 }
 
 sub get_frame($$$) 

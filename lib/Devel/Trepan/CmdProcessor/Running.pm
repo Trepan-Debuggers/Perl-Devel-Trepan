@@ -104,6 +104,9 @@ sub parse_next_step_suffix($$)
 	# 	$opts->{stop_events} = {'call' => 1; }
 	#     }
 	# }
+	default {
+	    $opts->{different_pos} = $self->{settings}{different};
+	}
     }
     return $opts;
 }

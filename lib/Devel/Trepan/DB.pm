@@ -10,6 +10,17 @@ package DB;
 use feature 'switch';
 use warnings; no warnings 'redefine';
 use English;
+use Class::Struct;
+
+struct DBBreak => {
+    type        => '$', # 'tbrkpt', 'brkpt' or 'action'
+    condition   => '$', # Condition to evaluate or '1' fo unconditional
+                        # if type is 'action' this is the action to run
+    num         => '$', # breakpoint/action number 
+    count       => '$', # Number of time breakpoint/action hit
+    enabled     => '$', # True if breakpoint or action is enabled
+};
+
 use vars qw($usrctxt $running $caller 
             $event @ret $ret $return_value @return_value
             $init_dollar0 $OS_STARTUP_DIR);
@@ -51,6 +62,7 @@ BEGIN {
     
     # other "public" globals  
     
+    $DB::brkpt   = undef; # current breakpoint
     $DB::package = '';    # current package space
     $DB::filename = '';   # current filename
     $DB::subname = '';    # currently executing sub (fullly qualified name)
@@ -128,21 +140,38 @@ sub DB {
     
     $usrctxt = "package $DB::package;";		# this won't let them modify, alas
     local(*DB::dbline) = "::_<$DB::filename";
-    
-    my ($stop, $action);
+
+    $DB::event = undef;
+    $DB::brkpt = undef;
+
+    my @action = ();
     if (exists $DB::dbline{$DB::lineno} and 
-	($stop,$action) = split(/\0/,$DB::dbline{$DB::lineno})) {
-	if ($stop eq '1') {
-	    $event = 'brkpt';
-	    $DB::signal |= 1;
-	}
-	else {
-	    $stop = 0 unless $stop;			# avoid un_init warning
-	    $eval_str = "\$DB::signal |= do { $stop; }"; &eval;
-	    if ($DB::dbline{$DB::lineno} =~ /;9($|\0)/) {
-		$DB::event = 'tbrkpt';
-		# clear any temporary breakpoint
-		$DB::dbline{$DB::lineno} =~ s/;9($|\0)/$1/;
+	my $brkpts = $DB::dbline{$DB::lineno}) {
+	for (my $i=0; $i < @$brkpts; $i++) {
+	    my $brkpt = $brkpts->[$i];
+	    if ($brkpt->type eq 'action') {
+		push @action, $brkpt;
+		next ;
+	    }
+	    my $stop;
+	    if ($brkpt->condition eq '1') {
+		# A cheap and simple test for unconditional.
+		$stop = 1;
+	    } else  {
+		$eval_str = "$stop = do { $brkpt->condition; }";
+		&eval;
+	    }
+	    if ($stop) {
+		$DB::signal |= 1;
+		$DB::brkpt = $brkpt;
+		if ($brkpt->type eq 'tbrkpt') {
+		    # Note breakpoint is temporary and remove it.
+		    $event = 'tbrkpt';
+		    undef $brkpts->[$i];
+		} else {
+		    $event = 'brkpt';
+		}
+		last;
 	    }
 	}
     }
@@ -160,7 +189,10 @@ sub DB {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
 	loadfile($DB::filename, $DB::lineno);
     }
-    $eval_str = $action, &eval if $action;
+    for my $action (@action) {
+	$eval_str = $action; 
+	&eval;
+    }
     if ($DB::single || $DB::signal) {
 	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
 	$DB::single = 0;
@@ -478,45 +510,42 @@ sub lineevents {
   $fname = $DB::filename unless $fname;
   local(*DB::dbline) = "::_<$fname";
   for ($i = 1; $i <= $#DB::dbline; $i++) {
-    $ret{$i} = [$DB::dbline[$i], split(/\0/, $DB::dbline{$i})] 
-      if defined $DB::dbline{$i};
+    $ret{$i} = $DB::dbline[$i] if defined $DB::dbline{$i};
   }
   return %ret;
 }
 
 sub set_break {
-  my ($s, $i, $cond) = @_;
-  $i ||= $DB::lineno;
-  $cond ||= '1';
-  $i = _find_subline($i) if ($i =~ /\D/);
-  $s->warning("Subroutine not found.\n") unless $i;
-  if ($i) {
-    if (!defined($DB::dbline[$i]) || $DB::dbline[$i] == 0) {
-      $s->warning("Line $i not breakable.\n");
+    my ($s, $i, $cond, $num, $type) = @_;
+    $type //= 'break';
+    $i ||= $DB::lineno;
+    $cond ||= '1';
+    $i = _find_subline($i) if ($i =~ /\D/);
+    $s->warning("Subroutine not found.\n") unless $i;
+    if ($i) {
+	if (!defined($DB::dbline[$i]) || $DB::dbline[$i] == 0) {
+	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
+	    $s->warning("Line $i not $suffix.\n");
+	} else {
+	    my $brkpt = DBBreak->new(
+		type      => $type,
+		condition => $cond,
+		num       => $num,
+		count     => 0,
+		enabled   => 1
+		);
+	    my $ary_ref = $DB::dbline{$i} //= [];
+	    push @$ary_ref, $brkpt;
+	    my $prefix = $type eq 'tbrkpt' ? 
+		'Temporary breakpoint' : 'Breakpoint' ;
+	    $s->output("$prefix set in ${DB::filename} at line $i\n");
+	}
     }
-    else {
-      $DB::dbline{$i} ||= '';
-      $DB::dbline{$i} =~ s/^[^\0]*/$cond/;
-      $s->output("Breakpoint set at line $i\n");
-    }
-  }
 }
 
 sub set_tbreak {
-  my ($s, $i) = @_;
-  $i ||= $DB::lineno;
-  $i = _find_subline($i) if ($i =~ /\D/);
-  $s->warning("Subroutine not found.\n") unless $i;
-  if ($i) {
-    if (!defined($DB::dbline[$i]) || $DB::dbline[$i] == 0) {
-      $s->warning("Line $i not breakable.\n");
-    }
-    else {
-      $DB::dbline{$i} ||= '';
-      $DB::dbline{$i} =~ s/($|\0)/;9$1/; # add one-time-only b.p.
-      $s->output("Temporary breakpoint set at line $i\n");
-    }
-  }
+    my ($s, $i, $cond, $num) = @_;
+    set_break($s, $i, $cond, $num, 'tbrkpt');
 }
 
 sub _find_subline {
@@ -536,73 +565,71 @@ sub _find_subline {
 }
 
 sub clr_breaks {
-  my $s = shift;
-  my $i;
-  if (@_) {
-    while (@_) {
-      $i = shift;
-      $i = _find_subline($i) if ($i =~ /\D/);
-      $s->output("Subroutine not found.\n") unless $i;
-      if (defined $DB::dbline{$i}) {
-        $DB::dbline{$i} =~ s/^[^\0]+//;
-        if ($DB::dbline{$i} =~ s/^\0?$//) {
-          delete $DB::dbline{$i};
-        }
-      }
+    my $s = shift;
+    my $i;
+    if (@_) {
+	while (@_) {
+	    $i = shift;
+	    $i = _find_subline($i) if ($i =~ /\D/);
+	    $s->output("Subroutine not found.\n") unless $i;
+	    if (defined $DB::dbline{$i}) {
+		my $brkpts = $DB::dbline{$i};
+		my $j = 0;
+		for my $brkpt (@$brkpts) {
+		    if ($brkpt->action ne 'brkpt') {
+			$j++;
+			next;
+		    }
+		    undef $brkpts->[$j];
+		}
+		delete $DB::dbline{$i} if $j == 0;
+	    }
+	}
+    } else {
+	for ($i = 1; $i <= $#DB::dbline ; $i++) {
+	    if (defined $DB::dbline{$i}) {
+		clr_breaks($s, $i);
+	    }
+	}
     }
-  }
-  else {
-    for ($i = 1; $i <= $#DB::dbline ; $i++) {
-      if (defined $DB::dbline{$i}) {
-        $DB::dbline{$i} =~ s/^[^\0]+//;
-        if ($DB::dbline{$i} =~ s/^\0?$//) {
-          delete $DB::dbline{$i};
-        }
-      }
-    }
-  }
 }
 
 sub set_action {
-  my $s = shift;
-  my $i = shift;
-  my $act = shift;
-  $i = _find_subline($i) if ($i =~ /\D/);
-  $s->output("Subroutine not found.\n") unless $i;
-  if ($i) {
-    if ($DB::dbline[$i] == 0) {
-      $s->output("Line $i not actionable.\n");
-    }
-    else {
-      $DB::dbline{$i} =~ s/\0[^\0]*//;
-      $DB::dbline{$i} .= "\0" . $act;
-    }
-  }
+    my ($s, $i, $cond, $num) = @_;
+    set_break($s, $i, $cond, $num, 'action');
 }
 
+# FIXME: combine with clear_breaks
 sub clr_actions {
-  my $s = shift;
-  my $i;
-  if (@_) {
-    while (@_) {
-      my $i = shift;
-      $i = _find_subline($i) if ($i =~ /\D/);
-      $s->output("Subroutine not found.\n") unless $i;
-      if ($i && $DB::dbline[$i] != 0) {
-	$DB::dbline{$i} =~ s/\0[^\0]*//;
-	delete $DB::dbline{$i} if $DB::dbline{$i} =~ s/^\0?$//;
-      }
+    my $s = shift;
+    my $i;
+    if (@_) {
+	while (@_) {
+	    $i = shift;
+	    $i = _find_subline($i) if ($i =~ /\D/);
+	    $s->output("Subroutine not found.\n") unless $i;
+	    if (defined $DB::dbline{$i}) {
+		my $brkpts = $DB::dbline{$i};
+		my $j = 0;
+		for my $brkpt (@$brkpts) {
+		    if ($brkpt->action ne 'action') {
+			$j++;
+			next;
+		    }
+		    undef $brkpts->[$j];
+		}
+		delete $DB::dbline{$i} if $j == 0;
+	    }
+	}
+    } else {
+	for ($i = 1; $i <= $#DB::dbline ; $i++) {
+	    if (defined $DB::dbline{$i}) {
+		clr_breaks($s, $i);
+	    }
+	}
     }
-  }
-  else {
-    for ($i = 1; $i <= $#DB::dbline ; $i++) {
-      if (defined $DB::dbline{$i}) {
-	$DB::dbline{$i} =~ s/\0[^\0]*//;
-	delete $DB::dbline{$i} if $DB::dbline{$i} =~ s/^\0?$//;
-      }
-    }
-  }
 }
+
 
 #
 # "pure virtual" methods

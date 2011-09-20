@@ -10,22 +10,13 @@ package DB;
 use feature 'switch';
 use warnings; no warnings 'redefine';
 use English;
-use Class::Struct;
-
-struct DBBreak => {
-    type        => '$', # 'tbrkpt', 'brkpt' or 'action'
-    condition   => '$', # Condition to evaluate or '1' fo unconditional
-                        # if type is 'action' this is the action to run
-    num         => '$', # breakpoint/action number 
-    count       => '$', # Number of time breakpoint/action hit
-    enabled     => '$', # True if breakpoint or action is enabled
-};
 
 use vars qw($usrctxt $running $caller 
             $event @ret $ret $return_value @return_value
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
+use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
 
@@ -62,7 +53,6 @@ BEGIN {
     
     # other "public" globals  
     
-    $DB::brkpt   = undef; # current breakpoint
     $DB::package = '';    # current package space
     $DB::filename = '';   # current filename
     $DB::subname = '';    # currently executing sub (fullly qualified name)
@@ -502,135 +492,6 @@ sub loadfile {
   return undef;
 }
 
-sub lineevents {
-  my $s = shift;
-  my $fname = shift;
-  my(%ret) = ();
-  my $i;
-  $fname = $DB::filename unless $fname;
-  local(*DB::dbline) = "::_<$fname";
-  for ($i = 1; $i <= $#DB::dbline; $i++) {
-    $ret{$i} = $DB::dbline[$i] if defined $DB::dbline{$i};
-  }
-  return %ret;
-}
-
-sub set_break {
-    my ($s, $i, $cond, $num, $type) = @_;
-    $type //= 'break';
-    $i ||= $DB::lineno;
-    $cond ||= '1';
-    $i = _find_subline($i) if ($i =~ /\D/);
-    $s->warning("Subroutine not found.\n") unless $i;
-    if ($i) {
-	if (!defined($DB::dbline[$i]) || $DB::dbline[$i] == 0) {
-	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
-	    $s->warning("Line $i not $suffix.\n");
-	} else {
-	    my $brkpt = DBBreak->new(
-		type      => $type,
-		condition => $cond,
-		num       => $num,
-		count     => 0,
-		enabled   => 1
-		);
-	    my $ary_ref = $DB::dbline{$i} //= [];
-	    push @$ary_ref, $brkpt;
-	    my $prefix = $type eq 'tbrkpt' ? 
-		'Temporary breakpoint' : 'Breakpoint' ;
-	    $s->output("$prefix set in ${DB::filename} at line $i\n");
-	}
-    }
-}
-
-sub set_tbreak {
-    my ($s, $i, $cond, $num) = @_;
-    set_break($s, $i, $cond, $num, 'tbrkpt');
-}
-
-sub _find_subline {
-    my $name = shift;
-    $name =~ s/\'/::/;
-    $name = "${DB::package}\:\:" . $name if $name !~ /::/;
-    $name = "main" . $name if substr($name,0,2) eq "::";
-    if (exists $DB::sub{$name}) {
-	my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
-	if ($from) {
-	    local *DB::dbline = "::_<$fname";
-	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
-	    return $from;
-	}
-    }
-    return undef;
-}
-
-sub clr_breaks {
-    my $s = shift;
-    my $i;
-    if (@_) {
-	while (@_) {
-	    $i = shift;
-	    $i = _find_subline($i) if ($i =~ /\D/);
-	    $s->output("Subroutine not found.\n") unless $i;
-	    if (defined $DB::dbline{$i}) {
-		my $brkpts = $DB::dbline{$i};
-		my $j = 0;
-		for my $brkpt (@$brkpts) {
-		    if ($brkpt->action ne 'brkpt') {
-			$j++;
-			next;
-		    }
-		    undef $brkpts->[$j];
-		}
-		delete $DB::dbline{$i} if $j == 0;
-	    }
-	}
-    } else {
-	for ($i = 1; $i <= $#DB::dbline ; $i++) {
-	    if (defined $DB::dbline{$i}) {
-		clr_breaks($s, $i);
-	    }
-	}
-    }
-}
-
-sub set_action {
-    my ($s, $i, $cond, $num) = @_;
-    set_break($s, $i, $cond, $num, 'action');
-}
-
-# FIXME: combine with clear_breaks
-sub clr_actions {
-    my $s = shift;
-    my $i;
-    if (@_) {
-	while (@_) {
-	    $i = shift;
-	    $i = _find_subline($i) if ($i =~ /\D/);
-	    $s->output("Subroutine not found.\n") unless $i;
-	    if (defined $DB::dbline{$i}) {
-		my $brkpts = $DB::dbline{$i};
-		my $j = 0;
-		for my $brkpt (@$brkpts) {
-		    if ($brkpt->action ne 'action') {
-			$j++;
-			next;
-		    }
-		    undef $brkpts->[$j];
-		}
-		delete $DB::dbline{$i} if $j == 0;
-	    }
-	}
-    } else {
-	for ($i = 1; $i <= $#DB::dbline ; $i++) {
-	    if (defined $DB::dbline{$i}) {
-		clr_breaks($s, $i);
-	    }
-	}
-    }
-}
-
-
 #
 # "pure virtual" methods
 #
@@ -706,7 +567,7 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->subs([SUBS])        # return subroutine information
     CLIENT->files()             # return list of all files known to DB
     CLIENT->loadfile(FILE,LINE) # load a file and let other clients know
-    CLIENT->lineevents()        # return info on lines with actions
+    CLIENT->line_events()       # return info on lines with actions
     CLIENT->set_break([WHERE],[COND])
     CLIENT->set_tbreak([WHERE])
     CLIENT->clr_breaks([LIST])

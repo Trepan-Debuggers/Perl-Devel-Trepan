@@ -4,6 +4,7 @@ example/eval.pl
 example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
+example/nexting.pl
 lib/Devel/Trepan.pm
 lib/Devel/Trepan/CmdProcessor.pm
 lib/Devel/Trepan/CmdProcessor/Command.pm
@@ -89,6 +90,7 @@ lib/Devel/Trepan/Complete.pm
 lib/Devel/Trepan/Core.pm
 lib/Devel/Trepan/DB.pm
 lib/Devel/Trepan/DB/Backtrace.pm
+lib/Devel/Trepan/DB/Breakpoint.pm
 lib/Devel/Trepan/DB/Colors.pm
 lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
@@ -103,6 +105,7 @@ lib/Devel/Trepan/IO/NullOutput.pm
 lib/Devel/Trepan/IO/Output.pm
 lib/Devel/Trepan/IO/StringArray.pm
 lib/Devel/Trepan/Options.pm
+lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Util.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -113,6 +116,7 @@ t/test-io-stringarray.t
 t/test-linecache.t
 t/test-load.t
 t/test-options.t
+t/test-position.t
 t/test-proc-load.t
 t/test-util.t
 t/test-validate.t

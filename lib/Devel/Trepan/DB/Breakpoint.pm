@@ -13,13 +13,16 @@ struct DBBreak => {
     count       => '$', # Number of time breakpoint/action hit
     enabled     => '$', # True if breakpoint or action is enabled
     negate      => '$', # break/step if ... or until .. ?
+    filename    => '$',
+    line_num    => '$'
 };
 
 package DBBreak;
 sub inspect($)
 {
     my $self = shift;
-    sprintf("type: %s, num %d, enabled: %d, negate %d, count: %s, cond: %s",
+    sprintf("file %s, line %s, type: %s, num %d, enabled: %d, negate %d, count: %s, cond: %s",
+	    $self->filename, $self->line_num,
 	    $self->type, $self->num, $self->enabled, $self->negate, 
 	    $self->count, $self->condition);
 };
@@ -73,7 +76,9 @@ sub set_break {
 		condition => $cond,
 		num       => $num,
 		count     => 0,
-		enabled   => $enabled
+		enabled   => $enabled,
+		filename  => $DB::filename,
+		line_num  => $i
 		);
 	    my $ary_ref = $DB::dbline{$i} //= [];
 	    push @$ary_ref, $brkpt;
@@ -92,6 +97,25 @@ sub set_tbreak {
     set_break($s, $i, $cond, $num, 'tbrkpt');
 }
 
+sub delete_bp($$) {
+    my ($s, $bp) = @_;
+    my $i = $bp->line_num;
+    # FIXME: handle different file names
+    if (defined $DB::dbline{$i}) {
+	my $brkpts = $DB::dbline{$i};
+	my $count = 0;
+	my $break_count = scalar @$brkpts;
+	for (my $j=0; $j <= $break_count; $j++) {
+	    $brkpt = $brkpts->[$j];
+	    if ($brkpt eq $bp) {
+		undef $brkpts->[$j];
+		last;
+	    }
+	    $count++;
+	}
+	delete $DB::dbline{$i} if $count == 0;
+    }
+}
 
 # Find a subroutine line. 
 # FIXME: reorganize things to really set a breakpoint at a subroutine.
@@ -182,6 +206,7 @@ sub clr_actions {
 # Demo it.
 unless (caller) {
     my $brkpt = DBBreak->new(
+	filename => __FILE__, line_num => __LINE__,
 	type=>'action', condition=>'1', num=>1, count => 0, enbled => 1,
 	negate => 0
 	);

@@ -7,7 +7,7 @@ use English;
 
 use Class::Struct;
 
-use vars qw($brkpt $package $lineno);
+use vars qw($brkpt $package $lineno $max_bp $max_action);
 
 struct DBBreak => {
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
@@ -21,6 +21,7 @@ struct DBBreak => {
 
 BEGIN {
     $DB::brkpt   = undef; # current breakpoint
+    $max_bp = $max_action = 0;
 }
 
 
@@ -28,10 +29,9 @@ sub line_events {
   my $s = shift;
   my $fname = shift;
   my(%ret) = ();
-  my $i;
   $fname = $DB::filename unless $fname;
   local(*DB::dbline) = "::_<$fname";
-  for ($i = 1; $i <= $#DB::dbline; $i++) {
+  for (my $i = 1; $i <= $#DB::dbline; $i++) {
     $ret{$i} = $DB::dbline[$i] if defined $DB::dbline{$i};
   }
   return %ret;
@@ -39,8 +39,9 @@ sub line_events {
 
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
-    my ($s, $i, $cond, $num, $type) = @_;
+    my ($s, $i, $cond, $num, $type, $enabled) = @_;
     $type //= 'break';
+    $enabled //= 1;
     $i ||= $DB::lineno;
     $cond ||= '1';
     $i = _find_subline($i) if ($i =~ /\D/);
@@ -50,20 +51,29 @@ sub set_break {
 	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
 	    $s->warning("Line $i not $suffix.\n");
 	} else {
+	    unless (defined $num) {
+		if ($type eq 'action') {
+		    $num = ++$max_action;
+		} else {
+		    $num = ++$max_bp;
+		}
+	    }
 	    my $brkpt = DBBreak->new(
 		type      => $type,
 		condition => $cond,
 		num       => $num,
 		count     => 0,
-		enabled   => 1
+		enabled   => $enabled
 		);
 	    my $ary_ref = $DB::dbline{$i} //= [];
 	    push @$ary_ref, $brkpt;
 	    my $prefix = $type eq 'tbrkpt' ? 
 		'Temporary breakpoint' : 'Breakpoint' ;
-	    $s->output("$prefix set in ${DB::filename} at line $i\n");
+	    $s->output("$prefix $num set in ${DB::filename} at line $i\n");
+	    return $brkpt
 	}
     }
+    return undef;
 }
 
 # Set a temporary breakpoint

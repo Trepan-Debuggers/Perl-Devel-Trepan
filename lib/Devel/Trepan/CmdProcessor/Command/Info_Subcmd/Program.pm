@@ -34,12 +34,12 @@ sub run($$)
     	# $self->msg($proc->core.hook_arg) if $proc->core.hook_arg;
     }
 
-    # if ($proc->brkpt) {
-    # 	$m = sprintf('It is stopped at %sbreakpoint %d.',
-    # 		     $proc->brkpt.temp ? 'temporary ' : '',
-    # 		     $proc->brkpt.id);
-    # 	$self->msg($m);
-    # }
+    if ($DB::brkpt) {
+    	my $m = sprintf('It is stopped at %sbreakpoint %d.',
+    		     $DB::brkpt->type eq 'tbrkpt' ? 'temporary ' : '',
+    		     $DB::brkpt->num);
+    	$proc->msg($m);
+    }
 }
 
 unless (caller) {

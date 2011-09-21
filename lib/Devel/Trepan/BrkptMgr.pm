@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+use strict; use warnings; no warnings 'redefine';
+use English;
 use lib '../..';
 use Devel::Trepan::DB::Breakpoint;
 package Devel::Trepan::BrkptMgr;
@@ -7,7 +10,6 @@ sub new($)
 {
     my $class = shift;
     my $self = {};
-    clear;
     bless $self, $class;
     $self->clear();
     $self;
@@ -20,11 +22,23 @@ sub clear($)
     $self->{next_id} = 1;
 }    
 
+sub inspect($) 
+{
+    my $self = shift;
+    my $str = '';
+    for my $brkpt (@{$self->{list}}) {
+	next unless defined $brkpt;
+	$str .= $brkpt->inspect . "\n";
+    }
+    $str;
+}    
+
 # Remove all breakpoints that we have recorded
 sub DESTROY() {
-    for my $bp (@$self->{list}) {
-        $bp->remove;
-    }
+    my $self = shift;
+    # for my $bp (@{$self->{list}}) {
+    #     $bp->delete;
+    # }
     $self->{clear};
 }
 
@@ -44,111 +58,108 @@ sub delete($$)
 sub delete_by_brkpt($$)
 {
     my ($self, $delete_bp) = @_;
-    my @list = @$self->{list};
-    for (my $i; $ <= $#list; $i++) {
-	my $candidate = $list[$i];
+    for my $candidate (@{$self->{list}}) {
+	next unless defined $candidate;
 	if ($candidate eq $delete_bp) {
-	    undef $list[$i];
-	    break;
+	    $candidate = undef;
+	    # $delete_bp->remove();
+	    return $delete_bp;
 	}
     }
-    $self->{list} = \@list;
-    $delete_bp->remove();
-    return $delete_bp;
+    return undef;
 }
 
-sub add
+sub add($$)
 {
-    my @args = @_;
-    if (2 == scalar @args) {
-        unless (defined $args->[2]->{id}) {
-	    $args->[2]{id} = $self->{next_id}++;
-	}
-    } else {
-        $args->[2] = {id => $self->{next_id}++};
-    }
-    
-    $brkpt = Devel::Trepan::Breakpoint->new(@args);
-    push @{$list}, $brkpt;
+    my ($self, $brkpt) = @_;
+    push @{$self->{list}}, $brkpt;
     return $brkpt;
+}
+
+sub compact($)
+{
+    my $self = shift;
+    my @new_list = ();
+    for my $brkpt (@{$self->{list}}) {
+	next unless defined $brkpt;
+	push @new_list, $brkpt;
+    }
+    $self->{list} = \@new_list;
+    return $self->{list};
 }
 
 sub is_empty($)
 {
     my $self = shift;
-    return scalar(0 == @{$self->list});
+    $self->compact();
+    return scalar(0 == @{$self->{list}});
 }
 
-    # def line_breaks(container)
-    #   result = {}
-    #   @list.each do |bp|
-    #     if bp.source_container == container
-    #       bp.source_location.each do |line|
-    #         result[line] = bp 
-    #       end
-    #     end
-    #   end
-    #   result
-    # end
-
-    # def find(iseq, offset, bind)
-    #   @list.detect do |bp| 
-    #     if bp.enabled? && bp.iseq.equal?(iseq) && bp.offset == offset
-    #       begin
-    #         return bp if bp.condition?(bind)
-    #       rescue
-    #       end 
-    #     end
-    #   end
-    # end
-
-    # def max
-    #   @list.map{|bp| bp.id}.max
-    # end
-
-    # # Key used in @set to list unique instruction-sequence offsets.
-    # def set_key(bp)
-    #   [bp.iseq, bp.offset]
-    # end
+sub max($)
+{
+    my $self = shift;
+    my $max = 0;
+    for my $brkpt (@{$self->{list}}) {
+	$max = $brkpt->num if $brkpt->num > $max;
+    }
+    return $max;
+}
 
 sub size($)
 {
     my $self = shift;
-    return scalar @$self->{list};
+    $self->compact();
+    return scalar @{$self->{list}};
 }
 
 sub reset($)
 {
     my $self = shift;
-    for my $bp (@$self->{list}) {
-	$bp->remove();
-    }
+    # for my $bp (@$self->{list}) {
+    # 	$bp->remove();
+    # }
     $self->{list} = [];
 }
 
 
 unless (caller) {
-  # def bp_status(brkpts, i)
-  #   puts "list size: #{brkpts.list.size}"
-  #   puts "set size: #{brkpts.set.size}"
-  #   puts "max: #{brkpts.max}"
-  #   p brkpts
-  #   puts "--- #{i} ---"
-  # end
 
-  # frame = RubyVM::ThreadFrame.current 
-  # iseq = frame.iseq
-  # brkpts = Trepan::BreakpointMgr.new
-  # brkpts.add(iseq, 0)
-  # p brkpts[2]
-  # bp_status(brkpts, 1)
-  # offset = frame.pc_offset
-  # b2 = Trepan::Breakpoint.new(iseq, offset)
-  # brkpts << b2
-  # p brkpts.find(b2.iseq, b2.offset, nil)
-  # p brkpts[2]
-  # puts '--- 2 ---'
-  # p brkpts.line_breaks(iseq.source_container)
+    sub bp_status($$)
+    { 
+	my ($brkpts, $i) = @_;
+	printf "list size: %s\n", $brkpts->size();
+	printf "max: %d\n", $brkpts->max() // -1;
+	print $brkpts->inspect();
+	print "--- ${i} ---\n";
+    }
+
+my $brkpts = Devel::Trepan::BrkptMgr->new;
+bp_status($brkpts, 0);
+my $brkpt1 = DBBreak->new(
+    type=>'brkpt', condition=>'1', num=>1, count => 0, enbled => 1,
+    negate => 0
+    );
+
+$brkpts->add($brkpt1);
+bp_status($brkpts, 1);
+
+my $brkpt2 = DBBreak->new(
+    type=>'brkpt', condition=>'x>5', num=>2, count => 0, enbled => 0,
+    negate => 0
+    );
+$brkpts->add($brkpt2);
+bp_status($brkpts, 2);
+
+$brkpts->delete_by_brkpt($brkpt1);
+bp_status($brkpts, 3);
+
+my $brkpt3 = DBBreak->new(
+    type=>'brkpt', condition=>'y eq x', num=>3, count => 0, enbled => 1,
+    negate => 1
+    );
+$brkpts->add($brkpt3);
+bp_status($brkpts, 4);
+
   # p brkpts.delete(2)
   # p brkpts[2]
   # bp_status(brkpts, 3)

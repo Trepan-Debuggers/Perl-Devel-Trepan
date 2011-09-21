@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 # largely rewritten from perl5db.
-package DB;
-use strict; use warnings; no warnings 'redefine';
-use English;
+
 
 use Class::Struct;
-
-use vars qw($brkpt $package $lineno $max_bp $max_action);
 
 struct DBBreak => {
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
@@ -18,6 +14,20 @@ struct DBBreak => {
     enabled     => '$', # True if breakpoint or action is enabled
     negate      => '$', # break/step if ... or until .. ?
 };
+
+package DBBreak;
+sub inspect($)
+{
+    my $self = shift;
+    sprintf("type: %s, num %d, enabled: %d, negate %d, count: %s, cond: %s",
+	    $self->type, $self->num, $self->enabled, $self->negate, 
+	    $self->count, $self->condition);
+};
+
+package DB;
+use vars qw($brkpt $package $lineno $max_bp $max_action);
+use strict; use warnings; no warnings 'redefine';
+use English;
 
 BEGIN {
     $DB::brkpt   = undef; # current breakpoint
@@ -167,6 +177,15 @@ sub clr_actions {
 	    }
 	}
     }
+}
+
+# Demo it.
+unless (caller) {
+    my $brkpt = DBBreak->new(
+	type=>'action', condition=>'1', num=>1, count => 0, enbled => 1,
+	negate => 0
+	);
+    print $brkpt->inspect, "\n";
 }
 
 1;

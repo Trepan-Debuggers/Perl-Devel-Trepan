@@ -22,6 +22,16 @@ use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Remove an alias';
 our $ARGS  = 1;
   
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    my $proc = $self->{proc};
+    my @candidates = keys %{$proc->{aliases}};
+    my @matches = 
+	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+    sort @matches;
+}    
+
 # Run command. 
 sub run($$) {
     my ($self, $args) = @_;

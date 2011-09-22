@@ -78,8 +78,9 @@ sub complete_token_with_next($$;$)
     my @result = ();
     my @matches = $self->complete($prefix);
     foreach my $cmd (@matches) {
-	if (exists $proc->{commmands}->{$cmd}) {
-	    push @result, [$cmd, $proc->{commmands}->{$cmd}];
+	my %commands = %{$proc->{commands}};
+	if (exists $commands{$cmd}) {
+	    push @result, [$cmd, $commands{$cmd}];
 	    # if ('syntax' eq $cmd) {
 	    # 	complete_method =  Syntax->new(syntax_files);
 	    # } else {

@@ -24,9 +24,14 @@ sub complete_it($)
 my @c = complete_it("help un");
 is(scalar @c, 1);
 is($c[0], 'unalias');
-@c = $cmdproc->complete("set base", 'set base', 0, 8);
+
+@c = complete_it("set base");
 is(scalar @c, 1);
 is($c[0], 'basename');
+
+@c = complete_it("help set diff");
+is(scalar @c, 1);
+is($c[0], 'different');
 
 @c = complete_it("set basename ");
 is(scalar @c, 2);

@@ -240,7 +240,7 @@ sub next_complete($$$$$)
 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
     return () if !$token && !$last_token;
     
-    if (defined $cmd && $cmd->can("complete_token_with_next")) {
+    if ($cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);
 	return () unless scalar @match_pairs;
 	if ($next_blank_pos >= length($str)) {

@@ -42,7 +42,7 @@ package main;
 $DB::filename = __FILE__;
 $DB::dbline //= []; 
 $DB::dbline[__LINE__+1] = 1;
-my $brkpt = DB::set_break($self, __LINE__, '1', undef, 'brkpt');
+my $brkpt = DB::set_break($self, __FILE__, __LINE__, '1', undef, 'brkpt');
 ok ($brkpt);
 ok ($brkpt);
 is($brkpt->type, 'brkpt');

@@ -71,18 +71,24 @@ sub complete($$)
     sort @matches;
 }    
 
-# sub complete_token_with_next($$)
-#     my ($self, $prefix) = @_;
-#     foreach my $cmd (@$self->complete($prefix)) {
-# 	[$cmd, $self->proc.commands.member?(cmd) ? $self->proc.commands[cmd] : 0];
-#         if ('syntax' eq $cmd) {
-# 	    complete_method =  Syntax.new(syntax_files);
-#         } else {
-#           $self->{proc}->commands.member?(cmd) ? $self->{proc}->commands[cmd] : 0;
-#         }
-#       [$cmd, $complete_method];
-#     }
-#   }
+sub complete_token_with_next($$;$)
+{
+    my ($self, $prefix, $cmd_prefix) = @_;
+    my $proc = $self->{proc};
+    my @result = ();
+    my @matches = $self->complete($prefix);
+    foreach my $cmd (@matches) {
+	if (exists $proc->{commmands}->{$cmd}) {
+	    push @result, [$cmd, $proc->{commmands}->{$cmd}];
+	    # if ('syntax' eq $cmd) {
+	    # 	complete_method =  Syntax->new(syntax_files);
+	    # } else {
+	    # 	$proc->commands.member?(cmd) ? $proc->commands[cmd] : 0;
+	    # }
+	}
+    }
+    return @result;
+}
 
 # List the command categories and a short description of each.
 sub list_categories($) {

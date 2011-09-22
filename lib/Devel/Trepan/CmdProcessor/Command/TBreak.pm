@@ -37,7 +37,7 @@ $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-    $self->{dbgr}->set_tbreak($args->[1]);
+    $self->{dbgr}->set_tbreak($DB::filename, $args->[1]);
 }
 
 if (__FILE__ eq $0) {

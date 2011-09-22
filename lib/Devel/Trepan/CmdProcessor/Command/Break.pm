@@ -36,10 +36,10 @@ local $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-    $self->{dbgr}->set_break($args->[1]);
+    $self->{dbgr}->set_break($DB::filename, $args->[1]);
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
     # my $cmd = __PACKAGE__->new($proc);

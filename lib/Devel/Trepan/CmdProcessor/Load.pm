@@ -264,7 +264,7 @@ sub next_complete($$$$$)
 		return ();
 	    }
 	}
-    } elsif ($cmd->can('complete')) {
+    } elsif (defined($cmd) &&  $cmd->can('complete')) {
 	my @matches = $cmd->complete($token);
 	return () unless scalar @matches;
 	if (substr($str, $next_blank_pos) =~ /\s*$/ ) {
@@ -314,9 +314,7 @@ sub complete_it($)
 }
 
     my @c = complete_it("set ");
-    @c = complete_it("set basename");
-    @c = complete_it("set basename ");
-    @c = complete_it("set basename o");
+    @c = complete_it("help set base");
     @c = complete_it("set basename on ");
 }
 

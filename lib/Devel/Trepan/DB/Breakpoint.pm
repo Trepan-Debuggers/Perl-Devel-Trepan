@@ -52,17 +52,18 @@ sub line_events {
 
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
-    my ($s, $i, $cond, $num, $type, $enabled) = @_;
+    my ($s, $filename, $lineno, $cond, $num, $type, $enabled) = @_;
+    $filename //= $DB::filename;
     $type //= 'break';
     $enabled //= 1;
-    $i ||= $DB::lineno;
+    $lineno ||= $DB::lineno;
     $cond ||= '1';
-    $i = _find_subline($i) if ($i =~ /\D/);
-    $s->warning("Subroutine not found.\n") unless $i;
-    if ($i) {
-	if (!defined($DB::dbline[$i]) || $DB::dbline[$i] == 0) {
+    $lineno = _find_subline($lineno) if ($lineno =~ /\D/);
+    $s->warning("Subroutine not found.\n") unless $lineno;
+    if ($lineno) {
+	if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
 	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
-	    $s->warning("Line $i not $suffix.\n");
+	    $s->warning("Line $lineno not $suffix.\n");
 	} else {
 	    unless (defined $num) {
 		if ($type eq 'action') {
@@ -77,14 +78,14 @@ sub set_break {
 		num       => $num,
 		count     => 0,
 		enabled   => $enabled,
-		filename  => $DB::filename,
-		line_num  => $i
+		filename  => $filename,
+		line_num  => $lineno
 		);
-	    my $ary_ref = $DB::dbline{$i} //= [];
+	    my $ary_ref = $DB::dbline{$lineno} //= [];
 	    push @$ary_ref, $brkpt;
 	    my $prefix = $type eq 'tbrkpt' ? 
 		'Temporary breakpoint' : 'Breakpoint' ;
-	    $s->output("$prefix $num set in ${DB::filename} at line $i\n");
+	    $s->output("$prefix $num set in ${DB::filename} at line $lineno\n");
 	    return $brkpt
 	}
     }
@@ -93,14 +94,14 @@ sub set_break {
 
 # Set a temporary breakpoint
 sub set_tbreak {
-    my ($s, $i, $cond, $num) = @_;
-    set_break($s, $i, $cond, $num, 'tbrkpt');
+    my ($s, $filename, $lineno, $cond, $num) = @_;
+    set_break($s, $filename, $lineno, $cond, $num, 'tbrkpt');
 }
 
 sub delete_bp($$) {
     my ($s, $bp) = @_;
     my $i = $bp->line_num;
-    # FIXME: handle different file names
+    local *dbline   = $main::{ '_<' . $bp->filename };
     if (defined $DB::dbline{$i}) {
 	my $brkpts = $DB::dbline{$i};
 	my $count = 0;
@@ -168,8 +169,8 @@ sub clr_breaks {
 
 # Set a an action
 sub set_action {
-    my ($s, $i, $cond, $num) = @_;
-    set_break($s, $i, $cond, $num, 'action');
+    my ($s, $lineno, $filename, $cond, $num) = @_;
+    set_break($s, $lineno, $filename, $cond, $num, 'action');
 }
 
 # FIXME: combine with clear_breaks

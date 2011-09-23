@@ -1,5 +1,6 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
+use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 use lib '../../../..';
 # use '../../app/complete'
@@ -37,18 +38,28 @@ Examples:
   $NAME! 9   # above, but no questions asked
 HELP
 
-use constant ALIASES  => ('kill!');
-use constant CATEGORY => 'running';
-use constant SHORT_HELP => 'Send this process a POSIX signal';
+unless (defined @ISA) {
+    eval "use constant ALIASES  => ('kill!')";
+    eval "use constant CATEGORY => 'running'";
+    eval "use constant SHORT_HELP => 'Send this process a POSIX signal'";
+}
 $MAX_ARGS   = 1;  # Need at most this many
   
-# sub complete($$) {
-#     my ($self, $prefix) = @_;
-#     my $completions = Signal.list.keys + 
-# 	Signal.list.values + 
-# 	Signal.list.values.map{|i| -i} ;
-#     Trepan::Complete->complete_token($completions, $prefix);
-# }
+sub complete($$) {
+    my ($self, $prefix) = @_;
+    state @completions;
+    unless(@completions) {
+	@completions = keys %SIG;
+	my $last_sig = scalar @completions;
+	push @completions, map({lc $_} @completions);
+	my @nums = (-$last_sig .. $last_sig);
+	push @completions, @nums;
+	push @completions, 'unconditionally';
+    }
+    my @matches = 
+	Devel::Trepan::Complete::complete_token(\@completions, $prefix);
+    sort @matches;
+}
     
 # This method runs the command
 sub run($$) {
@@ -56,8 +67,8 @@ sub run($$) {
     my $unconditional = substr($args->[0], -1, 1) eq '!';
     my $sig;
     if (scalar(@$args) > 1) {
-	$sig = $args->[1];
-	unless ( ($sig =~ /[+-]?\d+/) || $SIG{$sig} ) { 
+	$sig = uc($args->[1]);
+	unless ( ($sig =~ /[+-]?\d+/) || exists $SIG{$sig} ) { 
 	    $self->errmsg("Signal name '${sig}' is not a signal I know about.");
 	    return;
 	}
@@ -72,7 +83,7 @@ sub run($$) {
     if (kill(0, $$)) {
 	# Force finalization on interface.
 	$self->{proc}->{interfaces} = [] if 
-	    'KILL' eq $sig || 9 == $sig || -9 == $sig;
+	    'KILL' eq $sig || 9 eq $sig || -9 eq $sig;
 	if (kill($sig, $$)) {
 	    $self->msg("kill ${sig} successfully sent to process $$");
 	} else {
@@ -85,12 +96,15 @@ sub run($$) {
 }
 
 unless (caller()) {
-    require Devel::Trepan::CmdProcessor::Mock;
-    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
     my $cmd = __PACKAGE__->new($proc);
     print $cmd->{help}, "\n";
     print join(', ', @{$cmd->{aliases}}), "\n";
     print "min args: ", eval('$' . __PACKAGE__ . "::MIN_ARGS"), "\n";
+    for my $arg ('hu', 'HU', '', 1, '-9') {
+	printf "complete($arg) => %s\n", join(", ", $cmd->complete($arg));
+    }
     for my $arg (qw(fooo 100 1 -1 HUP -9)) {
       print "$NAME ${arg}\n";
       $cmd->run([$NAME, $arg]);

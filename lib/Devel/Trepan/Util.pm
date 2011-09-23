@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings;
 use feature 'switch';
 package Devel::Trepan::Util;
 use vars qw(@EXPORT @ISA);
@@ -10,7 +11,7 @@ use vars qw(@EXPORT @ISA);
 # Hash merge like Ruby has.
 sub hash_merge(%%) {
     my ($config, $default_opts) = @_;
-    while (($field, $default_value) = each %$default_opts) {
+    while (my ($field, $default_value) = each %$default_opts) {
 	$config->{$field} = $default_value unless defined $config->{$field};
     };
     $config;
@@ -79,7 +80,7 @@ sub parse_eval_suffix($)
     return ( index('%@$', $suffix) != -1) ? $suffix : '';
 }
 
-
+# Demo code
 unless (caller) {
     my $default_config = {a => 1, b => 'c'};
     require Data::Dumper;

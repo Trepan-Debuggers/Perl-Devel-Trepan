@@ -24,13 +24,13 @@ our $HELP = <<"HELP";
 ${NAME} [LOCATION] [if CONDITION]
 
 Set a breakpoint. If no location is given use the current stopping
-point.  Set a breakpoint. 
+point.
 
 Examples:
    ${NAME}                  # set a breakpoint on the current line
    ${NAME} gcd              # set a breakpoint in function gcd
    ${NAME} gcd if \$a == 1   # set a breakpoint in function gcd with 
-                            # condition \$a == 1
+                          # condition \$a == 1
    ${NAME} 10               # set breakpoint on line 10
 
 See also "tbreak", "delete", "info break" and "condition".

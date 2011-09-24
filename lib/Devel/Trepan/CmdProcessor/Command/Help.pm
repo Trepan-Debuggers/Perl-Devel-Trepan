@@ -13,6 +13,7 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+our $MIN_ARGS = 0;
 our $MAX_ARGS = 10000;
 our $HELP = <<"HELP";
 ${NAME} [command [subcommand]|expression]

@@ -19,6 +19,7 @@ unless (defined @ISA) {
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
+our $MIN_ARGS   = 2;      # Need at least this many
 our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
 our $NAME = set_name();
@@ -43,7 +44,10 @@ sub run($$) {
     my $proc = $self->{proc};
     my $bpnum = $proc->get_an_int($args->[1]);
     my $bp = $proc->{brkpts}->find($bpnum);
-    return unless $bp;
+    unless ($bp) { 
+	$proc->errmsg("No breakpoint number $bpnum");
+	return;
+    }
     
     my $condition;
     if (scalar @{$args} > 2) {
@@ -51,7 +55,7 @@ sub run($$) {
 	shift @args; shift @args;
 	$condition = join(' ', @args);
 	unless (is_valid_condition($condition)) {
-	    $proc->errmsg("Invald condition '$condition'");
+	    $proc->errmsg("Invald condition: $condition");
 	    return
 	}
     } else {

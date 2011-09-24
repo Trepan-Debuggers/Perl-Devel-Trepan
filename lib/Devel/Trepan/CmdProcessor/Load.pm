@@ -174,7 +174,9 @@ sub complete($$$)
 	0 == index(substr($line, $last_start), $last_token);
     # print "\ntext: $text, line: $line, start: $start, end: $end\n";
     # print "\nlast_line: $last_line, last_start: $last_start, last_end: $last_end\n";
-    if ($last_start == $start && $last_end == $end && $last_line eq $line) {
+    my $stripped_line;
+    ($stripped_line = $line) =~ s/\s*$//;
+    if ($last_line eq $stripped_line) {
     	return @last_return;
     }
     ($last_line, $last_start, $last_end) = ($line, $start, $end);

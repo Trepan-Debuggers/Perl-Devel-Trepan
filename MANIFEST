@@ -26,6 +26,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Help/location.txt
 lib/Devel/Trepan/CmdProcessor/Command/Help/README
 lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.txt
 lib/Devel/Trepan/CmdProcessor/Command/Info.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
@@ -110,6 +111,7 @@ lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Util.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
+t/test-cmd-kill.t
 t/test-complete.t
 t/test-db-brkpt.t
 t/test-intf-script.t

@@ -36,7 +36,9 @@ local $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-    $self->{dbgr}->set_break($DB::filename, $args->[1]);
+    my $bp = $self->{dbgr}->set_break($DB::filename, $args->[1]);
+    my $proc = $self->{proc};
+    $proc->{brkpts}->add($bp);
 }
 
 unless (caller) {

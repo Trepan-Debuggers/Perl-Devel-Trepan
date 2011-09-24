@@ -136,7 +136,7 @@ unless (caller) {
 my $brkpts = Devel::Trepan::BrkptMgr->new;
 bp_status($brkpts, 0);
 my $brkpt1 = DBBreak->new(
-    type=>'brkpt', condition=>'1', num=>1, count => 0, enbled => 1,
+    type=>'brkpt', condition=>'1', num=>1, hits => 0, enbled => 1,
     negate => 0
     );
 
@@ -144,7 +144,7 @@ $brkpts->add($brkpt1);
 bp_status($brkpts, 1);
 
 my $brkpt2 = DBBreak->new(
-    type=>'brkpt', condition=>'x>5', num=>2, count => 0, enbled => 0,
+    type=>'brkpt', condition=>'x>5', num=>2, hits => 0, enbled => 0,
     negate => 0
     );
 $brkpts->add($brkpt2);
@@ -154,7 +154,7 @@ $brkpts->delete_by_brkpt($brkpt1);
 bp_status($brkpts, 3);
 
 my $brkpt3 = DBBreak->new(
-    type=>'brkpt', condition=>'y eq x', num=>3, count => 0, enbled => 1,
+    type=>'brkpt', condition=>'y eq x', num=>3, hits => 0, enbled => 1,
     negate => 1
     );
 $brkpts->add($brkpt3);

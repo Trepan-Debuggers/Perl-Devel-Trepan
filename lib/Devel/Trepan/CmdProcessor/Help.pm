@@ -24,7 +24,7 @@ sub summary_help($$) {
 	$short_help = $subcmd->{short_help};
     }
 
-    sprintf('  %-12s -- %s', 
+    sprintf('  %-13s -- %s', 
 	    $self->abbrev_stringify($subcmd->{name},
 				    $subcmd->{min_abbrev}),
 	    $short_help);

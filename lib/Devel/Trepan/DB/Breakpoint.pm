@@ -2,15 +2,15 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 # largely rewritten from perl5db.
 
-
 use Class::Struct;
+use strict;
 
 struct DBBreak => {
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
     condition   => '$', # Condition to evaluate or '1' fo unconditional
                         # if type is 'action' this is the action to run
     num         => '$', # breakpoint/action number 
-    count       => '$', # Number of time breakpoint/action hit
+    hits        => '$', # Number of time breakpoint/action hit
     enabled     => '$', # True if breakpoint or action is enabled
     negate      => '$', # break/step if ... or until .. ?
     filename    => '$',
@@ -21,10 +21,10 @@ package DBBreak;
 sub inspect($)
 {
     my $self = shift;
-    sprintf("file %s, line %s, type: %s, num %d, enabled: %d, negate %d, count: %s, cond: %s",
+    sprintf("file %s, line %s, type: %s, num %d, enabled: %d, negate %d, hits: %s, cond: %s",
 	    $self->filename, $self->line_num,
 	    $self->type, $self->num, $self->enabled, $self->negate, 
-	    $self->count, $self->condition);
+	    $self->hits, $self->condition);
 };
 
 package DB;
@@ -76,7 +76,7 @@ sub set_break {
 		type      => $type,
 		condition => $cond,
 		num       => $num,
-		count     => 0,
+		hits      => 0,
 		enabled   => $enabled,
 		filename  => $filename,
 		line_num  => $lineno
@@ -208,7 +208,7 @@ sub clr_actions {
 unless (caller) {
     my $brkpt = DBBreak->new(
 	filename => __FILE__, line_num => __LINE__,
-	type=>'action', condition=>'1', num=>1, count => 0, enbled => 1,
+	type=>'action', condition=>'1', num=>1, hits => 0, enbled => 1,
 	negate => 0
 	);
     print $brkpt->inspect, "\n";

@@ -9,6 +9,7 @@ use warnings; use strict;
 require Data::Dumper; require Data::Dumper::Perltidy;
 
 use lib '../..';
+require Devel::Trepan::BrkptMgr;
 require Devel::Trepan::Interface::User;
 require Devel::Trepan::CmdProcessor::Virtual;
 require Devel::Trepan::CmdProcessor::Default;
@@ -56,6 +57,7 @@ sub new($;$$$) {
 	$interfaces = [$intf];
     }
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
+    $self->{brkpts}       = Devel::Trepan::BrkptMgr->new;
     $self->{dbgr}         = $dbgr;
     $self->{event}        = undef;
     $self->{cmd_queue}    = [];

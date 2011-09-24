@@ -17,18 +17,23 @@ unless (defined(@ISA)) {
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
+our $MIN_ARGS = 0;
+our $MAX_ARGS = undef;  # undef -> unlimited
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [LOCATION]
+${NAME} [LOCATION] [if CONDITION]
 
 Set a breakpoint. If no location is given use the current stopping
 point.  Set a breakpoint. 
 
 Examples:
-   ${NAME}
+   ${NAME}                  # set a breakpoint on the current line
+   ${NAME} gcd              # set a breakpoint in function gcd
+   ${NAME} gcd if \$a == 1   # set a breakpoint in function gcd with 
+                            # condition \$a == 1
    ${NAME} 10               # set breakpoint on line 10
 
-See also "tbreak".
+See also "tbreak", "delete", "info break" and "condition".
 HELP
 
 local $NEED_RUNNING = 1;
@@ -39,8 +44,47 @@ local $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-    my $bp = $self->{dbgr}->set_break($DB::filename, $args->[1]);
+    my @args = @$args;
+    shift @args;
     my $proc = $self->{proc};
+    my $bp;
+    my $arg_count = scalar @args;
+    if ($arg_count == 0) {
+	$bp = $self->{dbgr}->set_break($DB::filename, $DB::lineno);
+    } else {
+	my ($filename, $line_num, $condition);
+	if ($args[0] =~ /\d+/) {
+	    $line_num = $args[0];
+	    $filename = $DB::filename;
+	} elsif ($arg_count > 2) {
+	    if ($args[0] eq 'if') {
+		$line_num = $DB::lineno;
+		$filename = $DB::filename;
+		unshift @args, $line_num;
+	    } else  {
+		$filename = $args[0];
+		if ($args[1] =~ /\d+/) {
+		    $line_num = $args[1];
+		    shift @args;
+		} elsif ($args[1] eq 'if') {
+		    $line_num = $args[0];
+		} else {
+		    $line_num = $args[0];
+		}
+	    }
+	}
+	shift @args;
+	if (scalar @args) {
+	    if ($args[0] eq 'if') {
+		shift @args;
+		$condition = join(' ', @args);
+	    } else {
+		$proc->errmsg("Expection 'if' to start breakpoint condition;" . 
+			      " got ${args[0]}");
+	    }
+	}
+	$bp = $self->{dbgr}->set_break($filename, $line_num, $condition);
+    }
     $proc->{brkpts}->add($bp);
 }
 

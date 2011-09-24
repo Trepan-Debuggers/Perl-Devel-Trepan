@@ -11,6 +11,13 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 use strict;
 use vars qw(@ISA);
+
+unless (defined @ISA) {
+    eval "use constant ALIASES  => ('kill!')";
+    eval "use constant CATEGORY => 'running'";
+    eval "use constant SHORT_HELP => 'Send this process a POSIX signal'";
+}
+
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -38,11 +45,6 @@ Examples:
   $NAME! 9   # above, but no questions asked
 HELP
 
-unless (defined @ISA) {
-    eval "use constant ALIASES  => ('kill!')";
-    eval "use constant CATEGORY => 'running'";
-    eval "use constant SHORT_HELP => 'Send this process a POSIX signal'";
-}
 $MAX_ARGS   = 1;  # Need at most this many
   
 sub complete($$) {

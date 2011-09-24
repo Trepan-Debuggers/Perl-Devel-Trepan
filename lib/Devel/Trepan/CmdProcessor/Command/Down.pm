@@ -22,7 +22,7 @@ HELP
 
 use constant ALIASES    => qw(u);
 use constant CATEGORY   => 'stack';
-use constant SHORT_HELP => 'Move frame in the direction of the caller of the last-selected frame';
+use constant SHORT_HELP => 'Move frame in the direction of the least recent frame';
 our $MAX_ARGS     = 1;  # Need at most this many
 our $NEED_STACK   = 1;
 

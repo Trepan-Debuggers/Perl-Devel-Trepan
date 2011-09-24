@@ -12,7 +12,14 @@ package Devel::Trepan::CmdProcessor::Command::Disable;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 use strict;
+
 use vars qw(@ISA);
+
+unless (defined @ISA) {
+    eval "use constant CATEGORY => 'breakpoints'";
+    eval "use constant SHORT_HELP => 'Disable some breakpoints'";
+}
+
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -27,11 +34,6 @@ Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also "info break" to get a list.
 HELP
     
-unless (defined @ISA) {
-    eval "use constant CATEGORY => 'breakpoints'";
-    eval "use constant SHORT_HELP => 'Disable some breakpoints'";
-}
-
 sub run($$)
 {
     my ($self, $args) = @_;

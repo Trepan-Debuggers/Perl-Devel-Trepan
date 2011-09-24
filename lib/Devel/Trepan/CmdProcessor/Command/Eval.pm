@@ -12,6 +12,8 @@ use Devel::Trepan::Util;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
+our $MIN_ARGS = 0;
+our $MAX_ARGS = undef;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [STRING]
@@ -67,12 +69,12 @@ sub complete($$)
 { 
     my ($self, $prefix) = @_;
     if (!$prefix) {
-	# if ($self->{proc}.leading_str.start_with?('eval?')) {
-	#     Devel::Trepan::Util::extract_expression(
-	# 	$self->{proc}->current_source_text());
-	# } else {
+	if (0 == index($self->{proc}->{leading_str}, 'eval?')) {
+	    Devel::Trepan::Util::extract_expression(
+		$self->{proc}->current_source_text());
+	} else {
 	    $self->{proc}->current_source_text();
-	# }
+	}
     } else {
 	$prefix;
     }

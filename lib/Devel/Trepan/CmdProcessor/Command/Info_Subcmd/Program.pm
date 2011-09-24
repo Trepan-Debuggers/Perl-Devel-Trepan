@@ -37,7 +37,7 @@ sub run($$)
     if ($DB::brkpt) {
     	my $m = sprintf('It is stopped at %sbreakpoint %d.',
     		     $DB::brkpt->type eq 'tbrkpt' ? 'temporary ' : '',
-    		     $DB::brkpt->num);
+    		     $DB::brkpt->id);
     	$proc->msg($m);
     }
 }

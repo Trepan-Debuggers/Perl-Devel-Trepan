@@ -48,7 +48,7 @@ sub bpprint($$;$)
 		       $bp->id, $disp, $line_loc);
     $proc->msg($mess);
 
-    if ($bp->condition && $bp->condition != '1') {
+    if ($bp->condition && $bp->condition ne '1') {
 	my $msg = sprintf("\tstop %s %s", 
 			  $bp->negate ? "unless" : "only if", 
 			  $bp->condition);

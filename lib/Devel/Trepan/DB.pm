@@ -13,6 +13,7 @@ use English;
 
 use vars qw($usrctxt $running $caller 
             $event @ret $ret $return_value @return_value
+            $stop
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -45,7 +46,7 @@ BEGIN {
     %DB::sub = ();        # "filename:fromline-toline" for every known sub
     $DB::single = 0;      # single-step flag (set it to 1 to enable stops in BEGIN/use)
     $DB::signal = 0;      # signal flag (will cause a stop at the next line)
-    $DB::trace = 0;       # are we tracing through subroutine calls?
+    $DB::stop = 0;        # value of last breakpoint condition evaluation
 
     @DB::args = ();       # arguments of current subroutine or @ARGV array
     @DB::dbline = ();     # list of lines in currently loaded file
@@ -105,7 +106,7 @@ BEGIN {
 }
 
 ####
-# this is called by perl for every statement
+# this is called by Perl for every statement
 #
 sub DB {
 
@@ -127,8 +128,11 @@ sub DB {
     #  print "+++2 ", $evaltext, "\n" if $evaltext;
     
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
+
+    # Set package namespace for running eval's in the user context. 
+    # However this won't let them modify 'my' variables, alas.
+    $usrctxt = "package $DB::package;";
     
-    $usrctxt = "package $DB::package;";		# this won't let them modify, alas
     local(*DB::dbline) = "::_<$DB::filename";
 
     $DB::event = undef;
@@ -143,13 +147,14 @@ sub DB {
 		push @action, $brkpt;
 		next ;
 	    }
-	    my $stop;
+	    $stop = 0;
 	    if ($brkpt->condition eq '1') {
 		# A cheap and simple test for unconditional.
 		$stop = 1;
 	    } else  {
-		$eval_str = "$stop = do { $brkpt->condition; }";
-		&eval;
+		my $eval_str = sprintf("\$DB::stop = do { %s; }", 
+				       $brkpt->condition);
+		&DB::eval($usrctxt, $eval_str, @saved);
 	    }
 	    if ($stop && $brkpt->enabled) {
 		$DB::signal |= 1;
@@ -182,8 +187,7 @@ sub DB {
 	loadfile($DB::filename, $DB::lineno);
     }
     for my $action (@action) {
-	$eval_str = $action; 
-	&eval;
+	&DB::eval($usrctxt, $action, @saved);
     }
     if ($DB::single || $DB::signal) {
 	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
@@ -231,18 +235,6 @@ sub DB {
     ();
 }
   
-####
-# this takes its argument via $eval_str to preserve current @_
-#    
-sub eval {
-  ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-   $OUTPUT_FIELD_SEPARATOR, 
-   $INPUT_RECORD_SEPARATOR, 
-   $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-  eval "$usrctxt $eval_str; &DB::save";
-  _warnall($@) if $@;
-}
-
 =head1 RESTART SUPPORT
 
 These routines are used to store (and restore) lists of items in environment 

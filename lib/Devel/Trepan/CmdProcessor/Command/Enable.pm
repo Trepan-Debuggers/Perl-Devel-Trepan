@@ -10,14 +10,13 @@ use lib '../../../..';
 # NOTE: The enable command  subclasses this, so beware when changing! 
 package Devel::Trepan::CmdProcessor::Command::Enable;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-
-use strict;
-use vars qw(@ISA);
-
 unless (defined @ISA) {
     eval "use constant CATEGORY => 'breakpoints'";
     eval "use constant SHORT_HELP => 'Enable some breakpoints'";
 }
+
+use strict;
+use vars qw(@ISA);
 
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent

@@ -20,8 +20,26 @@ BEGIN {
     %DB::eval_result = ();      # place for result if hash.
 }    
 
+#
+# evaluate $eval_str in the context of $user_context (a package name).
+# @saved contains an ordered list of saved global variables.
+#    
+sub eval {
+    my ($user_context, $eval_str, @saved) = @_;
+    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
+     $OUTPUT_FIELD_SEPARATOR, 
+     $INPUT_RECORD_SEPARATOR, 
+     $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
+    eval "$user_context $eval_str; &DB::save";
+    _warnall($@) if $@;
+}
+
+
+# evaluate global $eval_str in the context of $user_context (a package name).
+# @saved contains an ordered list of saved global variables.
+# global $eval_opts->{return_type} indicates the return context.
 sub eval_with_return {
-    my ($usrctxt, @saved) = @_;
+    my ($user_context, @saved) = @_;
     no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
@@ -30,22 +48,22 @@ sub eval_with_return {
     use strict;
     given ($eval_opts->{return_type}) {
 	when ('$') {
-	    eval "$usrctxt \$DB::eval_result=$eval_str";
-	    $eval_result = eval "$usrctxt $eval_str";
+	    eval "$user_context \$DB::eval_result=$eval_str";
+	    $eval_result = eval "$user_context $eval_str";
 	}
 	when ('@') {
-	    eval "$usrctxt \@DB::eval_result=$eval_str";
+	    eval "$user_context \@DB::eval_result=$eval_str";
 	}
 	when ('%') {
-	    eval "$usrctxt \%DB::eval_result=$eval_str";
+	    eval "$user_context \%DB::eval_result=$eval_str";
 	} 
 	default {
-	    $eval_result = eval "$usrctxt $eval_str";
+	    $eval_result = eval "$user_context $eval_str";
 	}
     }
 
     my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-    eval "$usrctxt &DB::save";
+    eval "$user_context &DB::save";
     if ($EVAL_ERROR_SAVE) {
 	_warnall($EVAL_ERROR_SAVE);
 	$eval_str = '';

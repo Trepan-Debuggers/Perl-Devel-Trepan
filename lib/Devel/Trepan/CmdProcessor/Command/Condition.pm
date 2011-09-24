@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine';
+use lib '../../../..';
+
+package Devel::Trepan::CmdProcessor::Command::Condition;
+use English;
+
+use if !defined @ISA, Devel::Trepan::Condition ;
+use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined @ISA) {
+    eval "use constant ALIASES    => qw(cond);";
+    eval "use constant CATEGORY   => 'breakpoints';";
+    eval "use constant NEED_STACK => 0;";
+    eval "use constant SHORT_HELP => 
+         'Specify breakpoint number N to break only if COND is true';"
+}
+
+use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
+use vars @CMD_VARS;  # Value inherited from parent
+our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
+
+our $NAME = set_name();
+our $HELP = <<"HELP";
+${NAME} BP_NUMBER CONDITION
+
+BP_NUMBER is a breakpoint number.  CONDITION is an expression which
+must evaluate to True before the breakpoint is honored.  If CONDITION
+is absent, any existing condition is removed; i.e., the breakpoint is
+made unconditional.
+
+Examples:
+   ${NAME} 5 x > 10  # Breakpoint 5 now has condition x > 10
+   ${NAME} 5         # Remove above condition
+
+See also "break", "enable" and "disable".
+HELP
+
+# This method runs the command
+sub run($$) {
+    my ($self, $args) = @_;
+    my $proc = $self->{proc};
+    my $bpnum = $proc->get_an_int($args->[1]);
+    my $bp = $proc->{brkpts}->find($bpnum);
+    return unless $bp;
+    
+    my $condition;
+    if (scalar @{$args} > 2) {
+	my @args = @{$args};
+	shift @args; shift @args;
+	$condition = join(' ', @args);
+	unless (is_valid_condition($condition)) {
+	    $proc->errmsg("Invald condition '$condition'");
+	    return
+	}
+    } else {
+	$condition = '1';
+	$proc->msg('Breakpoint $bp->id is now unconditional.');
+    }
+    $bp->condition($condition);
+}
+
+unless (caller) {
+    require Devel::Trepan::CmdProcessor::Mock;
+    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    # my $cmd = __PACKAGE__->new($proc);
+    # $cmd->run([$NAME]);
+}
+
+1;

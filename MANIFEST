@@ -12,6 +12,7 @@ lib/Devel/Trepan/CmdProcessor/Command.pm
 lib/Devel/Trepan/CmdProcessor/Command/Alias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
+lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
@@ -91,6 +92,7 @@ lib/Devel/Trepan/CmdProcessor/Running.pm
 lib/Devel/Trepan/CmdProcessor/Validate.pm
 lib/Devel/Trepan/CmdProcessor/Virtual.pm
 lib/Devel/Trepan/Complete.pm
+lib/Devel/Trepan/Condition.pm
 lib/Devel/Trepan/Core.pm
 lib/Devel/Trepan/DB.pm
 lib/Devel/Trepan/DB/Backtrace.pm
@@ -115,6 +117,7 @@ MANIFEST			This list of files
 MANIFEST.SKIP
 t/test-cmd-kill.t
 t/test-complete.t
+t/test-condition.t
 t/test-db-brkpt.t
 t/test-intf-script.t
 t/test-intf-user.t

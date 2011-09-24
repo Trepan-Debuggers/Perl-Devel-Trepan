@@ -7,7 +7,13 @@ use lib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Break;
 use English;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+unless (defined(@ISA)) {
+    eval "use constant ALIASES    => qw(b);";
+    eval "use constant CATEGORY   => 'breakpoints';";
+    eval "use constant SHORT_HELP => 'Set a breakpoint';";
+}
+
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -25,9 +31,6 @@ Examples:
 See also "tbreak".
 HELP
 
-use constant ALIASES    => qw(b);
-use constant CATEGORY   => 'breakpoints';
-use constant SHORT_HELP => 'Set a breakpoint';
 local $NEED_RUNNING = 1;
 
 

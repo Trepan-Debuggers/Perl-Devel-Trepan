@@ -9,7 +9,7 @@ struct DBBreak => {
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
     condition   => '$', # Condition to evaluate or '1' fo unconditional
                         # if type is 'action' this is the action to run
-    num         => '$', # breakpoint/action number 
+    id          => '$', # breakpoint/action number 
     hits        => '$', # Number of time breakpoint/action hit
     enabled     => '$', # True if breakpoint or action is enabled
     negate      => '$', # break/step if ... or until .. ?
@@ -21,9 +21,9 @@ package DBBreak;
 sub inspect($)
 {
     my $self = shift;
-    sprintf("file %s, line %s, type: %s, num %d, enabled: %d, negate %d, hits: %s, cond: %s",
+    sprintf("file %s, line %s, type: %s, id %d, enabled: %d, negate %d, hits: %s, cond: %s",
 	    $self->filename, $self->line_num,
-	    $self->type, $self->num, $self->enabled, $self->negate, 
+	    $self->type, $self->id, $self->enabled, $self->negate, 
 	    $self->hits, $self->condition);
 };
 
@@ -52,7 +52,7 @@ sub line_events {
 
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
-    my ($s, $filename, $lineno, $cond, $num, $type, $enabled) = @_;
+    my ($s, $filename, $lineno, $cond, $id, $type, $enabled) = @_;
     $filename //= $DB::filename;
     $type //= 'break';
     $enabled //= 1;
@@ -65,17 +65,17 @@ sub set_break {
 	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
 	    $s->warning("Line $lineno not $suffix.\n");
 	} else {
-	    unless (defined $num) {
+	    unless (defined $id) {
 		if ($type eq 'action') {
-		    $num = ++$max_action;
+		    $id = ++$max_action;
 		} else {
-		    $num = ++$max_bp;
+		    $id = ++$max_bp;
 		}
 	    }
 	    my $brkpt = DBBreak->new(
 		type      => $type,
 		condition => $cond,
-		num       => $num,
+		id        => $id,
 		hits      => 0,
 		enabled   => $enabled,
 		filename  => $filename,
@@ -85,7 +85,7 @@ sub set_break {
 	    push @$ary_ref, $brkpt;
 	    my $prefix = $type eq 'tbrkpt' ? 
 		'Temporary breakpoint' : 'Breakpoint' ;
-	    $s->output("$prefix $num set in ${DB::filename} at line $lineno\n");
+	    $s->output("$prefix $id set in ${DB::filename} at line $lineno\n");
 	    return $brkpt
 	}
     }
@@ -94,8 +94,8 @@ sub set_break {
 
 # Set a temporary breakpoint
 sub set_tbreak {
-    my ($s, $filename, $lineno, $cond, $num) = @_;
-    set_break($s, $filename, $lineno, $cond, $num, 'tbrkpt');
+    my ($s, $filename, $lineno, $cond, $id) = @_;
+    set_break($s, $filename, $lineno, $cond, $id, 'tbrkpt');
 }
 
 sub delete_bp($$) {
@@ -169,8 +169,8 @@ sub clr_breaks {
 
 # Set a an action
 sub set_action {
-    my ($s, $lineno, $filename, $cond, $num) = @_;
-    set_break($s, $lineno, $filename, $cond, $num, 'action');
+    my ($s, $lineno, $filename, $cond, $id) = @_;
+    set_break($s, $lineno, $filename, $cond, $id, 'action');
 }
 
 # FIXME: combine with clear_breaks
@@ -208,7 +208,7 @@ sub clr_actions {
 unless (caller) {
     my $brkpt = DBBreak->new(
 	filename => __FILE__, line_num => __LINE__,
-	type=>'action', condition=>'1', num=>1, hits => 0, enbled => 1,
+	type=>'action', condition=>'1', id=>1, hits => 0, enbled => 1,
 	negate => 0
 	);
     print $brkpt->inspect, "\n";

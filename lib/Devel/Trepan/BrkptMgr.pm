@@ -42,11 +42,19 @@ sub DESTROY() {
     $self->{clear};
 }
 
+sub find($$)
+{
+    my ($self, $index) = @_;
+    for my $bp (@{$self->{list}}) {
+	return $bp if $bp->id eq $index;
+    }
+    return undef;
+}
+
 sub delete($$)
 {
     my ($self, $index) = @_;
-    my @list = @$self->{list};
-    my $bp = $list[$index];
+    my $bp = $self->find($index);
     if (defined ($bp)) {
         $self->delete_by_brkpt($bp);
         return $bp;
@@ -100,7 +108,7 @@ sub max($)
     my $self = shift;
     my $max = 0;
     for my $brkpt (@{$self->{list}}) {
-	$max = $brkpt->num if $brkpt->num > $max;
+	$max = $brkpt->id if $brkpt->id > $max;
     }
     return $max;
 }
@@ -136,7 +144,7 @@ unless (caller) {
 my $brkpts = Devel::Trepan::BrkptMgr->new;
 bp_status($brkpts, 0);
 my $brkpt1 = DBBreak->new(
-    type=>'brkpt', condition=>'1', num=>1, hits => 0, enbled => 1,
+    type=>'brkpt', condition=>'1', id=>1, hits => 0, enbled => 1,
     negate => 0
     );
 
@@ -144,7 +152,7 @@ $brkpts->add($brkpt1);
 bp_status($brkpts, 1);
 
 my $brkpt2 = DBBreak->new(
-    type=>'brkpt', condition=>'x>5', num=>2, hits => 0, enbled => 0,
+    type=>'brkpt', condition=>'x>5', id=>2, hits => 0, enbled => 0,
     negate => 0
     );
 $brkpts->add($brkpt2);
@@ -154,7 +162,7 @@ $brkpts->delete_by_brkpt($brkpt1);
 bp_status($brkpts, 3);
 
 my $brkpt3 = DBBreak->new(
-    type=>'brkpt', condition=>'y eq x', num=>3, hits => 0, enbled => 1,
+    type=>'brkpt', condition=>'y eq x', id=>3, hits => 0, enbled => 1,
     negate => 1
     );
 $brkpts->add($brkpt3);

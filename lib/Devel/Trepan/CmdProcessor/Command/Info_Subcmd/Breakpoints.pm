@@ -44,15 +44,15 @@ sub bpprint($$;$)
 
     my $line_loc = sprintf('%s:%d', $bp->filename, $bp->line_num);
 
+    my $mess = sprintf('%-4dbreakpoint    %s at %s',
+		       $bp->id, $disp, $line_loc);
+    $proc->msg($mess);
+
     if ($bp->condition && $bp->condition != '1') {
 	my $msg = sprintf("\tstop %s %s", 
 			  $bp->negate ? "unless" : "only if", 
 			  $bp->condition);
 	$proc->msg($msg);
-    }
-    if ($bp->ignore > 0) {
-	my $msg = sprintf("\tignore next %d hits", $bp->ignore);
-	$proc->msg($msg)
     }
     if ($bp->hits > 0) {
 	my $ss = ($bp->hits > 1) ? 's' : '';
@@ -88,8 +88,9 @@ sub run($$) {
     }
 
     my $show_all = 1;
+    my @args = ();
     if (scalar @{$args} > 2) {
-	my @args = @{$args};
+	@args = @{$args};
 	pop @args; pop @args;
 	my $max = $proc->{brkpts}->max;
         my $opts = {
@@ -106,33 +107,28 @@ sub run($$) {
     if (0 == scalar @$bpmgr) {
 	$proc->msg('No breakpoints.');
     } else {
-	$proc->msg("Not finished yet...");
-	return;
-
-# 	# There's at least one
-# 	$proc->section("Num Type          Disp Enb Where");
-# 	if ($show_all) {
-# 	    for my $bp ($bpmgr->list) {
-# 		$self->bpprint($bp, $verbose);
-# 	    }
-# 	} else  {
-# 	    my @notfound = ();
-# 	    for my $bp_num ($bp_nums->list)  {
-# 		my $bp = $proc->brkpts->list->[$bp_num];
-# 		if ($bp) {
-# 		    $self->bpprint($bp, $verbose);
-# 		} else {
-# 		    push @notfound, $bp_num;
-# 		}
-# 	    }
-# 	    $proc->errmsg("No breakpoint number(s) ${not_found.join(' ')}.") unless scalar @notfound;
-# 	}
-#     }
-#     if (0 == scalar @{$proc->traced_vars}) {
-# 	$proc->msg('No traced variables.');
-#     } else {
-# 	$proc->section('Traced Variables');
-# 	$proc->msg(columnize_commands(@proc.traced_vars.keys.sort));
+	# There's at least one
+	$proc->section("Num Type          Disp Enb Where");
+	if ($show_all) {
+	    for my $bp (@{$bpmgr}) {
+		$self->bpprint($bp, $verbose);
+	    }
+	} else  {
+	    my @not_found = ();
+	    for my $bp_num (@args)  {
+		my $bp = $bpmgr->find($bp_num);
+		if ($bp) {
+		    $self->bpprint($bp, $verbose);
+		} else {
+		    push @not_found, $bp_num;
+		}
+	    }
+	    unless (scalar @not_found) {
+		my $msg = sprintf("No breakpoint number(s) %s.\n",
+				  join(', ', @not_found));
+		$proc->errmsg($msg);
+	    }
+	}
     }
 }
 

@@ -1,5 +1,5 @@
-# Perl's Core DB.pm library with some corrections, additions and modifications and
-# code merged from perl5db.pl
+# Perl's Core DB.pm library with some corrections, additions,
+# modifications and code merged from perl5db.pl
 #
 # Documentation is at the __END__
 #
@@ -151,7 +151,7 @@ sub DB {
 		$eval_str = "$stop = do { $brkpt->condition; }";
 		&eval;
 	    }
-	    if ($stop) {
+	    if ($stop && $brkpt->enabled) {
 		$DB::signal |= 1;
 		$DB::brkpt = $brkpt;
 		if ($brkpt->type eq 'tbrkpt') {
@@ -160,6 +160,8 @@ sub DB {
 		    undef $brkpts->[$i];
 		} else {
 		    $event = 'brkpt';
+		    my $hits = $brkpt->hits + 1;
+		    $brkpt->hits($hits);
 		}
 		last;
 	    }

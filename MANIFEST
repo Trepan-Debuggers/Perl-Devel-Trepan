@@ -13,8 +13,10 @@ lib/Devel/Trepan/CmdProcessor/Command/Alias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
+lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
 lib/Devel/Trepan/CmdProcessor/Command/Edit.pm
+lib/Devel/Trepan/CmdProcessor/Command/Enable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
 lib/Devel/Trepan/CmdProcessor/Command/Frame.pm

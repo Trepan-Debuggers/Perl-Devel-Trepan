@@ -15,6 +15,8 @@ use vars qw(@ISA);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
+our $MIN_ARGS = 0;
+our $MAX_ARGS = 2;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [LOCATION]

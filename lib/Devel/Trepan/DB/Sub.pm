@@ -162,4 +162,22 @@ sub lsub : lvalue {
     &$sub;
 }
 
+####
+# without args: returns all defined subroutine names
+# with subname args: returns a listref [file, start, end]
+#
+sub subs {
+  my $s = shift;
+  if (@_) {
+    my(@ret) = ();
+    while (@_) {
+      my $name = shift;
+      push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/] 
+	if exists $DB::sub{$name};
+    }
+    return @ret;
+  }
+  return keys %DB::sub;
+}
+
 1;

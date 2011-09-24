@@ -43,7 +43,6 @@ BEGIN {
     # these are hardcoded in perl source (some are magical)
     
     $DB::sub = '';        # name of current subroutine
-    %DB::sub = ();        # "filename:fromline-toline" for every known sub
     $DB::single = 0;      # single-step flag (set it to 1 to enable stops in BEGIN/use)
     $DB::signal = 0;      # signal flag (will cause a stop at the next line)
     $DB::stop = 0;        # value of last breakpoint condition evaluation
@@ -180,7 +179,7 @@ sub DB {
 	$event ||= 'line';
     } else {
 	$event = 'unknown';
-  }
+    }
     
     if ($DB::single || $DB::trace || $DB::signal) {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
@@ -421,24 +420,6 @@ sub trace_toggle {
   $DB::trace = !$DB::trace;
 }
 
-
-####
-# without args: returns all defined subroutine names
-# with subname args: returns a listref [file, start, end]
-#
-sub subs {
-  my $s = shift;
-  if (@_) {
-    my(@ret) = ();
-    while (@_) {
-      my $name = shift;
-      push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/] 
-	if exists $DB::sub{$name};
-    }
-    return @ret;
-  }
-  return keys %DB::sub;
-}
 
 ####
 # first argument is a filename whose subs will be returned

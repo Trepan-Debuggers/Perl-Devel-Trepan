@@ -26,11 +26,10 @@ ${NAME} [bpnumber [bpnumber...]]
 Delete some breakpoints.
 
 Arguments are breakpoint numbers with spaces in between.  To delete
-all breakpoints, give no argument.  those breakpoints.  Without
-argument, clear all breaks (but first ask confirmation).
-    
-See also the "clear" command which clears breakpoints by line/file
-number.
+all breakpoints, give no arguments.  
+
+See also the "clear" command which clears breakpoints by line number
+and "info break" to get a list of breakpoint numbers.
 HELP
 
 # This method runs the command
@@ -47,9 +46,9 @@ sub run($$) {
     }
     shift @args;
     for my $num_str (@args) {
-	my $i = $proc->get_an_int($num_str);
-	my $success = $proc->{brkpts}->delete($i) if $i;
-	$proc->msg("Deleted breakpoint $i") if $success;
+	my $bp_num = $proc->get_an_int($num_str);
+	my $success = $proc->{brkpts}->delete($bp_num) if $bp_num;
+	$proc->msg("Deleted breakpoint $bp_num") if $success;
     }
 }
         

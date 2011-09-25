@@ -6,10 +6,11 @@ use lib '../..';
 use Devel::Trepan::DB::Breakpoint;
 package Devel::Trepan::BrkptMgr;
 
-sub new($) 
+sub new($$) 
 {
-    my $class = shift;
+    my ($class,$dbgr) = @_;
     my $self = {};
+    $self->{dbgr} = $dbgr;
     bless $self, $class;
     $self->clear();
     $self;
@@ -141,7 +142,9 @@ unless (caller) {
 	print "--- ${i} ---\n";
     }
 
-my $brkpts = Devel::Trepan::BrkptMgr->new;
+require Devel::Trepan::Core;
+my $dbgr = Devel::Trepan::Core->new;
+my $brkpts = Devel::Trepan::BrkptMgr->new($dbgr);
 bp_status($brkpts, 0);
 my $brkpt1 = DBBreak->new(
     type=>'brkpt', condition=>'1', id=>1, hits => 0, enbled => 1,

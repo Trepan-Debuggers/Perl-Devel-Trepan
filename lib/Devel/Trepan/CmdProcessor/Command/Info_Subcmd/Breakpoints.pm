@@ -102,15 +102,17 @@ sub run($$) {
         my $bp_nums = $proc->get_int_list(@args);
 	$show_all = 0;
     }
-    
-    my $bpmgr = $proc->{brkpts}->{list};
-    if (0 == scalar @$bpmgr) {
+
+    my $bpmgr = $proc->{brkpts};
+    $bpmgr->compact;
+    my @brkpts = @{$bpmgr->{list}};
+    if (0 == scalar @brkpts) {
 	$proc->msg('No breakpoints.');
     } else {
 	# There's at least one
 	$proc->section("Num Type          Disp Enb Where");
 	if ($show_all) {
-	    for my $bp (@{$bpmgr}) {
+	    for my $bp (@brkpts) {
 		$self->bpprint($bp, $verbose);
 	    }
 	} else  {

@@ -14,6 +14,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
 lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
+lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
 lib/Devel/Trepan/CmdProcessor/Command/Edit.pm

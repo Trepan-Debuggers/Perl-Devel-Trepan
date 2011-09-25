@@ -52,26 +52,27 @@ sub run($$) {
     if ($arg_count == 0) {
 	$bp = $self->{dbgr}->set_break($DB::filename, $DB::lineno);
     } else {
-	my ($filename, $line_num, $condition);
-	if ($args[0] =~ /\d+/) {
-	    $line_num = $args[0];
-	    $filename = $DB::filename;
-	} elsif ($arg_count > 2) {
+	my ($filename, $line_or_fn, $condition);
+	if ($arg_count > 2) {
 	    if ($args[0] eq 'if') {
-		$line_num = $DB::lineno;
+		$line_or_fn = $DB::lineno;
 		$filename = $DB::filename;
-		unshift @args, $line_num;
+		unshift @args, $line_or_fn;
 	    } else  {
 		$filename = $args[0];
 		if ($args[1] =~ /\d+/) {
-		    $line_num = $args[1];
+		    $line_or_fn = $args[1];
 		    shift @args;
 		} elsif ($args[1] eq 'if') {
-		    $line_num = $args[0];
+		    $line_or_fn = $args[0];
 		} else {
-		    $line_num = $args[0];
+		    $line_or_fn = $args[0];
 		}
 	    }
+	} else {
+	    # $arg_count == 1. 
+	    $line_or_fn = $args[0];
+	    $filename = $DB::filename;
 	}
 	shift @args;
 	if (scalar @args) {
@@ -83,7 +84,7 @@ sub run($$) {
 			      " got ${args[0]}");
 	    }
 	}
-	$bp = $self->{dbgr}->set_break($filename, $line_num, $condition);
+	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, $condition);
     }
     $proc->{brkpts}->add($bp);
 }

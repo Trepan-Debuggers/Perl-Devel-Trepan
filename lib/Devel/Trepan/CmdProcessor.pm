@@ -57,7 +57,7 @@ sub new($;$$$) {
 	$interfaces = [$intf];
     }
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
-    $self->{brkpts}       = Devel::Trepan::BrkptMgr->new;
+    $self->{brkpts}       = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{dbgr}         = $dbgr;
     $self->{event}        = undef;
     $self->{cmd_queue}    = [];

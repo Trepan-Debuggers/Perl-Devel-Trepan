@@ -70,7 +70,7 @@ sub delete_by_brkpt($$)
 	next unless defined $candidate;
 	if ($candidate eq $delete_bp) {
 	    $candidate = undef;
-	    # $delete_bp->remove();
+	    $self->{dbgr}->delete_bp($delete_bp);
 	    return $delete_bp;
 	}
     }
@@ -123,9 +123,9 @@ sub size($)
 sub reset($)
 {
     my $self = shift;
-    # for my $bp (@$self->{list}) {
-    # 	$bp->remove();
-    # }
+    for my $bp (@{$self->{list}}) {
+     	$self->{dbgr}->delete_bp($bp);
+     }
     $self->{list} = [];
 }
 

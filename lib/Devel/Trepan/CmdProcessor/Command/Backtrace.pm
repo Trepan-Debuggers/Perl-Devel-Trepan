@@ -26,7 +26,7 @@ Examples:
    ${NAME} 2  # Print only the top two entries
 HELP
 
-use constant ALIASES    => qw(bt where);
+use constant ALIASES    => qw(bt where T);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Print backtrace of stack frames';
 our $MAX_ARGS     = 1;  # Need at most this many

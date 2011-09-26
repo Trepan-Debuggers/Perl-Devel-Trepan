@@ -5,15 +5,15 @@ the command is ignored.
 
 If a line starts with ! in column one, the line is eval'd. 
 
-If the command you want Ruby to eval uses ! initially, add that
+If the command you want Perl to evaluage uses ! initially, add that
 after the first ! or start the line with a space.
 
 Commands are split at whereever ;; appears. This process disregards
-any quotes or other symbols that have meaning in Ruby. The strings
+any quotes or other symbols that have meaning in Perl. The strings
 after the leading command string are put back on a command queue. 
 
 Within a single command, tokens are then white-space split. Again,
-this process disregards quotes or symbols that have meaning in Ruby.
+this process disregards quotes or symbols that have meaning in Perl.
 Some commands like 'eval', 'macro', and 'break' have access to the
 untokenized string entered and make use of that rather than the
 tokenized list.
@@ -41,11 +41,11 @@ abbreviations for commands using "set abbrev". The default is
 abbreviations are on.
 
 4. If after all of the above, we still don't find a command, the line
-may be evaluated as a Ruby statement in the current context of the
+may be evaluated as a Perl statement in the current context of the
 program at the point it is stoppped. However this is done only if
 "autoeval" is on.  (It is on by default.)
 
-If "auto eval" is not set on, or if running the Ruby statement
+If "auto eval" is not set on, or if running the Perl statement
 produces an error, we display an error message that the entered string
 is "undefined".
 

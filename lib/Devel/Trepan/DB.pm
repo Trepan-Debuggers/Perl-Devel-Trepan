@@ -362,7 +362,8 @@ sub cont {
 	} else {
 	    ($file, $line) = ($DB::filename, $_[0]);
 	}
-	$s->set_tbreak($file, $line);
+	my $brkpt = $s->set_tbreak($file, $line);
+	return unless $brkpt;
     }
     for (my $i = 0; $i <= $#stack;) {
 	$stack[$i++] &= ~1;

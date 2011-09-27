@@ -363,13 +363,13 @@ sub cont {
 	    ($file, $line) = ($DB::filename, $_[0]);
 	}
 	my $brkpt = $s->set_tbreak($file, $line);
-	return unless $brkpt;
+	return 0 unless $brkpt;
     }
     for (my $i = 0; $i <= $#stack;) {
 	$stack[$i++] &= ~1;
     }
     $DB::single = 0;
-    $running = 1;
+    return $running = 1;
 }
 
 # stop before finishing the current subroutine

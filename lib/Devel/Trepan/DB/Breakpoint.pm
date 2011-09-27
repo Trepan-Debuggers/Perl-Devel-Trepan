@@ -52,44 +52,47 @@ sub line_events {
 
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
-    my ($s, $filename, $lineno, $cond, $id, $type, $enabled) = @_;
+    my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
     $filename //= $DB::filename;
-    $type //= 'break';
+    $type //= 'brkpt';
     $enabled //= 1;
-    $lineno ||= $DB::lineno;
+    $fn_or_lineno ||= $DB::lineno;
     $cond ||= '1';
-    $lineno = _find_subline($lineno) if ($lineno =~ /\D/);
-    $s->warning("Subroutine not found.\n") unless $lineno;
-    if ($lineno) {
-	if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
-	    my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
-	    $s->warning("Line $lineno not $suffix.\n");
-	} else {
-	    unless (defined $id) {
-		if ($type eq 'action') {
-		    $id = ++$max_action;
-		} else {
-		    $id = ++$max_bp;
-		}
-	    }
-	    my $brkpt = DBBreak->new(
-		type      => $type,
-		condition => $cond,
-		id        => $id,
-		hits      => 0,
-		enabled   => $enabled,
-		filename  => $filename,
-		line_num  => $lineno
-		);
-	    my $ary_ref = $DB::dbline{$lineno} //= [];
-	    push @$ary_ref, $brkpt;
-	    my $prefix = $type eq 'tbrkpt' ? 
-		'Temporary breakpoint' : 'Breakpoint' ;
-	    $s->output("$prefix $id set in ${DB::filename} at line $lineno\n");
-	    return $brkpt
+    my $lineno = $fn_or_lineno;
+    if ($fn_or_lineno =~ /\D/) {
+	$lineno = _find_subline($fn_or_lineno) ;
+	unless ($lineno) {
+	    $s->warning("Subroutine $fn_or_lineno not found.\n");
+	    return undef;
 	}
     }
-    return undef;
+    if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
+	my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
+	$s->warning("Line $lineno not $suffix.\n");
+	return undef;
+    }
+    unless (defined $id) {
+	if ($type eq 'action') {
+	    $id = ++$max_action;
+	} else {
+	    $id = ++$max_bp;
+	}
+    }
+    my $brkpt = DBBreak->new(
+	type      => $type,
+	condition => $cond,
+	id        => $id,
+	hits      => 0,
+	enabled   => $enabled,
+	filename  => $filename,
+	line_num  => $lineno
+	);
+    my $ary_ref = $DB::dbline{$lineno} //= [];
+    push @$ary_ref, $brkpt;
+    my $prefix = $type eq 'tbrkpt' ? 
+	'Temporary breakpoint' : 'Breakpoint' ;
+    $s->output("$prefix $id set in ${DB::filename} at line $lineno\n");
+    return $brkpt
 }
 
 # Set a temporary breakpoint

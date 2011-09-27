@@ -25,15 +25,16 @@ Define MACRO-NAME as a debugger macro. Debugger macros get a list of
 arguments which you supply without parenthesis or commas. See below
 for an example.
 
-The macro should return either a string or an array reference to a
-list of strings. The string in both cases are strings of debugger
-commands.  If the return is a string, that gets tokenized by a simple
-split(/ /, \$string).  Note that macro processing is done right after
-splitting on ;; so if the macro returns a string containing ;; this
-will not be handled on the string returned.
+The macro (really a Perl annonymous subroutine) should return either a
+string or an array reference to a list of strings. The string in both
+cases are strings of debugger commands.  If the return is a string,
+that gets tokenized by a simple split(/ /, \$string).  Note that macro
+processing is done right after splitting on ;; so if the macro returns
+a string containing ;; this will not be handled on the string
+returned.
 
 If instead, a reference to a list of strings is returned, then the
-first string is unshifted from the array and executed. The remaining
+first string is shifted from the array and executed. The remaining
 strings are pushed onto the command queue. In contrast to the first
 string, subsequent strings can contain other macros, and ;; in those
 strings will be split into separate commands.
@@ -52,6 +53,12 @@ Invoking with
   fin+ 3
 
 would expand to ["finish 3", "step"]
+
+If you were to add another parameter for 'step', the note that the 
+invocation might be 
+  fin+ 3 2
+
+rather than 'fin+(3,2)' or 'fin+ 3, 2'.
 
 See also 'info macro'.
 HELP

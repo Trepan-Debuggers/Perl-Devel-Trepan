@@ -46,7 +46,7 @@ sub is_closed($) {
 
 sub close($) {
     my($self) = shift;
-    close $self->{input} unless $self->is_closed;
+    CORE::close $self->{input} unless $self->is_closed;
     $self->{eof} = 1;
 }
 

@@ -10,6 +10,8 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
+our $MIN_ARGS     = 0;  # Need at most this many
+our $MAX_ARGS     = 2;  # Need at most this many
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME}[!] [unconditionally] [exit code] 
@@ -34,7 +36,6 @@ HELP
 use constant ALIASES    => ('quit!', 'q', 'q!');
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Quit program - gently';
-our $MAX_ARGS     = 2;  # Need at most this many
 
 
 # FIXME: Combine 'quit' and 'exit'. The only difference is whether

@@ -252,22 +252,6 @@ sub process_commands($$$)
 	
 	## $self->{unconditional_prehooks}->run;
 	
-	# if ('trace-var' eq @event ) {
-	#     variable_name, value = @core.hook_arg;
-	#     action = @traced_vars[variable_name];
-	#     $self->msg "trace: #{variable_name} = #{value}";
-	#     case action
-	#     when nil
-	#       $self->errmsg "no action recorded for variable. using 'stop'."
-	#     when 'stop'
-	#       msg "note: we are stopped *after* the above location."
-	#     when 'nostop'
-	#       print_location
-	#       return;
-	# 	else {
-	# 	    $self->errmsg("internal error: unknown trace_var action ${action}");
-	#     }
-	#   }
 	
 	# my @last_pos;
 	# if (breakpoint?) {
@@ -329,27 +313,33 @@ sub run_command($$)
         # which splits on leading spaces among others.
         my @args = split(' ', $current_command);
 
-        # # Expand macros. FIXME: put in a procedure
-        # while (1) {
-	#     my $macro_cmd_name = $args[0];
-	#     return if scalar(@args) == 0;
-	#     last unless %$self->{macros}{$macro_cmd_name};
-	#     $self->{current_command} = 
-	# 	$self->{macros}{$macro_cmd_name}[0].call(*args[1..-1]);
-	#     $self->msg($current_command) if $self->{settings}{debugmacro};
-	#     if (current_command.is_a?(Array) && 
-	# 	current_command.all? {|val| val.is_a?(String)}) {
-	# 	@args = (first=current_command.shift).split;
-	# 	@cmd_queue += current_command;
-	# 	current_command = first;
-	#     } elsif (current_command.is_a?(String)) {
-	# 	@args = current_command.split;
-	#     } else {
-	# 	$self->errmsg("macro #{macro_cmd_name} should return an Array " .
-	# 		      "of Strings or a String. Got #{current_command.inspect}");
-	# 	return;
-	#     }
-        # }
+        # Expand macros. FIXME: put in a procedure
+        while (1) {
+	    return if scalar(@args) == 0;
+	    my $macro_cmd_name = $args[0];
+	    last unless $self->{macros}{$macro_cmd_name};
+	    pop @args;
+	    my $macro_expanded = 
+		$self->{macros}{$macro_cmd_name}->[0]->(@args);
+#	    $self->msg($macro_expanded) if $self->{settings}{debugmacro};
+	    if (ref $macro_expanded eq 'ARRAY' #  && 
+#		current_command.all? {|val| val.is_a?(String)}
+		) {
+		my @new_commands = @{$macro_expanded};
+		push @cmd_queue, @new_commands;
+		$current_command = shift @cmd_queue;
+		@args = split(' ', $current_command);
+	    } else {
+		$current_command = $macro_expanded;
+		@args = split(/\s+/, $current_command);
+	    # } else {
+	    # 	$self->errmsg("macro ${macro_cmd_name} should return a list " .
+	    # 		      "of strings " .
+	    # 		      # or a String
+	    # 		      ". Got ${current_command.inspect}");
+	    # 	return;
+	    }
+        }
 
 	my %commands = %{$self->{commands}};
         $cmd_name = $self->{cmd_name} = $args[0];

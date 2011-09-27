@@ -12,6 +12,8 @@ use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
+our $MIN_ARGS   = 0;
+our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 local $NAME = set_name();
 our $HELP = <<"HELP";
 Generic command for showing things about the program being debugged. 
@@ -26,8 +28,6 @@ HELP
 use constant CATEGORY => 'status';
 use constant SHORT_HELP => 'Information about debugged program and its environment';
 local $NEED_STACK     = 0;
-$MAX_ARGS             = 1000;
-$MIN_ARGS             = 0;
 
 unless (caller) {
     require Devel::Trepan::CmdProcessor;

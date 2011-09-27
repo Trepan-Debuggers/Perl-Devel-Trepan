@@ -7,12 +7,14 @@ use lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Show::Aliases;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
+## FIXME: do automatically.
+our $CMD = "show aliases";
 our $HELP         = <<"EOH";
-show alias [NAME1 NAME2 ...] 
+$CMD [NAME1 NAME2 ...] 
 
 If aliases names are given, show their definition. If left blank, show
 all alias names

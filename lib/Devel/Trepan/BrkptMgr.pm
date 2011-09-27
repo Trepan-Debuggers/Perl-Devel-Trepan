@@ -37,9 +37,9 @@ sub inspect($)
 # Remove all breakpoints that we have recorded
 sub DESTROY() {
     my $self = shift;
-    # for my $bp (@{$self->{list}}) {
-    #     $bp->delete;
-    # }
+    for my $bp (@{$self->{list}}) {
+        self->delete_by_brkpt($bp) if defined($bp);
+    }
     $self->{clear};
 }
 

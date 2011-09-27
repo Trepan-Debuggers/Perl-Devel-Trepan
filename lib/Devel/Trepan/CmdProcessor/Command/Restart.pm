@@ -8,12 +8,18 @@ package Devel::Trepan::CmdProcessor::Command::Restart;
 use English;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (defined(@ISA)) {
+    eval "use constant CATEGORY   => 'running';";
+    eval "use constant SHORT_HELP => '(Hard) restart of program via exec()'";
+}
 
 use strict;
 use vars qw(@ISA);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
+our $MIN_ARGS = 0;
+our $MAX_ARGS = undef;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 $NAME 
@@ -22,18 +28,7 @@ Restart debugger and program via an exec call.
 HELP
 
 use constant ALIASES  => ('R');
-use constant CATEGORY => 'running';
-use constant SHORT_HELP => '(Hard) restart of program via exec()';
-$MAX_ARGS   = 0;  # Need at most this many
   
-# sub complete($$) {
-#     my ($self, $prefix) = @_;
-#     my $completions = Signal.list.keys + 
-# 	Signal.list.values + 
-# 	Signal.list.values.map{|i| -i} ;
-#     Trepan::Complete->complete_token($completions, $prefix);
-# }
-    
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;

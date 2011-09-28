@@ -58,14 +58,20 @@ sub add_startup_files($$) {
 
 sub awaken($;$) {
     my ($self, $opts);
-    $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__);
     no warnings 'once';
     $main::TREPAN_CMDPROC = $cmdproc;
     # Process options
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
+    my $cmdproc_opts = {
+	basename  =>  $opts->{basename},
+	highlight =>  $opts->{highlight}
+    };
+    $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
+						$cmdproc_opts);
     $opts //= {};
+
     for my $startup_file (@{$opts->{cmdfiles}}) {
 	add_startup_files($cmdproc, $startup_file);
     }

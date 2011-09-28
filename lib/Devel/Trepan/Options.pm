@@ -25,8 +25,10 @@ my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
     initial_dir  => undef, # If --cd option was given, we save it here.
     initfile     => $initfile,
+    basename     => 0,
     nx           => 0,     # Don't run user startup file (e.g. .treplrc)
     cmdfiles     => [],
+    highlight    => 1,
     # Default values used only when 'server' or 'client'
     # (out-of-process debugging)
     port         => 1954,
@@ -53,7 +55,10 @@ sub process_options($)
 	 'help'         => \$help,
 	 'man'          => \$man,
 	 'port:n'       => \$opts->{port},
+	 'highlight'    => \$opts->{highlight},
+	 'no-highlight' => sub { $opts->{highlight} = 0},
 	 'host:s'       => \$opts->{host},
+	 'basename'     => \$opts->{basename},
 	 'c|command=s@' => \$opts->{cmdfiles},
 	 'cd:s'         => \$opts->{initial_dir},
 	 'nx'           => \$opts->{nx},
@@ -140,11 +145,16 @@ trepanpl - Perl "Trepanning" Debugger
    Options:
       -help               brief help message
       -man                full documentation
+      -basename           Show basename only on source file listings. 
+                          (Needed in regression tests)
       -c| --command FILE  Change current directory to DIR
       -cd DIR             Change current directory to DIR
       -nx                 Don't run user startup file (e.g. .treplrc)
       -port N             TCP/IP port to use on remote connection
       -readline           Try to use Term::Readline
+      --highlight | --no-highlight 
+                          Use or don't use ANSI terminal sequences for syntax
+                          highlight
 
 =head1 DESCRIPTION
 

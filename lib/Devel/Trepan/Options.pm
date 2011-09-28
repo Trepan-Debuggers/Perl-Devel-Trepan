@@ -3,11 +3,21 @@ use strict;
 use warnings;
 package Devel::Trepan::Options;
 use Getopt::Long qw(GetOptionsFromArray);
+use Pod::Usage;
+use Pod::Find qw(pod_where);
 use File::Spec;
 use lib '../..';
 
-use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS);
-@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS);
+use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
+@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
+
+BEGIN {
+    $PROGRAM_NAME = 'trepanpl';
+    $VERSION      = '0.10';
+}
+use constant VERSION => $VERSION;
+use constant PROGRAM_NAME => $PROGRAM_NAME;
+
 @ISA    = qw(Exporter);
 
 my $home = $ENV{'HOME'} || glob("~");
@@ -15,8 +25,8 @@ my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
     initial_dir  => undef, # If --cd option was given, we save it here.
     initfile     => $initfile,
-    nx           => 0,     # Don't run user startup file (e.g. .trepanplrc)
-
+    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
+    cmdfiles     => [],
     # Default values used only when 'server' or 'client'
     # (out-of-process debugging)
     port         => 1954,
@@ -25,7 +35,6 @@ $DEFAULT_OPTIONS = {
 
 };
 
-use constant VERSION => '0.10';
 
 sub show_version()
 {
@@ -37,19 +46,25 @@ sub process_options($)
 {
     $Getopt::Long::autoabbrev = 1;
     my ($argv) = @_;
-    my ($show_version, $help);
+    my ($show_version, $help, $man);
     my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
-	 'help'        => \$help,
-	 'port:n'      => \$opts->{port},
-	 'host:s'      => \$opts->{host},
-	 'cd:s'        => \$opts->{initial_dir},
-	 'nx'          => \$opts->{nx},
-	 'readline'    => \$opts->{readline},
-	 'version'     => \$show_version,
+	 'help'         => \$help,
+	 'man'          => \$man,
+	 'port:n'       => \$opts->{port},
+	 'host:s'       => \$opts->{host},
+	 'c|command=s@' => \$opts->{cmdfiles},
+	 'cd:s'         => \$opts->{initial_dir},
+	 'nx'           => \$opts->{nx},
+	 'readline'     => \$opts->{readline},
+	 'version'      => \$show_version,
 	);
     
+    pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__), 
+	      -exitstatus => 1) if $help;
+    pod2usage(-exitstatus => 10, -verbose => 2,
+	      -input => pod_where({-inc => 1}, __PACKAGE__)) if $man;
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
 	defined($opts->{initial_dir});
@@ -112,3 +127,28 @@ unless (caller) {
 
 1;
 
+__END__
+    
+=head1 TrepanPl
+
+trepanpl - Perl "Trepanning" Debugger 
+
+=head1 SYNOPSIS
+
+   trepan [options] [[--] perl-program [perl-program-options ...]]
+
+   Options:
+      -help               brief help message
+      -man                full documentation
+      -c| --command FILE  Change current directory to DIR
+      -cd DIR             Change current directory to DIR
+      -nx                 Don't run user startup file (e.g. .treplrc)
+      -port N             TCP/IP port to use on remote connection
+      -readline           Try to use Term::Readline
+
+=head1 DESCRIPTION
+
+B<trepanpl> is a gdb-like debugger. Much of the interface and code has
+been adapted from the trepanning debuggers of Ruby.
+
+=cut

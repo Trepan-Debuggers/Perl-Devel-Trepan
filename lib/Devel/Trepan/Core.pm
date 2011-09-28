@@ -45,6 +45,17 @@ sub warning($)
     $cmdproc->errmsg($msg);
 }
 
+sub add_startup_files($$) {
+    my ($cmdproc, $startup_file) = @_;
+    if (-f $startup_file) {
+	if (-r $startup_file)  {
+	    push @{$cmdproc->{cmd_queue}}, "source $startup_file";
+	} else {
+	    print STDERR "Command file '$startup_file' is not readable.\n";
+	}
+    }
+}
+
 sub awaken($;$) {
     my ($self, $opts);
     $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__);
@@ -55,15 +66,11 @@ sub awaken($;$) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
     $opts //= {};
+    for my $startup_file (@{$opts->{cmdfiles}}) {
+	add_startup_files($cmdproc, $startup_file);
+    }
     if (!$opts->{nx} && exists $opts->{initfile}) {
-	my $initfile = $opts->{initfile};
-	if (-f $initfile) {
-	    if (-r $initfile)  {
-		push @{$cmdproc->{cmd_queue}}, "source $initfile";
-	    } else {
-		print STDERR "Command file '$initfile' is not readable.\n";
-	    }
-	}
+	add_startup_files($cmdproc, $opts->{initfile});
     }
 }
     

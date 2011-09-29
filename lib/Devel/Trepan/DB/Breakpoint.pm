@@ -89,9 +89,6 @@ sub set_break {
 	);
     my $ary_ref = $DB::dbline{$lineno} //= [];
     push @$ary_ref, $brkpt;
-    my $prefix = $type eq 'tbrkpt' ? 
-	'Temporary breakpoint' : 'Breakpoint' ;
-    $s->output("$prefix $id set in ${DB::filename} at line $lineno\n");
     return $brkpt
 }
 

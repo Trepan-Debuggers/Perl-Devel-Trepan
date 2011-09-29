@@ -132,5 +132,12 @@ t/10test-position.t
 t/10test-proc-load.t
 t/10test-util.t
 t/10test-validate.t
+t/20test-break.t
+t/20test-step.t
 t/20test-trepanpl-opts.t
+t/data/break.cmd
+t/data/break.right
+t/data/step.cmd
+t/data/step.right
+t/Helper.pm
 testit

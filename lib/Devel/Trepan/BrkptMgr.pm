@@ -47,6 +47,7 @@ sub find($$)
 {
     my ($self, $index) = @_;
     for my $bp (@{$self->{list}}) {
+	next unless $bp;
 	return $bp if $bp->id eq $index;
     }
     return undef;

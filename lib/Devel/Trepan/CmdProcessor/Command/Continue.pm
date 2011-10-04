@@ -53,9 +53,10 @@ sub run($$) {
 	# return unless iseq && vm_offset;
 	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
 	#return unless bp;
-    }
-    $self->{proc}->{leave_cmd_loop} = 1;
-    $self->{dbgr}->cont($args->[1]);
+	$self->{proc}->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
+    } else {
+	$self->{proc}->{leave_cmd_loop} = $self->{dbgr}->cont;
+    };
 }
 
 if (__FILE__ eq $0) {

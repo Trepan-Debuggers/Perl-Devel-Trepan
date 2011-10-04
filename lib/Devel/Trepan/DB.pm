@@ -158,12 +158,11 @@ sub DB {
 	    if ($stop && $brkpt->enabled) {
 		$DB::signal |= 1;
 		$DB::brkpt = $brkpt;
-		if ($brkpt->type eq 'tbrkpt') {
+		$event = $brkpt->type;
+		if ($event eq 'tbrkpt') {
 		    # Note breakpoint is temporary and remove it.
-		    $event = 'tbrkpt';
 		    undef $brkpts->[$i];
 		} else {
-		    $event = 'brkpt';
 		    my $hits = $brkpt->hits + 1;
 		    $brkpt->hits($hits);
 		}
@@ -344,20 +343,33 @@ sub next {
 }
 
 sub step {
-  my $s = shift;
-  $DB::single = 1;
-  $running = 1;
+    my $s = shift;
+    $DB::single = 1;
+    $running = 1;
 }
 
+# cont 
+# cont fn_or_line
+# cont file line
+#
 sub cont {
-  my $s = shift;
-  my $i = shift;
-  $s->set_tbreak($i) if $i;
-  for ($i = 0; $i <= $#stack;) {
+    my $s = shift;
+    if (scalar @_ > 0) {
+	my ($file, $line);
+	if (2 == scalar @_) {
+	    print @_, "\n";
+	    ($file, $line) =  @_;
+	} else {
+	    ($file, $line) = ($DB::filename, $_[0]);
+	}
+	my $brkpt = $s->set_tbreak($file, $line);
+	return 0 unless $brkpt;
+    }
+    for (my $i = 0; $i <= $#stack;) {
 	$stack[$i++] &= ~1;
-  }
-  $DB::single = 0;
-  $running = 1;
+    }
+    $DB::single = 0;
+    return $running = 1;
 }
 
 # stop before finishing the current subroutine

@@ -118,6 +118,25 @@ sub delete_bp($$) {
     }
 }
 
+# Find a subroutine. Return ($filename, $fn_name, $start_line);
+# If not found, return (undef, undef, undef);
+sub find_subline {
+    my $fn_name = shift;
+    $fn_name =~ s/\'/::/;
+    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
+    $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
+    my $filename = $DB::filename;
+    if (exists $DB::sub{$fn_name}) {
+	my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
+	if ($from) {
+	    local *DB::dbline = "::_<$filename";
+	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
+	    return ($filename, $fn_name, $from);
+	}
+    }
+    return (undef, undef, undef);
+}
+
 # Find a subroutine line. 
 # FIXME: reorganize things to really set a breakpoint at a subroutine.
 # not just the line number we that we might find subroutine on.

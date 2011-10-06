@@ -11,6 +11,7 @@ use lib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 
+use Cwd 'abs_path';
 use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::LineCache;
 
@@ -319,9 +320,10 @@ sub get_onoff($$;$$)
 # NOTE: Test for failure should only be on $line_num
 sub parse_position($$) 
 {
-    my ($self, $args) = @_;
+    my ($self, $args, $validate_line_num) = @_;
     my @args = @$args;
     my $size = scalar @args;
+    $validate_line_num //= 0;
 
     if (0 == $size) {
 	return ($DB::filename, $DB::line, undef, ());
@@ -329,7 +331,7 @@ sub parse_position($$)
     my ($filename, $line_num, $fn);
     my $first_arg = shift @args;
     if ($first_arg =~ /\d+/) {
-	$line_num = $DB::lineno;
+	$line_num = $first_arg;
 	$filename = $DB::filename;
 	$fn = undef;
     } else {
@@ -356,10 +358,12 @@ sub parse_position($$)
 	    }
 	}
     }
-    local *dbline   = $main::{ '_<' . $filename };
-    if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
-	$self->errmsg("Line $line_num of file $filename not breakable");
-	return ($filename, undef, $fn, @args);
+    if ($validate_line_num) {
+	local(*DB::dbline) = "::_<'$filename" ;
+	if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
+	    $self->errmsg("Line $line_num of file $filename not a stopping line");
+	    return ($filename, undef, $fn, @args);
+	}
     }
     return ($filename, $line_num, $fn, @args);
 }
@@ -387,54 +391,39 @@ sub parse_position($$)
 # }
 
 unless (caller) {
-#   # Demo it.
-#   if !(ARGV.size == 1 && ARGV[0] == 'noload')
-#     ARGV[0..-1]    = ['noload']
-#     load(__FILE__)
-#   else    
-#     require 'thread_frame'
-#     require_relative '../app/mock'
-#     require_relative './default'
-#     require_relative 'frame'
-
-#     # FIXME: Have to include before defining CmdProcessor!
-#     require_relative '../processor'  
-
-#     cmdproc = Trepan::CmdProcessor.new(Trepan::MockCore.new())
-#     cmdproc.frame_initialize
-#     cmdproc.instance_variable_set('@settings', 
-#                                Trepan::CmdProcessor::DEFAULT_SETTINGS)
-#     cmdproc.frame_setup(RubyVM::ThreadFrame.current)
+    no strict;
+    require Devel::Trepan::DB;
     my @onoff = qw(1 0 on off);
     for my $val (@onoff) {
 	printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
     }
-
+    
     for my $val (qw(1 1E bad 1+1 -5)) {
 	my $result = get_int_noerr('bogus', $val);
 	$result //= '<undef>';
 	print "get_int_noerr(${val}) = $result\n";
     }
-
-    # Demo it.
+    
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
-    my @position = ();
+    local @position = ();
     sub print_position() {
 	my @call_values = caller(0);
 	for my $arg (@position) {
-	    print $arg if $arg;
+	    print defined($arg) ? $arg : 'undef';
+	    print "\n";
 	}
 	print "\n";
 	return @call_values;
     }
     my @call_values = foo();
-
+    
     $DB::package = 'main';
-    @position = $proc->parse_position([__FILE__, __LINE__]);
+	@position = $proc->parse_position([__FILE__, __LINE__], 0);
     print_position;
-    @position = $proc->parse_position([__LINE__]);
+    @position = $proc->parse_position([__LINE__], 0);
     print_position;
+#    @position = $proc->parse_position(['print_position'], 0);
 #     print cmdproc.parse_position('@8').inspect
 #     print cmdproc.parse_position('8').inspect
 #     print cmdproc.parse_position("#{__FILE__} #{__LINE__}").inspect
@@ -464,7 +453,6 @@ unless (caller) {
 #     ### p cmdproc.breakpoint_position(%w(2 if a > b))
 #     p cmdproc.get_int_list(%w(1+0 3-1 3))
 #     p cmdproc.get_int_list(%w(a 2 3))
-#   }
 }
 
 1;

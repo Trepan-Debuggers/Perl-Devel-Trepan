@@ -39,6 +39,7 @@ HELP
 use constant ALIASES    => qw(n next+ next- n+ n-);
 use constant CATEGORY   => 'running';
 use constant SHORT_HELP => 'Step program without entering called functions';
+our   $MIN_ARGS     = 0;
 local $MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
 local $NEED_RUNNING = 1;
 

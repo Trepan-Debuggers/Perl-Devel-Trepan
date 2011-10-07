@@ -123,16 +123,18 @@ sub parse_list_cmd($$$$)
     my $proc = $self->{proc};
     my $frame = $proc->{frame};
     my @args = @$args;
+    shift @args;
 
-    my ($filename, $fn);
+    my $filename = $DB::filename;
+    my $fn;
     my ($start, $end);
 
     if (scalar @args  > 0) {
-	if ($args->[0] eq '-') {
-	    return $self->no_frame_msg() unless $frame->{line};
-	    $start = $frame->{line} - 2*$listsize - 1;
+	if ($args[0] eq '-') {
+	    return $self->no_frame_msg() unless $proc->{list_line};
+	    $start = $proc->{list_line} - 2*$listsize;
 	    $start = 1 if $start < 1;
-	} elsif ($args->[0] eq '.') {
+	} elsif ($args[0] eq '.') {
 	    return $self->no_frame_msg() unless $frame->{line};
 	    if (scalar @args == 2) {
 		my $opts = {
@@ -140,17 +142,17 @@ sub parse_list_cmd($$$$)
 			"${NAME} command $end or count parameter expected, " .
 			"got: $args->[2]"
 		};
-		my $second = $proc->get_an_int($args->[1], $opts);
+		my $second = $proc->get_an_int($args[1], $opts);
 		return (undef, undef, undef) unless $second;
-		$start = $frame->{line};
+		$start = $proc->{list_line};
 		$end = $self->adjust_end($start, $second);
 	    } else {
-		$start = $frame->{line} - $center_correction;
+		$start = $proc->{list_line} - $center_correction;
 		$start = 1 if $start < 1;
 	    }
 	} else {
 	    my $reset;
-	    ($filename, $start, $fn, $reset) = $proc->parse_position($args->[0]);
+	    ($filename, $start, $fn, $reset) = $proc->parse_position(\@args);
 	    return (undef, undef, undef) unless defined $start;
 	    # error should have been shown previously
 	}
@@ -161,9 +163,9 @@ sub parse_list_cmd($$$$)
         } elsif (scalar @args == 2 or (scalar @args == 3 and $fn)) {
 	    my $opts = {
 		msg_on_error => 
-		    "${NAME} command starting line expected, got ${$args->[-1]}"
+		    "${NAME} command starting line expected, got $args[-1]"
 	    };
-	    $end = $proc->get_an_int($args->[1], $opts);
+	    $end = $proc->get_an_int($args[1], $opts);
 	    return (undef, undef, undef) unless $end;
 	    if ($fn) { 
 		if ($start) {
@@ -172,8 +174,8 @@ sub parse_list_cmd($$$$)
 			my $opts = {
 			    'msg_on_error' =>
 			    ("${NAME} command $end or count parameter expected, " .
-			     "got: ${$args->[2]}.")};
-			$end = $proc->get_an_int($args->[2], $opts);
+			     "got: ${$args[2]}.")};
+			$end = $proc->get_an_int($args[2], $opts);
 			return (undef, undef, undef) unless $end;
 		    }
 		}
@@ -191,7 +193,7 @@ sub parse_list_cmd($$$$)
     } elsif ($frame && !$frame->{line} and $proc->{frame}) {
 	$start = $frame->{line} - $center_correction;
     }  else {
-	$start = $frame->{line} - $center_correction;
+	$start = ($proc->{list_line} || $frame->{line}) - $center_correction;
     }
     $start = 1 if $start < 1;
     $end = $start + $listsize - 1 unless $end;
@@ -205,66 +207,71 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    $proc->errmsg("Not finished yet");
-  #   listsize = settings[:maxlist]
-  #   center_correction = 
-  #     if args[0][-1..-1] == '>'
-  #       0
-  #     else
-  #       (listsize-1) / 2
-  #     end
 
-  #   container, first, last = 
-  #     parse_list_cmd(args[1..-1], listsize, center_correction)
-  #   frame = @proc.frame
-  #   return unless container
-  #   breaklist = @proc.brkpts.line_breaks(container)
+    my $listsize = $proc->{settings}{maxlist};
+    my $center_correction = 
+	(substr($args->[0], -1, 1) eq '>') ? 0 : int(($listsize-1) / 2);
 
-  #   # We now have range information. Do the listing.
-  #   max_line = LineCache::size(container[1])
-  #   unless max_line 
-  #     errmsg('File "%s" not found.' % container[1])
-  #     return
-  #   end
+    my ($filename, $start, $end) = $self->parse_list_cmd($args, $listsize, 
+							 $center_correction);
+    #   container, start, end = 
+    #     parse_list_cmd(args[1..-1], listsize, center_correction)
+    #   frame = @proc.frame
+    #   return unless container
+    #   breaklist = @proc.brkpts.line_breaks(container)
+    
 
-  #   if first > max_line
-  #     errmsg('Bad line range [%d...%d]; file "%s" has only %d lines' %
-  #            [first, last, container[1], max_line])
-  #     return
-  #   end
+    # We now have range information. Do the listing.
+    my $max_line = DB::LineCache::size($filename);
+    unless ($max_line) {
+	$proc->errmsg("File \"$filename\" not found.");
+	return;
+    }
 
-  #   if last > max_line
-  #     # msg('End position changed to last line %d ' % max_line)
-  #     last = max_line
-  #   end
+    if ($start > $max_line) {
+	my $mess = sprintf('Bad line range [%d...%d]; file "%s" has only %d lines', 
+			   $start, $end, $filename, $max_line);
+	$proc->errmsg($mess);
+	return;
+    }
 
-  #   begin
-  #     opts = {
-  #       :reload_on_change => @proc.reload_on_change,
-  #       :output => settings[:highlight]
-  #     }
-  #     first.upto(last).each do |lineno|
-  #       line = LineCache::getline(container[1], lineno, opts)
-  #       unless line
-  #         msg('[EOF]')
-  #         break
-  #       end
-  #       line.chomp!
-  #       s = '%3d' % lineno
-  #       s = s + ' ' if s.size < 4 
-  #       s += if breaklist.member?(lineno)
-  #              bp = breaklist[lineno]
-  #              a_pad = '%02d' % bp.id
-  #              bp.icon_char
-  #            else 
-  #              a_pad = '  '
-  #              ' ' 
-  #            end
-  #       s += (frame && lineno == @proc.frame_line &&
-  #             container == frame.source_container) ? '->' : a_pad
-  #       msg(s + "\t" + line, {:unlimited => true})
-  #       @proc.line_no = lineno
-  #     end
+    if ($end > $max_line) {
+	# msg('End position changed to end line %d ' % max_line)
+	$end = $max_line;
+    }
+
+    #   begin
+    my $opts = {
+        reload_on_change => $proc->{settings}{reload},
+        output           => $proc->{settings}{highlight}
+    };
+    my $a_pad = '  ';
+    my $bp;
+    local(*DB::dbline) = "::_<$filename";
+    my $lineno;
+    for ($lineno = $start; $lineno <= $end; $lineno++) {
+        my $line = DB::LineCache::getline($filename, $lineno, $opts);
+        unless (defined $line) {
+	    $proc->msg('[EOF]');
+	    last;
+	}
+        chomp $line;
+        my $s = sprintf('%3d', $lineno);
+        $s = $s . ' ' if length($s) < 4;
+	if (exists $DB::dbline{$DB::lineno} and 
+	    my $brkpts = $DB::dbline{$DB::lineno}) {
+	    $bp = $brkpts->[0];
+	    $a_pad = sprintf('%02d', $bp->id);
+	    $s .= $bp->icon_char;
+	} else  {
+	    $s .= ' ';
+	}
+        $s .= ($proc->{frame} && $lineno == $proc->line &&
+	       $proc->filename() eq $filename) ? '->' : $a_pad;
+	my $opts = {unlimited => 1};
+        $proc->msg("$s\t$line", $opts);
+    }
+    $proc->{list_line} = $lineno + $center_correction;
   #   rescue => e
   #     errmsg e.to_s if settings[:debugexcept]
   #   end

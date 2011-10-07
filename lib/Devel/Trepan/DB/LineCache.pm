@@ -216,6 +216,7 @@ sub cache_file($;$$)
 sub is_cached($)
 { 
     my $file_or_script = shift;
+    return undef unless defined $file_or_script;
     exists $file_cache{unmap_file($file_or_script)};
 }
 

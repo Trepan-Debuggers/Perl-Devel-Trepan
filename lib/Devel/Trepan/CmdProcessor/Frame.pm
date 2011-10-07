@@ -25,6 +25,7 @@ sub adjust_frame($$$)
 	    $self->print_stack_trace_from_to($frame_num, $frame_num, $self->{frames}, $opts);
 	    $self->print_location ;
 	}
+	$self->{list_line} = $self->line();
         $self->{frame};
     } else {
         undef

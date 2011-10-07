@@ -318,7 +318,7 @@ sub get_onoff($$;$$)
 #        fn [rest..]
 # returns (filename, line_num, fn, rest)
 # NOTE: Test for failure should only be on $line_num
-sub parse_position($$) 
+sub parse_position($$;$) 
 {
     my ($self, $args, $validate_line_num) = @_;
     my @args = @$args;

@@ -38,3 +38,14 @@ test-require.pl [1-10]
   8    	
   9    	
  10    	
+test-require.pl [1-10]
+  1    	use File::Basename;
+  2    	use File::Spec;
+  3  ->	my $DIR = dirname(__FILE__);
+  4    	my $require_file = File::Spec->catfile($DIR, "test-module.pm");
+  5    	require $require_file;
+  6 T03	my $x = Test::Module::five();
+  7 B02	my $y = $x;
+  8    	
+  9    	
+ 10    	

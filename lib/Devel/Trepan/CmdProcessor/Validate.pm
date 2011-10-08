@@ -323,14 +323,15 @@ sub parse_position($$;$)
     my ($self, $args, $validate_line_num) = @_;
     my @args = @$args;
     my $size = scalar @args;
+    my $gobble_count = 0;
     $validate_line_num //= 0;
 
     if (0 == $size) {
-	return ($DB::filename, $DB::line, undef, ());
+	return ($DB::filename, $DB::line, undef, 0, ());
     }
     my ($filename, $line_num, $fn);
     my $first_arg = shift @args;
-    if ($first_arg =~ /\d+/) {
+    if ($first_arg =~ /^\d+$/) {
 	$line_num = $first_arg;
 	$filename = $DB::filename;
 	$fn = undef;
@@ -340,12 +341,11 @@ sub parse_position($$;$)
 	    $filename = $first_arg;
 	    my $unmapped_filename = DB::LineCache::unmap_file($filename);
 	    if (-r $unmapped_filename) {
-		unless (scalar @args > 0) {
-		    $self->errmsg("Got filename $first_arg, " . 
-				  "expecting a line number");
-		    return ($filename, undef, undef, @args);
+		if (scalar @args == 0) {
+		    $line_num = 1;
+		} else {
+		    $line_num = shift @args;
 		}
-		$line_num = shift @args;
 		unless ($line_num =~ /\d+/) {
 		    $self->errmsg("Got filename $first_arg, " . 
 				  "expecting $line_num to a line number");
@@ -357,6 +357,7 @@ sub parse_position($$;$)
 		return ($filename, undef, $fn, @args);
 	    }
 	}
+	$gobble_count = 1;
     }
     if ($validate_line_num) {
 	local(*DB::dbline) = "::_<'$filename" ;
@@ -365,7 +366,7 @@ sub parse_position($$;$)
 	    return ($filename, undef, $fn, @args);
 	}
     }
-    return ($filename, $line_num, $fn, @args);
+    return ($filename, $line_num, $fn, $gobble_count, @args);
 }
 
 

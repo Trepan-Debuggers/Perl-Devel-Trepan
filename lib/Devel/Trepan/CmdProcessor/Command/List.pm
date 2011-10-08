@@ -125,7 +125,7 @@ sub parse_list_cmd($$$$)
     my @args = @$args;
     shift @args;
 
-    my $filename = $DB::filename;
+    my $filename = $proc->{list_filename};
     my $fn;
     my ($start, $end);
 
@@ -151,12 +151,13 @@ sub parse_list_cmd($$$$)
 		$start = 1 if $start < 1;
 	    }
 	} else {
-	    my $reset;
-	    ($filename, $start, $fn, $reset) = $proc->parse_position(\@args);
+	    my ($rest, $gobble_count);
+	    ($filename, $start, $fn, $gobble_count, $rest) = $proc->parse_position(\@args);
 	    return (undef, undef, undef) unless defined $start;
+	    shift @args if $gobble_count > 0;
 	    # error should have been shown previously
 	}
-        if (scalar @args == 1) {
+        if (scalar @args <= 1) {
 	    $start = 1 if !$start and $fn;
 	    $start = $start - $center_correction;
 	    $start = 1 if $start < 1;
@@ -230,7 +231,7 @@ sub run($$)
 
     if ($start > $max_line) {
 	my $mess = sprintf('Bad line range [%d...%d]; file "%s" has only %d lines', 
-			   $start, $end, $filename, $max_line);
+			   $start, $end, $proc->canonic_file($filename), $max_line);
 	$proc->errmsg($mess);
 	return;
     }
@@ -249,11 +250,17 @@ sub run($$)
     my $bp;
     local(*DB::dbline) = "::_<$filename";
     my $lineno;
+    my $msg = sprintf("%s [%d-%d]", $proc->canonic_file($filename), $start, $end);
+    $self->section($msg);
     for ($lineno = $start; $lineno <= $end; $lineno++) {
         my $line = DB::LineCache::getline($filename, $lineno, $opts);
         unless (defined $line) {
-	    $proc->msg('[EOF]');
-	    last;
+	    if ($lineno > $max_line)  {
+		$proc->msg('[EOF]');
+		last;
+	    } else {
+		$line = '';
+	    }
 	}
         chomp $line;
         my $s = sprintf('%3d', $lineno);
@@ -272,6 +279,7 @@ sub run($$)
         $proc->msg("$s\t$line", $opts);
     }
     $proc->{list_line} = $lineno + $center_correction;
+    $proc->{list_filename} = $filename;
   #   rescue => e
   #     errmsg e.to_s if settings[:debugexcept]
   #   end

@@ -26,6 +26,7 @@ sub adjust_frame($$$)
 	    $self->print_location ;
 	}
 	$self->{list_line} = $self->line();
+	$self->{list_filename} = $self->filename();
         $self->{frame};
     } else {
         undef
@@ -81,6 +82,8 @@ sub frame_setup($$$)
     $self->{frame_index} = 0;
     $self->{hide_level} = 0;
     $self->{frame} = $frames[0];
+    $self->{list_line} = $self->line();
+    $self->{list_filename} = $self->filename();
 }
 
 sub filename($)
@@ -131,7 +134,7 @@ sub print_stack_entry()
     local $LIST_SEPARATOR = ', ';
 
     # Get the file name.
-    my $file = $frame->{file};
+    my $file = $self->canonic_file($frame->{file});
 
     # Put in a filename header if short is off.
     $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
@@ -166,7 +169,7 @@ sub print_stack_entry()
 	my $call_str = $not_last_frame ? 
 	    "$frame->{wantarray} = $s$args in " : '';
 	my $prefix_call = "$prefix$call_str";
-	my $file_line   = $file . " at line $frame->{line}";
+	my $file_line   = $self->canonic_file($file) . " at line $frame->{line}";
 	
 	if (length($prefix_call) + length($file_line) <= $opts->{maxwidth}) {
 	    $self->msg($prefix_call . $file_line);

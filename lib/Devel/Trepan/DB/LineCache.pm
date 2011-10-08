@@ -56,7 +56,7 @@ my $perl_formatter = Devel::Trepan::DB::Colors::setup();
 
 ## struct(stat => '$', lines => '%', path => '$', sha1 => '$');
 
-# The file cache. The key is a name as would be given by Ruby for
+# The file cache. The key is a name as would be given by Perl for
 # __FILE__. The value is a LineCacheInfo object.
 
 my %file_cache;
@@ -256,7 +256,7 @@ sub getline($$;$)
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
 	my $line = $lines->[$line_number];
-	chomp $line;
+	chomp $line if defined $line;
         return $line;
     } else {
         return undef;
@@ -446,6 +446,20 @@ sub update_script_cache($$)
     return 1;
   }
 
+sub read_file($)
+{
+    my $path = shift;
+    if (-r $path) {
+	open(FH, '<', $path);
+	seek FH, 0, 0;
+	my @lines = <FH>;
+	close FH;
+	return @lines;
+    } else {
+	return undef;
+    }
+}
+
 # Update a cache entry.  If something's wrong, return undef. Return 1
 # if the cache was updated and false if not.  If use_perl_d_file is 1,
 # use that as the source for the lines of the file
@@ -471,6 +485,24 @@ sub update_cache($;$)
 		$stat = File::stat::stat($path);
 	    }
 	    my $raw_lines = \@{"main::_<$name"};
+
+	    # Perl sometimes doesn't seem to save all file data, such
+	    # as those intended for POD or possibly those after
+	    # __END__. But we want these, so we'll have to read the
+	    # file the old-fashioned way and check lines. Variable
+	    # $incomplete records if there was a mismatch.
+	    my $incomplete = 0;
+	    if (-r $path) {
+	    	my @lines_check = read_file($path);
+	    	my @lines = @$raw_lines;
+	    	for (my $i=1; $i<=$#lines; $i++) {
+	    	    if (defined $raw_lines->[$i]) {
+	    		$incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
+	    	    } else {
+	    		$raw_lines->[$i] = $lines_check[$i-1] 
+	    	    }
+	    	}
+	    }
 	    use strict;
 	    $lines_href = {};
 	    $lines_href->{plain} = $raw_lines;
@@ -486,7 +518,8 @@ sub update_cache($;$)
 	    my $entry = {
 		stat       => $stat,
 		lines_href => $lines_href,
-		path       => $path
+		path       => $path,
+		incomplete => $incomplete
 	    };
 	    $file_cache{$filename}  = $entry;
 	    $file2file_remap{$path} = $filename;
@@ -509,11 +542,8 @@ sub update_cache($;$)
 	}
 	return 0 unless $stat
     }
-    open(FH, '<', $path);
-    seek FH, 0, 0;
-    my @lines = <FH>;
+    my @lines = read_file($path);
     $lines_href = {plain => \@lines};
-    close FH;
     if ($opts->{output}) {
 	my $highlight_lines = highlight_string(join('', @lines));
 	my @highlight_lines = split(/\n/, $highlight_lines);
@@ -523,7 +553,8 @@ sub update_cache($;$)
     my $entry = {
 		stat       => $stat,
 		lines_href => $lines_href,
-		path       => $path
+		path       => $path,
+		incomplete => 0
 	    };
     $file_cache{$filename} = $entry;
     $file2file_remap{$path} = $filename;

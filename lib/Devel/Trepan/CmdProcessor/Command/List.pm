@@ -110,9 +110,10 @@ sub no_frame_msg($)
 }
     
 
-# What a mess. Necessitated I suppose because we want to 
-# allow somewhat flexible parsing with either module names, files or none
+# What a mess. Necessitated I suppose because we want to allow
+# somewhat flexible parsing with either module names, files or none
 # and optional line counts or end-line numbers.
+# TODO: allow a negative start to count from the end of the file.
 
 # Parses arguments for the "list" command and returns the tuple:
 # filename, start, last
@@ -136,20 +137,19 @@ sub parse_list_cmd($$$$)
 	    $start = 1 if $start < 1;
 	} elsif ($args[0] eq '.') {
 	    return $self->no_frame_msg() unless $frame->{line};
+	    $filename = $proc->filename;
+	    $start    = $proc->line;
+	    $start    = 1 if $start < 1;
 	    if (scalar @args == 2) {
 		my $opts = {
 		    'msg_on_error' => 
 			"${NAME} command $end or count parameter expected, " .
-			"got: $args->[2]"
+			"got: $args[2]"
 		};
 		my $second = $proc->get_an_int($args[1], $opts);
 		return (undef, undef, undef) unless $second;
-		$start = $proc->{list_line};
 		$end = $self->adjust_end($start, $second);
-	    } else {
-		$start = $proc->{list_line} - $center_correction;
-		$start = 1 if $start < 1;
-	    }
+	    } 
 	} else {
 	    my ($rest, $gobble_count);
 	    ($filename, $start, $fn, $gobble_count, $rest) = $proc->parse_position(\@args);

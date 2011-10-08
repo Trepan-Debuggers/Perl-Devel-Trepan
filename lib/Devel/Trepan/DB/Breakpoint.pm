@@ -18,6 +18,7 @@ struct DBBreak => {
 };
 
 package DBBreak;
+use feature 'switch';
 sub inspect($)
 {
     my $self = shift;
@@ -26,6 +27,16 @@ sub inspect($)
 	    $self->type, $self->id, $self->enabled, $self->negate, 
 	    $self->hits, $self->condition);
 };
+
+sub icon_char($)
+{
+    my $self = shift;
+    given ($self->type) {
+	when ('tbrkpt') { return 'T'; }
+	when ('brkpt')  { return 'B'; }
+	when ('action') { return 'A'; }
+    }
+}
 
 package DB;
 use vars qw($brkpt $package $lineno $max_bp $max_action);
@@ -108,6 +119,7 @@ sub delete_bp($$) {
 	my $break_count = scalar @$brkpts;
 	for (my $j=0; $j <= $break_count; $j++) {
 	    $brkpt = $brkpts->[$j];
+	    next unless defined $brkpt;
 	    if ($brkpt eq $bp) {
 		undef $brkpts->[$j];
 		last;

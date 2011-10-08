@@ -5,6 +5,8 @@ example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/nexting.pl
+example/test-module.pm
+example/test-require.pl
 lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm
 lib/Devel/Trepan/CmdProcessor.pm
@@ -134,10 +136,16 @@ t/10test-proc-load.t
 t/10test-util.t
 t/10test-validate.t
 t/20test-break.t
+t/20test-list1.t
+t/20test-list2.t
 t/20test-step.t
 t/20test-trepanpl-opts.t
 t/data/break.cmd
 t/data/break.right
+t/data/list1.cmd
+t/data/list1.right
+t/data/list2.cmd
+t/data/list2.right
 t/data/step.cmd
 t/data/step.right
 t/Helper.pm

@@ -38,7 +38,7 @@ sub inspect($)
 sub DESTROY() {
     my $self = shift;
     for my $bp (@{$self->{list}}) {
-        self->delete_by_brkpt($bp) if defined($bp);
+        $self->delete_by_brkpt($bp) if defined($bp);
     }
     $self->{clear};
 }

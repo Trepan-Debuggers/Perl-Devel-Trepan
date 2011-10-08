@@ -1,3 +1,4 @@
+# Test simple list (no params) as it goes through different files.
 set basename on
 set highlight off
 list
@@ -13,6 +14,3 @@ up
 list
 list
 quit!
-
-
-

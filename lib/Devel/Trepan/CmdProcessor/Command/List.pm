@@ -246,14 +246,14 @@ sub run($$)
         reload_on_change => $proc->{settings}{reload},
         output           => $proc->{settings}{highlight}
     };
-    my $a_pad = '  ';
     my $bp;
     local(*DB::dbline) = "::_<$filename";
     my $lineno;
     my $msg = sprintf("%s [%d-%d]", $proc->canonic_file($filename), $start, $end);
     $self->section($msg);
     for ($lineno = $start; $lineno <= $end; $lineno++) {
-        my $line = DB::LineCache::getline($filename, $lineno, $opts);
+	my $a_pad = '  ';
+        my $line  = DB::LineCache::getline($filename, $lineno, $opts);
         unless (defined $line) {
 	    if ($lineno > $max_line)  {
 		$proc->msg('[EOF]');
@@ -265,8 +265,8 @@ sub run($$)
         chomp $line;
         my $s = sprintf('%3d', $lineno);
         $s = $s . ' ' if length($s) < 4;
-	if (exists $DB::dbline{$DB::lineno} and 
-	    my $brkpts = $DB::dbline{$DB::lineno}) {
+	if (exists($DB::dbline{$lineno}) and 
+	    my $brkpts = $DB::dbline{$lineno}) {
 	    $bp = $brkpts->[0];
 	    $a_pad = sprintf('%02d', $bp->id);
 	    $s .= $bp->icon_char;

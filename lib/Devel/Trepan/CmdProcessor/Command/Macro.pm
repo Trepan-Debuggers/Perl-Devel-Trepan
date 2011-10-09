@@ -25,7 +25,7 @@ Define MACRO-NAME as a debugger macro. Debugger macros get a list of
 arguments which you supply without parenthesis or commas. See below
 for an example.
 
-The macro (really a Perl annonymous subroutine) should return either a
+The macro (really a Perl anonymous subroutine) should return either a
 string or an array reference to a list of strings. The string in both
 cases are strings of debugger commands.  If the return is a string,
 that gets tokenized by a simple split(/ /, \$string).  Note that macro
@@ -36,7 +36,7 @@ returned.
 If instead, a reference to a list of strings is returned, then the
 first string is shifted from the array and executed. The remaining
 strings are pushed onto the command queue. In contrast to the first
-string, subsequent strings can contain other macros, and ;; in those
+string, subsequent strings can contain other macros. Any ;; in those
 strings will be split into separate commands.
 
 Here is an example. The below creates a macro called fin+ which

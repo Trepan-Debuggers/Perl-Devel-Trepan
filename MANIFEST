@@ -90,6 +90,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Up.pm
 lib/Devel/Trepan/CmdProcessor/Default.pm
 lib/Devel/Trepan/CmdProcessor/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Help.pm
+lib/Devel/Trepan/CmdProcessor/Hook.pm
 lib/Devel/Trepan/CmdProcessor/Load.pm
 lib/Devel/Trepan/CmdProcessor/Location.pm
 lib/Devel/Trepan/CmdProcessor/Mock.pm
@@ -132,6 +133,7 @@ t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t
 t/10test-position.t
+t/10test-proc-hook.t
 t/10test-proc-load.t
 t/10test-util.t
 t/10test-validate.t

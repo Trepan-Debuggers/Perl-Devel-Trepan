@@ -23,7 +23,7 @@ our $MIN_ARGS = 0;
 our $MAX_ARGS = 3;  # undef -> unlimited
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME}[>] [MODULE] [FIRST [NUM]]
+${NAME}[>] [FILENAME] [FIRST [NUM]]
 ${NAME}[>] LOCATION [NUM]
 
 ${NAME} source code. 
@@ -42,14 +42,10 @@ The number of lines to show is controlled by the debugger "listsize"
 setting. Use 'set max list' or 'show max list' to see or set the
 value.
 
-\"${NAME} -\" shows lines before a previous listing. 
-
 A LOCATION is a either 
   - number, e.g. 5, 
-  - a function, e.g. join or os.path.join
-  - a module, e.g. os or os.path
-  - a filename, colon, and a number, e.g. foo.rb:5,  
-  - or a module name and a number, e.g,. os.path:5.  
+  - a function, e.g. File::Basename::dirname, or dirname
+  - a filename and a number, e.g. foo.pl 5,  
   - a '.' for the current line number
   - a '-' for the lines before the current line number
 
@@ -58,9 +54,6 @@ parameter is the starting line number.  When there two numbers are
 given, the last number value is treated as a stopping line unless it
 is less than the start line, in which case it is taken to mean the
 number of lines to list instead.
-
-Wherever a number is expected, it does not need to be a constant --
-just something that evaluates to a positive integer.
 
 Some examples:
 
@@ -198,7 +191,7 @@ sub parse_list_cmd($$$$)
     }
     $start = 1 if $start < 1;
     $end = $start + $listsize - 1 unless $end;
-  
+
     &DB::LineCache::cache($filename) unless DB::LineCache::is_cached($filename);
     return ($filename, $start, $end);
 }

@@ -4,9 +4,9 @@ use lib '../lib';
 use vars qw($response); 
 
 use Test::More 'no_plan';
-note( "Testing Devel::Trepan::CmdProcessor::Load" );
 
 BEGIN {
+note( "Testing Devel::Trepan::CmdProcessor::Load" );
 use_ok( 'Devel::Trepan::CmdProcessor::Load' );
 }
 

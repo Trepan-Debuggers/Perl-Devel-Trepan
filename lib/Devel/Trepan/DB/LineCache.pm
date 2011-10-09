@@ -255,7 +255,7 @@ sub getline($$;$)
     ($filename, $line_number) = unmap_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
-	my $line = $lines->[$line_number];
+	my $line = $lines->[$line_number-1];
 	chomp $line if defined $line;
         return $line;
     } else {
@@ -466,6 +466,7 @@ sub read_file($)
 sub update_cache($;$) 
 {
     my ($filename, $opts) = @_;
+    my $read_file = 0;
     $opts //={};
     my $use_perl_d_file = $opts->{use_perl_d_file} //= 1;
 
@@ -521,26 +522,25 @@ sub update_cache($;$)
 		path       => $path,
 		incomplete => $incomplete
 	    };
-	    $file_cache{$filename}  = $entry;
-	    $file2file_remap{$path} = $filename;
-          return 1
+	    $read_file = 1;
         }
     }
       
-    my $stat;
-    if ( -f $path ) {
+    my $stat = undef;
+    if (-f $path ) {
 	$stat = File::stat::stat($path);
-    } elsif (basename($filename) eq $filename) {
-	# try looking through the search path.
-	$stat = undef;
-	for my $dirname (@INC) {
-	    $path = File::Spec::catfile->($dirname, $filename);
-	    if ( -f $path) {
-		$stat = File::stat::stat($path);
-		last;
+    } elsif (!$read_file) {
+	if (basename($filename) eq $filename) {
+	    # try looking through the search path.
+	    for my $dirname (@INC) {
+		$path = File::Spec::catfile->($dirname, $filename);
+		if ( -f $path) {
+		    $stat = File::stat::stat($path);
+		    last;
+		}
 	    }
 	}
-	return 0 unless $stat
+	return 0 unless defined $stat;
     }
     my @lines = read_file($path);
     $lines_href = {plain => \@lines};
@@ -549,7 +549,6 @@ sub update_cache($;$)
 	my @highlight_lines = split(/\n/, $highlight_lines);
 	$lines_href->{$opts->{output}} = \@highlight_lines;
     }
-    $stat = File::stat::stat($path);
     my $entry = {
 		stat       => $stat,
 		lines_href => $lines_href,

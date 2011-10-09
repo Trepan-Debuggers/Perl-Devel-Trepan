@@ -5,21 +5,21 @@ use lib '../../../../..';
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
 
-package Devel::Trepan::CmdProcessor::Command::Set::Auto;
+package Devel::Trepan::CmdProcessor::Command::Show::Trace;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('au');
 our $HELP   = <<"HELP";
-Set controls for things with some sort of \"automatic\" default behavior
+Set tracing of various sorts.
 
-See 'help set auto *' for a list of subcommands or 'help set auto <name>' 
+The types of tracing include events from the trace buffer, or printing
+those events.
+
+See "help set trace *" for a list of subcommands or "help set trace <name>" 
 for help on a particular trace subcommand.
 HELP
-our $SHORT_HELP = 
-"Set controls for some \"automatic\" default behaviors";
-
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 

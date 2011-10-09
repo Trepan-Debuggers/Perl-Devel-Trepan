@@ -33,6 +33,7 @@ $DEFAULT_OPTIONS = {
     # (out-of-process debugging)
     port         => 1954,
     host         => 'localhost', 
+    traceprint   => 0,       # set -x tracing? 
     readline     => 1,       # Try to use GNU Readline?
 
 };
@@ -63,6 +64,7 @@ sub process_options($)
 	 'cd:s'         => \$opts->{initial_dir},
 	 'nx'           => \$opts->{nx},
 	 'readline'     => \$opts->{readline},
+	 'x|trace'      => \$opts->{traceprint},
 	 'version'      => \$show_version,
 	);
     
@@ -152,6 +154,7 @@ trepanpl - Perl "Trepanning" Debugger
       -nx                 Don't run user startup file (e.g. .treplrc)
       -port N             TCP/IP port to use on remote connection
       -readline           Try to use Term::Readline
+      -x|--trace          Simulate line tracing (think POSIX shell set -x)
       --highlight | --no-highlight 
                           Use or don't use ANSI terminal sequences for syntax
                           highlight

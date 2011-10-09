@@ -66,7 +66,8 @@ sub awaken($;$) {
     }
     my $cmdproc_opts = {
 	basename  =>  $opts->{basename},
-	highlight =>  $opts->{highlight}
+	highlight =>  $opts->{highlight},
+	traceprint => $opts->{traceprint}
     };
     $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
 						$cmdproc_opts);

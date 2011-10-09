@@ -70,6 +70,11 @@ sub new($;$$$) {
     $self->load_cmds_initialize;
     $self->running_initialize;
     $self->hook_initialize;
+    $self->{unconditional_prehooks}->insert_if_new(10, 
+						   $self->{trace_hook}->[0],
+						   $self->{trace_hook}->[1]
+	) if $self->{settings}{traceprint};
+
     if ($intf->has_completion) {
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
@@ -253,7 +258,10 @@ sub process_commands($$$)
 
 	
 	$self->{unconditional_prehooks}->run;
-	
+	if ($self->{settings}{traceprint}) {
+	    $self->{dbgr}->step();
+	    return;
+	}
 	
 	# my @last_pos;
 	# if (breakpoint?) {
@@ -268,7 +276,7 @@ sub process_commands($$$)
 	
 	$self->{prompt} = $self->compute_prompt;
 	
-	$self->print_location unless $self->{settings}{traceprint};
+	$self->print_location;
 	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
 	
 	$self->{cmdloop_prehooks}->run;

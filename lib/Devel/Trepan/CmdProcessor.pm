@@ -15,6 +15,7 @@ require Devel::Trepan::CmdProcessor::Virtual;
 require Devel::Trepan::CmdProcessor::Default;
 require Devel::Trepan::CmdProcessor::Msg;
 require Devel::Trepan::CmdProcessor::Help;
+require Devel::Trepan::CmdProcessor::Hook;
 require Devel::Trepan::CmdProcessor::Frame;
 require Devel::Trepan::CmdProcessor::Location;
 require Devel::Trepan::CmdProcessor::Load unless
@@ -68,6 +69,7 @@ sub new($;$$$) {
     $self->{step_count} = 0;
     $self->load_cmds_initialize;
     $self->running_initialize;
+    $self->hook_initialize;
     if ($intf->has_completion) {
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
@@ -250,7 +252,7 @@ sub process_commands($$$)
 	$self->{event} = $event;
 
 	
-	## $self->{unconditional_prehooks}->run;
+	$self->{unconditional_prehooks}->run;
 	
 	
 	# my @last_pos;
@@ -269,7 +271,7 @@ sub process_commands($$$)
 	$self->print_location unless $self->{settings}{traceprint};
 	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
 	
-	## $self->{cmdloop_prehooks}->run;
+	$self->{cmdloop_prehooks}->run;
     }
     $self->{leave_cmd_loop} = 0;
     while (!$self->{leave_cmd_loop}) {
@@ -288,7 +290,7 @@ sub process_commands($$$)
 	# exception_dump(exc, @settings[:debugexcept], $!.backtrace)
 	# }
     }
-    ## $self->{cmdloop_posthooks}->run;
+    $self->{cmdloop_posthooks}->run;
 }
 
 # run current_command, a string. @last_command is set after the

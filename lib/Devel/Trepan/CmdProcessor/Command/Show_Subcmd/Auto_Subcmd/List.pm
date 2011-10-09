@@ -15,7 +15,8 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('li');
-our $SHORT_HELP   = "Show to run a 'list' command each time we enter the debugger";
+our $SHORT_HELP   = "Show whether to run a 'list' command when we enter the debugger";
+our $HELP         = $SHORT_HELP;
  
 unless (caller) {
   # Demo it.

@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings;
-
 # Trepan command input validation routines.  A String type is
 # usually passed in as the argument to validation routines.
 
+use strict; use warnings;
+use Exporter;
+
+use feature 'switch';
 use lib '../../..';
+
 package Devel::Trepan::CmdProcessor;
+
+use Cwd 'abs_path';
+use Devel::Trepan::DB::Breakpoint;
+use Devel::Trepan::DB::LineCache;
 
 # require 'linecache'
 
@@ -16,11 +23,7 @@ package Devel::Trepan::CmdProcessor;
 # require_relative '../app/thread'
 
 # require_relative 'location' # for resolve_file_with_dir
-# require_relative 'msg'      # for errmsg, msg
 # require_relative 'virtual'
-
-package Devel::Trepan::CmdProcessor;
-
 
 #     attr_reader :file_exists_proc  # Like File.exists? but checks using
 #                                    # cached files
@@ -309,48 +312,63 @@ sub get_onoff($$;$$)
 #       get_method(meth)
 #     }
 
-#     # parse_position(self)->(meth, filename, offset, offset_type)
-#     # See app/cmd_parser.kpeg for the syntax of a position which
-#     # should include things like:
-#     # Parse arg as [filename:]lineno | function | module
-#     # Make sure it works for C:\foo\bar.py:12
-#     sub parse_position(info)
-#       info = parse_location(info) if info.kind_of?(String)
-#       case info.container_type
-#       when :fn
-#         if (meth = method?(info.container)) && meth.iseq
-#           return [meth, meth.iseq.source_container[1], info.position, 
-#                   info.position_type]
-#         else
-#           return [nil] * 4
-#         }
-#       when :file
-#         filename = canonic_file(info.container)
-#         # ?? Try to look up method here? 
-#         container = frame_container(@frame, false)
-#         try_filename  = container[1]
-#         frame = (canonic_file(try_filename) == filename) ? @frame : nil
-#         # else 
-#         #   LineCache.compiled_method(filename)
-#         # }
-#         return frame, filename,  info.position, info.position_type
-#       when nil
-#         if [:line, :offset].member?(info.position_type)
-#           container = frame_container(@frame, false)
-#           filename  = container[1]
-#           return @frame, canonic_file(filename), info.position, info.position_type
-#         elsif !info.position_type
-#           errmsg "Can't parse #{arg} as a position"
-#           return [nil] * 4
-#         else
-#           errmsg "Unknown position type #{info.position_type} for location #{arg}"
-#           return [nil]  * 4
-#         }
-#       else
-#         errmsg "Unknown container type #{info.container_type} for location #{arg}"
-#         return [nil] * 4
-#       }
-#     }
+# parse_position
+# parse: file line [rest...]
+#        line [rest..]
+#        fn [rest..]
+# returns (filename, line_num, fn, rest)
+# NOTE: Test for failure should only be on $line_num
+sub parse_position($$;$) 
+{
+    my ($self, $args, $validate_line_num) = @_;
+    my @args = @$args;
+    my $size = scalar @args;
+    my $gobble_count = 0;
+    $validate_line_num //= 0;
+
+    if (0 == $size) {
+	return ($DB::filename, $DB::line, undef, 0, ());
+    }
+    my ($filename, $line_num, $fn);
+    my $first_arg = shift @args;
+    if ($first_arg =~ /^\d+$/) {
+	$line_num = $first_arg;
+	$filename = $DB::filename;
+	$fn = undef;
+    } else {
+	($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
+	unless ($line_num) { 
+	    $filename = $first_arg;
+	    my $unmapped_filename = DB::LineCache::unmap_file($filename);
+	    if (-r $unmapped_filename) {
+		if (scalar @args == 0) {
+		    $line_num = 1;
+		} else {
+		    $line_num = shift @args;
+		}
+		unless ($line_num =~ /\d+/) {
+		    $self->errmsg("Got filename $first_arg, " . 
+				  "expecting $line_num to a line number");
+		    return ($filename, undef, undef, @args);
+		}
+	    } else {
+		$self->errmsg("Expecting $first_arg to be a file " . 
+			      "or function name");
+		return ($filename, undef, $fn, @args);
+	    }
+	}
+	$gobble_count = 1;
+    }
+    if ($validate_line_num) {
+	local(*DB::dbline) = "::_<'$filename" ;
+	if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
+	    $self->errmsg("Line $line_num of file $filename not a stopping line");
+	    return ($filename, undef, $fn, @args);
+	}
+    }
+    return ($filename, $line_num, $fn, $gobble_count, @args);
+}
+
 
 #     sub validate_initialize
 #       ## top_srcdir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
@@ -374,64 +392,57 @@ sub get_onoff($$;$$)
 # }
 
 unless (caller) {
-#   # Demo it.
-#   if !(ARGV.size == 1 && ARGV[0] == 'noload')
-#     ARGV[0..-1]    = ['noload']
-#     load(__FILE__)
-#   else    
-#     require 'thread_frame'
-#     require_relative '../app/mock'
-#     require_relative './default'
-#     require_relative 'frame'
-
-#     # FIXME: Have to include before defining CmdProcessor!
-#     require_relative '../processor'  
-
-#     cmdproc = Trepan::CmdProcessor.new(Trepan::MockCore.new())
-#     cmdproc.frame_initialize
-#     cmdproc.instance_variable_set('@settings', 
-#                                Trepan::CmdProcessor::DEFAULT_SETTINGS)
-#     cmdproc.frame_setup(RubyVM::ThreadFrame.current)
+    no strict;
+    require Devel::Trepan::DB;
     my @onoff = qw(1 0 on off);
     for my $val (@onoff) {
 	printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
     }
-
+    
     for my $val (qw(1 1E bad 1+1 -5)) {
 	my $result = get_int_noerr('bogus', $val);
 	$result //= '<undef>';
 	print "get_int_noerr(${val}) = $result\n";
     }
-
-#     sub foo; 5 }
-#     sub cmdproc.errmsg(msg)
-#       puts msg
-#     }
-#     # puts cmdproc.object_iseq('food').inspect
-#     # puts cmdproc.object_iseq('foo').inspect
-
-#     # puts cmdproc.object_iseq('foo@validate.rb').inspect
-#     # puts cmdproc.object_iseq('cmdproc.object_iseq').inspect
     
-#     puts cmdproc.parse_position(__FILE__).inspect
-#     puts cmdproc.parse_position('@8').inspect
-#     puts cmdproc.parse_position('8').inspect
-#     puts cmdproc.parse_position("#{__FILE__} #{__LINE__}").inspect
+    require Devel::Trepan::CmdProcessor;
+    my $proc  = Devel::Trepan::CmdProcessor->new;
+    local @position = ();
+    sub print_position() {
+	my @call_values = caller(0);
+	for my $arg (@position) {
+	    print defined($arg) ? $arg : 'undef';
+	    print "\n";
+	}
+	print "\n";
+	return @call_values;
+    }
+    my @call_values = foo();
+    
+    $DB::package = 'main';
+	@position = $proc->parse_position([__FILE__, __LINE__], 0);
+    print_position;
+    @position = $proc->parse_position([__LINE__], 0);
+    print_position;
+#    @position = $proc->parse_position(['print_position'], 0);
+#     print cmdproc.parse_position('@8').inspect
+#     print cmdproc.parse_position('8').inspect
+#     print cmdproc.parse_position("#{__FILE__} #{__LINE__}").inspect
 
-#     puts '=' * 40
+#     print '=' * 40
 #     ['Array.map', 'Trepan::CmdProcessor.new',
 #      'foo', 'cmdproc.errmsg'].each do |str|
-#       puts "#{str} should be method: #{!!cmdproc.method?(str)}"
+#       print "#{str} should be method: #{!!cmdproc.method?(str)}"
 #     }
-#     puts '=' * 40
+#     print '=' * 40
 
 #     # FIXME:
-#     puts "Trepan::CmdProcessor.allocate is: #{cmdproc.get_method('Trepan::CmdProcessor.allocate')}"
+#     print "Trepan::CmdProcessor.allocate is: #{cmdproc.get_method('Trepan::CmdProcessor.allocate')}"
 
 #     ['food', '.errmsg'].each do |str|
-#       puts "#{str} should be false: #{cmdproc.method?(str).to_s}"
+#       print "#{str} should be false: #{cmdproc.method?(str).to_s}"
 #     }
-#     puts '-' * 20
+#     print '-' * 20
 #     p cmdproc.breakpoint_position('foo', true)
 #     p cmdproc.breakpoint_position('@0', true)
 #     p cmdproc.breakpoint_position("#{__LINE__}", true)
@@ -443,7 +454,6 @@ unless (caller) {
 #     ### p cmdproc.breakpoint_position(%w(2 if a > b))
 #     p cmdproc.get_int_list(%w(1+0 3-1 3))
 #     p cmdproc.get_int_list(%w(a 2 3))
-#   }
 }
 
 1;

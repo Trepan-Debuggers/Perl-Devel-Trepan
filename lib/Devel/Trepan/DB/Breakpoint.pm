@@ -18,6 +18,7 @@ struct DBBreak => {
 };
 
 package DBBreak;
+use feature 'switch';
 sub inspect($)
 {
     my $self = shift;
@@ -26,6 +27,16 @@ sub inspect($)
 	    $self->type, $self->id, $self->enabled, $self->negate, 
 	    $self->hits, $self->condition);
 };
+
+sub icon_char($)
+{
+    my $self = shift;
+    given ($self->type) {
+	when ('tbrkpt') { return 'T'; }
+	when ('brkpt')  { return 'B'; }
+	when ('action') { return 'A'; }
+    }
+}
 
 package DB;
 use vars qw($brkpt $package $lineno $max_bp $max_action);
@@ -108,6 +119,7 @@ sub delete_bp($$) {
 	my $break_count = scalar @$brkpts;
 	for (my $j=0; $j <= $break_count; $j++) {
 	    $brkpt = $brkpts->[$j];
+	    next unless defined $brkpt;
 	    if ($brkpt eq $bp) {
 		undef $brkpts->[$j];
 		last;
@@ -116,6 +128,25 @@ sub delete_bp($$) {
 	}
 	delete $DB::dbline{$i} if $count == 0;
     }
+}
+
+# Find a subroutine. Return ($filename, $fn_name, $start_line);
+# If not found, return (undef, undef, undef);
+sub find_subline {
+    my $fn_name = shift;
+    $fn_name =~ s/\'/::/;
+    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
+    $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
+    my $filename = $DB::filename;
+    if (exists $DB::sub{$fn_name}) {
+	my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
+	if ($from) {
+	    local *DB::dbline = "::_<$filename";
+	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
+	    return ($filename, $fn_name, $from);
+	}
+    }
+    return (undef, undef, undef);
 }
 
 # Find a subroutine line. 

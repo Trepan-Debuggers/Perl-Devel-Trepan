@@ -137,12 +137,15 @@ t/10test-proc-hook.t
 t/10test-proc-load.t
 t/10test-util.t
 t/10test-validate.t
+t/20test-autolist.t
 t/20test-break.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
 t/20test-step.t
 t/20test-trepanpl-opts.t
+t/data/autolist.cmd
+t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
 t/data/list1.cmd

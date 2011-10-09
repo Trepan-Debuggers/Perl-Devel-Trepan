@@ -14,10 +14,27 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
+our $HELP         = <<"HELP";
+Set to run a 'list' command each time we enter the debugger
+HELP
+
 our $MIN_ABBREV   = length('li');
 our $MAX_ARGS     = 1;
 our $SHORT_HELP   = "Set to run a 'list' command each time we enter the debugger";
  
+sub run($$)
+{
+    my ($self, $args) = @_;
+    $self->SUPER::run($args);
+    my $proc = $self->{proc};
+    if ( $proc->{settings}{autolist} ) {
+	$proc->{cmdloop_prehooks}->insert_if_new(10, $proc->{autolist_hook}->[0],
+						 $proc->{autolist_hook}->[1]);
+    } else {
+	$proc->{cmdloop_prehooks}->delete_by_name('autolist');
+    }
+}
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

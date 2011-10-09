@@ -19,7 +19,7 @@ our @DEFAULT_FILE_ARGS = qw(size mtime sha1);
 our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 
 ## FIXME: do automatically.
-our $CMD = "show files";
+our $CMD = "info files";
 
 our $MAX_ARGS   = 8;  # Need at most this many - undef -> unlimited.
 our $HELP = <<"HELP";
@@ -49,7 +49,7 @@ If no sub-options are given, \"$DEFAULT_FILE_ARGS\" are assumed.
 
 Examples:
 
-${CMD}    # Show ${DEFAULT_FILE_ARGS} information about current file
+${CMD}    # Show \"${DEFAULT_FILE_ARGS}\" information about current file
 ${CMD} .  # same as above
 ${CMD} brkpts      # show the number of lines in the current file
 ${CMD} brkpts size # same as above but also list breakpoint line numbers

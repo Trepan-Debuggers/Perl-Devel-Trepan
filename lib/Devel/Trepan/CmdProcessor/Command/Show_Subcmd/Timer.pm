@@ -14,7 +14,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 our $HELP = "Show status of the timing hook";
 our $MIN_ABBREV = length('ti');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 

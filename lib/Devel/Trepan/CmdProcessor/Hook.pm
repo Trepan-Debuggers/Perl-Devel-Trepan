@@ -4,7 +4,7 @@ use strict; use warnings;
 use lib '../../..';
 
 use Class::Struct;
-use strict;
+use Time::HiRes;
 
 struct CmdProcessorHook => {
     priority    => '$',
@@ -107,7 +107,7 @@ sub hook_initialize($)
     
     $self->{timer_hook}     = ['timer', 
 			       sub{
-				   my $now = localtime;
+				   my $now = Time::HiRes::time;
 				   $self->{time_last} //= $now;
 				   my $mess = sprintf("%g seconds", $now - $self->{time_last});
 				   $self->msg($mess);
@@ -115,7 +115,7 @@ sub hook_initialize($)
 			       }];
     $self->{timer_posthook} = ['timer', 
 			       sub{
-				   $self->{time_last} = localtime}];
+				   $self->{time_last} = Time::HiRes::time}];
     $self->{trace_hook}     = ['trace', 
 			       sub{ $self->print_location}];
     $self->{tracebuf_hook}  = ['tracebuffer', 

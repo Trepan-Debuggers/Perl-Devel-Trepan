@@ -1,3 +1,4 @@
+Artistic
 bin/trepanpl
 Build.PL
 example/eval.pl
@@ -7,6 +8,8 @@ example/gcd.pl
 example/nexting.pl
 example/test-module.pm
 example/test-require.pl
+gpl-3.0.txt
+ignore.txt
 lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm
 lib/Devel/Trepan/CmdProcessor.pm
@@ -60,6 +63,9 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
@@ -77,6 +83,8 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Stack.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/String.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Timer.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace_Subcmd/Print.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Version.pm
 lib/Devel/Trepan/CmdProcessor/Command/Source.pm
 lib/Devel/Trepan/CmdProcessor/Command/Step.pm
@@ -122,6 +130,7 @@ lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Util.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
+README
 t/10test-cmd-kill.t
 t/10test-complete.t
 t/10test-condition.t

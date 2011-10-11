@@ -19,6 +19,9 @@
 \bpm_to_blib$
 \bblibdirs\.ts$         # 6.18 through 6.25 generated this
 
+# No data/trepan/Enbugger-trepan.patch
+\bdata/Enbugger-trepan\.patch$
+
 # Avoid Module::Build generated and utility files.
 \bBuild$
 \b_build/
@@ -26,6 +29,8 @@
 # Avoid temp and backup files.
 ~$
 \.old$
+\.orig$
+\.rej$
 \#$
 \b\.#
 \.bak$

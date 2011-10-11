@@ -113,6 +113,7 @@ lib/Devel/Trepan/DB.pm
 lib/Devel/Trepan/DB/Backtrace.pm
 lib/Devel/Trepan/DB/Breakpoint.pm
 lib/Devel/Trepan/DB/Colors.pm
+lib/Devel/Trepan/DB/Display.pm
 lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
 lib/Devel/Trepan/DB/Sub.pm

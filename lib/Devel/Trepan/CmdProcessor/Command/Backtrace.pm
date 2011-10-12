@@ -29,6 +29,7 @@ HELP
 use constant ALIASES    => qw(bt where T);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Print backtrace of stack frames';
+our $MIN_ARGS    = 0;  # Need at least this many
 our $MAX_ARGS     = 1;  # Need at most this many
 
 sub complete($$)

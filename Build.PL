@@ -22,7 +22,7 @@ use Config;
 
 my $builder = Module::Build->new( 
     module_name         => 'Devel::Trepan',
-    add_to_cleanup      => [ 'Devel-Trepan-*', 'tmp*'  ],
+    add_to_cleanup      => [ 'Devel-Trepan-*', 'tmp*', '*.got'  ],
     create_makefile_pl  => 'passthrough',
     dist_abstract       => 
     'Modular Perl Debugger (akin to Ruby "Trepanning" Debuggers).',

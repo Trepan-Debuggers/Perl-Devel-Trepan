@@ -1,0 +1,23 @@
+-- (gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+--> #0 file `gcd.pl' at line 18
+x1 (gcd.pl:9)
+    my ($a, $b) = @_;
+--> #0 @ = main::gcd(3, 5) in file `gcd.pl' at line 9
+    #1 file `gcd.pl' at line 21
+Breakpoint 2 set in 14 at line 14
+xx (gcd.pl:14)
+    return $a if ($a == 1) or ($b-$a == 0);
+--> #0 @ = main::gcd(1, 2) in file `gcd.pl' at line 14
+    #1 @ = main::gcd(2, 3) in file `gcd.pl' at line 15
+    #2 @ = main::gcd(3, 5) in file `gcd.pl' at line 15
+    #3 file `gcd.pl' at line 21
+<- (gcd.pl:15)
+    return gcd($b-$a, $a);
+Return array value:
+$VAR1 = 1;
+
+Return array value set to:
+$VAR1 = 10;
+
+The GCD of 3 and 5 is 10

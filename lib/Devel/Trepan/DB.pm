@@ -142,6 +142,7 @@ sub DB {
 	my $brkpts = $DB::dbline{$DB::lineno}) {
 	for (my $i=0; $i < @$brkpts; $i++) {
 	    my $brkpt = $brkpts->[$i];
+	    next unless defined $brkpt;
 	    if ($brkpt->type eq 'action') {
 		push @action, $brkpt;
 		next ;

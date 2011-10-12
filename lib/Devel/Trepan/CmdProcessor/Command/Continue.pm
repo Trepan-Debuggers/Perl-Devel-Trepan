@@ -45,18 +45,7 @@ local $MAX_ARGS     = 2;  # Need at most this many
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-
-    if (scalar @{$args} != 1) {
-	# Form is: "continue"
-	# my $(line_number, $condition, $negate) = 
-	#    $self->breakpoint_position($self->{proc}->{cmd_argstr}, 0);
-	# return unless iseq && vm_offset;
-	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
-	#return unless bp;
-	$self->{proc}->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
-    } else {
-	$self->{proc}->{leave_cmd_loop} = $self->{dbgr}->cont;
-    };
+    $self->{proc}->continue($args);
 }
 
 if (__FILE__ eq $0) {

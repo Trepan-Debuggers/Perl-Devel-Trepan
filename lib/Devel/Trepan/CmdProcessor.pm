@@ -258,25 +258,21 @@ sub process_commands($$$)
 
 	
 	$self->{unconditional_prehooks}->run;
-	if ($self->{settings}{traceprint}) {
-	    $self->{dbgr}->step();
-	    return;
-	}
-	
-	# my @last_pos;
-	# if (breakpoint?) {
-	#   @last_pos = (@frame_file, @frame_line,
-	# 	  	    @stack_size, @current_thread, @event);
-	# } else {
-	if ($self->is_stepping_skip()) {
-            # || @stack_size <= @hide_level;
-	    $self->{dbgr}->step();
-	    return;
+	if (index($self->{event}, 'brkpt') < 0) {
+	    if ($self->is_stepping_skip()) {
+		# || $self->{stack_size} <= $self->{hide_level};
+		$self->{dbgr}->step();
+		return;
+	    }
+	    if ($self->{settings}{traceprint}) {
+		$self->{dbgr}->step();
+		return;
+	    }
 	}
 	
 	$self->{prompt} = $self->compute_prompt;
 	
-	$self->print_location;
+	$self->print_location unless $self->{settings}{traceprint};
 	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
 	
 	$self->{cmdloop_prehooks}->run;

@@ -111,6 +111,33 @@ sub parse_next_step_suffix($$)
     return $opts;
 }
 
+sub continue($$) {
+    my ($self, $args) = @_;
+    if ($self->{settings}{traceprint}) {
+	$self->step();
+	return;
+    }
+    if (scalar @{$args} != 1) {
+	# Form is: "continue"
+	# my $(line_number, $condition, $negate) = 
+	#    $self->breakpoint_position($self->{proc}->{cmd_argstr}, 0);
+	# return unless iseq && vm_offset;
+	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
+	#return unless bp;
+	$self->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
+    } else {
+	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
+    };
+
+}
+
+sub step($$) {
+    my ($self, $opts) = @_;
+    $self->{different_pos} = $opts->{different_pos};
+    $self->{leave_cmd_loop} = 1;
+    $self->{dbgr}->step();
+}
+
 sub running_initialize($)
 {
     my $self = shift;
@@ -177,7 +204,7 @@ sub is_stepping_skip()
     # 	   "new: $new_pos->inspect(), different #{@different_pos.inspect}") if 
     # 	       $self->{settings}{'debugskip'};
 
-    $skip_val = (($last_pos->eq($new_pos) && !!$self->{different_pos}) 
+    $skip_val = (($last_pos && $last_pos->eq($new_pos) && !!$self->{different_pos}) 
 		 || !$condition_met);
 
     $self->{last_pos} = $new_pos;

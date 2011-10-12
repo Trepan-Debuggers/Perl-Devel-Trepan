@@ -55,7 +55,7 @@ sub run($$) {
 	shift @args; shift @args;
 	$condition = join(' ', @args);
 	unless (is_valid_condition($condition)) {
-	    $proc->errmsg("Invald condition: $condition");
+	    $proc->errmsg("Invalid condition: $condition");
 	    return
 	}
     } else {

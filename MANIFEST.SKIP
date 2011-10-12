@@ -29,6 +29,7 @@
 # Avoid temp and backup files.
 ~$
 \.old$
+\./t/data/*\.got
 \.orig$
 \.rej$
 \#$

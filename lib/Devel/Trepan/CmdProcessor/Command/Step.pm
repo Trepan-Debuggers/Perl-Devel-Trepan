@@ -122,10 +122,7 @@ sub run($$) {
     #     step_count = count - 1  
     #   end
     # end
-    # @proc.step(step_count, opts, condition)
-    $proc->{different_pos} = $opts->{different_pos};
-    $self->{proc}->{leave_cmd_loop} = 1;
-    $self->{dbgr}->step();
+    $proc->step($opts)
 }
 
 if (__FILE__ eq $0) {

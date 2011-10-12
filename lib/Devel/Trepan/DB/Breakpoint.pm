@@ -200,8 +200,8 @@ sub clr_breaks {
 
 # Set a an action
 sub set_action {
-    my ($s, $lineno, $filename, $cond, $id) = @_;
-    set_break($s, $lineno, $filename, $cond, $id, 'action');
+    my ($s, $lineno, $filename, $action, $id) = @_;
+    set_break($s, $lineno, $filename, $action, $id, 'action');
 }
 
 # FIXME: combine with clear_breaks

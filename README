@@ -12,7 +12,7 @@ Or for those who prefer the traditional Perlish way:
        bash$ perl -d:Trepan perl-program [perl-program-opts]
 
 Calling the debugger from inside your Progam program using Joshua ben
-Jore's Enbugger (http://search.cpan.org/~jjor/Enbugger) patched with
+Jore's Enbugger (http://search.cpan.org/~jjor/Enbugger/) patched with
 the trepan extension
 (https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch):
 

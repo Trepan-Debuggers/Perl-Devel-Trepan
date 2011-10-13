@@ -14,6 +14,7 @@ lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm
 lib/Devel/Trepan/CmdProcessor.pm
 lib/Devel/Trepan/CmdProcessor/Command.pm
+lib/Devel/Trepan/CmdProcessor/Command/Action.pm
 lib/Devel/Trepan/CmdProcessor/Command/Alias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
@@ -152,6 +153,7 @@ t/20test-break.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
+t/20test-seq1.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
@@ -165,6 +167,8 @@ t/data/list2.cmd
 t/data/list2.right
 t/data/list3.cmd
 t/data/list3.right
+t/data/seq1.cmd
+t/data/seq1.right
 t/data/step.cmd
 t/data/step.right
 t/data/trace1.cmd

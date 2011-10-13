@@ -62,6 +62,31 @@ sub bpprint($$;$)
     }
 }
 
+sub action_print($$;$) 
+{
+    my ($self, $action, $verbose) = @_;
+    my $proc = $self->{proc};
+    my $disp .= $action->enabled ? 'y  '   : 'n  ';
+
+    my $line_loc = sprintf('%s:%d', $action->filename, $action->line_num);
+
+    my $mess = sprintf('%-4daction     %s at %s',
+		       $action->id, $disp, $line_loc);
+    $proc->msg($mess);
+
+    if ($action->condition && $action->condition ne '1') {
+	my $msg = sprintf("\texpression: %s", $action->condition);
+	$proc->msg($msg);
+    }
+    if ($action->hits > 0) {
+	my $ss = ($action->hits > 1) ? 's' : '';
+	my $msg = sprintf("\taction already hit %d time%s",
+			  $action->hits, $ss);
+	$proc->msg($msg);
+    }
+}
+
+
 # sub save_command($)
 # {
 #     my $self = shift;
@@ -132,6 +157,37 @@ sub run($$) {
 	    }
 	}
     }
+
+    my $actmgr = $proc->{actions};
+    $actmgr->compact;
+    my @actions = @{$actmgr->{list}};
+    if (0 == scalar @actions) {
+	$proc->msg('No actions.');
+    } else {
+	# There's at least one
+	$proc->section("Num Type       Enb Where");
+	if ($show_all) {
+	    for my $action (@actions) {
+		$self->action_print($action, $verbose);
+	    }
+	} else  {
+	    my @not_found = ();
+	    for my $action_num (@args)  {
+		my $action = $actmgr->find($action_num);
+		if ($action) {
+		    $self->actino_print($action, $verbose);
+		} else {
+		    push @not_found, $action_num;
+		}
+	    }
+	    unless (scalar @not_found) {
+		my $msg = sprintf("No action number(s) %s.\n",
+				  join(', ', @not_found));
+		$proc->errmsg($msg);
+	    }
+	}
+    }
+
 }
 
 if (caller) {

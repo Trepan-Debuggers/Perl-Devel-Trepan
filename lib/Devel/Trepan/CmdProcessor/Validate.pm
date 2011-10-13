@@ -334,6 +334,7 @@ sub parse_position($$;$)
     if ($first_arg =~ /^\d+$/) {
 	$line_num = $first_arg;
 	$filename = $DB::filename;
+	$gobble_count = 1;
 	$fn = undef;
     } else {
 	($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
@@ -349,12 +350,12 @@ sub parse_position($$;$)
 		unless ($line_num =~ /\d+/) {
 		    $self->errmsg("Got filename $first_arg, " . 
 				  "expecting $line_num to a line number");
-		    return ($filename, undef, undef, @args);
+		    return ($filename, undef, undef, 0, @args);
 		}
 	    } else {
 		$self->errmsg("Expecting $first_arg to be a file " . 
 			      "or function name");
-		return ($filename, undef, $fn, @args);
+		return ($filename, undef, $fn, 0, @args);
 	    }
 	}
 	$gobble_count = 1;
@@ -363,7 +364,7 @@ sub parse_position($$;$)
 	local(*DB::dbline) = "::_<'$filename" ;
 	if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
 	    $self->errmsg("Line $line_num of file $filename not a stopping line");
-	    return ($filename, undef, $fn, @args);
+	    return ($filename, undef, $fn, 0, @args);
 	}
     }
     return ($filename, $line_num, $fn, $gobble_count, @args);

@@ -186,7 +186,9 @@ sub DB {
 	loadfile($DB::filename, $DB::lineno);
     }
     for my $action (@action) {
-	&DB::eval($usrctxt, $action, @saved);
+	&DB::eval($usrctxt, $action->condition, @saved) if $action->enabled;
+	my $hits = $action->hits + 1;
+	$action->hits($hits);
     }
     if ($DB::single || $DB::signal) {
 	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;

@@ -106,7 +106,7 @@ sub set_break {
 # Set a temporary breakpoint
 sub set_tbreak {
     my ($s, $filename, $lineno, $cond, $id) = @_;
-    set_break($s, $filename, $lineno, $cond, $id, 'tbrkpt');
+    return set_break($s, $filename, $lineno, $cond, $id, 'tbrkpt');
 }
 
 sub delete_bp($$) {
@@ -201,7 +201,7 @@ sub clr_breaks {
 # Set a an action
 sub set_action {
     my ($s, $lineno, $filename, $action, $id) = @_;
-    set_break($s, $lineno, $filename, $action, $id, 'action');
+    return set_break($s, $filename, $lineno, $action, $id, 'action');
 }
 
 # FIXME: combine with clear_breaks

@@ -91,10 +91,10 @@ sub run($$) {
 	    my $id = $bp->id;
 	    my $filename = $proc->canonic_file($bp->filename);
 	    my $line_num = $bp->line_num;
+	    $proc->{brkpts}->add($bp);
 	    $proc->msg("$prefix $id set in $filename at line $line_num");
 	}
     }
-    $proc->{brkpts}->add($bp);
 }
 
 unless (caller) {

@@ -30,7 +30,9 @@ sub eval {
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
+    no strict; no warnings;
     eval "$user_context $eval_str; &DB::save";
+    use strict; use warnings;
     _warnall($@) if $@;
 }
 

@@ -10,6 +10,7 @@ require Data::Dumper; require Data::Dumper::Perltidy;
 
 use lib '../..';
 require Devel::Trepan::BrkptMgr;
+require Devel::Trepan::DB::Display;
 require Devel::Trepan::Interface::User;
 require Devel::Trepan::CmdProcessor::Virtual;
 require Devel::Trepan::CmdProcessor::Default;
@@ -60,6 +61,7 @@ sub new($;$$$) {
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
+    $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];

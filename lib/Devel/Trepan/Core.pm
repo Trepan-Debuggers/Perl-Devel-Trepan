@@ -79,6 +79,12 @@ sub awaken($;$) {
 	add_startup_files($cmdproc, $opts->{initfile});
     }
 }
+
+sub display_lists ($)
+{
+    my $self = shift;
+    return $self->{proc}->{displays}->{list};
+}
     
 my $dbgr = __PACKAGE__->new();
 $dbgr->awaken();

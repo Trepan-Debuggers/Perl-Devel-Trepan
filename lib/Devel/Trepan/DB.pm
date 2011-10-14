@@ -120,12 +120,18 @@ sub DB {
     return unless $ready && !$in_debugger;
     local $in_debugger = 1;
     &save;
+
+    # Since DB::DB gets called after every line, we can use caller() to
+    # figure out where we last were executing. Sneaky, eh? This works because
+    # caller is returning all the extra information when called from the
+    # debugger.
     $DB::caller = [caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
     ) = @{$DB::caller};
-    
+    local $filename_ini = $filename;
+
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 
     # Set package namespace for running eval's in the user context. 
@@ -143,6 +149,7 @@ sub DB {
     $DB::event = undef;
     $DB::brkpt = undef;
 
+    # Accumulate action events.
     my @action = ();
     if (exists $DB::dbline{$DB::lineno} and 
 	my $brkpts = $DB::dbline{$DB::lineno}) {
@@ -202,11 +209,17 @@ sub DB {
 	$DB::signal = 0;
 	$running = 0;
 	
-	my $c;
-	for $c (@clients) {
+	for my $c (@clients) {
 	    # Now sit in an event loop until something sets $running
 	    my $after_eval = 0;
 	    do {
+
+		# Show display expresions
+		my $display_aref = $c->display_lists;
+		for my $display (@$display_aref) {
+		    ;
+		}
+
 		# call client event loop; must not block
 		$c->idle($after_eval);
 		$after_eval = 0;

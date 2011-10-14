@@ -63,6 +63,7 @@ sub new($;$$$) {
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
+    $self->{DB_running}     = $DB::running;
     $self->{DB_single}      = $DB::single;
     $self->{debug_nest}     = 1;
     $self->{last_command}   = undef;
@@ -283,7 +284,6 @@ sub process_commands($$$)
     while (!$self->{leave_cmd_loop}) {
 	# begin
 	$self->process_command_and_quit;
-	$DB::single = $self->{DB_single};
 	# rescue systemexit
 	#  @dbgr.stop
 	#  raise
@@ -299,7 +299,7 @@ sub process_commands($$$)
     }
     $self->{cmdloop_posthooks}->run;
     $DB::single = $self->{DB_single};
-    $DB::running = 1;
+    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the
@@ -380,6 +380,7 @@ sub run_command($$)
     if ($self->{settings}{autoeval} || $eval_command) {
 	no warnings 'once';
 	$DB::eval_str = $self->{dbgr}->evalcode($current_command);
+	$self->{DB_running} = 2;
 	$self->{leave_cmd_loop} = 1;
 	return;
     }

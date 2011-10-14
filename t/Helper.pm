@@ -28,12 +28,13 @@ sub run_debugger($$;$$)
     undef $INPUT_RECORD_SEPARATOR;
     my $right_string = <RIGHT_FH>;
     ($output, $right_string) = $opts->{filter}->($output, $right_string) if $opts->{filter};
+    my $gotfile;
+    ($gotfile = $full_cmdfile) =~ s/\.cmd/.got/;
     if ($right_string eq $output) {
 	Test::More::ok(1);
+	unlink $gotfile;
     } else {
 	my $diff = String::Diff::diff_merge($output, $right_string);
-	my $gotfile;
-	($gotfile = $full_cmdfile) =~ s/\.cmd/.got/;
 	open(GOT_FH, ">$gotfile");
 	print GOT_FH $output;
 	print $diff;

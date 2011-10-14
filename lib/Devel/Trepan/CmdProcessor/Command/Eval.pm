@@ -102,6 +102,7 @@ sub run($$)
 	$DB::eval_str = $dbgr->evalcode($text);
 	$DB::eval_opts = $opts;
 	$DB::result_opts = $opts;
+	$self->{DB_running} = 2;
 	$self->{proc}->{leave_cmd_loop} = 1;
     }
 }

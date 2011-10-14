@@ -67,8 +67,9 @@ sub run($$)
 	    return;
 	}
     }
-    # No graceful way to stop threads...
+    $self->{DB_single} = $DB::single = 0;
     $self->{proc}->{interfaces} = [];
+    # No graceful way to stop threads...
     exit $exitrc;
 }
 

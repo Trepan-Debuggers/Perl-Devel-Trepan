@@ -46,11 +46,7 @@ local $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-
-    $self->{proc}->{leave_cmd_loop} = 1;
-    no warnings;
-    $self->{dbgr}->next();
-    use warnings;
+    $self->{proc}->next;
 }
 
 if (__FILE__ eq $0) {

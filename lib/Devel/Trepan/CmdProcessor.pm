@@ -58,16 +58,17 @@ sub new($;$$$) {
 	$interfaces = [$intf];
     }
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
-    $self->{actions}      = Devel::Trepan::BrkptMgr->new($dbgr);
-    $self->{brkpts}       = Devel::Trepan::BrkptMgr->new($dbgr);
-    $self->{dbgr}         = $dbgr;
-    $self->{event}        = undef;
-    $self->{cmd_queue}    = [];
-    $self->{debug_nest}   = 1;
-    $self->{last_command} = undef;
+    $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
+    $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
+    $self->{dbgr}           = $dbgr;
+    $self->{event}          = undef;
+    $self->{cmd_queue}      = [];
+    $self->{DB_single}      = $DB::single;
+    $self->{debug_nest}     = 1;
+    $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
-    $self->{settings} = hash_merge($settings, DEFAULT_SETTINGS());
-    $self->{step_count} = 0;
+    $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
+    $self->{step_count}     = 0;
     $self->load_cmds_initialize;
     $self->running_initialize;
     $self->hook_initialize;
@@ -282,6 +283,7 @@ sub process_commands($$$)
     while (!$self->{leave_cmd_loop}) {
 	# begin
 	$self->process_command_and_quit;
+	$DB::single = $self->{DB_single};
 	# rescue systemexit
 	#  @dbgr.stop
 	#  raise
@@ -296,6 +298,7 @@ sub process_commands($$$)
 	# }
     }
     $self->{cmdloop_posthooks}->run;
+    $DB::single = $self->{DB_single};
 }
 
 # run current_command, a string. @last_command is set after the

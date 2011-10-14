@@ -53,6 +53,7 @@ sub run($$) {
     $self->{proc}->{leave_cmd_loop} = 1;
     no warnings;
     $self->{dbgr}->next();
+    use warnings;
 }
 
 if (__FILE__ eq $0) {

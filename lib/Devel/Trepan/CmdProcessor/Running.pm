@@ -115,7 +115,6 @@ sub continue($$) {
     my ($self, $args) = @_;
     if ($self->{settings}{traceprint}) {
 	$self->step();
-	$self->{DB_single} = $DB::single;
 	return;
     }
     if (scalar @{$args} != 1) {
@@ -129,18 +128,16 @@ sub continue($$) {
     } else {
 	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
     };
-    $self->{DB_single} = $DB::single;
+    $self->{DB_single} = 0;
 
 }
 
 sub next($$) 
 {
     my ($self, $opts) = @_;
+    $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
-    no warnings;
-    $self->{dbgr}->next();
-    use warnings;
-    $self->{DB_single} = $DB::single;
+    $self->{DB_single} = 2;
 }
 
 sub step($$) 
@@ -148,8 +145,7 @@ sub step($$)
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
-    $self->{dbgr}->step();
-    $self->{DB_single} = $DB::single;
+    $self->{DB_single} = 1;
 }
 
 sub running_initialize($)

@@ -46,10 +46,12 @@ local $NEED_RUNNING = 1;
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
-    $self->{proc}->next;
+    my $proc = $self->{proc};
+    my $opts = $proc->parse_next_step_suffix($args->[0]);
+    $proc->next($opts);
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
   # p cmd.run([cmd.name])

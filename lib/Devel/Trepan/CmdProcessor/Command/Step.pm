@@ -125,7 +125,7 @@ sub run($$) {
     $proc->step($opts)
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
   # p cmd.run([cmd.name])

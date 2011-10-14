@@ -794,9 +794,9 @@ Called when API must show a message (warnings, errors etc.).
 
 =head1 BUGS
 
-The interface defined by this module is missing some of the later additions
-to perl's debugging functionality.  As such, this interface should be considered
-highly experimental and subject to change.
+The interface defined by this module is missing a number of Perl's
+debugging functionality.  As such, this interface is subject to
+(possibly incompatible) change.
 
 =head1 AUTHOR
 

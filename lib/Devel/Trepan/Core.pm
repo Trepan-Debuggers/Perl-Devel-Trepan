@@ -5,10 +5,16 @@ use Devel::Trepan::CmdProcessor;
 use vars qw(@ISA);
 @ISA = qw(DB);
 
-__PACKAGE__->register();
-__PACKAGE__->ready();
-
-my $cmdproc;
+sub add_startup_files($$) {
+    my ($cmdproc, $startup_file) = @_;
+    if (-f $startup_file) {
+	if (-r $startup_file)  {
+	    push @{$cmdproc->{cmd_queue}}, "source $startup_file";
+	} else {
+	    print STDERR "Command file '$startup_file' is not readable.\n";
+	}
+    }
+}
 
 # Not used by debugger, but here for
 # testing and OO completness.
@@ -28,38 +34,29 @@ sub init() {
 sub idle($$) 
 {
     my ($self, $after_eval) = @_;
-    $cmdproc->process_commands($DB::caller, $after_eval, $DB::event);
+    my $proc = $self->{proc};
+    $proc->process_commands($DB::caller, $after_eval, $DB::event);
 }
 
 sub output($) 
 {
     my ($self, $msg) = @_;
+    $proc = $self->{proc};
     chomp($msg);
-    $cmdproc->msg($msg);
+    $proc->msg($msg);
 }
 
 sub warning($) 
 {
     my ($self, $msg) = @_;
+    $proc = $self->{proc};
     chomp($msg);
-    $cmdproc->errmsg($msg);
-}
-
-sub add_startup_files($$) {
-    my ($cmdproc, $startup_file) = @_;
-    if (-f $startup_file) {
-	if (-r $startup_file)  {
-	    push @{$cmdproc->{cmd_queue}}, "source $startup_file";
-	} else {
-	    print STDERR "Command file '$startup_file' is not readable.\n";
-	}
-    }
+    $proc->errmsg($msg);
 }
 
 sub awaken($;$) {
-    my ($self, $opts);
+    my ($self, $opts) = @_;
     no warnings 'once';
-    $main::TREPAN_CMDPROC = $cmdproc;
     # Process options
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
@@ -69,8 +66,10 @@ sub awaken($;$) {
 	highlight =>  $opts->{highlight},
 	traceprint => $opts->{traceprint}
     };
-    $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
+    my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
 						$cmdproc_opts);
+    $self->{proc} = $cmdproc;
+    $main::TREPAN_CMDPROC = $self->{proc};
     $opts //= {};
 
     for my $startup_file (@{$opts->{cmdfiles}}) {
@@ -81,6 +80,9 @@ sub awaken($;$) {
     }
 }
     
-__PACKAGE__->awaken();
+my $dbgr = __PACKAGE__->new();
+$dbgr->awaken();
+$dbgr->register();
+$dbgr->ready();
 
 1;

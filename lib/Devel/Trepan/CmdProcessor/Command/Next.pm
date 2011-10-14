@@ -43,9 +43,6 @@ our   $MIN_ARGS     = 0;
 local $MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
 local $NEED_RUNNING = 1;
 
-
-#  include Trepan::Condition
-
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;

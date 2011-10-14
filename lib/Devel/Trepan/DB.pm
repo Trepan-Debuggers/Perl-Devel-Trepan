@@ -23,6 +23,7 @@ use Devel::Trepan::DB::Sub;
 
 # "private" globals
 my ($ready, $deep, @saved, @skippkg, @clients);
+
 my $ineval = {};
 
 ####
@@ -325,7 +326,7 @@ sub catch {
 
 sub register {
   my $s = shift;
-  $s = _clientname($s) if ref($s);
+  # $s = _clientname($s) if ref($s);
   push @clients, $s;
 }
 

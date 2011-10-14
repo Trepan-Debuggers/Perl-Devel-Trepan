@@ -131,7 +131,8 @@ sub continue($$) {
 
 }
 
-sub step($$) {
+sub step($$) 
+{
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;

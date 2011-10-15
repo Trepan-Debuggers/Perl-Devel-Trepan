@@ -41,7 +41,7 @@ sub eval {
 # @saved contains an ordered list of saved global variables.
 # global $eval_opts->{return_type} indicates the return context.
 sub eval_with_return {
-    my ($user_context, @saved) = @_;
+    my ($user_context, $eval_str, @saved) = @_;
     no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 

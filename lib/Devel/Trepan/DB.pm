@@ -213,11 +213,14 @@ sub DB {
 	    # Now sit in an event loop until something sets $running
 	    my $after_eval = 0;
 	    do {
-
 		# Show display expresions
 		my $display_aref = $c->display_lists;
-		for my $display (@$display_aref) {
-		    ;
+		for my $disp (@$display_aref) {
+		    next unless $disp && $disp->enabled;
+		    # FIXME: allow more than just scalar contexts.
+		    my $eval_result = &DB::eval_with_return($usrctxt, $disp->arg, @saved);
+		    my $mess = sprintf("%d: $eval_result", $disp->number);
+		    $c->output($mess);
 		}
 
 		# call client event loop; must not block
@@ -225,20 +228,21 @@ sub DB {
 		$after_eval = 0;
 		if ($running == 2 && defined($eval_str)) { 
 		    # client wants something eval-ed
+		    # FIXME: turn into subroutine.
 		    given ($eval_opts->{return_type}) {
 			when ('$') {
 			    $eval_result = 
-				&DB::eval_with_return($usrctxt, @saved);
+				&DB::eval_with_return($usrctxt, $eval_str, @saved);
 			}
 			when ('@') {
-			    &DB::eval_with_return($usrctxt, @saved);
+			    &DB::eval_with_return($usrctxt, $eval_str, @saved);
 			}
 			when ('%') {
-			    &DB::eval_with_return($usrctxt, @saved);
+			    &DB::eval_with_return($usrctxt, $eval_str, @saved);
 			} 
 			default {
 			    $eval_result = 
-				&DB::eval_with_return($usrctxt, @saved);
+				&DB::eval_with_return($usrctxt, $eval_str, @saved);
 			}
 		    }
 		    $after_eval = 1;

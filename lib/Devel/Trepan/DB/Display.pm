@@ -29,7 +29,7 @@ package Devel::Trepan::DisplayMgr;
 sub new($$) 
 {
     my ($class,$dbgr) = @_;
-    my $self = {};
+    my $self = {max => 0};
     $self->{dbgr} = $dbgr;
     bless $self, $class;
     $self->clear();
@@ -101,8 +101,12 @@ sub delete_by_display($$)
 sub add($$)
 {
     my ($self, $display) = @_;
-    push @{$self->{list}}, $display;
-    return $display;
+    $self->{max}++;
+    my $number = $self->{max};
+    my $disp = DBDisplay->new(
+	number=>$number, enabled => 1, arg => $display, fmt => '$');
+    push @{$self->{list}}, $disp;
+    return $disp;
 }
 
 sub compact($)

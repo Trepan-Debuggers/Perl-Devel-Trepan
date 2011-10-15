@@ -1,0 +1,14 @@
+-- (gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+Display 1 set
+1: 3, 5
+-- (gcd.pl:20)
+my ($a, $b) = @ARGV[0,1];
+*** Expecting an integer, got: a.
+*** No display number 2
+-- (gcd.pl:21)
+printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
+Display 2 set
+2: 3 | 5
+-- (gcd.pl:9)
+    my ($a, $b) = @_;

@@ -21,8 +21,8 @@ sub complete_it($)
     my @c = $cmdproc->complete($str, $str, 0, length($str));
     return @c;
 }
-my @c = complete_it("help un");
-is(scalar @c, 1);
+my @c = complete_it("help una");
+is(scalar @c, 1, 'help "una"');
 is($c[0], 'unalias');
 
 @c = complete_it("set base");

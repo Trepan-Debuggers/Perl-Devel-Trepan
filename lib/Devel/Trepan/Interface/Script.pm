@@ -119,6 +119,10 @@ sub readline($;$)
     return $line;
 }
 
+sub remove_history($;$)
+{
+}
+
 # sub DESTROY($) 
 # {
 #     my $self = shift;

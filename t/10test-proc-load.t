@@ -22,6 +22,6 @@ is(join(',  ', $cmdproc->complete("s", 's', 0, 1)),
 is(join(',  ', $cmdproc->complete("help se", 'help se', 0, 1)),
    'set', "Completing 'help se'");
 
-is(join(', ', $cmdproc->complete("help un", 'help un', 0, 1)),
-   'unalias', 'completing "un"')
+is(join(', ', $cmdproc->complete("help una", 'help una', 0, 1)),
+   'unalias', 'completing "una"')
 

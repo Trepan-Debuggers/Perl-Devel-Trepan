@@ -10,6 +10,11 @@ BEGIN {
 use_ok( 'Devel::Trepan::Condition' );
 }
 
-note 'Test eq';
-is (is_valid_condition('$a=1'), 1);
-is (is_valid_condition('1+'), '');
+note 'Test valid conditions';
+for my $expr ('$a=2', "join(', ', \@ARGV)", 'join(", ", \@ARGV)') {
+    is (is_valid_condition($expr), 1, "\"$expr\" is valid Perl");
+}
+note 'Test invalid conditions';
+for my $expr ('1+', "join(', ', \@ARGV", 'join(", , \@ARGV)') {
+    is (is_valid_condition($expr), '', "\"$expr\" is not valid Perl");
+}

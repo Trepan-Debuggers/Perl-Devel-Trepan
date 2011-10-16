@@ -9,16 +9,21 @@ use vars qw(@EXPORT @ISA);
 
 sub is_valid_condition($) {
     my ($expr) = @_;
-    my $cmd = sprintf("$EXECUTABLE_NAME -c -e '%s' 2>&1", $expr);
-    my $output = `$cmd`;
-    return $CHILD_ERROR == 0;
+    my $pid = fork();
+    if ($pid) {
+	waitpid($pid, 0);
+	return $CHILD_ERROR == 0;
+    } else {
+	close STDERR;
+	exec($EXECUTABLE_NAME, '-c', '-e', $expr);
+    }
 }
 
 # Demo code
 unless (caller) {
-    for my $expr ('$a=2', '1+') {
-	printf("$expr is %sa valid_condition\n", 
-	       is_valid_condition($expr) ? '' : 'not ');
+    for my $expr ('$a=2', '1+', "join(', ', @ARGV)", 'join(", ", @ARGV)') {
+	my $ok = is_valid_condition($expr);
+	printf("$expr is %sa valid_condition\n", $ok ? '' : 'not ');
     }
 }
 

@@ -5,5 +5,11 @@ set auto eval on
 @ @ARGV
 $ @ARGV
 eval 3+4
+# Check that "my" variables can be evaluated properly
+c gcd
+s
+$a
+$b
 quit!
+
 

@@ -17,7 +17,7 @@ is(1, scalar @cmds > 3, "We should have more than 1 command");
 my @aliases = sort %{$cmdproc->{aliases}};
 is(1, scalar @aliases > 3, "We should have more than 1 alias");
 is(join(',  ', $cmdproc->complete("s", 's', 0, 1)),
-   'set,  show,  source,  step', "Completing 's'");
+   'set,  shell,  show,  source,  step', "Completing 's'");
 
 is(join(',  ', $cmdproc->complete("help se", 'help se', 0, 1)),
    'set', "Completing 'help se'");

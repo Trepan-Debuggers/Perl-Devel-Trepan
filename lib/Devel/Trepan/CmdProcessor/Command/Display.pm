@@ -25,14 +25,12 @@ our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [format] EXP
+${NAME} PERL-EXPRESSION
  
-Print value of expression EXP each time the program stops.  FMT may be
-used before EXP and may be one of 'c' for char, 'x' for hex, 'o' for
-octal, 'f' for float or 's' for string.
+Print value of expression PERL-EXPRESSON each time the program stops.
 
 Examples:
-   ${NAME} x > 10 
+   ${NAME} join(', ', @ARGV)
 
 See also "undisplay", "enable", and "disable".
 HELP

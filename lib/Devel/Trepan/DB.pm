@@ -112,6 +112,7 @@ sub DB {
 
     # lock the debugger and get the thread id for the prompt
     lock($DBGR);
+
     my $tid;
     if ($ENV{PERL5DB_THREADED}) {
 	$tid = eval { "[".threads->tid."]" };
@@ -119,6 +120,7 @@ sub DB {
 
     return unless $ready && !$in_debugger;
     local $in_debugger = 1;
+    @DB::_ = @_;
     &save;
 
     # Since DB::DB gets called after every line, we can use caller() to
@@ -136,7 +138,7 @@ sub DB {
 
     # Set package namespace for running eval's in the user context. 
     # However this won't let them modify 'my' variables, alas.
-    $usrctxt = "package $DB::package;";
+    $usrctxt = "package $DB::package; \@_ = \@DB::_;";
     
     local(*DB::dbline) = "::_<$DB::filename";
 

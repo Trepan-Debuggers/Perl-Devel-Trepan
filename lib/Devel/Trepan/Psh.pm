@@ -1,9 +1,17 @@
 use Psh;
 use warnings; no warnings 'redefine';
+# use File::Basename;
+# use File::Spec;
+# unshift @INC, File::Spec->catfile(dirname(__FILE__), 'Psh');
+# print "Inc is ${INC[0]}\n";
+# eval "require Psh::Strategy::Built_in";
+# shift @INC;
+
+use lib '../..';
 
 package Psh;
 
-# $PSH:quit provides a way to for a way to quit process() and return
+# $Psh:quit provides a way to for a way to quit process() and return
 # to the caller.  This is useful, for example, in the debugger
 # Devel::Trepan (a debugger) to provide going into psh shell, but
 # returning to the debugger afterwards.

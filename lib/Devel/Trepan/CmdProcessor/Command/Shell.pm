@@ -1,4 +1,5 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 
 use lib '../../../..';
@@ -30,6 +31,11 @@ sub run($$)
     unless (require Psh::Locale) {
 	$self->{proc}->errmsg("No psh support available. Did you install psh?");
     }
+#    state $first_time = 1;
+#    if ($first_time) {
+	$self->{proc}->msg("To return to the debugger, set: \$Psh::quit = 1");
+#	$first_time = 0;
+#    }
     require Psh::Util;
     Psh::minimal_initialize;
     Psh::finish_initialize;
@@ -37,7 +43,7 @@ sub run($$)
     Psh::Options::set_option('ps1', "trepanpl \$ ");
     $Psh::quit = 0;
     until ($Psh::quit) {
-	eval { Psh::main_loop; };
+	eval { Psh::main_loop(); };
 	Psh::handle_message($@,'main_loop');
     }
 }

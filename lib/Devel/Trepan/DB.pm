@@ -56,7 +56,7 @@ BEGIN {
     
     $DB::package = '';    # current package space
     $DB::filename = '';   # current filename
-    $DB::subname = '';    # currently executing sub (fullly qualified name)
+    $DB::subname = '';    # currently executing sub (fully qualified name)
     $DB::lineno = '';     # current line number
     $DB::subroutine = '';
     $DB::hasargs = '';

@@ -253,6 +253,7 @@ sub getline($$;$)
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = unmap_file($file_or_script);
     ($filename, $line_number) = unmap_file_line($filename, $line_number);
+    ## print "+++FILENAME $filename\n";
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
 	my $line = $lines->[$line_number-1];
@@ -277,6 +278,23 @@ sub getlines($;$)
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
 	my $lines_href = $file_cache{$filename}->{lines_href};
+	my $lines_aref = $lines_href->{$format};
+	if ($opts->{output} && !defined $lines_aref) {
+	    my @formatted_lines = ();
+	    my $lines_aref = $lines_href->{plain};
+	    for my $line (@$lines_aref) {
+		push @formatted_lines, highlight_string($line);
+		## print $formatted_text;
+	    }
+	    $lines_href->{$format} = \@formatted_lines;
+	    return \@formatted_lines;
+	} else {
+	    return $lines_aref;
+	}
+    } elsif (exists $script_cache{$filename}) {
+	### FIXME: combine with above...
+	print "+++IS IN SCRIPT CACHE\n";
+	my $lines_href = $script_cache{$filename}->{lines_href};
 	my $lines_aref = $lines_href->{$format};
 	if ($opts->{output} && !defined $lines_aref) {
 	    my @formatted_lines = ();
@@ -434,8 +452,17 @@ sub update_script_cache($$)
 {
     my ($script, $opts) = @_;
     return 0 unless filename_is_eval($script);
-    my $string = $opts->{string} || @{"_<$script"};
-    my $lines_href = {plain => split(/\n/, $string)};
+    my $string = $opts->{string};
+    my $lines_href = {};
+    unless (defined($string)) {
+	if ($script eq $DB::filename) {
+	    $lines_href->{plain} = \@DB::lines;
+	    $string = join("\n", @DB::lines);
+	} else {
+	    $string = $opts->{string} || @{"_<$script"};
+	    $lines_href->{plain} = split(/\n/, $string);
+	}
+    }
     $lines_href->{$opts->{output}} = highlight_string($string) if 
 	$opts->{output};
 
@@ -478,6 +505,10 @@ sub update_cache($;$)
     my $lines_href;
     if ($use_perl_d_file) {
 	my @list = ($filename);
+	if (filename_is_eval($filename)) {
+	    cache_script($filename);
+	    ## FIXME: create a temporary file in script2file;
+	}
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
 	    my $stat;
@@ -542,12 +573,14 @@ sub update_cache($;$)
 	}
 	return 0 unless defined $stat;
     }
-    my @lines = read_file($path);
-    $lines_href = {plain => \@lines};
-    if ($opts->{output}) {
-	my $highlight_lines = highlight_string(join('', @lines));
-	my @highlight_lines = split(/\n/, $highlight_lines);
-	$lines_href->{$opts->{output}} = \@highlight_lines;
+    if ( -r $path ) { 
+	my @lines = read_file($path);
+	$lines_href = {plain => \@lines};
+	if ($opts->{output}) {
+	    my $highlight_lines = highlight_string(join('', @lines));
+	    my @highlight_lines = split(/\n/, $highlight_lines);
+	    $lines_href->{$opts->{output}} = \@highlight_lines;
+	}
     }
     my $entry = {
 		stat       => $stat,
@@ -608,6 +641,7 @@ unless (caller) {
 	  "\n");
     eval "printf \"filename_is_eval: %s, %s\n\", __FILE__, 
           filename_is_eval(__FILE__);";
+    $DB::filename = 'bogus';
     eval "update_script_cache(__FILE__, {}); 
           print '+++', is_cached_script(__FILE__), \"\\n\"";
     # print("#{__FILE__} is %scached." % 

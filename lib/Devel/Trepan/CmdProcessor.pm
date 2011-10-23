@@ -233,7 +233,7 @@ sub process_commands($$$)
 		$self->msg("$prefix\n\@\{$val_str}");
 	    } 
 	    when ('%') {
-		if (defined %DB::eval_result) {
+		if (%DB::eval_result) {
 		    $DB::D[$last_i++] = \%DB::eval_result;
 		    $val_str = $fn->(%DB::eval_result);
 		    chomp $val_str;

@@ -9,7 +9,7 @@ use vars qw(@EXPORT @ISA);
 @ISA = qw(Exporter);
 
 # Hash merge like Ruby has.
-sub hash_merge(%%) {
+sub hash_merge($$) {
     my ($config, $default_opts) = @_;
     while (my ($field, $default_value) = each %$default_opts) {
 	$config->{$field} = $default_value unless defined $config->{$field};

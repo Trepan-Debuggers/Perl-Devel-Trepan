@@ -432,7 +432,8 @@ sub map_script($$)
     } else  {
 	# my $sha1 = Digest::SHA1->new();
 	# $sha1->add($string);
-	my($fh, $tempfile) = tempfile($script.'XXXX', SUFFIX=>'.pl');
+	my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
+				       TMPDIR => 1);
 	print $fh $string;
 	$fh->close();
 	$script2file{$script} = $tempfile;

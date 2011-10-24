@@ -36,7 +36,7 @@ sub canonic_file($$;$)
     if ($self->{settings}{basename}) {
 	return basename($filename);
     } elsif ($resolve) {
-    	$filename = DB::LineCache::unmap_file($filename);
+    	$filename = DB::LineCache::map_file($filename);
     	return abs_path($filename) || $filename;
     } else {
 	return $filename;
@@ -110,10 +110,14 @@ sub text_at($;$)
     my $filename = $self->filename();
     if (DB::LineCache::filename_is_eval($filename)) {
 	if ($DB::filename eq $filename) {
-	    { no strict;
-	      my $string = join("\n", @DB::dbline);
-	      $filename = DB::LineCache::map_script($filename, $string);
-	      $text = DB::LineCache::getline($filename, $line_no, $opts);
+	    { 
+		# Some lines in @DB::line might not be defined.
+		# So we have to turn off strict here.
+		no warnings;
+		my $string = join("\n", @DB::dbline);
+		use warnings;
+		$filename = DB::LineCache::map_script($filename, $string);
+		$text = DB::LineCache::getline($filename, $line_no, $opts);
 	    }
 	}
     } else {
@@ -166,8 +170,11 @@ sub source_location_info($)
     my $line_number = $self->line() || 0;
     if (DB::LineCache::filename_is_eval($filename)) {
     	if ($DB::filename eq $filename) {
-	    no strict; no warnings;
+	    # Some lines in @DB::line might not be defined.
+	    # So we have to turn off strict here. 
+	    no warnings;
 	    my $string = join('', @DB::dbline);
+	    use warnings;
     	    my $map_file = DB::LineCache::map_script($filename, $string);
     	    $canonic_filename = $self->canonic_file($map_file, 0);
     	    return " $filename:$line_number " . 

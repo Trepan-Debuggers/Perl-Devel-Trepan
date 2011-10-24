@@ -89,14 +89,14 @@ sub run($$)
     my $filename = shift @args;
     if ($filename eq '.') {
         my $frame_file = $proc->{frame}->{file};
-	$filename = DB::LineCache::unmap_file($frame_file) ||
+	$filename = DB::LineCache::map_file($frame_file) ||
 	    abs_path($frame_file);
     }
     @args = @DEFAULT_FILE_ARGS if 0 == scalar @args;
 
     my $m = $filename;
     my $canonic_name = $proc->canonic_file($filename);
-    $canonic_name = DB::LineCache::unmap_file($canonic_name) || $canonic_name;
+    $canonic_name = DB::LineCache::map_file($canonic_name) || $canonic_name;
     if (DB::LineCache::is_cached($canonic_name)) {
 	$m .= " is cached in debugger";
 	if ($canonic_name ne $filename) {
@@ -127,7 +127,7 @@ sub run($$)
 	  }
 	  return
       } elsif (1 == scalar(@matches)) {
-      	  $canonic_name = DB::LineCache::unmap_file($matches[0]);
+      	  $canonic_name = DB::LineCache::map_file($matches[0]);
       	  $m .= " matched debugger cache file:\n\t"  . $canonic_name;
       	  $proc->msg($m);
       	 } else {

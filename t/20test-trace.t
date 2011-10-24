@@ -15,6 +15,7 @@ my $opts = {
 	    if ($line =~ /.. \(.+\:\d+\)/) {
 		$line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
 	    }
+	    last if (0 == index($line, '-- (Temp.pm:'));
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result);

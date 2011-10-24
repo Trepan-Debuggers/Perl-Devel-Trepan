@@ -340,8 +340,8 @@ sub parse_position($$;$)
 	($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
 	unless ($line_num) { 
 	    $filename = $first_arg;
-	    my $unmapped_filename = DB::LineCache::unmap_file($filename);
-	    if (-r $unmapped_filename) {
+	    my $mapped_filename = DB::LineCache::map_file($filename);
+	    if (-r $mapped_filename) {
 		if (scalar @args == 0) {
 		    $line_num = 1;
 		} else {

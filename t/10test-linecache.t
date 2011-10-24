@@ -44,3 +44,11 @@ eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, 'should pick up eval file
 is($EVAL_ERROR, '', 'eval error on __FILE__ test');
 is(DB::LineCache::filename_is_eval(__FILE__), '', 
    'should not be an eval filename');
+
+$DB::filename = '(eval 1)';
+my $eval_str = "\$x=1;\n\$y=2;\n\$z=3;\n";
+my $filename = DB::LineCache::map_script($DB::filename, $eval_str);
+open(FH, '<', $filename);
+undef $INPUT_RECORD_SEPARATOR;
+my $got_str = <FH>;
+is($got_str, $eval_str, "reading contents temp file $filename");

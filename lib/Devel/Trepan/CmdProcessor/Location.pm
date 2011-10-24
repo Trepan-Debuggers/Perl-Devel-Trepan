@@ -108,14 +108,17 @@ sub text_at($;$)
     my $line_no = $self->line();
     my $text;
     my $filename = $self->filename();
-    if (DB::LineCache::filename_is_eval($filename)) {
-	$filename = DB::LineCache::map_script($filename);
-	$text = DB::LineCache::getline($filename, $line_no, $opts);
-    } else {
+    # if (DB::LineCache::filename_is_eval($filename)) {
+    # 	if ($DB::filename eq $filename) {
+    # 	    my $string = join("\n", @DB::lines);
+    # 	    $filename = DB::LineCache::map_script($filename, $string);
+    # 	    $text = DB::LineCache::getline($filename, $line_no, $opts);
+    # 	}
+    # } else {
 	$text = line_at($filename, $line_no, $opts);
 	my ($map_file, $map_line) = 
-	    DB::LineCache->unmap_file_line($filename, $line_no);
-    }
+	    DB::LineCache->map_file_line($filename, $line_no);
+    # }
     $text;
   }
   
@@ -157,9 +160,17 @@ sub source_location_info($)
     my $canonic_filename;
     #    'eval ' + safe_repr(@frame.eval_string.gsub("\n", ';').inspect, 20)
     #  else
-    $canonic_filename = $self->canonic_file($self->{frame}->{file}, 0);
+    my $filename = $self->filename();
+    my $line_number = $self->line() || 0;
+    # if (DB::LineCache::filename_is_eval($filename)) {
+    # 	if ($DB::filename eq $filename) {
+    # 	    my $map_file = DB::LineCache::map_script($filename, $string);
+    # 	    $canonic_filename = $self->canonic_file($map_file, 0);
+    # 	    return " $filename:$line_number " . 
+    # 		"remapped ${canonic_filename}:$line_number";
+    # 	}
     # }
-    my $line_number = $self->{frame}->{line} || 0;
+    $canonic_filename = $self->canonic_file($filename, 0);
     return "${canonic_filename}:${line_number}";
 } 
 

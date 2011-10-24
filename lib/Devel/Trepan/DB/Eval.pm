@@ -31,8 +31,7 @@ sub eval {
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
     no strict; no warnings;
-    eval "$user_context $eval_str; &DB::save";
-    use strict; use warnings;
+    eval "$user_context $eval_str; &DB::save\n"; # '\n' for nice recursive debug
     _warnall($@) if $@;
 }
 
@@ -51,21 +50,21 @@ sub eval_with_return {
     given ($eval_opts->{return_type}) {
 	when ('$') {
 	    eval "$user_context \$DB::eval_result=$eval_str";
-	    $eval_result = eval "$user_context $eval_str";
+	    $eval_result = eval "$user_context $eval_str\n";
 	}
 	when ('@') {
-	    eval "$user_context \@DB::eval_result=$eval_str";
+	    eval "$user_context \@DB::eval_result=$eval_str\n";
 	}
 	when ('%') {
-	    eval "$user_context \%DB::eval_result=$eval_str";
+	    eval "$user_context \%DB::eval_result=$eval_str\n";
 	} 
 	default {
-	    $eval_result = eval "$user_context $eval_str";
+	    $eval_result = eval "$user_context $eval_str\n";
 	}
     }
 
     my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-    eval "$user_context &DB::save";
+    eval "$user_context &DB::save\n"; # '\n' for nice recursive debug
     if ($EVAL_ERROR_SAVE) {
 	_warnall($EVAL_ERROR_SAVE);
 	$eval_str = '';

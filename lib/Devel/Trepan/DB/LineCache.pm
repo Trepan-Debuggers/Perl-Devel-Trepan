@@ -217,20 +217,20 @@ sub is_cached($)
 { 
     my $file_or_script = shift;
     return undef unless defined $file_or_script;
-    exists $file_cache{unmap_file($file_or_script)};
+    exists $file_cache{map_file($file_or_script)};
 }
 
 sub is_cached_script($)
 {
     my $filename = shift;
-    my $name = unmap_file($filename);
+    my $name = map_file($filename);
     scalar @{"_<$name"};
 }
       
 sub is_empty($)
 {
     my $filename = shift;
-    $filename=unmap_file($filename);
+    $filename=map_file($filename);
     my $ref = $file_cache{$filename};
     $ref->{lines_href}->{plain};
 }
@@ -251,8 +251,8 @@ sub getline($$;$)
     my ($file_or_script, $line_number, $opts) = @_;
     $opts //= {};
     my $reload_on_change = $opts->{reload_on_change};
-    my $filename = unmap_file($file_or_script);
-    ($filename, $line_number) = unmap_file_line($filename, $line_number);
+    my $filename = map_file($file_or_script);
+    ($filename, $line_number) = map_file_line($filename, $line_number);
     ## print "+++FILENAME $filename\n";
     my $lines = getlines($filename, $opts);
     if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
@@ -331,7 +331,7 @@ sub highlight_string($)
 sub path($)
 {
     my $filename = shift;
-    $filename = unmap_file($filename);
+    $filename = map_file($filename);
     return undef unless exists $file_cache{$filename};
     $file_cache{$filename}->path();
 }
@@ -358,7 +358,7 @@ sub remap_file_lines($$$$)
 sub DB::LineCache::sha1($)
 {
     my $filename = shift;
-    $filename = unmap_file($filename);
+    $filename = map_file($filename);
     return undef unless exists $file_cache{$filename};
     my $sha1 = $file_cache{$filename}->{sha1};
     return $sha1->hexdigest if exists $file_cache{$filename}->{sha1};
@@ -377,7 +377,7 @@ sub size($)
 {
     my $file_or_script = shift;
     cache($file_or_script);
-    $file_or_script = unmap_file($file_or_script);
+    $file_or_script = map_file($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
     my $lines_href = $file_cache{$file_or_script}->{lines_href};
     return undef unless defined $lines_href;
@@ -416,14 +416,33 @@ sub trace_line_numbers($;$)
     return @result;
   }
     
-sub unmap_file($)
+sub map_file($)
 { 
     my $file = shift;
     return undef unless defined($file);
     $file2file_remap{$file} ? $file2file_remap{$file} : $file
   }
 
-sub unmap_file_line($$)
+use File::Temp qw(tempfile);
+sub map_script($$)
+{
+    my ($script, $string) = @_;
+    if (exists $script2file{$script}) {
+	$script2file{$script};
+    } else  {
+	# my $sha1 = Digest::SHA1->new();
+	# $sha1->add($string);
+	my($fh, $tempfile) = tempfile($script.'XXXX', SUFFIX=>'.pl');
+	print $fh $string;
+	$fh->close();
+	$script2file{$script} = $tempfile;
+	# cache_file($tempfile);
+	# $file_cache{$tempfile}->{sha1} = $sha1;
+	$tempfile;
+    }
+}
+
+sub map_file_line($$)
 {
     my ($file, $line) = @_;
     if (exists $file2file_remap_lines{$file}) {
@@ -456,11 +475,13 @@ sub update_script_cache($$)
     my $lines_href = {};
     unless (defined($string)) {
 	if ($script eq $DB::filename) {
+	    # Should be the same as the else case, 
+	    # but just in case...
 	    $lines_href->{plain} = \@DB::lines;
 	    $string = join("\n", @DB::lines);
 	} else {
-	    $string = $opts->{string} || @{"_<$script"};
-	    $lines_href->{plain} = split(/\n/, $string);
+	    $lines_href->{plain} = \@{"_<$script"};
+	    $string = join("\n", @{"_<$script"});
 	}
     }
     $lines_href->{$opts->{output}} = highlight_string($string) if 
@@ -644,6 +665,10 @@ unless (caller) {
     $DB::filename = 'bogus';
     eval "update_script_cache(__FILE__, {}); 
           print '+++', is_cached_script(__FILE__), \"\\n\"";
+    $DB::filename = '(eval 4)';
+    my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
+    print "mapped eval is $filename\n";
+    
     # print("#{__FILE__} is %scached." % 
     #      yes_no(LineCache::cached?(__FILE__)))
     # print "Full path: #{DB::LineCache::path(__FILE__)}"

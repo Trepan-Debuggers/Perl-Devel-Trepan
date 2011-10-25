@@ -1,0 +1,46 @@
+-- (eval.pl:1)
+$var = '
+set auto eval is on.
+eval.pl [1-10]
+  1  ->	$var = '
+  2    	$x = 2;
+  3    	$y = 3;
+  4    	$z = 4';
+  5    	eval $var;
+  6    	$eval_sub='
+  7    	sub five() {
+  8    	    my @args = @_;
+  9    	    print "ho\n";
+ 10    	    5;
+-- (eval.pl:5)
+eval $var;
+--
+$DB::D[0] = $VAR1 = 1;
+eval.pl [1-10]
+  1    	$var = '
+  2    	$x = 2;
+  3    	$y = 3;
+  4    	$z = 4';
+  5  ->	eval $var;
+  6    	$eval_sub='
+  7    	sub five() {
+  8    	    my @args = @_;
+  9    	    print "ho\n";
+ 10    	    5;
+++
+$DB::D[1] = $VAR1 = 1;
+-- ( (eval remapped 2)
+-- ( (eval remapped 3)
+$x = 2;
+-- ( (eval remapped 4)
+$y = 3;
+-- (eval.pl:6)
+$eval_sub='
+-- (eval.pl:12)
+eval $eval_sub;
+-- (eval.pl:13)
+$y = five();
+-- ( (eval remapped 3)
+sub five() {
+--> #0 @ = main::five() in file `eval.pl:12]' at line 3
+    #1 file `eval.pl' at line 13

@@ -154,7 +154,7 @@ sub process_command_and_quit($)
     my $intf_size = scalar @{$intf_ary};
     return 1 if !defined $intf || $intf->is_input_eof && $intf_size == 1;
     while ($intf_size > 1 || !$intf->is_input_eof) {
-      # begin
+	# begin
 	$self->{current_command} = '';
 	my @cmd_queue = @{$self->{cmd_queue}};
 	if (scalar(@cmd_queue) == 0) {
@@ -185,14 +185,20 @@ sub process_command_and_quit($)
 	# Skip comment lines
 	next if substr($self->{current_command}, 0, 1) eq '#';
 	last;
-      # rescue IOError, Errno::EPIPE => e
+	# rescue IOError, Errno::EPIPE => e
         # }
     }
-    $self->run_command($self->{current_command});
     
-    # Save it to the history.
-    $intf->save_history($self->{last_command}) if 
-	$self->{last_command};
+    eval {
+	$self->run_command($self->{current_command});
+    };
+    if ($EVAL_ERROR) {
+	$self->errmsg("internal error: $EVAL_ERROR")
+    } else {
+	# Save it to the history.
+	$intf->save_history($self->{last_command}) if 
+	    $self->{last_command};
+    }
 }
 
 # This is the main entry point.

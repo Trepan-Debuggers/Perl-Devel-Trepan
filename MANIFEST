@@ -193,3 +193,6 @@ t/data/trace2.cmd
 t/data/trace2.right
 t/Helper.pm
 testit
+Makefile.PL
+META.yml
+META.json

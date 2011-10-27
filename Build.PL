@@ -1,4 +1,3 @@
-#!/usr/bin/env perl
 #  Copyright (C) 2011 Rocky Bernstein <rockycpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -37,7 +36,7 @@ my $builder = Module::Build->new(
 	'ExtUtils::PkgConfig'               => '1.03',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 2.13,
-        'Psh'                               => 1.8,
+        'Psh'                               => '1.8.0',
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
         'String::Diff'                      => 0,

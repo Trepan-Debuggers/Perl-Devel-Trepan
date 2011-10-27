@@ -1,6 +1,7 @@
 Artistic
 bin/trepanpl
 Build.PL
+Changes
 example/eval.pl
 example/fns.pl
 example/gcd-dbg.pl
@@ -68,6 +69,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm
+lib/Devel/Trepan/CmdProcessor/Command/Shell.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
@@ -131,6 +133,7 @@ lib/Devel/Trepan/IO/Output.pm
 lib/Devel/Trepan/IO/StringArray.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
+lib/Devel/Trepan/Psh.pm
 lib/Devel/Trepan/Util.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
@@ -170,6 +173,8 @@ t/data/display.cmd
 t/data/display.right
 t/data/eval.cmd
 t/data/eval.right
+t/data/eval2.cmd
+t/data/eval2.right
 t/data/list1.cmd
 t/data/list1.right
 t/data/list2.cmd

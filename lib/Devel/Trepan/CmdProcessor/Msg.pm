@@ -40,7 +40,7 @@ sub errmsg($$;$) {
     } else {
 	$message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     }
-    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
 	$message = color('underscore') . $message . color('reset');
     }
     $self->{interfaces}->[-1]->errmsg($message);
@@ -85,14 +85,14 @@ sub read_command($) {
 
 sub safe_rep($$) {
     my($self, $str) = @_;
-    Devel::Trepan::Util::safe_repr($str, $self->{settings}->{maxstring});
+    Devel::Trepan::Util::safe_repr($str, $self->{settings}{maxstring});
 }
 
 sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
 	$message = color('bold') . $message . color('reset');
     }
     $self->{interfaces}->[-1]->msg($message);

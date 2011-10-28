@@ -111,7 +111,7 @@ sub run_set_int($$$;$$)
 					 msg_on_error => $msg_on_error
 					});
     if (defined ($val)) {
-    	$self->{settings}->{subcmd_setting_key} = $val;
+    	$self->{settings}{subcmd_setting_key} = $val;
         $self->run_show_int();
     }
 }
@@ -284,7 +284,7 @@ if (__FILE__ eq $0) {
     my $subcmd = 
 	Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
     print join(', ', keys %{$subcmd->{settings}}), "\n";
-    print $subcmd->show_onoff($subcmd->{settings}->{autoeval}), "\n";
+    print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";
     $subcmd->run_set_int($proc, 'Just a test');
 }
 

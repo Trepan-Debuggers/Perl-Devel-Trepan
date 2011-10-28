@@ -153,9 +153,9 @@ sub checkcache(;$$)
     my @result = ();
     for my $filename (@filenames) {
 	next unless exists $file_cache{$filename};
-	my $path = $file_cache{$filename}->{path};
+	my $path = $file_cache{$filename}{path};
 	if (-f  $path) {
-	    my $cache_info = $file_cache{$filename}->{stat};
+	    my $cache_info = $file_cache{$filename}{stat};
 	    my $stat = File::stat::stat($path);
 	    if ($cache_info) {
 		if ($stat && 
@@ -232,7 +232,7 @@ sub is_empty($)
     my $filename = shift;
     $filename=map_file($filename);
     my $ref = $file_cache{$filename};
-    $ref->{lines_href}->{plain};
+    $ref->{lines_href}{plain};
 }
 
 # Get line +line_number+ from file named +filename+. Return undef if
@@ -277,7 +277,7 @@ sub getlines($;$)
     checkcache($filename) if $reload_on_change;
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
-	my $lines_href = $file_cache{$filename}->{lines_href};
+	my $lines_href = $file_cache{$filename}{lines_href};
 	my $lines_aref = $lines_href->{$format};
 	if ($opts->{output} && !defined $lines_aref) {
 	    my @formatted_lines = ();
@@ -294,7 +294,7 @@ sub getlines($;$)
     } elsif (exists $script_cache{$filename}) {
 	### FIXME: combine with above...
 	print "+++IS IN SCRIPT CACHE\n";
-	my $lines_href = $script_cache{$filename}->{lines_href};
+	my $lines_href = $script_cache{$filename}{lines_href};
 	my $lines_aref = $lines_href->{$format};
 	if ($opts->{output} && !defined $lines_aref) {
 	    my @formatted_lines = ();
@@ -360,15 +360,15 @@ sub DB::LineCache::sha1($)
     my $filename = shift;
     $filename = map_file($filename);
     return undef unless exists $file_cache{$filename};
-    my $sha1 = $file_cache{$filename}->{sha1};
-    return $sha1->hexdigest if exists $file_cache{$filename}->{sha1};
+    my $sha1 = $file_cache{$filename}{sha1};
+    return $sha1->hexdigest if exists $file_cache{$filename}{sha1};
     $sha1 = Digest::SHA1->new;
-    my $line_ary = $file_cache{$filename}->{lines_href}->{plain};
+    my $line_ary = $file_cache{$filename}{lines_href}{plain};
     for my $line (@$line_ary) {
 	next unless defined $line;
 	$sha1->add($line);
     }
-    $file_cache{$filename}->{sha1} = $sha1;
+    $file_cache{$filename}{sha1} = $sha1;
     $sha1->hexdigest;
   }
       
@@ -379,7 +379,7 @@ sub size($)
     cache($file_or_script);
     $file_or_script = map_file($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
-    my $lines_href = $file_cache{$file_or_script}->{lines_href};
+    my $lines_href = $file_cache{$file_or_script}{lines_href};
     return undef unless defined $lines_href;
     scalar @{$lines_href->{plain}};
 }
@@ -389,7 +389,7 @@ sub DB::LineCache::stat($)
 { 
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
-    $file_cache{$filename}->{stat};
+    $file_cache{$filename}{stat};
 }
 
 # Return an Array of breakpoints in filename.
@@ -401,9 +401,9 @@ sub trace_line_numbers($;$)
     my ($filename, $reload_on_change) = @_;
     my $fullname = cache($filename, $reload_on_change);
     return undef unless $fullname;
-    my $trace_nums_ary = $file_cache{$filename}->{trace_nums};
+    my $trace_nums_ary = $file_cache{$filename}{trace_nums};
     return @$trace_nums_ary if $trace_nums_ary;
-    my $lines_ary = $file_cache{$filename}->{lines_href}->{plain};
+    my $lines_ary = $file_cache{$filename}{lines_href}{plain};
     my @lines = @$lines_ary;
     my @result = ();
     for (my $i=1; $i <= $#lines; $i++) {
@@ -412,7 +412,7 @@ sub trace_line_numbers($;$)
 	push @result, $i unless $lines[$i] == 0;
 	use warnings 'numeric'
     }
-    $file_cache{$filename}->{trace_nums} = \@result;
+    $file_cache{$filename}{trace_nums} = \@result;
     return @result;
   }
     
@@ -438,7 +438,7 @@ sub map_script($$)
 	$fh->close();
 	$script2file{$script} = $tempfile;
 	# cache_file($tempfile);
-	# $file_cache{$tempfile}->{sha1} = $sha1;
+	# $file_cache{$tempfile}{sha1} = $sha1;
 	$tempfile;
     }
 }

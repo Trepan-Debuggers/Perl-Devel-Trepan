@@ -93,7 +93,7 @@ sub run_set_bool($$;$)
     $default = 1 if scalar @_ < 3;
     my $onoff_arg = @$args < 4 ? 'on' : $args->[3];
     my $key = $self->{subcmd_setting_key};
-    $self->{proc}->{settings}{$key} = $self->{proc}->get_onoff($onoff_arg);
+    $self->{proc}{settings}{$key} = $self->{proc}->get_onoff($onoff_arg);
     $self->run_show_bool();
 }
 

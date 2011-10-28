@@ -76,8 +76,8 @@ sub new($;$$$) {
     $self->running_initialize;
     $self->hook_initialize;
     $self->{unconditional_prehooks}->insert_if_new(10, 
-						   $self->{trace_hook}->[0],
-						   $self->{trace_hook}->[1]
+						   $self->{trace_hook}[0],
+						   $self->{trace_hook}[1]
 	) if $self->{settings}{traceprint};
 
     if ($intf->has_completion) {
@@ -339,7 +339,7 @@ sub run_command($$)
 	    last unless $self->{macros}{$macro_cmd_name};
 	    pop @args;
 	    my $macro_expanded = 
-		$self->{macros}{$macro_cmd_name}->[0]->(@args);
+		$self->{macros}{$macro_cmd_name}[0]->(@args);
 #	    $self->msg($macro_expanded) if $self->{settings}{debugmacro};
 	    if (ref $macro_expanded eq 'ARRAY' #  && 
 #		current_command.all? {|val| val.is_a?(String)}
@@ -429,7 +429,7 @@ unless (caller) {
     print $sep;
     $proc->run_command("help help;; kill 100");
     # Note kill 100 is in queue - not run yet.
-    if (scalar(@ARGV) > 0 && $proc->{interfaces}->[-1]->is_interactive) {
+    if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
 	$proc->process_command_and_quit; # Handle's queued command
 	$proc->process_command_and_quit;
 	print $sep;

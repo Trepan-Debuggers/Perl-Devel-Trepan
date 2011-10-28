@@ -87,7 +87,7 @@ sub load_debugger_subsubcommands($$)
     $self->{cmd_basenames} = ();
     my $cmd_dir = dirname(__FILE__);
     my $parent_name = ucfirst $self->{name};
-    my $cmd_name    = $self->{prefix}->[0];
+    my $cmd_name    = $self->{prefix}[0];
     my @path = ($cmd_dir, '..', "${cmd_name}_Subcmd",
 		$parent_name . '_Subcmd');
     my $subcmd_dir = File::Spec->catfile(@path);

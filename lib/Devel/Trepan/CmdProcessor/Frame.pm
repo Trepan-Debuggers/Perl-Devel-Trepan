@@ -89,7 +89,7 @@ sub frame_setup($$$)
 sub filename($)
 {
     my $self = shift;
-    $self->{frame}->{file};
+    $self->{frame}{file};
 }
 
 sub get_frame($$$) 
@@ -123,7 +123,7 @@ sub get_frame($$$)
 sub line($)
 {
     my $self = shift;
-    $self->{frame}->{line};
+    $self->{frame}{line};
 }
 
 sub print_stack_entry()

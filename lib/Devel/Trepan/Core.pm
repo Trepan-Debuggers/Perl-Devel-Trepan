@@ -83,7 +83,7 @@ sub awaken($;$) {
 sub display_lists ($)
 {
     my $self = shift;
-    return $self->{proc}->{displays}->{list};
+    return $self->{proc}{displays}{list};
 }
     
 my $dbgr = __PACKAGE__->new();

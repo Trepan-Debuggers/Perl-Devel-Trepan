@@ -113,7 +113,7 @@ sub run_set_int($$$;$$)
 				});
     if (defined ($val)) {
 	my $subcmd_setting_key = $self->{subcmd_setting_key};
-    	$proc->{settings}->{$subcmd_setting_key} = $val;
+    	$proc->{settings}{$subcmd_setting_key} = $val;
         $self->run_show_int();
     }
 }
@@ -268,7 +268,7 @@ unless (caller) {
     # my $subcmd = 
     # 	Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
     # print join(', ', keys %{$subcmd->{settings}}), "\n";
-    # print $subcmd->show_onoff($subcmd->{settings}->{autoeval}), "\n";
+    # print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";
     # $subcmd->run_set_int($proc, 'Just a test');
 }
 

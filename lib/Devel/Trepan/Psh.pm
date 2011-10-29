@@ -9,14 +9,14 @@ use warnings; no warnings 'redefine';
 
 use lib '../..';
 
-package Psh;
+## package Psh;
 
 # $Psh:quit provides a way to for a way to quit process() and return
 # to the caller.  This is useful, for example, in the debugger
 # Devel::Trepan (a debugger) to provide going into psh shell, but
 # returning to the debugger afterwards.
 
-use vars qw($quit); 
+use vars qw($Psh::quit); 
 
 #
 # void process(bool Q_PROMPT, subr GET)
@@ -37,7 +37,7 @@ use vars qw($quit);
 # Note: Monkeypatch by rocky to allow embedding psh inside Devel::Trepan
 # (or any other Perl program that wants temporary psh shell access).
 
-sub process
+sub Psh::process
 {
 	my ($q_prompt, $get) = @_;
 	local $Psh::cmd;

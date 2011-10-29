@@ -84,7 +84,7 @@ sub run($$) {
     }
     if (kill(0, $$)) {
 	# Force finalization on interface.
-	$self->{proc}->{interfaces} = [] if 
+	$self->{proc}{interfaces} = [] if 
 	    'KILL' eq $sig || 9 eq $sig || -9 eq $sig;
 	if (kill($sig, $$)) {
 	    $self->msg("kill ${sig} successfully sent to process $$");

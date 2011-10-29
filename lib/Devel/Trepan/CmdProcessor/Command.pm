@@ -152,7 +152,7 @@ sub section($$;$) {
 
 sub settings($) {
     my ($self) = @_;
-    $self->{proc}->{settings};
+    $self->{proc}{settings};
 }
 
 sub short_help($) {

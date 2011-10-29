@@ -32,7 +32,7 @@ sub run($$)
 	$proc->errmsg("Expecting either 'tidy' or 'dumper', got ${evaltype}");
 	return;
     }
-    $proc->{commands}->{show}->run(['show', 'evaldisplay']);
+    $proc->{commands}{show}->run(['show', 'evaldisplay']);
 }
 
 unless (caller) {

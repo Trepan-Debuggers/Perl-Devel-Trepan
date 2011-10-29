@@ -69,7 +69,7 @@ sub complete($$)
 { 
     my ($self, $prefix) = @_;
     if (!$prefix) {
-	if (0 == index($self->{proc}->{leading_str}, 'eval?')) {
+	if (0 == index($self->{proc}{leading_str}, 'eval?')) {
 	    Devel::Trepan::Util::extract_expression(
 		$self->{proc}->current_source_text());
 	} else {

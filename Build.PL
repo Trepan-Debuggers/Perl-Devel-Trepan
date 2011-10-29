@@ -29,7 +29,11 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Devel/Trepan.pm',
     license             => 'gpl',
     needs_compiler      => 0,
-    release_status      => 'testing',
+    release_status      => 'stable',
+    configure_requires  => { 'Module::Build' => 0.38 },
+    build_requires => {
+        'String::Diff'                      => 0,
+    },
     requires => {
 	'perl'                              => '5.010',               
 	'Array::Columnize'                  => '0.3.5',
@@ -39,7 +43,6 @@ my $builder = Module::Build->new(
         'Psh'                               => '1.8.0',
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
-        'String::Diff'                      => 0,
         'version'                           => 0,
     },
     sign                => 1,

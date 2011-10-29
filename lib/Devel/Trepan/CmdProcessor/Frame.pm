@@ -89,7 +89,7 @@ sub frame_setup($$$)
 sub filename($)
 {
     my $self = shift;
-    $self->{frame}->{file};
+    $self->{frame}{file};
 }
 
 sub get_frame($$$) 
@@ -114,7 +114,7 @@ sub get_frame($$$)
     my $frames = $self->{frames};
     unless ($frames->[$frame_num]) {
 	my @new_frames = $self->{dbgr}->backtrace(0);
-	$self->{frames}->[$frame_num] = $new_frames[$frame_num];
+	$self->{frames}[$frame_num] = $new_frames[$frame_num];
     }
     $self->{frame} = $frames->[$frame_num];
     return ($self->{frame}, $frame_num);
@@ -123,7 +123,7 @@ sub get_frame($$$)
 sub line($)
 {
     my $self = shift;
-    $self->{frame}->{line};
+    $self->{frame}{line};
 }
 
 sub print_stack_entry()

@@ -28,8 +28,8 @@ sub run($$)
     $self->SUPER::run($args);
     my $proc = $self->{proc};
     if ( $proc->{settings}{autolist} ) {
-	$proc->{cmdloop_prehooks}->insert_if_new(10, $proc->{autolist_hook}->[0],
-						 $proc->{autolist_hook}->[1]);
+	$proc->{cmdloop_prehooks}->insert_if_new(10, $proc->{autolist_hook}[0],
+						 $proc->{autolist_hook}[1]);
     } else {
 	$proc->{cmdloop_prehooks}->delete_by_name('autolist');
     }

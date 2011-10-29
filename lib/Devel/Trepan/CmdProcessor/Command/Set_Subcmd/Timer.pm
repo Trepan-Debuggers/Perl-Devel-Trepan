@@ -43,10 +43,10 @@ sub run($$)
     $self->SUPER::run($args);
     my $proc = $self->{proc};
     if ( $proc->{settings}{timer} ) {
-	$proc->{cmdloop_posthooks}->insert_if_new(-1, $proc->{timer_hook}->[0],
-						  $proc->{timer_hook}->[1]);
-	$proc->{cmdloop_prehooks}->insert_if_new(-1, $proc->{timer_hook}->[0],
-						 $proc->{timer_hook}->[1]);
+	$proc->{cmdloop_posthooks}->insert_if_new(-1, $proc->{timer_hook}[0],
+						  $proc->{timer_hook}[1]);
+	$proc->{cmdloop_prehooks}->insert_if_new(-1, $proc->{timer_hook}[0],
+						 $proc->{timer_hook}[1]);
     } else {
 	$proc->{cmdloop_posthooks}->delete_by_name('timer');
 	$proc->{cmdloop_posthooks}->delete_by_name('timer');

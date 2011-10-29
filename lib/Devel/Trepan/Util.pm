@@ -125,7 +125,7 @@ unless (caller) {
 	print extract_expression($stmt), "\n";
     }
 
-    for my $cmd qw(eval eval$ eval% eval@ evaluate% none) {
+    for my $cmd (qw(eval eval$ eval% eval@ evaluate% none)) {
 	printf "parse_eval_suffix($cmd) => '%s'\n", parse_eval_suffix($cmd);
     }
 }

@@ -120,7 +120,7 @@ sub continue($$) {
     if (scalar @{$args} != 1) {
 	# Form is: "continue"
 	# my $(line_number, $condition, $negate) = 
-	#    $self->breakpoint_position($self->{proc}->{cmd_argstr}, 0);
+	#    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
 	# return unless iseq && vm_offset;
 	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
 	#return unless bp;

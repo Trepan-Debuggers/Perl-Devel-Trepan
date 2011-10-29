@@ -22,7 +22,7 @@ $HAVE_TERM_ANSIColor = eval "use Term::ANSIColor; 1";
 sub confirm($$$)
 {
     my ($self, $msg, $default) = @_;
-    my $intf = $self->{interfaces}->[-1];
+    my $intf = $self->{interfaces}[-1];
     my $confirmed = $self->{settings}{confirm} ? 
 	$intf->confirm($msg, $default) : 1;
     $intf->remove_history unless $confirmed;
@@ -40,18 +40,18 @@ sub errmsg($$;$) {
     } else {
 	$message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     }
-    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
 	$message = color('underscore') . $message . color('reset');
     }
-    $self->{interfaces}->[-1]->errmsg($message);
+    $self->{interfaces}[-1]->errmsg($message);
 }
 
 sub msg($$;$) {
     my($self, $message, $opts) = @_;
     $message = $self->safe_rep($message) unless $opts->{unlimited};
     # $message = $self->perl_format($message) if $opts->{code};
-    $self->{interfaces}->[-1]->msg($message) if 
-	defined $self->{interfaces}->[-1];
+    $self->{interfaces}[-1]->msg($message) if 
+	defined $self->{interfaces}[-1];
 
   }
 
@@ -59,13 +59,13 @@ sub msg_nocr($$;$) {
     my($self, $message, $opts) = @_;
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     # $message = $self->perl_format($message) if $self->{opts}{code};
-    $self->{interfaces}->[-1]->msg_nocr($message);
+    $self->{interfaces}[-1]->msg_nocr($message);
 
   }
 
 sub read_command($) {
     my $self = shift;
-    $self->{interfaces}->[-1]->read_command($self->{prompt});
+    $self->{interfaces}[-1]->read_command($self->{prompt});
   }
 
   # sub perl_format($$) {
@@ -85,23 +85,23 @@ sub read_command($) {
 
 sub safe_rep($$) {
     my($self, $str) = @_;
-    Devel::Trepan::Util::safe_repr($str, $self->{settings}->{maxstring});
+    Devel::Trepan::Util::safe_repr($str, $self->{settings}{maxstring});
 }
 
 sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    if ($self->{settings}->{highlight} && $HAVE_TERM_ANSIColor) {
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
 	$message = color('bold') . $message . color('reset');
     }
-    $self->{interfaces}->[-1]->msg($message);
+    $self->{interfaces}[-1]->msg($message);
 }
 
 if (__FILE__ eq $0) {
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
-    if (scalar(@ARGV) > 0 && $proc->{interfaces}->[-1]->is_interactive) {
+    if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
 	my $response = $proc->confirm("Are you sure?", 1);
 	printf "You typed: %s\n", $response ? "Y" : "N";
     }

@@ -58,7 +58,7 @@ sub run($$) {
 	$level_count = $count;
     }
 
-    $self->{proc}->{leave_cmd_loop} = 1;
+    $self->{proc}{leave_cmd_loop} = 1;
     $self->{dbgr}->finish($level_count);
 }
 

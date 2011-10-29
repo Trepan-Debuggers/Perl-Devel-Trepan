@@ -6,7 +6,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.1.0'; # 0.1.0 to match initial Rubinius version
+use version; $VERSION = '0.1.1dev';
 use Exporter;
 use lib '..';
 

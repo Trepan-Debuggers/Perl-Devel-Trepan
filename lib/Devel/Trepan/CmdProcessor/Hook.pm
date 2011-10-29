@@ -48,7 +48,7 @@ sub insert($$$$)
     my $insert_loc;
     my @list = $self->{list};
     for ($insert_loc=0; $insert_loc < $#list; $insert_loc++) {
-	my $entry = $self->{list}->[$insert_loc];
+	my $entry = $self->{list}[$insert_loc];
 	if ($priority > $entry->priority) {
 	    last;
 	}

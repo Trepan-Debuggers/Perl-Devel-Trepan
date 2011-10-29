@@ -87,7 +87,7 @@ sub load_debugger_subsubcommands($$)
     $self->{cmd_basenames} = ();
     my $cmd_dir = dirname(__FILE__);
     my $parent_name = ucfirst $self->{name};
-    my $cmd_name    = $self->{prefix}->[0];
+    my $cmd_name    = $self->{prefix}[0];
     my @path = ($cmd_dir, '..', "${cmd_name}_Subcmd",
 		$parent_name . '_Subcmd');
     my $subcmd_dir = File::Spec->catfile(@path);
@@ -126,7 +126,7 @@ sub setup_subsubcommand($$$$)
 	"${cmd_prefix}->new(\$self, '$cmd_name'); 1";
     if (eval $new_cmd) {
 	# Add to hash of commands, and list of subcmds
-	$self->{subcmds}->{$cmd_name} = $cmd_obj;
+	$self->{subcmds}{$cmd_name} = $cmd_obj;
 	$self->add($cmd_obj, $cmd_name);
     } else {
 	my $proc = $parent->{proc};
@@ -142,7 +142,7 @@ sub lookup($$;$)
     my ($self, $subcmd_prefix, $use_regexp) = @_;
     $use_regexp = 0 if scalar @_ < 3;
     my $compare;
-    if (!$self->{proc}->{settings}->{abbrev}) {
+    if (!$self->{proc}{settings}{abbrev}) {
 	$compare = sub($) { my $name = shift; $name eq $subcmd_prefix};
     } elsif ($use_regexp) {
 	$compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
@@ -243,7 +243,7 @@ sub help($$)
 	} else {
 	    @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
 	    my @sort_matches = sort @matches;
-	    push @help_text, $self->{parent}->{cmd}->columnize_commands(\@sort_matches);
+	    push @help_text, $self->{parent}{cmd}->columnize_commands(\@sort_matches);
 	    return @help_text;
 	}
     }

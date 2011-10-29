@@ -26,11 +26,11 @@ sub run($$)
     my ($self, $args) = @_;
     if (scalar @$args == 3 && 'reset' eq $args->[2]) {
 	DB::LineCache::clear_file_format_cache;
-	$self->{proc}->{settings}{highlight} = 'term';
+	$self->{proc}{settings}{highlight} = 'term';
     } else {
 	$self->SUPER::run($args);
-	$self->{proc}->{settings}{highlight} = 'term' if 
-	    $self->{proc}->{settings}{highlight};
+	$self->{proc}{settings}{highlight} = 'term' if 
+	    $self->{proc}{settings}{highlight};
     }
 }
 

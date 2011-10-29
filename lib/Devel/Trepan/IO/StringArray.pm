@@ -162,9 +162,9 @@ unless (caller) {
   my $out = Devel::Trepan::IO::StringArrayOutput->new;
   $out->writeline("Some output");
   $out->writeline('Hello, world!');
-  print $out->{output}->[0], "\n";
-  print $out->{output}->[1], "\n";
-  print $out->{output}->[2], "\n";
+  print $out->{output}[0], "\n";
+  print $out->{output}[1], "\n";
+  print $out->{output}[2], "\n";
 #   out.write('Hello');
 #   p out.output
 #   out.writeline(', again.');

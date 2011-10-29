@@ -1,0 +1,27 @@
+Revision history for Devel-Trepan
+0.1.0  - Oct 27, 2011
+
+Initial release. 
+
+Some cool things not in other Perl debuggers
+- Syntax higlighting via Syntax::Highlight::Perl::Improved
+- Readline debugger command completion
+- Extensive help inside the debugger
+- Gdb-like command set
+- Standalone binary install: trepanpl
+   (Enbugger support provided as a patch to Enbugger)
+- trace mode for POSIX-shell "set -x"-like tracing: trepanpl -x ...
+- auto evaluation in hash and array and scalar context:
+    @ array-expression # for array
+    % hash-expression  # for hash
+    [$] expression     # for scalar
+- Evaluation results saved in global array @DB::D
+- Ability to go into a Psh shell
+- Debugger Command aliases for simple things and
+- Debugger Command macros via a perl anonymous sub for
+  more complicated things.
+- Extensible command set
+- many unit and integration tests
+
+Still, much remains to be done (out-of-process control, installing
+signal handlers, adding watch expressions), so please help out!

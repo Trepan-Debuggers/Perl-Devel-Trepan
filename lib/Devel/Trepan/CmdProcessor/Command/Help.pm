@@ -141,11 +141,11 @@ sub run($$)
 	    splice(@$args,0,2);
 	    $self->show_category($cmd_name, $args);
 	} elsif ($proc->{commands}{$cmd_name}
-		 || $proc->{aliases}->{$cmd_name}) {
+		 || $proc->{aliases}{$cmd_name}) {
 	    if ($proc->{commands}{$cmd_name}) {
 		$real_name = $cmd_name;
 	    } else {
-		$real_name = $proc->{aliases}->{$cmd_name};
+		$real_name = $proc->{aliases}{$cmd_name};
 	    }
 	    my $cmd_obj = $proc->{commands}{$real_name};
 	    my $help_text = 
@@ -158,12 +158,12 @@ sub run($$)
 		    $self->msg("Aliases: $aliases_str");
 		}
 	     }
-        # } elsif ($self->{proc}->{macros}->{$cmd_name}) {
+        # } elsif ($self->{proc}{macros}{$cmd_name}) {
 	#     $self->msg("${cmd_name} is a macro which expands to:");
 	#     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
 	} else {
 	    my @matches = sort grep(/^${cmd_name}/, 
-				    keys %{$self->{proc}->{commands}} );
+				    keys %{$self->{proc}{commands}} );
 	    if (!scalar @matches) {
 		$self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
 	    } else {
@@ -180,7 +180,7 @@ sub show_aliases($)
 {
     my $self = shift;
     $self->section('All alias names:');
-    my @aliases = sort(keys(%{$self->{proc}->{aliases}}));
+    my @aliases = sort(keys(%{$self->{proc}{aliases}}));
     $self->msg($self->columnize_commands(\@aliases));
   }
 

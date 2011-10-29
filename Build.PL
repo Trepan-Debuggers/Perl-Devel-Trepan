@@ -1,4 +1,3 @@
-#!/usr/bin/env perl
 #  Copyright (C) 2011 Rocky Bernstein <rockycpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
@@ -30,17 +29,20 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Devel/Trepan.pm',
     license             => 'gpl',
     needs_compiler      => 0,
-    release_status      => 'testing',
+    release_status      => 'stable',
+    configure_requires  => { 'Module::Build' => 0.38 },
+    build_requires => {
+        'String::Diff'                      => 0,
+    },
     requires => {
 	'perl'                              => '5.010',               
 	'Array::Columnize'                  => '0.3.5',
 	'ExtUtils::PkgConfig'               => '1.03',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 2.13,
-        'Psh'                               => 1.8,
+        'Psh'                               => '1.8.0',
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
-        'String::Diff'                      => 0,
         'version'                           => 0,
     },
     sign                => 1,

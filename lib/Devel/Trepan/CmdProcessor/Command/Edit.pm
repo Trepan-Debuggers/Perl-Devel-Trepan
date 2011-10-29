@@ -43,12 +43,12 @@ sub run($$)
     my ($filename, $line_number);
     given (scalar @$args) {
 	when (1) {
-	    $filename     = $self->{proc}->{frame}->{file};
-	    $line_number  = $self->{proc}->{frame}->{line};
+	    $filename     = $self->{proc}{frame}{file};
+	    $line_number  = $self->{proc}{frame}{line};
 	} when(2) {
 	    $line_number = $self->{proc}->get_int_noerr($args->[1]);
 	    if (defined $line_number) {
-		$filename = $self->{proc}->{frame}->{file};
+		$filename = $self->{proc}{frame}{file};
 	    } else {
 		$filename = $args->[1];
 		$line_number = 1;
@@ -62,7 +62,7 @@ sub run($$)
     my $editor = $ENV{'EDITOR'} || '/bin/ex';
     if ( -r $filename ) {
 	use File::Basename;
-	$filename = basename($filename) if $self->{proc}->{settings}{basename};
+	$filename = basename($filename) if $self->{proc}{settings}{basename};
 	my @edit_cmd = ($editor, "+$line_number", $filename);
 	$self->{proc}->msg(sprintf "Running: %s...", join(' ', @edit_cmd));
 	system(@edit_cmd);

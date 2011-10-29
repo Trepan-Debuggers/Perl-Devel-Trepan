@@ -32,8 +32,8 @@ sub run($$)
     my $proc = $self->{proc};
     if ( $proc->{settings}{traceprint} ) {
 	$proc->{unconditional_prehooks}->insert_if_new(10, 
-						       $proc->{trace_hook}->[0],
-						       $proc->{trace_hook}->[1]
+						       $proc->{trace_hook}[0],
+						       $proc->{trace_hook}[1]
 	    );
     } else {
 	$proc->{unconditional_prehooks}->delete_by_name('trace');

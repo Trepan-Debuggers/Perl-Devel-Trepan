@@ -14,24 +14,50 @@ require Test::More;
 my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
 my $debug = $^W;
 
+sub _slurp
+{
+    my ($filename) = @_;
+
+    open my $in, '<', $filename
+        or die "Cannot open '$filename' for slurping - $!";
+
+    local $/;
+    my $contents = <$in>;
+
+    close($in);
+
+    return $contents;
+}
+
 sub run_debugger($$;$$)
 {
     my ($test_invoke, $cmdfile, $rightfile, $opts) = @_;
+
     $opts //= {};
+
     Test::More::note( "running $test_invoke with $cmdfile" );
+
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
     my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', $cmdfile);
     $run_opts .= " --command $full_cmdfile" unless ($opts->{no_cmdfile});
-    ($rightfile = $full_cmdfile) =~ s/\.cmd/.right/ unless defined($rightfile);
+
+    if (!defined($rightfile))
+    {
+        ($rightfile = $full_cmdfile) =~ s/\.cmd\z/.right/;
+    }
+
     my $cmd = "$EXECUTABLE_NAME $trepanpl $run_opts $test_invoke";
     print $cmd, "\n" if $debug;
+
     my $output = `$cmd`;
-    print $output if $debug;
     my $rc = $? >> 8;
+
+    print $output if $debug;
     Test::More::is($rc, 0);
-    open(RIGHT_FH, "<$rightfile");
+
+    my $right_string = _slurp($rightfile);
+
     undef $INPUT_RECORD_SEPARATOR;
-    my $right_string = <RIGHT_FH>;
     ($output, $right_string) = $opts->{filter}->($output, $right_string) if $opts->{filter};
     my $gotfile;
     ($gotfile = $full_cmdfile) =~ s/\.cmd/.got/;

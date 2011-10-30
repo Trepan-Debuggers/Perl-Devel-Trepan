@@ -7,7 +7,7 @@ use String::Diff;
 use File::Basename qw(dirname);
 use File::Spec;
 
-use English;
+use English qw( -no_match_vars ) ;
 
 require Test::More;
 

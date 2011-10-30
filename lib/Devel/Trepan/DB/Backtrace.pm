@@ -1,6 +1,6 @@
 package DB;
 use warnings; no warnings 'redefine';
-use English;
+use English qw( -no_match_vars );
 
 =head2 backtrace(skip[,count,scan_for_DB])
 

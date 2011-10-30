@@ -4,7 +4,7 @@ use warnings; no warnings 'redefine';
 use lib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Display;
-use English;
+use English qw( -no_match_vars );
 
 use if !defined @ISA, Devel::Trepan::DB::Display ;
 use if !defined @ISA, Devel::Trepan::Condition ;

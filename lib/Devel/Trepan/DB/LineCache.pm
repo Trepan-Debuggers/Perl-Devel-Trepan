@@ -39,7 +39,7 @@ use version; $VERSION = '0.1.0';
 
 # A package to read and cache lines of a Perl program. 
 package DB::LineCache;
-use English;
+use English qw( -no_match_vars );
 use strict; use warnings;
 no warnings 'once';
 no warnings 'redefine';
@@ -618,7 +618,7 @@ sub update_cache($;$)
 # example usage
 unless (caller) {
     BEGIN {
-	use English;
+	use English qw( -no_match_vars );
 	$PERLDB |= 0x400;
     };  # Turn on saving @{_<$filename};
     my $file=__FILE__;

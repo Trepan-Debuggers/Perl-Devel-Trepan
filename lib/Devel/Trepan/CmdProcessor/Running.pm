@@ -7,7 +7,7 @@ use lib '../../..';
 
 use Devel::Trepan::Position;
 package Devel::Trepan::CmdProcessor;
-use English;
+use English qw( -no_match_vars );
 
 
 

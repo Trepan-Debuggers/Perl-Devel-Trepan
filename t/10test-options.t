@@ -1,5 +1,9 @@
 #!/usr/bin/env perl
-use strict; use warnings; use English;
+
+use strict;
+use warnings;
+use English qw( -no_match_vars );
+
 use lib '../lib';
 
 use Test::More 'no_plan';

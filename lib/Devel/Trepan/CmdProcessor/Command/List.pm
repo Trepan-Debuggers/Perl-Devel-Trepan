@@ -6,7 +6,7 @@ use lib '../../../..';
 # require_relative '../../app/condition'
 
 package Devel::Trepan::CmdProcessor::Command::List;
-use English;
+use English qw( -no_match_vars );
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;

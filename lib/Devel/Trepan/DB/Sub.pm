@@ -4,7 +4,7 @@
 package DB;
 use warnings; no warnings 'redefine';
 no warnings 'once';
-use English;
+use English qw( -no_match_vars );
 
 use constant SINGLE_STEPPING_EVENT =>  1;
 use constant DEEP_RECURSION_EVENT  =>  4;

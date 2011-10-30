@@ -6,7 +6,7 @@ use lib '../../../..';
 # require_relative '../../app/condition'
 
 package Devel::Trepan::CmdProcessor::Command::Break;
-use English;
+use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
     eval "use constant ALIASES    => qw(b);";

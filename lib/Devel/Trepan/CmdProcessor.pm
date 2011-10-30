@@ -28,7 +28,7 @@ use warnings;
 no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor;
-use English;
+use English qw( -no_match_vars );
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 
 use vars qw(@EXPORT @ISA $eval_result);

@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 package Devel::Trepan::Condition;
-use English;
+use English qw( -no_match_vars );
 use vars qw(@EXPORT @ISA);
 @EXPORT    = qw( is_valid_condition );
 @ISA = qw(Exporter);

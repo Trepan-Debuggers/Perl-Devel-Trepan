@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
 use strict; use warnings; no warnings 'redefine';
-use English;
+use English qw( -no_match_vars );
 use lib '../..';
 use Devel::Trepan::DB::Breakpoint;
 package Devel::Trepan::BrkptMgr;

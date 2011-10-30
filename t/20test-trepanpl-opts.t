@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings; use strict;
-use English;
+use English qw( -no_match_vars );
 use File::Basename;
 use File::Spec;
 my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));

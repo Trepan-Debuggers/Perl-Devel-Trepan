@@ -9,7 +9,7 @@ use lib '../..';
 package DB;
 use feature 'switch';
 use warnings; no warnings 'redefine';
-use English;
+use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller 
             $event @ret $ret $return_value @return_value

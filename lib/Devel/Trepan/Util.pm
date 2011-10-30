@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings;
-use feature 'switch';
 package Devel::Trepan::Util;
+
+use strict;
+use warnings;
+use feature 'switch';
+
 use vars qw(@EXPORT @ISA);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression
                  parse_eval_suffix);

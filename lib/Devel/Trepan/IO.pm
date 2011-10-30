@@ -10,11 +10,13 @@
 # Some ideas originiated as part of Matt Fleming's 2006 Google Summer of
 # Code project.
 
-use strict; use warnings;
+package Devel::Trepan::IO::InputBase;
+
+use strict;
+use warnings;
+
 use Exporter;
 use lib '../..';
-
-package Devel::Trepan::IO::InputBase;
 
 use Devel::Trepan::Util qw(hash_merge);
 use vars qw(@EXPORT);

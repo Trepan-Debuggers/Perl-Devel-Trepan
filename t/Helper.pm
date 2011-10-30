@@ -74,15 +74,19 @@ sub run_debugger($$;$$)
 
     my $gotfile = $ext_file->('got');
 
-    if ($right_string eq $output) {
-	Test::More::ok(1);
-	unlink $gotfile;
+    # TODO : Perhaps make sure we optionally use eq_or_diff from 
+    # Test::Differences here.
+    if (Test::More::is($right_string, $output, 'Output comparison')) {
+        unlink $gotfile;
     } else {
-	my $diff = String::Diff::diff_merge($output, $right_string);
-	open(GOT_FH, ">$gotfile");
-	print GOT_FH $output;
-	print $diff;
-	Test::More::ok(0, "Output comparison fails");
+        my $diff = String::Diff::diff_merge($output, $right_string);
+
+        open (my $got_fh, '>', $gotfile)
+            or die "Cannot open '$gotfile' for writing - $!";
+        print {$got_fh} $output;
+        close($got_fh);
+
+        Test::More::diag($diff);
     }
 }
 

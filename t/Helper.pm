@@ -88,6 +88,8 @@ sub run_debugger($$;$$)
 
         Test::More::diag($diff);
     }
+
+    return;
 }
 
 1;

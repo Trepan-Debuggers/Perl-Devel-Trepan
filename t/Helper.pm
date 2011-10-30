@@ -1,14 +1,19 @@
-use warnings; use strict;
+package Helper;
+
+use warnings; 
+use strict;
+
 use String::Diff;
+use File::Basename qw(dirname);
 use File::Spec;
-use File::Basename;
+
 my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
 my $debug = $^W;
 
-package Helper;
-use File::Basename qw(dirname); use File::Spec;
 use English;
+
 require Test::More;
+
 sub run_debugger($$;$$)
 {
     my ($test_invoke, $cmdfile, $rightfile, $opts) = @_;

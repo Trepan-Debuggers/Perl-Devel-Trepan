@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
-use strict; use warnings;
+package Devel::Trepan::CmdProcessor;
 
+use strict;
+use warnings;
 use feature 'switch';
+
+# TODO : I don't think this use lib is a good idea.
 use lib '../../..';
 
 use Devel::Trepan::Position;
-package Devel::Trepan::CmdProcessor;
 use English qw( -no_match_vars );
-
-
 
 # attr_accessor :stop_condition  # String or nil. When not nil
 #                                # this has to eval non-nil

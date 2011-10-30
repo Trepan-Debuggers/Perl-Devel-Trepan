@@ -1,5 +1,9 @@
 #!/usr/bin/env perl
-use strict; use warnings;
+
+use strict;
+use warnings;
+
+# TODO : What is the meaning of this use lib? Can it be removed?
 use lib '../lib';
 
 use Test::More 'no_plan';

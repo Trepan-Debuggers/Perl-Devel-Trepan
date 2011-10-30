@@ -39,8 +39,13 @@ sub icon_char($)
 }
 
 package DB;
+
 use vars qw($brkpt $package $lineno $max_bp $max_action);
-use strict; use warnings; no warnings 'redefine';
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
 use English qw( -no_match_vars );
 
 BEGIN {

@@ -39,10 +39,13 @@ use version; $VERSION = '0.1.0';
 
 # A package to read and cache lines of a Perl program. 
 package DB::LineCache;
-use English qw( -no_match_vars );
-use strict; use warnings;
+
+use strict;
+use warnings;
 no warnings 'once';
 no warnings 'redefine';
+
+use English qw( -no_match_vars );
 
 use Cwd 'abs_path';
 use File::Basename;
@@ -562,12 +565,14 @@ sub update_cache($;$)
 	    $lines_href->{plain} = $raw_lines;
 	    if ($opts->{output} && defined($raw_lines)) {
 		# Some lines in $raw_lines may be undefined
-		no strict; no warnings;
+		no strict;
+        no warnings;
 		local $WARNING=0;
 		my $highlight_lines = highlight_string(join('', @$raw_lines));
 		my @highlight_lines = split(/\n/, $highlight_lines);
 		$lines_href->{$opts->{output}} = \@highlight_lines;
-		use strict; use warnings;
+		use strict;
+        use warnings;
 	    }
 	    my $entry = {
 		stat       => $stat,

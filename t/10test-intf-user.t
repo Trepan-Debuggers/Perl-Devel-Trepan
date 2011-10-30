@@ -1,5 +1,10 @@
 #!/usr/bin/env perl
-use strict; use warnings; no warnings 'redefine';
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
+# TODO : What is the meaning of this use lib? Can it be removed?
 use lib '../lib';
 use vars qw($response); 
 

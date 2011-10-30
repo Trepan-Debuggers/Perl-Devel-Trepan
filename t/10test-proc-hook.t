@@ -1,5 +1,10 @@
 #!/usr/bin/env perl
-use strict; use warnings; no warnings 'redefine';
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
+# TODO : I don't think this use lib is a good idea.
 use lib '../lib';
 use vars qw(@args); 
 

@@ -30,7 +30,8 @@ sub eval {
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-    no strict; no warnings;
+    no strict;
+    no warnings;
     eval "$user_context $eval_str; &DB::save\n"; # '\n' for nice recursive debug
     _warnall($@) if $@;
 }

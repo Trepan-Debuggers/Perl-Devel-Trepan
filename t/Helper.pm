@@ -31,29 +31,29 @@ sub _slurp
 
 sub run_debugger($$;$$)
 {
-    my ($test_invoke, $cmdfile, $rightfile, $opts) = @_;
+    my ($test_invoke, $cmd_fn, $right_fn, $opts) = @_;
 
     $opts //= {};
 
-    Test::More::note( "running $test_invoke with $cmdfile" );
+    Test::More::note( "running $test_invoke with $cmd_fn" );
 
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
-    my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', $cmdfile);
-    my $ext_file = sub {
+    my $full_cmd_fn = File::Spec->catfile(dirname(__FILE__), 'data', $cmd_fn);
+    my $ext_filename = sub {
         my ($ext) = @_;
 
-        my $new_fn = $full_cmdfile;
+        my $new_fn = $full_cmd_fn;
 
         $new_fn =~ s/\.cmd\z/.$ext/;
 
         return $new_fn;
     };
 
-    $run_opts .= " --command $full_cmdfile" unless ($opts->{no_cmdfile});
+    $run_opts .= " --command $full_cmd_fn" unless ($opts->{no_cmdfile});
 
-    if (!defined($rightfile))
+    if (!defined($right_fn))
     {
-        $rightfile = $ext_file->('right');
+        $right_fn = $ext_filename->('right');
     }
 
     my $cmd = "$EXECUTABLE_NAME $trepanpl $run_opts $test_invoke";
@@ -65,24 +65,24 @@ sub run_debugger($$;$$)
     print $output if $debug;
     Test::More::is($rc, 0);
 
-    my $right_string = _slurp($rightfile);
+    my $right_string = _slurp($right_fn);
 
     if ($opts->{filter})
     {
         ($output, $right_string) = $opts->{filter}->($output, $right_string);
     }
 
-    my $gotfile = $ext_file->('got');
+    my $got_fn = $ext_filename->('got');
 
     # TODO : Perhaps make sure we optionally use eq_or_diff from 
     # Test::Differences here.
     if (Test::More::is($right_string, $output, 'Output comparison')) {
-        unlink $gotfile;
+        unlink $got_fn;
     } else {
         my $diff = String::Diff::diff_merge($output, $right_string);
 
-        open (my $got_fh, '>', $gotfile)
-            or die "Cannot open '$gotfile' for writing - $!";
+        open (my $got_fh, '>', $got_fn)
+            or die "Cannot open '$got_fn' for writing - $!";
         print {$got_fh} $output;
         close($got_fh);
 

@@ -39,11 +39,21 @@ sub run_debugger($$;$$)
 
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
     my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', $cmdfile);
+    my $ext_file = sub {
+        my ($ext) = @_;
+
+        my $new_fn = $full_cmdfile;
+
+        $new_fn =~ s/\.cmd\z/.$ext/;
+
+        return $new_fn;
+    };
+
     $run_opts .= " --command $full_cmdfile" unless ($opts->{no_cmdfile});
 
     if (!defined($rightfile))
     {
-        ($rightfile = $full_cmdfile) =~ s/\.cmd\z/.right/;
+        $rightfile = $ext_file->('right');
     }
 
     my $cmd = "$EXECUTABLE_NAME $trepanpl $run_opts $test_invoke";
@@ -62,8 +72,8 @@ sub run_debugger($$;$$)
         ($output, $right_string) = $opts->{filter}->($output, $right_string);
     }
 
-    my $gotfile;
-    ($gotfile = $full_cmdfile) =~ s/\.cmd/.got/;
+    my $gotfile = $ext_file->('got');
+
     if ($right_string eq $output) {
 	Test::More::ok(1);
 	unlink $gotfile;

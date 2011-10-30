@@ -50,7 +50,7 @@ sub eval_with_return {
     given ($eval_opts->{return_type}) {
 	when ('$') {
 	    eval "$user_context \$DB::eval_result=$eval_str";
-	    $eval_result = eval "$user_context $eval_str\n";
+	    $eval_result = eval "$user_context $eval_str";
 	}
 	when ('@') {
 	    eval "$user_context \@DB::eval_result=$eval_str\n";

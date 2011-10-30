@@ -57,8 +57,11 @@ sub run_debugger($$;$$)
 
     my $right_string = _slurp($rightfile);
 
-    undef $INPUT_RECORD_SEPARATOR;
-    ($output, $right_string) = $opts->{filter}->($output, $right_string) if $opts->{filter};
+    if ($opts->{filter})
+    {
+        ($output, $right_string) = $opts->{filter}->($output, $right_string);
+    }
+
     my $gotfile;
     ($gotfile = $full_cmdfile) =~ s/\.cmd/.got/;
     if ($right_string eq $output) {

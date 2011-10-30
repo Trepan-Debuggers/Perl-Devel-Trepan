@@ -63,7 +63,7 @@ sub run_debugger($$;$$)
     my $rc = $? >> 8;
 
     print $output if $debug;
-    Test::More::is($rc, 0);
+    Test::More::is($rc, 0, 'Debugger command was executed successfully');
 
     my $right_string = _slurp($right_fn);
 

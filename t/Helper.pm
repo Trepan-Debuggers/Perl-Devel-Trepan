@@ -7,12 +7,12 @@ use String::Diff;
 use File::Basename qw(dirname);
 use File::Spec;
 
-my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
-my $debug = $^W;
-
 use English;
 
 require Test::More;
+
+my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
+my $debug = $^W;
 
 sub run_debugger($$;$$)
 {

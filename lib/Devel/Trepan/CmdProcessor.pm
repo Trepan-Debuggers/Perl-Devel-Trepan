@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+package Devel::Trepan::CmdProcessor;
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
 use feature ":5.10";  # Includes "state" feature.
-use Exporter;
 use feature 'switch';
-use warnings; use strict;
+
+use English qw( -no_match_vars );
+
+use Exporter;
 
 # Showing eval results can be done using either data dump package.
-require Data::Dumper; require Data::Dumper::Perltidy;
+require Data::Dumper;
+require Data::Dumper::Perltidy;
 
+# TODO : Shouldn't this use lib be removed?
 use lib '../..';
 require Devel::Trepan::BrkptMgr;
 require Devel::Trepan::DB::Display;
@@ -23,12 +33,7 @@ require Devel::Trepan::CmdProcessor::Load unless
     defined $Devel::Trepan::CmdProcessor::Load_seen;
 require Devel::Trepan::CmdProcessor::Running;
 require Devel::Trepan::CmdProcessor::Validate;
-use strict;
-use warnings;
-no warnings 'redefine';
 
-package Devel::Trepan::CmdProcessor;
-use English qw( -no_match_vars );
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 
 use vars qw(@EXPORT @ISA $eval_result);

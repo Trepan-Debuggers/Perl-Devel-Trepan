@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
-use warnings; use strict;
+
+use warnings;
+use strict;
+
 use File::Basename; use File::Spec;
 use Test::More 'no_plan';
 use lib dirname(__FILE__);

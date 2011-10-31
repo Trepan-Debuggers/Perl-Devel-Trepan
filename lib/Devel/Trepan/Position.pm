@@ -1,4 +1,5 @@
-use strict; use warnings;
+use strict;
+use warnings;
 
 use Class::Struct;
 struct TrepanPosition => {pkg   => '$', filename => '$', line => '$',

@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
-use strict; use warnings;
+package Devel::Trepan::CmdProcessor::Hook;
+
+use strict; 
+use warnings;
+
+# TODO : I don't think this lib is a good idea.
 use lib '../../..';
 
 use Class::Struct;
@@ -13,7 +18,6 @@ struct CmdProcessorHook => {
 };
 
 
-package Devel::Trepan::CmdProcessor::Hook;
 #  attr_accessor :list
 
 sub new($;$)

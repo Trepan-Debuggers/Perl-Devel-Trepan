@@ -7,7 +7,7 @@ use lib '../../..';
 # require_relative '../app/default'
 
 package Devel::Trepan::CmdProcessor;
-use English;
+use English qw( -no_match_vars );
 use Cwd 'abs_path';
 
 use File::Basename;

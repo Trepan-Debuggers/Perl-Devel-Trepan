@@ -1,12 +1,16 @@
 #!/usr/bin/env perl
-use strict; use warnings;
+
+use strict;
+use warnings;
+
+# TODO : What is the meaning of this use lib? Can it be removed?
 use lib '../lib';
 
 use Test::More 'no_plan';
 note( "Testing Devel::Trepan::DB::LineCache" );
 
 BEGIN {
-    use English;
+    use English qw( -no_match_vars );
     $PERLDB |= 0x400;
     use_ok( 'Devel::Trepan::DB::LineCache' );
 }

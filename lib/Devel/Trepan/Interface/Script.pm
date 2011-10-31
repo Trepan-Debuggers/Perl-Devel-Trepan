@@ -2,12 +2,16 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 # Module for reading debugger scripts
+package Devel::Trepan::Interface::Script;
 
-use warnings; no warnings 'redefine'; use strict; 
+use strict; 
+use warnings; 
+no warnings 'redefine';
+
 use Exporter;
 use IO::File;
 
-package Devel::Trepan::Interface::Script;
+# TODO : Shouldn't this use lib be removed?
 use lib '../../..';
 use Devel::Trepan::Interface;
 use Devel::Trepan::IO::Input;

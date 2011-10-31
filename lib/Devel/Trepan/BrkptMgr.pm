@@ -1,10 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
-use strict; use warnings; no warnings 'redefine';
-use English;
-use lib '../..';
-use Devel::Trepan::DB::Breakpoint;
+
 package Devel::Trepan::BrkptMgr;
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
+use English qw( -no_match_vars );
+
+# TODO : What is the meaning of this use lib? Can it be removed?
+use lib '../..';
+
+use Devel::Trepan::DB::Breakpoint;
 
 sub new($$) 
 {

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
 # FIXME: Could combine manager code from breakpoints and display
-use strict; use warnings; no warnings 'redefine';
-use English;
+
+use strict;
+use warnings;
+no warnings 'redefine';
+
+use English qw( -no_match_vars );
 use lib '../..';
 
 use Class::Struct;
-use strict;
 
 struct DBDisplay => {
     number      => '$', # breakpoint/action number 

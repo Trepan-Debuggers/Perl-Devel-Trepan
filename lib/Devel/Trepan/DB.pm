@@ -9,7 +9,7 @@ use lib '../..';
 package DB;
 use feature 'switch';
 use warnings; no warnings 'redefine';
-use English;
+use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller 
             $event @ret $ret $return_value @return_value
@@ -87,11 +87,11 @@ BEGIN {
 	require threads;
 	require threads::shared;
 	import threads::shared qw(share);
-	no strict; no warnings;
+	no strict;
+    no warnings;
 	$DBGR;
 	share(\$DBGR);
 	lock($DBGR);
-	use strict; use warnings;
 	print "Thread support enabled\n";
     } else {
 	*lock  = sub(*) {};

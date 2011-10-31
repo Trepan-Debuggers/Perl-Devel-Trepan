@@ -3,13 +3,16 @@
 # Trepan command input validation routines.  A String type is
 # usually passed in as the argument to validation routines.
 
-use strict; use warnings;
+package Devel::Trepan::CmdProcessor;
+
+use strict; 
+use warnings;
+use feature 'switch';
+
 use Exporter;
 
-use feature 'switch';
+# TODO : I don't think this use lib is a good idea.
 use lib '../../..';
-
-package Devel::Trepan::CmdProcessor;
 
 use Cwd 'abs_path';
 use Devel::Trepan::DB::Breakpoint;

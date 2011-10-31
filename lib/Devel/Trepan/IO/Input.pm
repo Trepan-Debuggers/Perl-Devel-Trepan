@@ -5,12 +5,14 @@
 # input or GNU Readline.
 # 
 
-use warnings; use strict;
+package Devel::Trepan::IO::Input;
+use warnings;
+use strict;
 use Exporter;
 use Term::ReadLine;
 
-package Devel::Trepan::IO::Input;
 
+# TODO : Shouldn't this use lib be removed?
 use lib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;

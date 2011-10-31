@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
-use strict; use warnings;
+
+package Devel::Trepan::CmdProcessor;
+
+use strict; 
+use warnings;
+
+# TODO : I don't think this use lib is a good idea.
 use lib '../../..';
 use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Complete;
 
-package Devel::Trepan::CmdProcessor;
-use English;
+use English qw( -no_match_vars );
 
 sub adjust_frame($$$)
 {

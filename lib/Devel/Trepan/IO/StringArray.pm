@@ -4,8 +4,11 @@
 # Simulate I/O using lists of strings.
 
 package Devel::Trepan::IO::StringArrayInput;
-use warnings; use strict;
 
+use warnings;
+use strict;
+
+# TODO : Shouldn't this use lib be removed?
 use lib '../../..';
 use Devel::Trepan::IO;
 

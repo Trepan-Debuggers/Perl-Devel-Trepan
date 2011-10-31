@@ -1,11 +1,15 @@
 # Eval part of Perl's Core DB.pm library and perl5db.pl with modification.
 
+# TODO : Shouldn't this use lib be removed?
 use lib '../..';
 
 package DB;
-use warnings; use strict;
-use English qw( -no_match_vars );
+
+use warnings;
+use strict;
 use feature 'switch';
+
+use English qw( -no_match_vars );
 use vars qw($eval_result @eval_result %eval_result
             $eval_str $eval_opts $event $return_type );
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
-use warnings; use strict;
+
+use warnings;
+use strict;
+
 use File::Spec;
 use File::Basename qw(dirname);
 use lib dirname(__FILE__);

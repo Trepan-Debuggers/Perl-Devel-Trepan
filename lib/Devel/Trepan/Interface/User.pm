@@ -3,10 +3,15 @@
 
 # Interface when communicating with the user.
 
-use warnings; no warnings 'once'; use strict; 
+package Devel::Trepan::Interface::User;
+
+use strict; 
+use warnings; 
+no warnings 'once';
+
 use Exporter;
 
-package Devel::Trepan::Interface::User;
+# TODO : Shouldn't this use lib be removed?
 use lib '../../..';
 use vars qw(@EXPORT @ISA $HAVE_READLINE);
 @ISA = qw(Devel::Trepan::Interface Exporter);

@@ -8,8 +8,8 @@ use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
 use version; $VERSION = '0.1.1dev';
 use Exporter;
-use lib '..';
 
+use use_relative '..';
 use Devel::Trepan::Core;
 
 use constant PROGRAM => 'trepanpl';

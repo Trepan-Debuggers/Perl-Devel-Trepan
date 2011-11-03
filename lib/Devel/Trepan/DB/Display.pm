@@ -3,7 +3,6 @@
 # FIXME: Could combine manager code from breakpoints and display
 use strict; use warnings; no warnings 'redefine';
 use English;
-use lib '../..';
 
 use Class::Struct;
 use strict;

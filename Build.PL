@@ -30,7 +30,8 @@ my $builder = Module::Build->new(
     license             => 'gpl',
     needs_compiler      => 0,
     release_status      => 'stable',
-    configure_requires  => { 'Module::Build' => 0.38 },
+    configure_requires  => { 'Module::Build' => 0.38,
+                             'ExtUtils::PkgConfig' => 0 },
     build_requires => {
         'String::Diff'                      => 0,
     },
@@ -41,6 +42,7 @@ my $builder = Module::Build->new(
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 2.13,
         'Psh'                               => '1.8.0',
+        'use_relative'                      => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
         'version'                           => 0,

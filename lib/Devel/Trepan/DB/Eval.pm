@@ -1,7 +1,5 @@
 # Eval part of Perl's Core DB.pm library and perl5db.pl with modification.
 
-use lib '../..';
-
 package DB;
 use warnings; use strict;
 use English;

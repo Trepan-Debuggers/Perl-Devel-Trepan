@@ -1,5 +1,5 @@
 package Devel::Trepan::Core;
-use lib '../..';
+use use_relative '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
 use vars qw(@ISA);

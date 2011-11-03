@@ -9,7 +9,7 @@ use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
 use version; $VERSION = '0.1.1dev';
 use Exporter;
 
-use use_relative '..';
+use relative_lib '..';
 use Devel::Trepan::Core;
 
 use constant PROGRAM => 'trepanpl';

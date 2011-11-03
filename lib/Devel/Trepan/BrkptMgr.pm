@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
 use strict; use warnings; no warnings 'redefine';
 use English;
-use use_relative '../..';
+use relative_lib '../..';
 use Devel::Trepan::DB::Breakpoint;
 package Devel::Trepan::BrkptMgr;
 

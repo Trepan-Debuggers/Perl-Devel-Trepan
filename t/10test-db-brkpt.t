@@ -1,13 +1,13 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use lib '../lib';
+use relative_lib '../lib';
 
 use Test::More 'no_plan';
 note( "Testing Devel::Trepan::DB::Breakpoint" );
 
 BEGIN {
-    use English;
+    use English qw( -no_match_vars );
     $PERLDB |= 0x400;
     use_ok( 'Devel::Trepan::DB::Breakpoint' );
 }

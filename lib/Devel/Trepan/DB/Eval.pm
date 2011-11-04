@@ -2,7 +2,7 @@
 
 package DB;
 use warnings; use strict;
-use English;
+use English qw( -no_match_vars );
 use feature 'switch';
 use vars qw($eval_result @eval_result %eval_result
             $eval_str $eval_opts $event $return_type );

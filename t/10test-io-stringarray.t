@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use lib '../lib';
+use relative_lib '../lib';
 
 use Test::More 'no_plan';
 note( "Testing Devel::Trepan::IO::StringArray" );

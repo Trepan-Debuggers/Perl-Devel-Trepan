@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+package Devel::Trepan::CmdProcessor;
+use English qw( -no_match_vars );
 use feature ":5.10";  # Includes "state" feature.
 use Exporter;
 use feature 'switch';
@@ -27,8 +29,6 @@ use strict;
 use warnings;
 no warnings 'redefine';
 
-package Devel::Trepan::CmdProcessor;
-use English;
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 
 use vars qw(@EXPORT @ISA $eval_result);

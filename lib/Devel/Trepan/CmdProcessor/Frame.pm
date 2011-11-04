@@ -6,7 +6,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Complete;
 
 package Devel::Trepan::CmdProcessor;
-use English;
+use English qw( -no_match_vars );
 
 sub adjust_frame($$$)
 {

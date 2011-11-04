@@ -2,7 +2,7 @@
 # Standalone routine to invoke a Perl program under the debugger.
 
 # The usual boilerplate...
-use strict; use warnings; use English;
+use strict; use warnings; use English qw( -no_match_vars );
 
 use File::Basename; use File::Spec;
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use lib '../lib';
+use relative_lib '../lib';
 
 use Test::More;
 note( "Testing Devel::CmdProcessor::Load" );

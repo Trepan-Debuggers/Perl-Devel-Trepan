@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
-use strict; use warnings; use English;
-use lib '../lib';
+
+use strict; use warnings;
+use English qw( -no_match_vars );
+
+use relative_lib '../lib';
 
 use Test::More 'no_plan';
 note( "Testing Devel::Trepan::Options" );

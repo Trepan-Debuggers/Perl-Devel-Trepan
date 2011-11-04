@@ -8,7 +8,7 @@ use warnings; use strict;
 # Showing eval results can be done using either data dump package.
 require Data::Dumper; require Data::Dumper::Perltidy;
 
-use lib '../..';
+use relative_lib '../..';
 require Devel::Trepan::BrkptMgr;
 require Devel::Trepan::DB::Display;
 require Devel::Trepan::Interface::User;

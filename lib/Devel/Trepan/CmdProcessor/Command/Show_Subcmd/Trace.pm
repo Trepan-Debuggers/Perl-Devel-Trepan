@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use lib '../../../../..';
+use relative_lib '../../../../..';
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
 

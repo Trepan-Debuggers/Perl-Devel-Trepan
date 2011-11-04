@@ -3,7 +3,7 @@ use strict;
 use Exporter;
 use warnings;
 no warnings 'redefine'; no warnings 'once';
-use lib '../../..';
+use relative_lib '../../..';
 # require_relative '../app/default'
 
 package Devel::Trepan::CmdProcessor;

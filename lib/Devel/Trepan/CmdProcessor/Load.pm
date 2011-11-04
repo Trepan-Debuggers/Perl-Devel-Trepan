@@ -6,7 +6,7 @@ use feature ":5.10";  # Includes "state" feature.
 # Part of Trepan::CmdProcess that loads up debugger commands from
 # builtin and user directories.  
 # Sets @commands, @aliases, @macros
-use lib '../../..';
+use relative_lib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 $Load_seen = 1;

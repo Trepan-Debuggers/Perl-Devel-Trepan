@@ -5,7 +5,7 @@
 
 use warnings; no warnings 'redefine';
 
-use lib '../../../../..';
+use relative_lib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
 
 use File::Basename;

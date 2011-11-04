@@ -14,7 +14,7 @@ use strict;
 use Exporter;
 use warnings;
 
-use lib '../../..';
+use relative_lib '../../..';
 use IO::Handle;
 
 # This is an abstract class that specifies debugger output.

@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
-use lib '../../../..';
+use relative_lib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Unalias;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;

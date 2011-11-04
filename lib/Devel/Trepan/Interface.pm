@@ -9,7 +9,7 @@ use warnings;
 use Carp ();
 
 package Devel::Trepan::Interface;
-use lib '../..';
+use relative_lib '../..';
 use vars qw(@EXPORT @ISA @YN);
 @ISA = qw(Exporter);
 @EXPORT = qw(YES NO YES_OR_NO @YN readline close new);

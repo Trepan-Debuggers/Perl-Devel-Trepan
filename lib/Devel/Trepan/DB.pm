@@ -4,7 +4,7 @@
 # Documentation is at the __END__
 #
 
-use lib '../..';
+use relative_lib '../..';
 
 package DB;
 use feature 'switch';

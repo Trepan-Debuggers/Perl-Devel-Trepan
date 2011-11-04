@@ -8,7 +8,7 @@ use Exporter;
 use IO::File;
 
 package Devel::Trepan::Interface::Script;
-use lib '../../..';
+use relative_lib '../../..';
 use Devel::Trepan::Interface;
 use Devel::Trepan::IO::Input;
 use Devel::Trepan::IO::StringArray;

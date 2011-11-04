@@ -7,7 +7,7 @@ use strict;
 use Exporter;
 
 
-use lib '../../..';
+use relative_lib '../../..';
 require Devel::Trepan::Util;
 require Devel::Trepan::CmdProcessor;
 package Devel::Trepan::CmdProcessor;

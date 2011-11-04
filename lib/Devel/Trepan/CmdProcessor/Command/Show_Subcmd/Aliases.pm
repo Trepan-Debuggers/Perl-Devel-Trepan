@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rockbcpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
-use lib '../../../../..';
+use relative_lib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Show::Aliases;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;

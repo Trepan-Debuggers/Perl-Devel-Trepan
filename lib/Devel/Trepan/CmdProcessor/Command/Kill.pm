@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
-use lib '../../../..';
+use relative_lib '../../../..';
 # use '../../app/complete'
 
 package Devel::Trepan::CmdProcessor::Command::Kill;

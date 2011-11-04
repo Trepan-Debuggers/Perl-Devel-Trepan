@@ -11,7 +11,7 @@ use Term::ReadLine;
 
 package Devel::Trepan::IO::Input;
 
-use lib '../../..';
+use relative_lib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;
 

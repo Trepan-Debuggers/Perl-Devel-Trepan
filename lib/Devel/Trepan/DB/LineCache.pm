@@ -49,7 +49,7 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
-use lib '../../..';
+use relative_lib '../../..';
 ## FIXME:: Make conditional
 use Devel::Trepan::DB::Colors;
 my $perl_formatter = Devel::Trepan::DB::Colors::setup();

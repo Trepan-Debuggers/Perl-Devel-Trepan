@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
-use lib '../../../..';
+use relative_lib '../../../..';
 
 # require_relative '../running'
 # require_relative '../../app/breakpoint' # FIXME: possibly temporary

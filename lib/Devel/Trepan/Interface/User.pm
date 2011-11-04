@@ -7,7 +7,7 @@ use warnings; no warnings 'once'; use strict;
 use Exporter;
 
 package Devel::Trepan::Interface::User;
-use lib '../../..';
+use relative_lib '../../..';
 use vars qw(@EXPORT @ISA $HAVE_READLINE);
 @ISA = qw(Devel::Trepan::Interface Exporter);
 

@@ -3,7 +3,7 @@
 use strict; use warnings;
 
 use feature 'switch';
-use lib '../../..';
+use relative_lib '../../..';
 
 use Devel::Trepan::Position;
 package Devel::Trepan::CmdProcessor;

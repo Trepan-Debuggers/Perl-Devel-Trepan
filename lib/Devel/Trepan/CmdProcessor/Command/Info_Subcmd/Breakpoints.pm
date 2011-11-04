@@ -1,7 +1,7 @@
 # -*- Coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use lib '../../../../..';
+use relative_lib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Breakpoints;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;

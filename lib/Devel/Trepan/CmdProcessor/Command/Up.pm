@@ -1,7 +1,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
-use lib '../../../..';
+use relative_lib '../../../..';
 
 use Exporter;
 # NOTE: The down command  subclasses this, so beware when changing! 

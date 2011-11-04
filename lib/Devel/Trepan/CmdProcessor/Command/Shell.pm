@@ -2,7 +2,7 @@
 # use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 
-use lib '../../../..';
+use relative_lib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Shell;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;

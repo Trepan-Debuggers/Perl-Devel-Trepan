@@ -6,7 +6,7 @@
 package Devel::Trepan::IO::StringArrayInput;
 use warnings; use strict;
 
-use lib '../../..';
+use relative_lib '../../..';
 use Devel::Trepan::IO;
 
 use vars qw(@ISA);

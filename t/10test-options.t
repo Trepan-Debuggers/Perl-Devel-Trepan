@@ -35,3 +35,15 @@ if ($pid == 0) {
     waitpid($pid, 0);
     isnt($?>>8, 0);
 }
+
+note 'Test --batch option';
+$pid = fork();
+if ($pid == 0) {
+    my @argv = ('--batch', __FILE__);
+    my $opts = process_options(\@argv);
+    ($opts->{batchfile} eq __FILE__) ? exit 0 : exit 10;
+} else {
+    waitpid($pid, 0);
+    is($?>>8, 0);
+}
+

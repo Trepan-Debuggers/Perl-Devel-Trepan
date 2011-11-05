@@ -2,6 +2,8 @@ package Devel::Trepan::Core;
 use relative_lib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
+use Devel::Trepan::IO::Output;
+use Devel::Trepan::Interface::Script;
 use vars qw(@ISA);
 @ISA = qw(DB);
 
@@ -66,17 +68,41 @@ sub awaken($;$) {
 	# print "field $field $opts->{$field}\n";
 	$cmdproc_opts{$field} = $opts->{$field};
     }
-    my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
-						   \%cmdproc_opts);
-    $self->{proc} = $cmdproc;
-    $main::TREPAN_CMDPROC = $self->{proc};
-    $opts //= {};
 
-    for my $startup_file (@{$opts->{cmdfiles}}) {
-	add_startup_files($cmdproc, $startup_file);
-    }
-    if (!$opts->{nx} && exists $opts->{initfile}) {
-	add_startup_files($cmdproc, $opts->{initfile});
+    if (my $batch_filename = $opts->{testing} // $opts->{batchfile}) {
+	if (-f $batch_filename) {
+	    if (-r $batch_filename)  {
+		my $output  = Devel::Trepan::IO::Output->new;
+		my $script_opts = 
+		    $opts->{testing} ? {abort_on_error => 0} : {};
+		my $script_intf = 
+		    Devel::Trepan::Interface::Script->new($batch_filename, 
+							  $output, 
+							  $script_opts);
+		my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
+							       __PACKAGE__, 
+							       \%cmdproc_opts);
+		$self->{proc} = $cmdproc;
+		$main::TREPAN_CMDPROC = $self->{proc};
+	    } else {
+		print STDERR "Command file '$batch_filename' is not readable.\n";
+	    }
+	} else {
+		print STDERR "Command file '$batch_filename' doesn't exist.\n"	}
+
+    } else {
+	my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
+						   \%cmdproc_opts);
+	$self->{proc} = $cmdproc;
+	$main::TREPAN_CMDPROC = $self->{proc};
+	$opts //= {};
+	
+	for my $startup_file (@{$opts->{cmdfiles}}) {
+	    add_startup_files($cmdproc, $startup_file);
+	}
+	if (!$opts->{nx} && exists $opts->{initfile}) {
+	    add_startup_files($cmdproc, $opts->{initfile});
+	}
     }
 }
 

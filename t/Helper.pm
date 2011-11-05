@@ -25,7 +25,7 @@ sub run_debugger($$;$$)
         return $new_fn;
     };
 
-    $run_opts .= " --command $full_cmd_filename" unless ($opts->{no_cmdfile});
+    $run_opts .= " --testing $full_cmd_filename" unless ($opts->{no_cmdfile});
     $right_filename = $ext_file->('right') unless defined($right_filename);
     my $cmd = "$EXECUTABLE_NAME $trepanpl $run_opts $test_invoke";
     print $cmd, "\n" if $debug;

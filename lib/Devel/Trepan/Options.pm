@@ -25,6 +25,8 @@ my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
     initial_dir  => undef, # If --cd option was given, we save it here.
     initfile     => $initfile,
+    batchfile    => undef,
+    testing      => undef,
     basename     => 0,
     nx           => 0,     # Don't run user startup file (e.g. .treplrc)
     cmdfiles     => [],
@@ -60,6 +62,8 @@ sub process_options($)
 	 'no-highlight' => sub { $opts->{highlight} = 0},
 	 'host:s'       => \$opts->{host},
 	 'basename'     => \$opts->{basename},
+	 'batch:s'      => \$opts->{batchfile},
+	 'testing:s'    => \$opts->{testing},
 	 'c|command=s@' => \$opts->{cmdfiles},
 	 'cd:s'         => \$opts->{initial_dir},
 	 'nx'           => \$opts->{nx},
@@ -75,6 +79,14 @@ sub process_options($)
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
 	defined($opts->{initial_dir});
+    my $batch_filename = $opts->{testing} // $opts->{batchfile};
+    if ($batch_filename) {
+	if (scalar(@{$opts->{cmdfiles}}) != 0) {
+	    print STDERR "--batch option disables any command files";
+	    $opts->{cmdfiles} = [];
+	}
+	$opts->{nx} = 1;
+    }
     $opts;
 }
 
@@ -130,6 +142,16 @@ unless (caller) {
 	waitpid($pid, 0);
 	print "exit code: ", $?>>8, "\n";
     }
+    $pid = fork();
+    if ($pid == 0) {
+	my @argv = ('--batch', __FILE__);
+	my $opts = process_options(\@argv);
+	print Dumper($opts), "\n";
+	exit 0
+    } else {
+	waitpid($pid, 0);
+	print "exit code: ", $?>>8, "\n";
+    }
 }
 
 1;
@@ -145,15 +167,18 @@ trepanpl - Perl "Trepanning" Debugger
    trepan [options] [[--] perl-program [perl-program-options ...]]
 
    Options:
-      -help               brief help message
-      -man                full documentation
-      -basename           Show basename only on source file listings. 
+      --help              brief help message
+      --man               full documentation
+      --basename          Show basename only on source file listings. 
                           (Needed in regression tests)
-      -c| --command FILE  Change current directory to DIR
-      -cd DIR             Change current directory to DIR
-      -nx                 Don't run user startup file (e.g. .treplrc)
-      -port N             TCP/IP port to use on remote connection
-      -readline           Try to use Term::Readline
+      -c| --command FILE  Run debugger command file FILE
+      --batch FILE        Like --command, but quit after reading FILE.
+                          This option has precidence over --command and
+                          will also set --mx
+      --cd DIR            Change current directory to DIR
+      --nx                Don't run user startup file (e.g. .treplrc)
+      --port N            TCP/IP port to use on remote connection
+      --readline          Try to use Term::Readline
       -x|--trace          Simulate line tracing (think POSIX shell set -x)
       --highlight | --no-highlight 
                           Use or don't use ANSI terminal sequences for syntax

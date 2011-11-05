@@ -8,4 +8,3 @@ step
 display join(" | ", @ARGV)
 step
 undisplay
-quit!

@@ -61,13 +61,13 @@ sub awaken($;$) {
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
-    my $cmdproc_opts = {
-	basename  =>  $opts->{basename},
-	highlight =>  $opts->{highlight},
-	traceprint => $opts->{traceprint}
-    };
+    my %cmdproc_opts = ();
+    for my $field qw(basename highlight readline traceprint) {
+	# print "field $field $opts->{$field}\n";
+	$cmdproc_opts{$field} = $opts->{$field};
+    }
     my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
-						   $cmdproc_opts);
+						   \%cmdproc_opts);
     $self->{proc} = $cmdproc;
     $main::TREPAN_CMDPROC = $self->{proc};
     $opts //= {};

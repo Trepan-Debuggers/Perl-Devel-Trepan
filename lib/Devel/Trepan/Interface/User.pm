@@ -122,7 +122,7 @@ sub read_history($)
 sub save_history($)
 {
     my $self = shift;
-    if ($self->{histfile} && $self->{opts}{history_save} && $self->has_gnu_readline &&
+    if ($self->{histfile} && $self->{opts}{history_save} && $self->want_gnu_readline &&
 	$self->{input}{readline}) {
     	$self->{input}{readline}->StifleHistory($self->{opts}{histsize});
     	$self->{input}{readline}->WriteHistory($self->{histfile});
@@ -150,10 +150,10 @@ sub has_completion($)
     $self->{input}{gnu_readline};
 }
 
-sub has_gnu_readline($)
+sub want_gnu_readline($)
 {
     my $self = shift;
-    $self->{input}{gnu_readline};
+    defined($self->{opts}{readline}) && $self->{input}{gnu_readline};
 }
 
 sub read_command($;$) {
@@ -165,7 +165,7 @@ sub read_command($;$) {
 sub readline($;$) {
     my($self, $prompt)  = @_;
     $self->{output}->flush;
-    if (defined $self->{opts}{readline}) {
+    if ($self->want_gnu_readline) {
 	$self->{input}->readline($prompt);
     } else { 
 	$self->{output}->write($prompt) if defined($prompt) && $prompt;

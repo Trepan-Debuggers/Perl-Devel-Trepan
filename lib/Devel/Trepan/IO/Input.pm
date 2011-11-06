@@ -7,7 +7,6 @@
 
 use warnings; use strict;
 use Exporter;
-use Term::ReadLine;
 
 package Devel::Trepan::IO::Input;
 
@@ -21,7 +20,8 @@ use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
 
 BEGIN {
     $ENV{'PERL_RL'} ||= 'Gnu';
-    my $have_gnu_verdict;
+    my $have_gnu_verdict = undef;
+    $have_gnu_verdict = 0 unless eval("use Term::ReadLine; 1");
     sub GLOBAL_have_gnu_readline {
         if (!defined($have_gnu_verdict)) {
             my $term = Term::ReadLine->new('testing');

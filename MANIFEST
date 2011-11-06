@@ -194,5 +194,6 @@ t/data/trace2.right
 t/Helper.pm
 testit
 Makefile.PL
+GNUmakefile
 META.yml
 META.json

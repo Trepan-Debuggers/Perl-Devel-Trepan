@@ -50,7 +50,7 @@ sub close($) {
     $self->{eof} = 1;
 }
 
-sub have_gnu_readline() {
+sub want_gnu_readline() {
     0;
 }
 

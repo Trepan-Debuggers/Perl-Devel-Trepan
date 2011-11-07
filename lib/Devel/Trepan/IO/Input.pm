@@ -20,22 +20,21 @@ use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
 
 BEGIN {
     $ENV{'PERL_RL'} ||= 'Gnu';
-    my $have_gnu_verdict = undef;
-    $have_gnu_verdict = 0 unless eval("use Term::ReadLine; 1");
+    $HAVE_GNU_READLINE = 0 unless eval("use Term::ReadLine; 1");
     sub GLOBAL_have_gnu_readline {
-        if (!defined($have_gnu_verdict)) {
+        if (!defined($HAVE_GNU_READLINE)) {
             my $term = Term::ReadLine->new('testing');
             if ($term->ReadLine eq 'Term::ReadLine::Gnu') {
-                $have_gnu_verdict = 'Gnu';
+                $HAVE_GNU_READLINE = 'Gnu';
             } elsif ($term->ReadLine eq 'Term::ReadLine::Perl') {
-                $have_gnu_verdict = 'Perl';
+                $HAVE_GNU_READLINE = 'Perl';
             } else {
-                $have_gnu_verdict = 0;
+                $HAVE_GNU_READLINE = 0;
             }
             # Don't know how to close $term
             $term = undef;
         }
-	return $have_gnu_verdict;
+	return $HAVE_GNU_READLINE;
     }
 }
 
@@ -55,7 +54,7 @@ sub new($;$$) {
     return $self;
 }
 
-sub have_gnu_readline($) 
+sub want_gnu_readline($) 
 {
     my $self = shift;
     $self->{gnu_readline};
@@ -82,50 +81,6 @@ sub readline($;$) {
     return $line;
 }
     
-#     class << self
-#       # Use this to set where to read from. 
-#       #
-#       # Set opts[:line_edit] if you want this input to interact with
-#       # GNU-like readline library. By default, we will assume to try
-#       # using readline. 
-#       def open(inp=nil, opts={})
-#         inp ||= STDIN
-#         inp = File.new(inp, 'r') if inp.is_a?(String)
-#         opts[:line_edit] = @line_edit = 
-#           inp.respond_to?(:isatty) && inp.isatty && Trepan::GNU_readline?
-#         self.new(inp, opts)
-#       end
-
-# # finalize
-# END {
-#     if (defined(RbReadline) && !@@readline_finalized) {
-# 	begin 
-#             RbReadline.rl_cleanup_after_signal();
-# 	rescue
-# 	end
-#         begin 
-# 	  RbReadline.rl_deprep_terminal();
-# 	rescue
-#         end
-#         @@readline_finalized = 1;
-#     }
-
-#   end
-# end
-
-# package Trepan
-# def Trepan::GNU_readline?
-#   @have_readline ||= nil
-#   begin
-#     return @have_readline unless @have_readline.nil?
-#     @have_readline = require 'readline'
-#     at_exit { Trepan::UserInput::finalize }
-#     return true
-#   rescue LoadError
-#     return false
-#   end
-# end
-    
 # Demo
 unless (caller) {
     my $in = __PACKAGE__->new(*main::STDIN, {line_edit => 1});
@@ -143,8 +98,8 @@ unless (caller) {
 	}
     }
     my $inp = __PACKAGE__->new(undef, {readline => 0});
-    printf "Input open has GNU Readline: %s\n", ($inp->have_gnu_readline ? "yes" : "no");
+    printf "Input open has GNU Readline: %s\n", ($inp->want_gnu_readline ? "yes" : "no");
     $inp = __PACKAGE__->new(undef, {readline => 1});
-    printf "Input open now has GNU Readline: %s\n", ($inp->have_gnu_readline ? "yes" : "no");
+    printf "Input open now has GNU Readline: %s\n", ($inp->want_gnu_readline ? "yes" : "no");
 }
 1;

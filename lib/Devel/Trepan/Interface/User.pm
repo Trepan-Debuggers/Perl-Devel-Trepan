@@ -132,7 +132,7 @@ sub save_history($)
 # sub DESTROY($) 
 # {
 #     my $self = shift;
-#     if ($HAVE_GNU_READLINE) {
+#     if ($self->want_gnu_readline) {
 #     	$self->save_history;
 #     }
 #     Devel::Trepan::Interface::DESTROY($self);

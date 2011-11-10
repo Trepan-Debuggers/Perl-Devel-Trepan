@@ -202,9 +202,9 @@ sub process_command_and_quit($)
 }
 
 # This is the main entry point.
-sub process_commands($$$)
+sub process_commands($$$;$)
 {
-    my ($self, $frame, $is_eval, $event) = @_;
+    my ($self, $frame, $is_eval, $event, $args) = @_;
     state $last_i = 0;
     if ($is_eval) {
 	my $val_str;

@@ -151,6 +151,23 @@ sub DB {
     $DB::event = undef;
     $DB::brkpt = undef;
 
+    # Test watch expressions;
+    my $watch_triggered = undef;
+    for my $c (@clients) {
+	my $n = 0;
+	for my $tuple (@{$c->{watch}}) {
+	    ## FIXME: eval_opts should be a parameter
+	    $eval_opts->{return_type} = '$';
+	    my $new_val = &DB::eval_with_return($usrctxt, $tuple->[0], @saved);
+            if ( $new_val ne $tuple->[1] ) {
+                # Yep! Record change.
+                $watch_triggered = [$n, $new_val, $tuple->[1]];
+                $tuple->[1] = $new_val;
+		last;
+	    }
+	}
+    }
+
     # Accumulate action events.
     my @action = ();
     if (exists $DB::dbline{$DB::lineno} and 
@@ -186,7 +203,9 @@ sub DB {
 	    }
 	}
     }
-    if ($DB::signal) {
+    if ($watch_triggered) {
+	$event = 'watch';
+    } elsif ($DB::signal) {
 	$event ||= 'signal';
     } elsif ($DB::single & RETURN_EVENT) {
 	$event ||= 'return';
@@ -205,7 +224,7 @@ sub DB {
 	my $hits = $action->hits + 1;
 	$action->hits($hits);
     }
-    if ($DB::single || $DB::signal) {
+    if ($DB::single || $DB::signal || $watch_triggered) {
 	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
 	$DB::single = 0;
 	$DB::signal = 0;
@@ -220,13 +239,14 @@ sub DB {
 		for my $disp (@$display_aref) {
 		    next unless $disp && $disp->enabled;
 		    # FIXME: allow more than just scalar contexts.
-		    my $eval_result = &DB::eval_with_return($usrctxt, $disp->arg, @saved);
+		    my $eval_result =  &DB::eval_with_return($usrctxt, $disp->arg, @saved);
 		    my $mess = sprintf("%d: $eval_result", $disp->number);
 		    $c->output($mess);
 		}
 
 		# call client event loop; must not block
-		$c->idle($after_eval);
+		# FIXME: fold $after_eval into $event
+		$c->idle($after_eval,  $event, $watch_triggered);
 		$after_eval = 0;
 		if ($running == 2 && defined($eval_str)) { 
 		    # client wants something eval-ed
@@ -595,7 +615,7 @@ DB - programmatic interface to the Perl debugging API
     # Write your routine so that it doesn't block.
 
     CLIENT->init()          # called when debug API inits itself
-    CLIENT->idle()          # while stopped (can be a client event loop)
+    CLIENT->idle(BOOL, EVENT, ARGS)  # while stopped (can be a client event loop)
     CLIENT->cleanup()       # just before exit
     CLIENT->output(STRING)   # called to print any output that API must show
     CLIENT->warning(STRING) # called to print any warning output that API 
@@ -765,11 +785,11 @@ Called after debug API inits itself.
 
 Called when execution stops (w/ args file, line).
 
-=item CLIENT->idle(BOOLEAN)
+=item CLIENT->idle(BOOLEAN, EVENT, ARGS)
 
 Called while stopped (can be a client event loop or REPL). If called
 after the idle program requested an eval to be performed, BOOLEAN will be
-true. False otherwise. See evalcode below
+true. False otherwise. See evalcode below. ARGS are any 
 
 =item CLIENT->evalcode(STRING)
 

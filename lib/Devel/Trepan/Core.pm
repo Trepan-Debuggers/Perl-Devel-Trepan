@@ -18,11 +18,11 @@ sub add_startup_files($$) {
     }
 }
 
-# Not used by debugger, but here for
-# testing and OO completness.
 sub new() {
     my $class = shift;
-    my $self = {};
+    my $self = {
+	watch => [], # List of watch expressions
+    };
     bless $self, $class;
 }
 
@@ -33,11 +33,12 @@ sub init() {
 
 # Called when debugger is ready for reading commands. Main
 # entry point.
-sub idle($$) 
+##FIXME: fold $after_eval into $event
+sub idle($$$$) 
 {
-    my ($self, $after_eval) = @_;
+    my ($self, $after_eval, $event, $args) = @_;
     my $proc = $self->{proc};
-    $proc->process_commands($DB::caller, $after_eval, $DB::event);
+    $proc->process_commands($DB::caller, $after_eval, $event, $args);
 }
 
 sub output($) 

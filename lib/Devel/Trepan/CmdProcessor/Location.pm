@@ -24,6 +24,7 @@ my $EVENT2ICON = {
     'interrupt'      => 'oo',
     'signal'         => '!!',
     'return'         => '<-',
+    'watch'          => ';)',
     'unknown'        => '?!',
 };
 

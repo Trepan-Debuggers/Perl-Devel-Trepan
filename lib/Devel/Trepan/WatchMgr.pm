@@ -107,7 +107,12 @@ sub delete_by_object($$)
 
 sub add($$)
 {
-    my ($self, $watchpoint) = @_;
+    my ($self, $expr) = @_;
+    my $watchpoint = WatchPoint->new(
+	expr => $expr, 
+        id   => $self->{next_id}++,
+	);
+	
     push @{$self->{list}}, $watchpoint;
     return $watchpoint;
 }
@@ -173,25 +178,16 @@ unless (caller) {
 # my $dbgr = Devel::Trepan::Core->new;
 my $watchpoints = Devel::Trepan::WatchMgr->new('bogus');
 wp_status($watchpoints, 0);
-my $watchpoint1 = WatchPoint->new(
-    expr=>'1+2', id=>1, current_val => 3 );
 
-$watchpoints->add($watchpoint1);
+my $watchpoint1 = $watchpoints->add('1+2');
 wp_status($watchpoints, 1);
-
-my $watchpoint2 = WatchPoint->new(
-    expr=>'3*4', id=>2, current_val => 12
-    );
-$watchpoints->add($watchpoint2);
+$watchpoints->add('3*4');
 wp_status($watchpoints, 2);
 
 $watchpoints->delete_by_object($watchpoint1);
 wp_status($watchpoints, 3);
 
-my $watchpoint3 = WatchPoint->new(
-    expr=>'3*4+5', id=>3, current_val => 17
-    );
-$watchpoints->add($watchpoint3);
+$watchpoints->add('3*4+5');
 wp_status($watchpoints, 4);
 
 

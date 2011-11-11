@@ -22,9 +22,10 @@ use feature 'switch';
 sub inspect($)
 {
     my $self = shift;
-    sprintf("file %s, line %s, type: %s, id %d, enabled: %d, negate %s, hits: %s, cond: %s",
+    sprintf("id %d, file %s, line %s, type: %s, enabled: %d, negate %s, hits: %s, cond: %s",
+	    $self->id, 
 	    $self->filename, $self->line_num,
-	    $self->type, $self->id, 
+	    $self->type,
 	    $self->enabled, 
 	    $self->negate, 
 	    $self->hits, $self->condition

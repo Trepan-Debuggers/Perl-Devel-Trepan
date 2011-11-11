@@ -1,9 +1,11 @@
-package Devel::Trepan::Core;
 use relative_lib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
+use Devel::Trepan::WatchMgr;
 use Devel::Trepan::IO::Output;
 use Devel::Trepan::Interface::Script;
+
+package Devel::Trepan::Core;
 use vars qw(@ISA);
 @ISA = qw(DB);
 
@@ -21,7 +23,7 @@ sub add_startup_files($$) {
 sub new() {
     my $class = shift;
     my $self = {
-	watch => [], # List of watch expressions
+	watch => Devel::Trepan::WatchMgr->new(), # List of watch expressions
     };
     bless $self, $class;
 }
@@ -33,12 +35,11 @@ sub init() {
 
 # Called when debugger is ready for reading commands. Main
 # entry point.
-##FIXME: fold $after_eval into $event
-sub idle($$$$) 
+sub idle($$$) 
 {
-    my ($self, $after_eval, $event, $args) = @_;
+    my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
-    $proc->process_commands($DB::caller, $after_eval, $event, $args);
+    $proc->process_commands($DB::caller, $event, $args);
 }
 
 sub output($) 
@@ -81,7 +82,7 @@ sub awaken($;$) {
 							  $output, 
 							  $script_opts);
 		my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
-							       __PACKAGE__, 
+							       $self, 
 							       \%cmdproc_opts);
 		$self->{proc} = $cmdproc;
 		$main::TREPAN_CMDPROC = $self->{proc};
@@ -92,7 +93,7 @@ sub awaken($;$) {
 		print STDERR "Command file '$batch_filename' doesn't exist.\n"	}
 
     } else {
-	my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, __PACKAGE__, 
+	my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, $self, 
 						   \%cmdproc_opts);
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};

@@ -84,27 +84,23 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $text;
+    my $expr;
     my $cmd_name = $args->[0];
     if (1 == scalar @$args) {
-	$text  = $proc->current_source_text();
+	$expr  = $proc->current_source_text();
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
-	    $text = Devel::Trepan::Util::extract_expression($text);
-	    $proc->msg("eval: ${text}");
+	    $expr = Devel::Trepan::Util::extract_expression($expr);
+	    $proc->msg("eval: ${expr}");
 	}
     } else {
-	$text = $proc->{cmd_argstr};
+	$expr = $proc->{cmd_argstr};
     }
     {
 	my $opts->{return_type} = parse_eval_suffix($cmd_name);
 	my $dbgr = $proc->{dbgr};
 	no warnings 'once';
-	$DB::eval_str = $dbgr->evalcode($text);
-	$DB::eval_opts = $opts;
-	$DB::result_opts = $opts;
-	$proc->{DB_running} = 2;
-	$proc->{leave_cmd_loop} = 1;
+	$proc->evaluate($expr, $opts);
     }
 }
 

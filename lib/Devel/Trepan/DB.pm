@@ -144,7 +144,7 @@ sub DB {
 
     # we need to check for pseudofiles on Mac OS (these are files
     # not attached to a filename, but instead stored in Dev:Pseudo)
-    if ( $^O eq 'MacOS' && $#dbline < 0 ) {
+    if ( $OSNAME eq 'MacOS' && $#dbline < 0 ) {
         $filename_ini = $filename = 'Dev:Pseudo';
         *dbline = $main::{ '_<' . $filename };
     }
@@ -155,14 +155,18 @@ sub DB {
     my $watch_triggered = undef;
     for my $c (@clients) {
 	my $n = 0;
-	for my $tuple (@{$c->{watch}}) {
+	my @list= @{$c->{watch}->{list}};
+	for my $wp (@list) {
 	    ## FIXME: eval_opts should be a parameter
 	    $eval_opts->{return_type} = '$';
-	    my $new_val = &DB::eval_with_return($usrctxt, $tuple->[0], @saved);
-            if ( $new_val ne $tuple->[1] ) {
+	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, @saved);
+	    my $old_val = $wp->old_value;
+	    next if !defined($old_value) && !defined($new_val);
+	    my $not_same = !defined($old_value) || !defined($new_value);
+            if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
-                $watch_triggered = [$n, $new_val, $tuple->[1]];
-                $tuple->[1] = $new_val;
+                $wp->current_val($new_val);
+                $watch_triggered = $wp;
 		last;
 	    }
 	}
@@ -215,7 +219,7 @@ sub DB {
 	$event = 'unknown';
     }
     
-    if ($DB::single || $DB::trace || $DB::signal) {
+    if ($DB::single || $DB::trace || $DB::signal || $event eq 'watch') {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
 	loadfile($DB::filename, $DB::lineno);
     }
@@ -245,8 +249,8 @@ sub DB {
 		}
 
 		# call client event loop; must not block
-		# FIXME: fold $after_eval into $event
-		$c->idle($after_eval,  $event, $watch_triggered);
+		$event = 'after_eval' if $after_eval;
+		$c->idle($event, $watch_triggered);
 		$after_eval = 0;
 		if ($running == 2 && defined($eval_str)) { 
 		    # client wants something eval-ed

@@ -204,9 +204,9 @@ sub process_command_and_quit($)
 # This is the main entry point.
 sub process_commands($$$;$)
 {
-    my ($self, $frame, $is_eval, $event, $args) = @_;
+    my ($self, $frame, $event, $arg) = @_;
     state $last_i = 0;
-    if ($is_eval) {
+    if ($event eq 'after_eval') {
 	my $val_str;
 	my $prefix="\$DB::D[$last_i] =";
 
@@ -267,7 +267,18 @@ sub process_commands($$$;$)
 	$self->frame_setup($frame);
 	$self->{event} = $event;
 
-	
+	if ($event eq 'watch') {
+	    $self->msg($arg->inspect);
+	    my $msg = sprintf("Watchpoint %s: `%s' changed", 
+			      $arg->id, $arg->expr);
+	    $self->section($msg);
+	    $msg = sprintf("old value\t%s", $arg->old_value);
+	    $self->msg($msg);
+	    $msg = sprintf("new value\t%s", $arg->current_val);
+	    $self->msg($msg);
+	    $arg->old_value($arg->current_val);
+	}
+
 	$self->{unconditional_prehooks}->run;
 	if (index($self->{event}, 'brkpt') < 0) {
 	    if ($self->is_stepping_skip()) {

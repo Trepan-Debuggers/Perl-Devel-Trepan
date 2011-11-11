@@ -133,6 +133,16 @@ sub continue($$) {
 
 }
 
+sub evaluate($$$) {
+    my ($self, $expr, $opts) = @_;
+    no warnings 'once';
+    $DB::eval_str = $self->{dbgr}->evalcode($expr);
+    $DB::eval_opts = $opts;
+    $DB::result_opts = $opts;
+    $self->{DB_running} = 2;
+    $self->{leave_cmd_loop} = 1;
+}
+
 sub next($$) 
 {
     my ($self, $opts) = @_;

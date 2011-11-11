@@ -39,18 +39,18 @@ HELP
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $expression;
+    my $expr;
     my @args = @{$args};
     shift @args;
 
-    $expression = join(' ', @args);
-    unless (is_valid_condition($expression)) {
-	$proc->errmsg("Invalid watch expression: $expression");
+    $expr = join(' ', @args);
+    unless (is_valid_condition($expr)) {
+	$proc->errmsg("Invalid watch expression: $expr");
 	return
     }
-    my $wp = $proc->{dbgr}->{watch}->add($expression);
+    my $wp = $proc->{dbgr}->{watch}->add($expr);
     if ($wp) {
-	my $mess = sprintf("Watch expression %d set", $wp->id);
+	my $mess = sprintf("Watch expression %d `%s' set", $wp->id, $expr);
 	$proc->msg($mess);
     }
 }

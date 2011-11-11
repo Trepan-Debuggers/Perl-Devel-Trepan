@@ -278,7 +278,6 @@ sub process_commands($$$;$)
 	$self->{event} = $event;
 
 	if ($event eq 'watch') {
-	    $self->msg($arg->inspect);
 	    my $msg = sprintf("Watchpoint %s: `%s' changed", 
 			      $arg->id, $arg->expr);
 	    $self->section($msg);

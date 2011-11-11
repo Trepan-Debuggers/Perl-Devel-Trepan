@@ -9,7 +9,6 @@ x1 (gcd.pl:9)
 Watch expression 1 `$a' set
 $DB::D[0] = 5
 Breakpoint 2 set in gcd.pl at line 14
-watchpoint 1, expr $a, old_value: 5, current_value 3
 Watchpoint 1: `$a' changed
 old value	5
 new value	3

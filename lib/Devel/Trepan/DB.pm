@@ -162,7 +162,7 @@ sub DB {
 	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, @saved);
 	    my $old_val = $wp->old_value;
 	    next if !defined($old_value) && !defined($new_val);
-	    my $not_same = !defined($old_value) || !defined($new_value);
+	    my $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
                 $wp->current_val($new_val);

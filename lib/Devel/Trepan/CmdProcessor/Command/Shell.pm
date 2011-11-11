@@ -3,6 +3,7 @@
 use warnings; no warnings 'redefine';
 
 use relative_lib '../../../..';
+use Psh;
 
 package Devel::Trepan::CmdProcessor::Command::Shell;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
@@ -20,9 +21,11 @@ ${NAME} [-d]
 Start an Interactive Perl shell session via psh
 HELP
 
-use constant ALIASES    => qw(psh);
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Run psh as a command shell';
+unless (defined(@ISA)) {
+    eval "use constant ALIASES    => qw(psh)";
+    eval "use constant CATEGORY   => 'support'";
+    eval "use constant SHORT_HELP => 'Run psh as a command shell'";
+}
 
 # This method runs the command
 sub run($$)
@@ -53,7 +56,11 @@ unless (caller) {
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc);
     my $child_pid = fork;
-    $cmd->run([$NAME]);
+    if ($child_pid == 0) {
+	$cmd->run([$NAME]);
+    } else {
+	waitpid($child_pid, 0);
+    }
 }
 
 1;

@@ -71,6 +71,11 @@ sub new($;$$$) {
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
+
+    # Initial watch point expr value used when a new watch point is set.
+    # Set in 'watch' command, and reset here after we get the value back.
+    $self->{set_wp}         = undef;
+
     $self->{step_count}     = 0;
     $self->load_cmds_initialize;
     $self->running_initialize;
@@ -259,6 +264,11 @@ sub process_commands($$$;$)
 		$self->msg("$prefix ${val_str}");
 	    }
 	}
+
+	if (defined($self->{set_wp})) {
+	    $self->{set_wp}->old_value($DB::eval_result);
+	    $self->{set_wp} = undef;
+	}
 	
 	$DB::eval_opts->{return_type} = '';
 	$DB::eval_result = undef;
@@ -272,9 +282,13 @@ sub process_commands($$$;$)
 	    my $msg = sprintf("Watchpoint %s: `%s' changed", 
 			      $arg->id, $arg->expr);
 	    $self->section($msg);
-	    $msg = sprintf("old value\t%s", $arg->old_value);
+	    my $old_value = defined($arg->old_value) ? $arg->old_value 
+		: 'undef';
+	    $msg = sprintf("old value\t%s", $old_value);
 	    $self->msg($msg);
-	    $msg = sprintf("new value\t%s", $arg->current_val);
+	    my $new_value = defined($arg->current_val) ? $arg->current_val
+		: 'undef';
+	    $msg = sprintf("new value\t%s", $new_value);
 	    $self->msg($msg);
 	    $arg->old_value($arg->current_val);
 	}

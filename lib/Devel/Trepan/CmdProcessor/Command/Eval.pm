@@ -98,7 +98,6 @@ sub run($$)
     }
     {
 	my $opts->{return_type} = parse_eval_suffix($cmd_name);
-	my $dbgr = $proc->{dbgr};
 	no warnings 'once';
 	$proc->evaluate($expr, $opts);
     }

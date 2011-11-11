@@ -11,9 +11,9 @@ use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(l list> l>);";
-    eval "use constant CATEGORY   => 'files';";
-    eval "use constant SHORT_HELP => 'List source code';";
+    eval "use constant ALIASES    => qw(l list> l>)";
+    eval "use constant CATEGORY   => 'files'";
+    eval "use constant SHORT_HELP => 'List source code'";
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
@@ -261,9 +261,16 @@ sub run($$)
         $s = $s . ' ' if length($s) < 4;
 	if (exists($DB::dbline{$lineno}) and 
 	    my $brkpts = $DB::dbline{$lineno}) {
-	    $bp = $brkpts->[0];
-	    $a_pad = sprintf('%02d', $bp->id);
-	    $s .= $bp->icon_char;
+	    my $found = 0;
+	    for my $bp  (@{$brkpts}) {
+		if (defined($bp)) {
+		    $a_pad = sprintf('%02d', $bp->id);
+		    $s .= $bp->icon_char;
+		    $found = 1;
+		    last;
+		}
+	    }
+	    $s .= ' ' unless $found;
 	} else  {
 	    $s .= ' ';
 	}

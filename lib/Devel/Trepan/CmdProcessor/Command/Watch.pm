@@ -50,8 +50,14 @@ sub run($$) {
     }
     my $wp = $proc->{dbgr}->{watch}->add($expr);
     if ($wp) {
+	# FIXME: handle someday...
+	# my $cmd_name = $args->[0];
+	# my $opts->{return_type} = parse_eval_suffix($cmd_name);
+	my $opts->{return_type} = '$';
 	my $mess = sprintf("Watch expression %d `%s' set", $wp->id, $expr);
 	$proc->msg($mess);
+	$proc->evaluate($expr, $opts);
+	$proc->{set_wp} = $wp;
     }
 }
 

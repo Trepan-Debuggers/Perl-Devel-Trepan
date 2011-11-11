@@ -9,4 +9,4 @@ list -
 list .
 up
 list
-quit!
+

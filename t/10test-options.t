@@ -3,7 +3,7 @@
 use strict; use warnings;
 use English qw( -no_match_vars );
 
-use relative_lib '../lib';
+use rlib '../lib';
 
 use Test::More 'no_plan';
 note( "Testing Devel::Trepan::Options" );

@@ -2,7 +2,7 @@
 # Code adapted from Perl 5's perl5db.pl
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
-use relative_lib '../../../..';
+use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Restart;
 use English qw( -no_match_vars );

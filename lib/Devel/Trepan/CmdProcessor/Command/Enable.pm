@@ -1,7 +1,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
-use relative_lib '../../../..';
+use rlib '../../../..';
 
 # disable breakpoint command. The difference however is that the
 # parameter to @proc.en_disable_breakpoint_by_number is different (set

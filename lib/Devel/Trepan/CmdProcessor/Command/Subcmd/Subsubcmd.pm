@@ -6,7 +6,7 @@ use Exporter;
 use warnings;
 no warnings 'redefine';
 
-use relative_lib '../../../../..';
+use rlib '../../../../..';
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 package Devel::Trepan::CmdProcessor::Command::Subsubcmd;

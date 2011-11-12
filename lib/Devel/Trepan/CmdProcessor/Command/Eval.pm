@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
 use warnings; no warnings 'redefine';
 
-use relative_lib '../../../..';
+use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;

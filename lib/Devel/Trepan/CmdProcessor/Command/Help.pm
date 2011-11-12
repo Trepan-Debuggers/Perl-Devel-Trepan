@@ -1,7 +1,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
-use relative_lib '../../../..';
+use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Help;
 use warnings; no warnings 'redefine';

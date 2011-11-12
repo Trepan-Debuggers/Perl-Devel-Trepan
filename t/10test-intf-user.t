@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict; use warnings; no warnings 'redefine';
-use relative_lib '../lib';
+use rlib '../lib';
 use vars qw($response); 
 
 use Test::More 'no_plan';

@@ -2,7 +2,7 @@
 # use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 
-use relative_lib '../../../..';
+use rlib '../../../..';
 use Psh;
 
 package Devel::Trepan::CmdProcessor::Command::Shell;

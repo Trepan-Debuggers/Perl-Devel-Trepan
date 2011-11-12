@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use warnings; use strict;
-use relative_lib '.';
+use rlib '.';
 use Helper;
 use Test::More 'no_plan';
 

@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
-use relative_lib '../../../..';
+use rlib '../../../..';
 
 # Our local modules
 ## use Devel::Trepan::Options; or is it default

@@ -12,7 +12,7 @@ use strict;
 use Exporter;
 
 package Devel::Trepan::IO::NullOutput;
-use relative_lib '../../..';
+use rlib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;
 

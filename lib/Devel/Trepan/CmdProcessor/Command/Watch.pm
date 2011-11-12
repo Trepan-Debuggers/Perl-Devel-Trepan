@@ -12,10 +12,10 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (defined @ISA) {
 #   eval "use constant ALIASES    => qw(w);";
-    eval "use constant CATEGORY   => 'data';";
-    eval "use constant NEED_STACK => 0;";
+    eval "use constant CATEGORY   => 'breakpoints'";
+    eval "use constant NEED_STACK => 0";
     eval "use constant SHORT_HELP => 
-         'Set to enter debugger when a watched expression changes';"
+         'Set to enter debugger when a watched expression changes'"
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
@@ -27,10 +27,11 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} PERL-EXPRESSION
  
-Stop very time PERL-EXPRESSION changes from its prior value
+Stop very time PERL-EXPRESSION changes from its prior value.
 
 Examples:
-   ${NAME} join(', ', @ARGV)
+   ${NAME} \$a  # enter debugger when the value of \$a changes
+   ${NAME} scalar(\@ARGV))  # enter debugger if size of \@ARGV changes.
 
 See also "delete", "enable", and "disable".
 HELP
@@ -58,6 +59,11 @@ sub run($$) {
 	$proc->msg($mess);
 	$proc->evaluate($expr, $opts);
 	$proc->{set_wp} = $wp;
+
+	# Without setting $DB::trace = 1, it is possible
+	# that a continue won't trigger calls to $DB::DB
+	# and therefore we won't check watch expressions.
+	$DB::trace = 1;
     }
 }
 

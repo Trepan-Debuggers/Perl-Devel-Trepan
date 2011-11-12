@@ -30,7 +30,8 @@ ${NAME} PERL-EXPRESSION
 Print value of expression PERL-EXPRESSON each time the program stops.
 
 Examples:
-   ${NAME} join(', ', @ARGV)
+   ${NAME} \$a  # Display variable \$a each time we enter debugger
+   ${NAME} join(', ', \@ARGV)  # show values of array \@ARGV
 
 See also "undisplay", "enable", and "disable".
 HELP

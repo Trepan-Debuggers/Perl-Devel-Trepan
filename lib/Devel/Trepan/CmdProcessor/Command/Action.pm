@@ -13,7 +13,7 @@ unless (defined @ISA) {
     eval "use constant ALIASES    => qw(a);";
     eval "use constant CATEGORY   => 'breakpoints';";
     eval "use constant NEED_STACK => 0;";
-    eval "use constant SHORT_HELP => 'Set an action to be done before the line is executed.;";
+    eval "use constant SHORT_HELP => 'Set an action to be done before the line is executed.'";
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;

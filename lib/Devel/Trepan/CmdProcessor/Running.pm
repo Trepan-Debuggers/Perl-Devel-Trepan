@@ -130,7 +130,6 @@ sub continue($$) {
     };
     $self->{DB_running} = 1;
     $self->{DB_single} = 0;
-
 }
 
 sub evaluate($$$) {

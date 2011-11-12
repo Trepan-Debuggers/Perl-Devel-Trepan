@@ -9,7 +9,6 @@ package Devel::Trepan::CmdProcessor::Command::Kill;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
-use strict;
 use vars qw(@ISA);
 
 unless (defined @ISA) {
@@ -17,6 +16,7 @@ unless (defined @ISA) {
     eval "use constant CATEGORY => 'running'";
     eval "use constant SHORT_HELP => 'Send this process a POSIX signal'";
 }
+use strict; 
 
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent

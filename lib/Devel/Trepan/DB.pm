@@ -213,6 +213,8 @@ sub DB {
 	$event ||= 'signal';
     } elsif ($DB::single & RETURN_EVENT) {
 	$event ||= 'return';
+    } elsif ($DB::trace ) {
+	$event ||= 'trace';
     } elsif ($DB::trace  || $DB::single) {
 	$event ||= 'line';
     } else {

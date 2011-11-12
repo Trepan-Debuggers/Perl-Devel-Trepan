@@ -12,7 +12,7 @@ Breakpoint 2 set in gcd.pl at line 14
 Watchpoint 1: `$a' changed
 old value	5
 new value	3
-;) (gcd.pl:13)
+wa (gcd.pl:13)
     return undef if $a <= 0;
 gcd.pl [9-18]
   9    	    my ($a, $b) = @_;

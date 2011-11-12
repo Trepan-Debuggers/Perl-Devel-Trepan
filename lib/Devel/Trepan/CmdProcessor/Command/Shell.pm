@@ -1,6 +1,6 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # use feature ":5.10";  # Includes "state" feature.
-use warnings; no warnings 'redefine';
+use warnings; no warnings 'redefine'; 
 
 use rlib '../../../..';
 use Psh;
@@ -8,24 +8,25 @@ use Psh;
 package Devel::Trepan::CmdProcessor::Command::Shell;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use if !defined @ISA, Devel::Trepan::Psh ;
-use strict;
+
+unless (defined(@ISA)) {
+    eval "use constant ALIASES    => qw(psh)";
+    eval "use constant CATEGORY   => 'support'";
+    eval "use constant NEED_STACK => 0;";
+    eval "use constant SHORT_HELP => 'Run psh as a command shell'";
+}
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
+use strict; 
 use vars @CMD_VARS;  # Value inherited from parent
-
 our $MIN_ARGS     = 0;  # Need at most this many
 our $MAX_ARGS     = 0;  # Need at most this many
+
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [-d]
 Start an Interactive Perl shell session via psh
 HELP
-
-unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(psh)";
-    eval "use constant CATEGORY   => 'support'";
-    eval "use constant SHORT_HELP => 'Run psh as a command shell'";
-}
 
 # This method runs the command
 sub run($$)

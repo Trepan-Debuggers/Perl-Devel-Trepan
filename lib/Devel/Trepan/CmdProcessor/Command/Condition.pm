@@ -14,7 +14,7 @@ unless (defined @ISA) {
     eval "use constant CATEGORY   => 'breakpoints';";
     eval "use constant NEED_STACK => 0;";
     eval "use constant SHORT_HELP => 
-         'Specify breakpoint number N to break only if COND is true';"
+         'Specify a condition on a breakpoint';"
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;

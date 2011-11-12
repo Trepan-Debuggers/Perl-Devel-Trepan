@@ -9,9 +9,9 @@ package Devel::Trepan::CmdProcessor::Command::Break;
 use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(b);";
-    eval "use constant CATEGORY   => 'breakpoints';";
-    eval "use constant SHORT_HELP => 'Set a breakpoint';";
+    eval "use constant ALIASES    => qw(b)";
+    eval "use constant CATEGORY   => 'breakpoints'";
+    eval "use constant SHORT_HELP => 'Set a breakpoint'";
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;

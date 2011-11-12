@@ -1,4 +1,14 @@
 Revision history for Devel-Trepan
+0.1.1  - Nov 11, 2011
+
+- Add watchpoints
+- Don't require Term::ReadLine::Gnu or Term::Readline
+- Reduce uses Term::ReadLine when it not needed, e.g. trepanpl --command 
+  or --testing options.
+- Use "use rlib" instead of "use lib"
+- Remove deprecated warning given by newer Perls (Reine Urban and Shlomi Fish)
+- Add --no-match-vars to Use English. (Shlomi Fish)
+
 0.1.0  - Oct 27, 2011
 
 Initial release. 

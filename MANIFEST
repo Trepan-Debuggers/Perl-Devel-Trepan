@@ -1,6 +1,7 @@
 Artistic
 bin/trepanpl
 Build.PL
+ChangeLog
 Changes
 example/eval.pl
 example/fns.pl
@@ -9,6 +10,7 @@ example/gcd.pl
 example/nexting.pl
 example/test-module.pm
 example/test-require.pl
+GNUmakefile
 gpl-3.0.txt
 ignore.txt
 lib/Devel/Trepan.pm
@@ -44,6 +46,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm
 lib/Devel/Trepan/CmdProcessor/Command/Kill.pm
 lib/Devel/Trepan/CmdProcessor/Command/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
@@ -100,6 +103,7 @@ lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm
 lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Up.pm
+lib/Devel/Trepan/CmdProcessor/Command/Watch.pm
 lib/Devel/Trepan/CmdProcessor/Default.pm
 lib/Devel/Trepan/CmdProcessor/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Help.pm
@@ -135,6 +139,7 @@ lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
 lib/Devel/Trepan/Util.pm
+lib/Devel/Trepan/WatchMgr.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
 README
@@ -160,11 +165,13 @@ t/20test-eval.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
+t/20test-list4.t
 t/20test-next.t
 t/20test-seq1.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
+t/20test-watch1.t
 t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
@@ -181,6 +188,8 @@ t/data/list2.cmd
 t/data/list2.right
 t/data/list3.cmd
 t/data/list3.right
+t/data/list4.cmd
+t/data/list4.right
 t/data/next.cmd
 t/data/next.right
 t/data/seq1.cmd
@@ -191,9 +200,8 @@ t/data/trace1.cmd
 t/data/trace1.right
 t/data/trace2.cmd
 t/data/trace2.right
+t/data/watch1.cmd
+t/data/watch1.right
+t/data/watch2.cmd
+t/data/watch2.right
 t/Helper.pm
-testit
-Makefile.PL
-GNUmakefile
-META.yml
-META.json

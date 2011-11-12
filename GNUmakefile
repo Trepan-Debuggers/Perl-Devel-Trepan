@@ -114,6 +114,11 @@ test:
 testcover:
 	perl Build --makefile_env_macros 1 testcover
 
+#:Create a log file from the individual commits
+ChangeLog:
+	git log --pretty --numstat --summary | git2cl > $@
+
+#: Calling perl debugger (perldb) on each test
 testdb:
 	perl Build --makefile_env_macros 1 testdb
 

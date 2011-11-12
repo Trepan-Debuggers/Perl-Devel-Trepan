@@ -7,6 +7,8 @@
 \bCVS\b
 \bSCCS\b
 ,v$
+\btmp\b
+\btestit\b
 \B\.svn\b
 \B\.git\b
 \B\.gitignore\b

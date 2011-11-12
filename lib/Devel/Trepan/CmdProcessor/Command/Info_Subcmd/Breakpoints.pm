@@ -42,7 +42,8 @@ sub bpprint($$;$)
     my $disp = ($bp->type eq 'tbreak') ? 'del  ' : 'keep ';
     $disp .= $bp->enabled ? 'y  '   : 'n  ';
 
-    my $line_loc = sprintf('%s:%d', $bp->filename, $bp->line_num);
+    my $line_loc = sprintf('%s:%d', $proc->canonic_file($bp->filename), 
+			   $bp->line_num);
 
     my $mess = sprintf('%-4dbreakpoint    %s at %s',
 		       $bp->id, $disp, $line_loc);
@@ -66,7 +67,7 @@ sub action_print($$;$)
 {
     my ($self, $action, $verbose) = @_;
     my $proc = $self->{proc};
-    my $disp .= $action->enabled ? 'y  '   : 'n  ';
+    my $disp = $action->enabled ? 'y  '   : 'n  ';
 
     my $line_loc = sprintf('%s:%d', $action->filename, $action->line_num);
 
@@ -93,12 +94,10 @@ sub action_print($$;$)
 #     my $proc = $self->{proc};
 #     my $bpmgr = $proc->{brkpts};
 #     my @res = ();
-#     for my $bp $bpmgr->list {
-# 	# next unless 'file' == iseq.source_container[0]
-# 	$loc = iseq.source_container[1] + ':';
-# 	loc .=  iseq.offset2lines(bp.offset)[0].to_s;
+#     for my $bp ($bpmgr->list) {
 # 	push @res, "break ${loc}";
 #     }
+#    return @res;
 # }
 
 sub run($$) {
@@ -187,6 +186,7 @@ sub run($$) {
 	    }
 	}
     }
+    $self->{proc}->run_command('info watch');
 
 }
 

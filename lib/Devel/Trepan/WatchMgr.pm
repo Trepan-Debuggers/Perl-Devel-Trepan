@@ -8,10 +8,11 @@ use Class::Struct;
 use strict;
 
 struct WatchPoint => {
+    id          => '$', # watchpoint number
+    enabled     => '$', # True if watchpoint is enabled
     expr        => '$', # what Perl expression to evaluate
     old_value   => '$', # Previous value
     current_val => '$', # Current value. Set only when != old value
-    id          => '$', # watchpoint number
 };
 
 package WatchPoint;
@@ -109,8 +110,9 @@ sub add($$)
 {
     my ($self, $expr) = @_;
     my $watchpoint = WatchPoint->new(
-	expr => $expr, 
-        id   => $self->{next_id}++,
+        id       => $self->{next_id}++,
+	enabled => 1,
+	expr    => $expr, 
 	);
 	
     push @{$self->{list}}, $watchpoint;

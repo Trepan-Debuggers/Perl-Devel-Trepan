@@ -6,12 +6,12 @@ use Class::Struct;
 use strict;
 
 struct DBBreak => {
+    id          => '$', # breakpoint/action number 
+    enabled     => '$', # True if breakpoint or action is enabled
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
     condition   => '$', # Condition to evaluate or '1' fo unconditional
                         # if type is 'action' this is the action to run
-    id          => '$', # breakpoint/action number 
     hits        => '$', # Number of times the breakpoint/action hit
-    enabled     => '$', # True if breakpoint or action is enabled
     negate      => '$', # break/step if ... or until .. ?
     filename    => '$',
     line_num    => '$'

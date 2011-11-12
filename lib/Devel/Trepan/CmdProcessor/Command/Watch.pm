@@ -33,7 +33,7 @@ Examples:
    ${NAME} \$a  # enter debugger when the value of \$a changes
    ${NAME} scalar(\@ARGV))  # enter debugger if size of \@ARGV changes.
 
-See also "delete", "enable", and "disable".
+See also "delete", "enable", and "disable" and "info watch".
 HELP
 
 # This method runs the command

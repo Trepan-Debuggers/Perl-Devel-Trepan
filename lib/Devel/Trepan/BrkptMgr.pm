@@ -28,17 +28,23 @@ sub inspect($)
 {
     my $self = shift;
     my $str = '';
-    for my $brkpt (@{$self->{list}}) {
+    for my $brkpt ($self->list) {
 	next unless defined $brkpt;
 	$str .= $brkpt->inspect . "\n";
     }
     $str;
 }    
 
+sub list($) 
+{
+    my $self = shift;
+    @{$self->{list}}
+}
+
 # Remove all breakpoints that we have recorded
 sub DESTROY() {
     my $self = shift;
-    for my $bp (@{$self->{list}}) {
+    for my $bp ($self->list) {
         $self->delete_by_brkpt($bp) if defined($bp);
     }
     $self->{clear};

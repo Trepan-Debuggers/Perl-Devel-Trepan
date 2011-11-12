@@ -4,8 +4,8 @@ use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
 
-# require_relative '../running'
-# require_relative '../../app/breakpoint' # FIXME: possibly temporary
+# rlib '../running'
+# rlib '../../app/breakpoint' # FIXME: possibly temporary
 
 package Devel::Trepan::CmdProcessor::Command::Finish;
 

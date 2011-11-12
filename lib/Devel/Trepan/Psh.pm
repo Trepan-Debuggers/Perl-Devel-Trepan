@@ -7,7 +7,7 @@ use warnings; no warnings 'redefine';
 # eval "require Psh::Strategy::Built_in";
 # shift @INC;
 
-use relative_lib '../..';
+use rlib '../..';
 
 ## package Psh;
 

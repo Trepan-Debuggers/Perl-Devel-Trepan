@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
-use relative_lib '../..';
+use rlib '../..';
 
 use Class::Struct;
 use strict;

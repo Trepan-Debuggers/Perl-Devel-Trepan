@@ -7,7 +7,7 @@ use Array::Columnize;
 use Carp ();
 use File::Basename;
 
-use relative_lib '../../..';
+use rlib '../../..';
 use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
 use strict;
 package Devel::Trepan::CmdProcessor::Command;

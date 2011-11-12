@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
-use relative_lib '../../..';
+use rlib '../../..';
 
 use Class::Struct;
 use Time::HiRes;

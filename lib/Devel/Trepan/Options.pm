@@ -6,7 +6,7 @@ use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Usage;
 use Pod::Find qw(pod_where);
 use File::Spec;
-use relative_lib '../..';
+use rlib '../..';
 
 use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);

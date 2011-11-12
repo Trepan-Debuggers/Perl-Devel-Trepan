@@ -12,7 +12,7 @@ package Devel::Trepan::CmdProcessor::Virtual;
 use vars qw(@EXPORT @ISA);
 @ISA = qw(Exporter);
 
-use relative_lib '../../..';
+use rlib '../../..';
 
 # attr_reader :settings
 sub new($$;$) {

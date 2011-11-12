@@ -12,7 +12,7 @@
 
 use strict; use warnings;
 use Exporter;
-use relative_lib '../..';
+use rlib '../..';
 
 package Devel::Trepan::IO::InputBase;
 

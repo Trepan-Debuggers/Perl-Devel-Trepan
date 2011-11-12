@@ -1,4 +1,4 @@
-use relative_lib '../..';
+use rlib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
 use Devel::Trepan::WatchMgr;

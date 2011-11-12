@@ -157,6 +157,7 @@ sub DB {
 	my $n = 0;
 	my @list= @{$c->{watch}->{list}};
 	for my $wp (@list) {
+	    next unless $wp->enabled;
 	    ## FIXME: eval_opts should be a parameter
 	    $eval_opts->{return_type} = '$';
 	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, @saved);
@@ -166,6 +167,7 @@ sub DB {
             if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
                 $wp->current_val($new_val);
+                $wp->hits($wp->hits+1);
                 $watch_triggered = $wp;
 		last;
 	    }

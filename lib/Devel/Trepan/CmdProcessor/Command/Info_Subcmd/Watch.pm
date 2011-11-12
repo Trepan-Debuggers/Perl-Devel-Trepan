@@ -52,12 +52,12 @@ sub wpprint($$;$)
     my $mess = sprintf('%-4dwatchpoint %s %s', $wp->id, $disp, $wp->expr);
     $proc->msg($mess);
 
-    # if ($wp->hits > 0) {
-    # 	my $ss = ($wp->hits > 1) ? 's' : '';
-    # 	my $msg = sprintf("\twatchpoint already hit %d time%s",
-    # 			  $wp->hits, $ss);
-    # 	$proc->msg($msg);
-    # }
+    if ($wp->hits > 0) {
+    	my $ss = ($wp->hits > 1) ? 's' : '';
+    	my $msg = sprintf("\twatchpoint already hit %d time%s",
+    			  $wp->hits, $ss);
+    	$proc->msg($msg);
+    }
 }
 
 sub run($$) {

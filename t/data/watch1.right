@@ -35,3 +35,4 @@ Num Type          Disp Enb Where
 No actions.
 Num Type       Enb Expression
 1   watchpoint y   $a
+	watchpoint already hit 1 time

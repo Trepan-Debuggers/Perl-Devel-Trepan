@@ -10,6 +10,7 @@ use strict;
 struct WatchPoint => {
     id          => '$', # watchpoint number
     enabled     => '$', # True if watchpoint is enabled
+    hits        => '$', # How many times watch was hit
     expr        => '$', # what Perl expression to evaluate
     old_value   => '$', # Previous value
     current_val => '$', # Current value. Set only when != old value
@@ -112,6 +113,7 @@ sub add($$)
     my $watchpoint = WatchPoint->new(
         id       => $self->{next_id}++,
 	enabled => 1,
+	hits    => 0,
 	expr    => $expr, 
 	);
 	

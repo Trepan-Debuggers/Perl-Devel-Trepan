@@ -1,8 +1,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
-
-use rlib '../../../..';
 use feature 'switch';
+use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Edit;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;

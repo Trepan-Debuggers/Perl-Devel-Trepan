@@ -1,6 +1,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
+use feature 'switch';
 use rlib '../../../..';
 
 # disable breakpoint command. The difference however is that the
@@ -28,11 +29,69 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-#{NAME} [display] bpnumber [bpnumber ...]
+${NAME} bpnumber [bpnumber ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also "info break" to get a list.
 HELP
+    
+### FIXME: parameterize and combine these. Also combine with enable.
+sub disable_breakpoint($$) {
+    my ($proc, $i) = @_;
+    my $bp = $proc->{brkpts}->find($i);
+    my $msg;
+    if ($bp) {
+	if ($bp->enabled) {
+	    $bp->enabled(0);
+	    $msg = sprintf("Breakpoint %d disabled", $bp->id);
+	    $proc->msg($msg);
+	} else {
+	    $msg = sprintf("Breakpoint %d already disabled", $bp->id);
+	    $proc->errmsg($msg);
+	}
+    } else {
+	$msg = sprintf("No breakpoint %d found", $i);
+	$proc->errmsg($msg);
+    }
+}
+
+sub disable_watchpoint($$) {
+    my ($proc, $i) = @_;
+    my $wp = $proc->{dbgr}{watch}->find($i);
+    my $msg;
+    if ($wp) {
+	if ($wp->enabled) {
+	    $wp->enabled(0);
+	    $msg = sprintf("Watch expression %d disabled", $wp->id);
+	    $proc->msg($msg);
+	} else {
+	    $msg = sprintf("Watch expression %d already disabled", $wp->id);
+	    $proc->errmsg($msg);
+	}
+    } else {
+	$msg = sprintf("No watchpoint %d found", $i);
+	$proc->errmsg($msg);
+    }
+}
+    
+sub disable_action($$) {
+    my ($proc, $i) = @_;
+    my $act = $proc->{actions}->find($i);
+    my $msg;
+    if ($act) {
+	if ($act->enabled) {
+	    $act->enabled(0);
+	    $msg = sprintf("Action %d disabled", $act->id);
+	    $proc->msg($msg);
+	} else {
+	    $msg = sprintf("Action %d already disabled", $act->id);
+	    $proc->errmsg($msg);
+	}
+    } else {
+	$msg = sprintf("No action %d found", $i);
+	$proc->errmsg($msg);
+    }
+}
     
 sub run($$)
 {
@@ -43,23 +102,24 @@ sub run($$)
 	$proc->errmsg('No breakpoint number given.');
 	return;
     }
-#   if args[1] == 'display'
-#     display_enable(args[2:], 0)
-#   end
     my $first = shift @args;
     for my $num_str (@args) {
+	my $type = lc(substr($num_str,0,1));
+	if ($type !~ /[0-9baw]/) {
+	    $proc->errmsg("Invalid prefix $type. Argument $num_str ignored");
+	    next;
+	}
+	if ($type =~ /[0-9]/) {
+	    $type='b';
+	} else {
+	    $num_str = substr($num_str, 1);
+	}
 	my $i = $proc->get_an_int($num_str);
 	if (defined $i) {
-	    my $bp = $proc->{brkpts}->find($i);
-	    if ($bp) {
-		my $msg;
-		if ($bp->enabled) {
-		    $bp->enabled(0);
-		    $msg = sprintf("Breakpoint %s disabled", $bp->id);
-		} else {
-		    $msg = sprintf("Breakpoint %s already disabled", $bp->id);
-		}
-		$proc->msg($msg);
+	    given ($type) {
+		when('a') { disable_action($proc, $i); } 
+		when('b') { disable_breakpoint($proc, $i); } 
+		when('w') { disable_watchpoint($proc, $i); } 
 	    }
 	}
     }

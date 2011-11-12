@@ -192,7 +192,7 @@ sub run($$) {
 
 if (caller) {
   # Demo it.
-  # require_relative '../../mock'
+  # use rlib '../../mock'
   # name = File.basename(__FILE__, '.rb')
   # dbgr, cmd = MockDebugger::setup('info')
   # subcommand = Trepan::Subcommand::InfoBreakpoints.new(cmd)

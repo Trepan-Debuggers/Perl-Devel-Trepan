@@ -85,7 +85,8 @@ sub run($$) {
 	    }
 	}
 	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, $condition);
-	if ($bp) {
+    }
+    if ($bp) {
 	    my $prefix = $bp->type eq 'tbrkpt' ? 
 		'Temporary breakpoint' : 'Breakpoint' ;
 	    my $id = $bp->id;
@@ -93,7 +94,6 @@ sub run($$) {
 	    my $line_num = $bp->line_num;
 	    $proc->{brkpts}->add($bp);
 	    $proc->msg("$prefix $id set in $filename at line $line_num");
-	}
     }
 }
 

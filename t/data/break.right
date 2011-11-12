@@ -1,7 +1,8 @@
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-Breakpoint 1 set in gcd.pl at line 9
-Breakpoint 2 set in gcd.pl at line 11
+Breakpoint 1 set in gcd.pl at line 18
+Breakpoint 2 set in gcd.pl at line 9
+Breakpoint 3 set in gcd.pl at line 11
 Deleted breakpoint 1
 Deleted breakpoint 2
 x1 (gcd.pl:9)

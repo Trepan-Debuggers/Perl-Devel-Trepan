@@ -80,6 +80,10 @@ html:
 install:
 	perl Build --makefile_env_macros 1 install
 
+#: Install other Perl packages that this package needs
+installdeps:
+	perl Build --makefile_env_macros 1 installdeps
+
 #: Make a MANIFEST file
 manifest:
 	perl Build --makefile_env_macros 1 manifest

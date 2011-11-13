@@ -450,6 +450,7 @@ sub finish($;$$) {
   $index = 0 if $index < 0;
   $stack[$index] |= (SINGLE_STEPPING_EVENT | RETURN_EVENT);
   $DB::single = 0;
+  $DB::trace = 0;
   $running = 1;
 }
 

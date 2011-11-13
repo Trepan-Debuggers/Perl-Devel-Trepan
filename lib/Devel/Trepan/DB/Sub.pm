@@ -63,7 +63,8 @@ sub sub {
     # Save current single-step setting.
     $stack[-1] = $single;
 
-    # Turn off all flags except single-stepping.
+    # printf "\$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
+    # Turn off all flags except single-stepping or return event.
     $DB::single &= SINGLE_STEPPING_EVENT;
 
     # If we've gotten really deeply recursed, turn on the flag that will

@@ -1,37 +1,42 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+
+# A debugger command processor. This includes the debugger commands
+# and ties together the debugger core and I/O interface.
 package Devel::Trepan::CmdProcessor;
+
 use English qw( -no_match_vars );
 use feature ":5.10";  # Includes "state" feature.
 use Exporter;
 use feature 'switch';
-use warnings; use strict;
+use warnings; no warnings 'redefine';
+
+use vars qw(@EXPORT @ISA $eval_result);
 
 # Showing eval results can be done using either data dump package.
-require Data::Dumper; require Data::Dumper::Perltidy;
+use if !defined @ISA, Data::Dumper; require Data::Dumper::Perltidy;
 
 use rlib '../..';
-require Devel::Trepan::BrkptMgr;
-require Devel::Trepan::DB::Display;
-require Devel::Trepan::Interface::User;
-require Devel::Trepan::CmdProcessor::Virtual;
-require Devel::Trepan::CmdProcessor::Default;
-require Devel::Trepan::CmdProcessor::Msg;
-require Devel::Trepan::CmdProcessor::Help;
-require Devel::Trepan::CmdProcessor::Hook;
-require Devel::Trepan::CmdProcessor::Frame;
-require Devel::Trepan::CmdProcessor::Location;
-require Devel::Trepan::CmdProcessor::Load unless
-    defined $Devel::Trepan::CmdProcessor::Load_seen;
-require Devel::Trepan::CmdProcessor::Running;
-require Devel::Trepan::CmdProcessor::Validate;
+
+unless (defined @ISA) {
+    require Devel::Trepan::CmdProcessor::Load;
+    require Devel::Trepan::BrkptMgr;
+    require Devel::Trepan::DB::Display;
+    require Devel::Trepan::Interface::User;
+    require Devel::Trepan::CmdProcessor::Virtual;
+    require Devel::Trepan::CmdProcessor::Default;
+    require Devel::Trepan::CmdProcessor::Msg;
+    require Devel::Trepan::CmdProcessor::Help;
+    require Devel::Trepan::CmdProcessor::Hook;
+    require Devel::Trepan::CmdProcessor::Frame;
+    require Devel::Trepan::CmdProcessor::Location;
+    require Devel::Trepan::CmdProcessor::Running;
+    require Devel::Trepan::CmdProcessor::Validate;
+}
 use strict;
-use warnings;
-no warnings 'redefine';
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 
-use vars qw(@EXPORT @ISA $eval_result);
 @ISA = qw(Exporter);
 
 BEGIN {

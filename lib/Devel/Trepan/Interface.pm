@@ -30,7 +30,7 @@ use constant YES => qw(y yes oui si yep ja);
 use constant NO => qw(n no non nope nein);
 push(@YN, NO);
 
-sub new {
+sub new($;$$$) {
     my($class, $inp, $out, $opts)  = @_;
     $opts ||= {};
     my $input_opts = {

@@ -22,7 +22,7 @@ use constant DEFAULT_OPTS => {
     verbose        => 0
 };
   
-sub new
+sub new($;$$$)
 {
     my ($class, $script_name, $out, $opts) = @_;
     $opts //={};

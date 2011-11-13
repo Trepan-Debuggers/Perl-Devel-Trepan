@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-
 # Interface when communicating with the user.
 
-use warnings; no warnings 'once'; use strict; 
+use warnings; no warnings 'redefine';
 use Exporter;
 
 package Devel::Trepan::Interface::User;
-use rlib '../../..';
 use vars qw(@EXPORT @ISA $HAVE_READLINE);
+
+use rlib '../../..';
+
+use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge);
+use if !defined(@ISA), Devel::Trepan::IO::Input;
+use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
+
 @ISA = qw(Devel::Trepan::Interface Exporter);
-
-use Devel::Trepan::Util qw(hash_merge);
-use Devel::Trepan::IO::Input;
-use Devel::Trepan::Interface qw(YES NO @YN);
-
+use strict; 
 # Interface when communicating with the user.
 
 use constant DEFAULT_USER_OPTS => {

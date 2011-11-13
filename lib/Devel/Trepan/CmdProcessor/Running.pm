@@ -25,55 +25,26 @@ use English qw( -no_match_vars );
 #                                # "step>" or "step!" commands.
 # attr_accessor :to_method
 
-# # Does whatever needs to be done to set to continue program
-# # execution.
-# # FIXME: turn line_number into a condition.
-# sub continue {
-#     @next_level      = 32000; # I'm guessing the stack size can't ever
-# 			      # reach this
-#     @next_thread     = undef;
-#     @core.step_count = -1;    # No more event stepping
-#     @leave_cmd_loop  = 1;  # Break out of the processor command loop.
-# }
-
-# # Does whatever setup needs to be done to set to ignore stepping
-# # to the finish of the current method.
-# sub finish(level_count=0, opts={}) {
-#     step(0, opts);
-#     @next_level        = @frame.stack_size - level_count;
-#     @next_thread       = Thread.current;
-#     @stop_events       = Set.new(%w(return leave yield));
-    
-#     # Try high-speed (run-time-assisted) method
-#     @frame.trace_off   = 1;  # No more tracing in this frame
-#     @frame.return_stop = 1;  # don't need to 
-# }
-
-# # Does whatever needs to be done to set to do "step over" or ignore
-# # stepping into methods called from this stack but step into any in 
-# # the same level. We do this by keeping track of the number of
-# # stack frames and the current thread. Elsewhere in "skipping_step?"
-# # we do the checking.
-# sub next(step_count=1, opts={}) 
-# {
-#     step(step_count, opts);
-#     @next_level      = @top_frame.stack_size;
-#     @next_thread     = Thread.current;
-# }
-
-# # Does whatever needs to be done to set to step program
-# # execution.
-# sub step(step_count=1, opts={}, condition=undef) 
-# {
-#     $self->continue();
-#     @core.step_count = step_count;
-#     @different_pos   = opts[:different_pos] if 
-#         opts.keys.member?(:different_pos);
-#     @stop_condition  = condition;
-#     @stop_events     = opts[:stop_events]   if 
-#         opts.keys.member?(:stop_events);
-#     @to_method       = opts[:to_method];
-# }
+sub continue($$) {
+    my ($self, $args) = @_;
+    if ($self->{settings}{traceprint}) {
+	$self->step();
+	return;
+    }
+    if (scalar @{$args} != 1) {
+	# Form is: "continue"
+	# my $(line_number, $condition, $negate) = 
+	#    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
+	# return unless iseq && vm_offset;
+	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
+	#return unless bp;
+	$self->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
+    } else {
+	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
+    };
+    $self->{DB_running} = 1;
+    $self->{DB_single} = 0;
+}
 
 # sub quit(cmd='quit')
 # {
@@ -111,27 +82,6 @@ sub parse_next_step_suffix($$)
     return $opts;
 }
 
-sub continue($$) {
-    my ($self, $args) = @_;
-    if ($self->{settings}{traceprint}) {
-	$self->step();
-	return;
-    }
-    if (scalar @{$args} != 1) {
-	# Form is: "continue"
-	# my $(line_number, $condition, $negate) = 
-	#    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
-	# return unless iseq && vm_offset;
-	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
-	#return unless bp;
-	$self->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
-    } else {
-	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
-    };
-    $self->{DB_running} = 1;
-    $self->{DB_single} = 0;
-}
-
 sub evaluate($$$) {
     my ($self, $expr, $opts) = @_;
     no warnings 'once';
@@ -140,6 +90,14 @@ sub evaluate($$$) {
     $DB::result_opts = $opts;
     $self->{DB_running} = 2;
     $self->{leave_cmd_loop} = 1;
+}
+
+# Does whatever setup needs to be done to set to ignore stepping
+# to the finish of the current method.
+sub finish($$) {
+    my ($self, $level_count) = @_;
+    $self->{leave_cmd_loop} = 1;
+    $self->{dbgr}->finish($level_count);
 }
 
 sub next($$) 

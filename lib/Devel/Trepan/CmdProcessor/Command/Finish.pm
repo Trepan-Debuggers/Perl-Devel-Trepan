@@ -10,8 +10,13 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Finish;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-use strict;
 use vars qw(@ISA);
+unless (defined @ISA) {
+    eval "use constant ALIASES    => qw(fin)";
+    eval "use constant CATEGORY   => 'running'";
+    eval "use constant SHORT_HELP => 'Step to end of current method (step out)'";
+}
+use strict;
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -34,15 +39,13 @@ while 'break' will have less overhead.
 
 HELP
 
-use constant ALIASES    => qw(fin);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Step to end of current method (step out)';
 local $NEED_RUNNING = 1;
 local $MAX_ARGS     = 1;  # Need at most this many
 
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
+    my $proc = $self->{proc};
     
     my ($opts, $level_count) = ({}, 1);
     if (scalar @$args != 1) {
@@ -53,13 +56,11 @@ sub run($$) {
 		"The '${NAME}' command argument must eval to an integer. Got: ${count_str}",
 		min_value => 1
 	};
-	my $count = $self->{proc}->get_an_int($count_str, $opts);
+	my $count = $proc->get_an_int($count_str, $opts);
 	return unless defined $count;
 	$level_count = $count;
     }
-
-    $self->{proc}{leave_cmd_loop} = 1;
-    $self->{dbgr}->finish($level_count);
+    $proc->finish($level_count);
 }
 
 unless (caller) {

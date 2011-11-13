@@ -112,77 +112,13 @@ Type "help" followed by a command name for full documentation.
     $self->msg($final_msg);
 }
 
-# This method runs the command
-sub run($$) 
-{
-    my ($self, $args) = @_;
-    my $proc = $self->{proc};
-    my $cmd_name = $args->[1];
-    if (scalar(@$args) > 1) {
-	my $real_name;
-	if ($cmd_name eq '*') {
-	    $self->section('All command names:');
-	    my @cmds = sort(keys(%{$proc->{commands}}));
-	    $self->msg($self->columnize_commands(\@cmds));
-	    $self->show_aliases if scalar keys %{$proc->{aliases}};
-	    # $self->show_macros   unless scalar @$self->{proc}->macros;
-	} elsif ($cmd_name =~ /^aliases$/i) {
-	    $self->show_aliases();
-	# } elsif (cmd_name =~ /^macros$/i) {
-	#     $self->show_macros;
-	} elsif ($cmd_name =~ /^syntax$/i) {
-	    $self->show_command_syntax($args);
-	} elsif ($cmd_name =~ /^all$/i) {
-	    for my $category (sort keys %{CATEGORIES()}) {
-		$self->show_category($category, []);
-		$self->msg('');
-	    }
-        } elsif (CATEGORIES->{$cmd_name}) {
-	    splice(@$args,0,2);
-	    $self->show_category($cmd_name, $args);
-	} elsif ($proc->{commands}{$cmd_name}
-		 || $proc->{aliases}{$cmd_name}) {
-	    if ($proc->{commands}{$cmd_name}) {
-		$real_name = $cmd_name;
-	    } else {
-		$real_name = $proc->{aliases}{$cmd_name};
-	    }
-	    my $cmd_obj = $proc->{commands}{$real_name};
-	    my $help_text = 
-		$cmd_obj->can("help") ? $cmd_obj->help($args) 
-		: $cmd_obj->{help};
-	    if ($help_text) {
-		$self->msg($help_text) ;
-		if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
-		    my $aliases_str = join(', ', @{$cmd_obj->{aliases}});
-		    $self->msg("Aliases: $aliases_str");
-		}
-	     }
-        # } elsif ($self->{proc}{macros}{$cmd_name}) {
-	#     $self->msg("${cmd_name} is a macro which expands to:");
-	#     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
-	} else {
-	    my @matches = sort grep(/^${cmd_name}/, 
-				    keys %{$self->{proc}{commands}} );
-	    if (!scalar @matches) {
-		$self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
-	    } else {
-		$self->section("Command names matching /^${cmd_name}/:");
-		$self->msg($self->columnize_commands(sort \@matches));
-            }
-	}
-    } else {
-	$self->list_categories;
-    }
-}
-
 sub show_aliases($)
 {
     my $self = shift;
     $self->section('All alias names:');
     my @aliases = sort(keys(%{$self->{proc}{aliases}}));
     $self->msg($self->columnize_commands(\@aliases));
-  }
+}
 
 # Show short help for all commands in `category'.
 sub show_category($$$)
@@ -219,26 +155,13 @@ sub syntax_files($)
     return @result;
 }
 
-sub readlines($$$) {
-    my($self, $filename) = @_;
-    unless (open(FH, $filename)) {
-	$self->errmsg("Can't open $filename: $!");
-	return ();
-    }
-    local $_;
-    my @lines = ();
-    while (<FH>) { chomp $_; push @lines, $_;  }
-    close FH;
-    return @lines;
-}
-  
 sub show_command_syntax($$)
 {
     my ($self, $args) = @_;
     if (scalar @$args == 2) {
 	$self->{syntax_summary_help} ||= {};
 	$self->section("List of syntax help");
-	for my $name ($self->syntax_files()) {
+	for my $name (syntax_files($self)) {
 	    unless($self->{syntax_summary_help}{$name}) {
 		my $filename = File::Spec->catfile($HELP_DIR, "${name}.txt");
 		my @lines = $self->readlines($filename);
@@ -270,6 +193,83 @@ sub show_command_syntax($$)
     }
 }
 
+# This method runs the command
+sub run($$) 
+{
+    my ($self, $args) = @_;
+    my $proc = $self->{proc};
+    my $cmd_name = $args->[1];
+    if (scalar(@$args) > 1) {
+	my $real_name;
+	if ($cmd_name eq '*') {
+	    $self->section('All command names:');
+	    my @cmds = sort(keys(%{$proc->{commands}}));
+	    $self->msg($self->columnize_commands(\@cmds));
+	    show_aliases($self) if scalar keys %{$proc->{aliases}};
+	    # $self->show_macros   unless scalar @$self->{proc}->macros;
+	} elsif ($cmd_name =~ /^aliases$/i) {
+	    show_aliases($self);
+	# } elsif (cmd_name =~ /^macros$/i) {
+	#     $self->show_macros;
+	} elsif ($cmd_name =~ /^syntax$/i) {
+	    show_command_syntax($self, $args);
+	} elsif ($cmd_name =~ /^all$/i) {
+	    for my $category (sort keys %{CATEGORIES()}) {
+		show_category($self, $category, []);
+		$self->msg('');
+	    }
+        } elsif (CATEGORIES->{$cmd_name}) {
+	    splice(@$args,0,2);
+	    show_category($self, $cmd_name, $args);
+	} elsif ($proc->{commands}{$cmd_name}
+		 || $proc->{aliases}{$cmd_name}) {
+	    if ($proc->{commands}{$cmd_name}) {
+		$real_name = $cmd_name;
+	    } else {
+		$real_name = $proc->{aliases}{$cmd_name};
+	    }
+	    my $cmd_obj = $proc->{commands}{$real_name};
+	    my $help_text = 
+		$cmd_obj->can("help") ? $cmd_obj->help($args) 
+		: $cmd_obj->{help};
+	    if ($help_text) {
+		$self->msg($help_text) ;
+		if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
+		    my $aliases_str = join(', ', @{$cmd_obj->{aliases}});
+		    $self->msg("Aliases: $aliases_str");
+		}
+	     }
+        # } elsif ($self->{proc}{macros}{$cmd_name}) {
+	#     $self->msg("${cmd_name} is a macro which expands to:");
+	#     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
+	} else {
+	    my @matches = sort grep(/^${cmd_name}/, 
+				    keys %{$self->{proc}{commands}} );
+	    if (!scalar @matches) {
+		$self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
+	    } else {
+		$self->section("Command names matching /^${cmd_name}/:");
+		$self->msg($self->columnize_commands(sort \@matches));
+            }
+	}
+    } else {
+	list_categories($self);
+    }
+}
+
+sub readlines($$$) {
+    my($self, $filename) = @_;
+    unless (open(FH, $filename)) {
+	$self->errmsg("Can't open $filename: $!");
+	return ();
+    }
+    local $_;
+    my @lines = ();
+    while (<FH>) { chomp $_; push @lines, $_;  }
+    close FH;
+    return @lines;
+}
+  
 #   sub show_macros
 #     section 'All macro names:'
 #     msg columnize_commands(@proc.macros.keys.sort)
@@ -285,7 +285,7 @@ unless (caller) {
     my $sep = '=' x 30 . "\n";
     print join(', ', $help_cmd->complete('br')), "\n";
     print join(', ', $help_cmd->complete('un')), "\n";
-    $help_cmd->list_categories;
+    list_categories($help_cmd);
     print $sep;
     $help_cmd->run([$NAME, 'help']);
     print $sep;

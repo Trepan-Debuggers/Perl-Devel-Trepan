@@ -48,7 +48,7 @@ my $builder = Module::Build->new(
         'Test::More'                        => 0,
         'version'                           => 0,
     },
-    sign                => 1,
+    sign                => ($ENV{PERL_MB_NOSIGN} ? 0 : 1),
     );
 
 #distclean : unlink lib/perliso9660.pm, lib/perlmmc.pm lib/perlcdio.pm

@@ -72,7 +72,6 @@ sub new($;$$$) {
     $self->{cmd_queue}      = [];
     $self->{DB_running}     = $DB::running;
     $self->{DB_single}      = $DB::single;
-    $self->{debug_nest}     = 1;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
@@ -112,7 +111,7 @@ sub compute_prompt($)
     # 	$thread_str = "@#{Thread.current.object_id}";
     # }
     sprintf("%s$self->{settings}{prompt}%s%s: ",
-	    '(' x $self->{debug_nest}, $thread_str, ')' x $self->{debug_nest});
+	    '(' x $DB::level, $thread_str, ')' x $DB::level);
 }
 
 sub DESTROY($)
@@ -216,6 +215,7 @@ sub process_commands($$$;$)
 {
     my ($self, $frame, $event, $arg) = @_;
     state $last_i = 0;
+    $event = 'unknown' unless defined($event);
     if ($event eq 'after_eval') {
 	my $val_str;
 	my $prefix="\$DB::D[$last_i] =";
@@ -310,8 +310,7 @@ sub process_commands($$$;$)
 	    }
 	}
 	
-	$self->{prompt} = $self->compute_prompt;
-	
+	$self->{prompt} = compute_prompt($self);
 	$self->print_location unless $self->{settings}{traceprint};
 	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
 	
@@ -443,7 +442,7 @@ unless (caller) {
     for my $fn (qw(errmsg msg section)) { 
 	$proc->$fn('testing');
     }
-    my $prompt = $proc->{prompt} = $proc->compute_prompt;
+    my $prompt = $proc->{prompt} = compute_prompt($proc);
     sub foo() {
 	my @call_values = caller(0);
 	return @call_values;

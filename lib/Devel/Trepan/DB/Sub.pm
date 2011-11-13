@@ -18,7 +18,7 @@ BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
     $DB::ret = '';    # return value of last sub executed in scalar context
     $DB::return_type = 'undef';
-    $deep = 100;      # Max stack depth before we complain.
+    $deep = 70;      # Max stack depth before we complain.
 
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as

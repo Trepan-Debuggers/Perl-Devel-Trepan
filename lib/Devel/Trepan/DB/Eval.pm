@@ -7,6 +7,12 @@ use feature 'switch';
 use vars qw($eval_result @eval_result %eval_result
             $eval_str $eval_opts $event $return_type );
 
+# This is the flag that says "a debugger is running, please call
+# DB::DB and DB::sub". We will turn it on forcibly before we try to
+# execute anything in the user's context, because we always want to
+# get control back.
+use constant db_stop => 1 << 30;
+
 BEGIN {
     # When we want to evaluate a string in the context of the running
     # program we use these:
@@ -24,13 +30,34 @@ BEGIN {
 #    
 sub eval {
     my ($user_context, $eval_str, @saved) = @_;
+    no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-    no strict; no warnings;
-    eval "$user_context $eval_str; &DB::save\n"; # '\n' for nice recursive debug
-    _warnall($@) if $@;
+
+    # 'my' would make it visible from user code
+    #    but so does local! --tchrist
+    # Remember: this localizes @DB::res, not @main::res.
+    local @res;
+    {
+	# Try to keep the user code from messing  with us. Save these so that
+	# even if the eval'ed code changes them, we can put them back again.
+	# Needed because the user could refer directly to the debugger's
+	# package globals (and any 'my' variables in this containing scope)
+	# inside the eval(), and we want to try to stay safe.
+	local $otrace  = $DB::trace;
+	local $osingle = $DB::single;
+	local $od      = $DEBUGGING;
+
+	@res = eval "$user_context $eval_str;\n&DB::save\n"; # '\n' for nice recursive debug
+	_warnall($@) if $@;
+
+        # Restore those old values.
+        $DB::trace  = $otrace;
+        $DB::single = $osingle;
+        $DEBUGGING  = $od;
+    }
 }
 
 
@@ -63,7 +90,6 @@ sub eval_with_return {
     }
 
     my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-    eval "$user_context &DB::save\n"; # '\n' for nice recursive debug
     if ($EVAL_ERROR_SAVE) {
 	_warnall($EVAL_ERROR_SAVE);
 	$eval_str = '';

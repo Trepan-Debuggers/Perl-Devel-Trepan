@@ -11,7 +11,7 @@ use feature 'switch';
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
-use vars qw($usrctxt $running $caller 
+use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
             $stop
             $init_dollar0 $OS_STARTUP_DIR);
@@ -57,6 +57,13 @@ BEGIN {
     $DB::package = '';    # current package space
     $DB::filename = '';   # current filename
     $DB::subname = '';    # currently executing sub (fully qualified name)
+
+    # This variable records how many levels we're nested in debugging. Used
+    # Used in the debugger prompt, and in determining whether it's all over or
+    # not.
+    $DB::level = 0;       # Level of nested debugging
+
+
     $DB::lineno = '';     # current line number
     $DB::subroutine = '';
     $DB::hasargs = '';
@@ -101,6 +108,11 @@ BEGIN {
     # Don't print return values on exiting a subroutine.
     $doret = -2;
 
+    # "Triggers bug (?) in perl if we postpone this until runtime."
+    # XXX No details on this yet, or whether we should fix the bug instead
+    # of work around it. Stay tuned.
+    @postponed = @stack = (0);
+
     # No extry/exit tracing.
     $frame = 0;
 }
@@ -120,6 +132,7 @@ sub DB {
 
     return unless $ready && !$in_debugger;
     local $in_debugger = 1;
+    ## print "+++ in DB\n";
     @DB::_ = @_;
     &save;
 
@@ -150,6 +163,9 @@ sub DB {
     }
     $DB::event = undef;
     $DB::brkpt = undef;
+
+    # Increment debugger nesting level.
+    local $DB::level = $DB::level + 1;
 
     # Test watch expressions;
     my $watch_triggered = undef;
@@ -199,7 +215,7 @@ sub DB {
 		$DB::brkpt = $brkpt;
 		$event = $brkpt->type;
 		if ($event eq 'tbrkpt') {
-		    # Note breakpoint is temporary and remove it.
+		    # breakpoint is temporary and remove it.
 		    undef $brkpts->[$i];
 		} else {
 		    my $hits = $brkpt->hits + 1;
@@ -217,7 +233,7 @@ sub DB {
 	$event ||= 'return';
     } elsif ($DB::trace ) {
 	$event ||= 'trace';
-    } elsif ($DB::trace  || $DB::single) {
+    } elsif ($DB::single) {
 	$event ||= 'line';
     } else {
 	$event = 'unknown';

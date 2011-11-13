@@ -9,7 +9,14 @@ use warnings; no warnings 'redefine';
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
 
-use vars qw(@ISA); @ISA = @CMD_ISA; 
+use vars qw(@ISA);
+unless (defined(@ISA)) {
+    eval "use constant ALIASES => ('?')";
+    eval "use constant CATEGORY   => 'support'";
+    eval "use constant SHORT_HELP => 'Print commands or give help for command(s)'";
+}
+
+@ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
@@ -33,8 +40,6 @@ subcommand. For example 'help info line' gives help about the
 info line command.
 HELP
 
-use constant ALIASES => ('?');
-
 BEGIN {
     eval "use constant CATEGORIES => {
     'breakpoints' => 'Making the program stop at certain points',
@@ -48,8 +53,6 @@ BEGIN {
     };" unless declared('CATEGORIES');
 };
 
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Print commands or give help for command(s)';
 local $NEED_STACK    = 0;
 
 use File::Basename;
@@ -77,7 +80,7 @@ sub complete_token_with_next($$;$)
     my ($self, $prefix, $cmd_prefix) = @_;
     my $proc = $self->{proc};
     my @result = ();
-    my @matches = $self->complete($prefix);
+    my @matches = complete($self, $prefix);
     foreach my $cmd (@matches) {
 	my %commands = %{$proc->{commands}};
 	if (exists $commands{$cmd}) {

@@ -66,7 +66,7 @@ use constant DEFAULT_OPTIONS => {
 #     Devel::Trepan::Complete::complete_token($opts, $prefix) ;
 # }
     
-sub parse_options($$$)
+sub parse_options($$)
 {
     my ($self, $args) = @_;
     my $seen_yes_no = 0;
@@ -85,7 +85,7 @@ sub run($$)
     my ($self, $args) = @_;
     my @args = @$args;
     @args = splice @args, 1, scalar(@args) - 2;
-    my $options = $self->parse_options(\@args);
+    my $options = parse_options($self, \@args);
     my $intf = $self->{proc}{interfaces};
     my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new : 
 	$intf->[-1]{output};

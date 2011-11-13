@@ -10,7 +10,7 @@
 # Some ideas originiated as part of Matt Fleming's 2006 Google Summer of
 # Code project.
 
-use strict; use warnings;
+use strict; use warnings; no warnings 'redefine';
 use Exporter;
 use rlib '../..';
 

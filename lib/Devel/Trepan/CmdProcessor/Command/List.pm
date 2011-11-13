@@ -206,8 +206,8 @@ sub run($$)
     my $center_correction = 
 	(substr($args->[0], -1, 1) eq '>') ? 0 : int(($listsize-1) / 2);
 
-    my ($filename, $start, $end) = $self->parse_list_cmd($args, $listsize, 
-							 $center_correction);
+    my ($filename, $start, $end) = parse_list_cmd($self, $args, $listsize, 
+						  $center_correction);
     #   container, start, end = 
     #     parse_list_cmd(args[1..-1], listsize, center_correction)
     #   frame = @proc.frame

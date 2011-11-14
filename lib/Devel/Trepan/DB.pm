@@ -301,7 +301,13 @@ sub DB {
 				&DB::eval_with_return($usrctxt, $eval_str, @saved);
 			}
 		    }
-		    $after_eval = $nest ? 2 : 1;
+
+		    if ($nest) {
+			$DB::in_debugger = 1;
+			$after_eval = 2;
+		    } else {
+			$after_eval = 1;
+		    }
 		    $running = 0;
 		}
 	    } until $running;

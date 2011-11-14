@@ -64,61 +64,72 @@ sub eval {
 # evaluate global $eval_str in the context of $user_context (a package name).
 # @saved contains an ordered list of saved global variables.
 # global $eval_opts->{return_type} indicates the return context.
+## FIXME: pass $return_type rather than use global $eval_opts;
 sub eval_with_return {
-    ## FIXME: $eval_opts should be a parameter rather than a global.
     my ($user_context, $eval_str, @saved) = @_;
     no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-    use strict;
 
-    # We need to make copies of eval_opts because evaluation
+    # FIXME: We need to make copies of eval_opts because evaluation
     # can be nested. Can remove this when eval_opts is not global.
     my $return_type = $eval_opts->{return_type};
-    my $nest = $eval_opts->{nest};
 
-    given ($return_type) {
-	when ('$') {
-	    eval "$user_context \$DB::eval_result=$eval_str";
-	    $eval_result = eval "$user_context $eval_str";
-	}
-	when ('@') {
-	    eval "$user_context \@DB::eval_result=$eval_str\n";
-	}
-	when ('%') {
-	    eval "$user_context \%DB::eval_result=$eval_str\n";
-	} 
-	default {
-	    $eval_result = eval "$user_context $eval_str\n";
-	}
-    }
-    if ($nest) {
-	$DB::in_debugger = 1;
-    }
+    {
+	# Try to keep the user code from messing with us. Save these so that
+	# even if the eval'ed code changes them, we can put them back again.
+	# Needed because the user could refer directly to the debugger's
+	# package globals (and any 'my' variables in this containing scope)
+	# inside the eval(), and we want to try to stay safe.
+	local $otrace  = $DB::trace;
+	local $osingle = $DB::single;
+	local $od      = $DEBUGGING;
 
-    my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-    if ($EVAL_ERROR_SAVE) {
-	_warnall($EVAL_ERROR_SAVE);
-	$eval_str = '';
-	return undef;
-    } else {
-	given ($eval_opts->{return_type}) {
+	given ($return_type) {
 	    when ('$') {
-		return $eval_result;
+		eval "$user_context \$DB::eval_result=$eval_str";
+		$eval_result = eval "$user_context $eval_str";
 	    }
-	    when ('$') {
-		return @eval_result;
+	    when ('@') {
+		eval "$user_context \@DB::eval_result=$eval_str\n";
 	    }
 	    when ('%') {
-		return %eval_result;
+		eval "$user_context \%DB::eval_result=$eval_str\n";
 	    } 
 	    default {
-		return $eval_result;
+		$eval_result = eval "$user_context $eval_str\n";
 	    }
 	}
+	
+	my $EVAL_ERROR_SAVE = $EVAL_ERROR;
+	if ($EVAL_ERROR_SAVE) {
+	    _warnall($EVAL_ERROR_SAVE);
+	    $eval_str = '';
+	    return undef;
+	} else {
+	    given ($return_type) {
+		when ('$') {
+		    return $eval_result;
+		}
+		when ('$') {
+		    return @eval_result;
+		}
+		when ('%') {
+		    return %eval_result;
+		} 
+		default {
+		    return $eval_result;
+		}
+	    }
+	}
+
+        # Restore those old values.
+        $DB::trace  = $otrace;
+        $DB::single = $osingle;
+        $DEBUGGING  = $od;
+
     }
 }
-
 1;

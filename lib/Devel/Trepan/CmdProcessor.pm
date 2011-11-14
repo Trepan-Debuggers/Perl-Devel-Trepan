@@ -216,7 +216,7 @@ sub process_commands($$$;$)
     my ($self, $frame, $event, $arg) = @_;
     state $last_i = 0;
     $event = 'unknown' unless defined($event);
-    if ($event eq 'after_eval') {
+    if ($event eq 'after_eval' or $event eq 'after_nest') {
 	my $val_str;
 	my $prefix="\$DB::D[$last_i] =";
 
@@ -275,9 +275,17 @@ sub process_commands($$$;$)
 	    $self->{set_wp} = undef;
 	}
 	
-	$DB::eval_opts->{return_type} = '';
+	$DB::eval_opts = {
+	    return_type => '',
+	};
 	$DB::eval_result = undef;
 	@DB::eval_result = undef;
+	if ($event eq 'after_nest') {
+	    $self->msg("Leaving nested debug level $DB::level");
+	    $self->{prompt} = compute_prompt($self);
+	    $self->frame_setup($frame);
+	    $self->print_location;
+	}
     } else {
 	$self->frame_setup($frame);
 	$self->{event} = $event;
@@ -414,10 +422,7 @@ sub run_command($$)
     # Eval anything that's not a command or has been
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
-	no warnings 'once';
-	$DB::eval_str = $self->{dbgr}->evalcode($current_command);
-	$self->{DB_running} = 2;
-	$self->{leave_cmd_loop} = 1;
+	$self->evaluate($current_command, {nest => 0});
 	return;
     }
     $self->undefined_command($cmd_name);
@@ -442,14 +447,18 @@ unless (caller) {
     for my $fn (qw(errmsg msg section)) { 
 	$proc->$fn('testing');
     }
+    $DB::level = 1;
     my $prompt = $proc->{prompt} = compute_prompt($proc);
     sub foo() {
 	my @call_values = caller(0);
 	return @call_values;
     }
     print "prompt setting: $prompt\n";
+    $DB::level = 2;
+    $prompt = $proc->{prompt} = compute_prompt($proc);
+    print "prompt setting 2: $prompt\n";
     my @call_values = foo();
-    $proc->frame_setup(\@call_values, 0);
+    ## $proc->frame_setup(\@call_values, 0);
     my $sep = '=' x 40 . "\n";
     $proc->undefined_command("foo");
     print $sep;

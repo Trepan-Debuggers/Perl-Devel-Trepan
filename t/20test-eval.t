@@ -25,7 +25,7 @@ my $opts = {
 	$got_lines = join("\n", @result);
 	return ($got_lines, $correct_lines);
     },
-    run_opts => " --no-highlight --basename -nx --command $full_cmdfile"
+    run_opts => " --no-highlight --basename -nx"
 };
 
 Helper::run_debugger("$test_prog", 'eval2.cmd', undef, $opts);

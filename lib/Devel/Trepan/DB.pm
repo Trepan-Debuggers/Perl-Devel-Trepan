@@ -178,7 +178,7 @@ sub DB {
 	    $eval_opts->{return_type} = '$';
 	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, @saved);
 	    my $old_val = $wp->old_value;
-	    next if !defined($old_value) && !defined($new_val);
+	    next if !defined($old_value) and !defined($new_val);
 	    my $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
@@ -268,13 +268,23 @@ sub DB {
 		    $c->output($mess);
 		}
 
+		given ($after_eval) {
+		    when (1) {$event = 'after_eval'; }
+		    when (2) {$event = 'after_nest'; }
+		    default { ; }
+		}
+
 		# call client event loop; must not block
-		$event = 'after_eval' if $after_eval;
 		$c->idle($event, $watch_triggered);
 		$after_eval = 0;
 		if ($running == 2 && defined($eval_str)) { 
 		    # client wants something eval-ed
 		    # FIXME: turn into subroutine.
+
+		    # FIXME: need to save since $eval_opts is global and could
+		    # be clobbered on a recursive call.
+		    local $nest = $eval_opts->{nest};
+
 		    given ($eval_opts->{return_type}) {
 			when ('$') {
 			    $eval_result = 
@@ -291,7 +301,7 @@ sub DB {
 				&DB::eval_with_return($usrctxt, $eval_str, @saved);
 			}
 		    }
-		    $after_eval = 1;
+		    $after_eval = $nest ? 2 : 1;
 		    $running = 0;
 		}
 	    } until $running;

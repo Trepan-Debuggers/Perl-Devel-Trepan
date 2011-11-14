@@ -73,7 +73,13 @@ sub eval_with_return {
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
     use strict;
-    given ($eval_opts->{return_type}) {
+
+    # We need to make copies of eval_opts because evaluation
+    # can be nested. Can remove this when eval_opts is not global.
+    my $return_type = $eval_opts->{return_type};
+    my $nest = $eval_opts->{nest};
+
+    given ($return_type) {
 	when ('$') {
 	    eval "$user_context \$DB::eval_result=$eval_str";
 	    $eval_result = eval "$user_context $eval_str";
@@ -87,6 +93,9 @@ sub eval_with_return {
 	default {
 	    $eval_result = eval "$user_context $eval_str\n";
 	}
+    }
+    if ($nest) {
+	$DB::in_debugger = 1;
     }
 
     my $EVAL_ERROR_SAVE = $EVAL_ERROR;

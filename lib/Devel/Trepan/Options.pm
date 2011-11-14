@@ -82,7 +82,8 @@ sub process_options($)
     my $batch_filename = $opts->{testing} // $opts->{batchfile};
     if ($batch_filename) {
 	if (scalar(@{$opts->{cmdfiles}}) != 0) {
-	    print STDERR "--batch option disables any command files";
+	    printf(STDERR "--batch option disables command files: %s\n", 
+		   join(', ', @{$opts->{cmdfiles}}));
 	    $opts->{cmdfiles} = [];
 	}
 	$opts->{nx} = 1;

@@ -41,9 +41,14 @@ sub run($$)
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $expr = $proc->{cmd_argstr};
+    # Trim leading and trailing spaces.
     $expr =~ s/^\s+//; $expr =~ s/\s+$//;
     my $cmd_name = $args->[0];
-    my $opts->{return_type} = parse_eval_suffix($cmd_name);
+    my $opts = {
+	return_type => parse_eval_suffix($cmd_name),
+	nest => $DB::level
+    };
+    
     no warnings 'once';
 
     # Have to us $^D rather than $DEBUGER below since we are in the
@@ -51,7 +56,6 @@ sub run($$)
     my $full_expr = 
 	"\$^D |= DB::db_stop;\n\$DB::single = 1;\n\$DB::in_debugger=0;\n" . 
 	$expr;
-    printf "debug nest is $proc, %d\n", $DB::level;
     $proc->evaluate($full_expr, $opts);
 }
 

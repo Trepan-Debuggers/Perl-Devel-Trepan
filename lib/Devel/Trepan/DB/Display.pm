@@ -11,7 +11,8 @@ struct DBDisplay => {
     number      => '$', # breakpoint/action number 
     enabled     => '$', # True if breakpoint or action is enabled
     arg         => '$', # What to display
-    fmt         => '$'  # Format to use in display
+    fmt         => '$', # Format to use in display
+    return_type => '$'  # Kind of value expected in return
 };
 
 package DBDisplay;
@@ -97,13 +98,18 @@ sub delete_by_display($$)
     return undef;
 }
 
-sub add($$)
+sub add($$;$)
 {
-    my ($self, $display) = @_;
+    my ($self, $display,$return_type) = @_;
     $self->{max}++;
+    $return_type //= '$';
     my $number = $self->{max};
     my $disp = DBDisplay->new(
-	number=>$number, enabled => 1, arg => $display, fmt => '$');
+	number      => $number, 
+	enabled     => 1, 
+	arg         => $display, 
+	fmt         => '$',
+	return_type => $return_type);
     push @{$self->{list}}, $disp;
     return $disp;
 }

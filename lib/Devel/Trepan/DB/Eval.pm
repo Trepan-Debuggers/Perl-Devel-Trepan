@@ -66,16 +66,12 @@ sub eval {
 # global $eval_opts->{return_type} indicates the return context.
 ## FIXME: pass $return_type rather than use global $eval_opts;
 sub eval_with_return {
-    my ($user_context, $eval_str, @saved) = @_;
+    my ($user_context, $eval_str, $return_type, @saved) = @_;
     no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
-
-    # FIXME: We need to make copies of eval_opts because evaluation
-    # can be nested. Can remove this when eval_opts is not global.
-    my $return_type = $eval_opts->{return_type};
 
     {
 	# Try to keep the user code from messing with us. Save these so that

@@ -174,9 +174,9 @@ sub DB {
 	my @list= @{$c->{watch}->{list}};
 	for my $wp (@list) {
 	    next unless $wp->enabled;
-	    ## FIXME: eval_opts should be a parameter
-	    $eval_opts->{return_type} = '$';
-	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, @saved);
+	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, 
+						'$',
+						@saved);
 	    my $old_val = $wp->old_value;
 	    next if !defined($old_value) and !defined($new_val);
 	    my $not_same = !defined($old_val) || !defined($new_val);
@@ -263,7 +263,9 @@ sub DB {
 		for my $disp (@$display_aref) {
 		    next unless $disp && $disp->enabled;
 		    # FIXME: allow more than just scalar contexts.
-		    my $eval_result =  &DB::eval_with_return($usrctxt, $disp->arg, @saved);
+		    my $eval_result =  
+			&DB::eval_with_return($usrctxt, $disp->arg, 
+					      $disp->return_type, @saved);
 		    my $mess = sprintf("%d: $eval_result", $disp->number);
 		    $c->output($mess);
 		}
@@ -281,24 +283,27 @@ sub DB {
 		    # client wants something eval-ed
 		    # FIXME: turn into subroutine.
 
-		    # FIXME: need to save since $eval_opts is global and could
-		    # be clobbered on a recursive call.
 		    local $nest = $eval_opts->{nest};
+		    my $return_type = $eval_opts->{return_type};
 
-		    given ($eval_opts->{return_type}) {
+		    given ($return_type) {
 			when ('$') {
 			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, @saved);
+				&DB::eval_with_return($usrctxt, $eval_str, 
+						      $return_type, @saved);
 			}
 			when ('@') {
-			    &DB::eval_with_return($usrctxt, $eval_str, @saved);
+			    &DB::eval_with_return($usrctxt, $eval_str, 
+						  $return_type, @saved);
 			}
 			when ('%') {
-			    &DB::eval_with_return($usrctxt, $eval_str, @saved);
+			    &DB::eval_with_return($usrctxt, $eval_str, 
+						  $return_type, @saved);
 			} 
 			default {
 			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, @saved);
+				&DB::eval_with_return($usrctxt, $eval_str, 
+						      $return_type, @saved);
 			}
 		    }
 

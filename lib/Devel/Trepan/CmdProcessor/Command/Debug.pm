@@ -51,10 +51,10 @@ sub run($$)
     
     no warnings 'once';
 
-    # Have to us $^D rather than $DEBUGER below since we are in the
+    # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.
     my $full_expr = 
-	"\$^D |= DB::db_stop;\n\$DB::single = 1;\n\$DB::in_debugger=0;\n" . 
+	"\$DB::single = 1;\n\$^D |= DB::db_stop;\n\$DB::in_debugger=0;\n" . 
 	$expr;
     $proc->evaluate($full_expr, $opts);
 }

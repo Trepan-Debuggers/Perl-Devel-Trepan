@@ -23,6 +23,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
 lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
+lib/Devel/Trepan/CmdProcessor/Command/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Display.pm
@@ -140,8 +141,11 @@ lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm
+Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.json
+META.yml
 README
 t/10test-cmd-kill.t
 t/10test-complete.t
@@ -160,6 +164,7 @@ t/10test-util.t
 t/10test-validate.t
 t/20test-autolist.t
 t/20test-break.t
+t/20test-debug.t
 t/20test-display.t
 t/20test-eval.t
 t/20test-list1.t
@@ -176,6 +181,8 @@ t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
+t/data/debug.cmd
+t/data/debug.right
 t/data/display.cmd
 t/data/display.right
 t/data/eval.cmd
@@ -205,6 +212,5 @@ t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm
-Makefile.PL
-META.yml
-META.json
+t/Makefile
+

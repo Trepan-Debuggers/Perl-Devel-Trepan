@@ -1,11 +1,12 @@
-/*~
+
 /*Devel-Trepan-*.tar.gz
+/*~
 /Build
 /MANIFEST.SKIP.bak
 /MANIFEST.bak
 /MYMETA.json
 /MYMETA.yml
+/Makefile.PL
 /_build
 /blib
 /tmp
-

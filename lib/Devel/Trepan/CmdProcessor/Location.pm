@@ -39,7 +39,8 @@ sub canonic_file($$;$)
 	return basename($filename);
     } elsif ($resolve) {
     	$filename = DB::LineCache::map_file($filename);
-    	return abs_path($filename) || $filename;
+	my $is_eval = DB::LineCache::filename_is_eval($filename);
+	return $is_eval ? $filename: abs_path($filename) || $filename;
     } else {
 	return $filename;
     }

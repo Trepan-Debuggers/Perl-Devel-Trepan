@@ -293,7 +293,7 @@ sub getlines($;$)
 	}
     } elsif (exists $script_cache{$filename}) {
 	### FIXME: combine with above...
-	print "+++IS IN SCRIPT CACHE\n";
+	###  print "+++IS IN SCRIPT CACHE\n";
 	my $lines_href = $script_cache{$filename}{lines_href};
 	my $lines_aref = $lines_href->{$format};
 	if ($opts->{output} && !defined $lines_aref) {
@@ -523,11 +523,12 @@ sub update_cache($;$)
 
     delete $file_cache{$filename};
 
-    my $path = abs_path($filename) || $filename;
+    my $is_eval = filename_is_eval($filename);
+    my $path = $is_eval ? $filename: abs_path($filename) || $filename;
     my $lines_href;
     if ($use_perl_d_file) {
 	my @list = ($filename);
-	if (filename_is_eval($filename)) {
+	if ($is_eval) {
 	    cache_script($filename);
 	    ## FIXME: create a temporary file in script2file;
 	}

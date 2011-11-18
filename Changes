@@ -1,4 +1,9 @@
 Revision history for Devel-Trepan
+0.1.2  - Nov 17, 2011
+- Add nested debugging via the "debug" command
+- Make code work better on cygwin and with some older modules
+- Some code cleanup
+
 0.1.1  - Nov 11, 2011
 
 - Add watchpoints

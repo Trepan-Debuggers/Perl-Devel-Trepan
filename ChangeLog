@@ -1,3 +1,109 @@
+2011-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Changes to eval file handling
+	which keep cygwin abs_path from not barfing
+
+2011-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	t/Makefile: Add a Makefile for the t directory. Debug.pm: Correct
+	some grammar/spelling typos in comments.
+
+2011-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, t/20test-debug.t, t/data/debug.cmd,
+	t/data/debug.right: Add debug test and ignore Makefile.PL
+
+2011-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Display.pm: Update comments. clean up demo
+	code.
+
+2011-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Display.pm, lib/Devel/Trepan/DB/Eval.pm: Pass
+	return type as a variable reducing the scope of one more global DB
+	variable.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: In 0.1.2dev now
+
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Tidy up eval
+	code a little. A little more would be nice though.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm,
+	lib/Devel/Trepan/Options.pm, t/20test-eval.t, t/20test-trace.t: 
+	Nested debugging state saving working properly. Remove dupliate
+	--command/--testing options on some tests.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm,
+	lib/Devel/Trepan/DB/Sub.pm: Start recursive debug via the "debug"
+	command. Some work is still needed in figuring out when we've
+	finished eval.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/IO.pm: Reduce demo mode warninngs more and more
+	protoype checking.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Finish.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm,
+	lib/Devel/Trepan/Interface.pm,
+	lib/Devel/Trepan/Interface/Script.pm,
+	lib/Devel/Trepan/Interface/User.pm: Make use Perl's protoype
+	checking more. If it means not using OO-style calls, that's ok.
+	Reduce warnings when running demo code.
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: Undo inadvertant change to turn off trace
+
+
+2011-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* GNUmakefile, lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Sub.pm: 
+	Add installdeps target
+
+2011-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: One more change before release 0.1.1 - allow no signing
+	of dist
+
+2011-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan.pm, lib/Devel/Trepan/DB.pm: See above
+
+2011-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, Changes, GNUmakefile, MANIFEST, MANIFEST.SKIP,
+	lib/Devel/Trepan/Options.pm: I said, get ready for release 0.1.1
+
+2011-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog: Get ready for 0.1.1 release
+
 2011-11-12  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm, t/data/break.cmd,

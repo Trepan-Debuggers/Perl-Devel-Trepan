@@ -136,6 +136,8 @@ lib/Devel/Trepan/IO/Input.pm
 lib/Devel/Trepan/IO/NullOutput.pm
 lib/Devel/Trepan/IO/Output.pm
 lib/Devel/Trepan/IO/StringArray.pm
+lib/Devel/Trepan/IO/TCPClient.pm
+lib/Devel/Trepan/IO/TCPPack.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
@@ -154,6 +156,7 @@ t/10test-db-brkpt.t
 t/10test-intf-script.t
 t/10test-intf-user.t
 t/10test-io-stringarray.t
+t/10test-io-tcppack.pm
 t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t

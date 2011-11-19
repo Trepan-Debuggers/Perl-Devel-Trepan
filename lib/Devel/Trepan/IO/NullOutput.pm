@@ -7,8 +7,7 @@
 
 # require_relative 'base_io'
 
-use warnings;
-use strict;
+use warnings; use strict;
 use Exporter;
 
 package Devel::Trepan::IO::NullOutput;

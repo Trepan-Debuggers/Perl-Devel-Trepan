@@ -1,0 +1,165 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Debugger Socket Input/Output Interface.
+
+use warnings; use strict;
+use Exporter;
+
+use rlib '../../..';
+
+# Debugger Client Input/Output Socket.
+package Devel::Trepan::IO::TCPClient;
+use English qw ( -no_match_vars );
+use IO::Socket qw(SOCK_STREAM);
+
+use Devel::Trepan::IO::TCPPack;
+use Devel::Trepan::Util qw(hash_merge);
+our(@ISA, @EXPORT);
+
+use constant CLIENT_SOCKET_OPTS => {
+      host    => 'localhost', # Symbolic name
+      port    => 1027,  # Arbitrary non-privileged port
+      open    => 1,
+};
+
+#   attr_reader :state
+
+sub open($;$);
+
+sub new($;$)
+{
+    my ($class, $opts) = @_;
+    $opts    = hash_merge($opts, CLIENT_SOCKET_OPTS);
+    my $self = {};
+    $self = {
+	addr => undef,
+	buf  => '',
+	line_edit => 0, # Our name for GNU readline capability
+	state     => 'disconnected',
+	inout     => undef
+    };
+    bless $self, $class;
+    $self->open($opts) if $opts->{open};
+    return $self;
+}
+
+# Closes both input and output
+sub close($)
+{
+    my $self = shift;
+    $self->{state} = 'closing';
+    close($self->{inout}) if $self->{inout};
+    $self->{state} = 'disconnected';
+}
+
+sub is_disconnected($)
+{
+    my $self = shift;
+    return $self->{disconnected} eq $self->{state};
+}
+
+sub open($;$)
+{
+    my ($self, $opts) = @_;
+    $opts = hash_merge($opts, CLIENT_SOCKET_OPTS);
+    $self->{host} = $opts->{host};
+    $self->{port} = $opts->{port};
+    $self->{inout} = 
+    	IO::Socket::INET->new(PeerAddr=> $self->{host},
+    			      PeerPort => $self->{port},
+    			      Proto    => 'tcp',
+    			      Type     => SOCK_STREAM
+    	);
+    if ($self->{inout}) {
+    	$self->{state} = 'connected';
+    } else {
+    	my $msg = sprintf("Open client for host %s on port %s gives error: %s", 
+    			  $self->{host}, $self->{port}, $EVAL_ERROR);
+    	die $msg;
+    }
+}
+
+sub is_empty($) 
+{
+    my($self) = @_;
+    0 == length($self->{buf});
+}
+    
+# Read one message unit. It's possible however that
+# more than one message will be set in a receive, so we will
+# have to buffer that for the next read.
+# EOFError will be raised on EOF.
+sub read_msg($)
+{
+    my($self) = @_;
+    if ($self->{state} eq 'connected') {
+	if (!$self->{buf} || is_empty($self)) {
+	    $self->{buf} = $self->{inout}->recv(TCP_MAX_PACKET);
+	    if (is_empty($self)) {
+		$self->{state} = 'disconnected';
+		die "EOF while reading on socket";
+		}
+        }
+	my $data;
+        ($self->{buf}, $data) = unpack_msg($self->{buf});
+        return $data;
+    } else {
+        die sprintf("read_msg called in state: %s.", $self->{state});
+    }
+}
+
+# This method the debugger uses to write a message unit.
+sub write($$)
+{
+    my ($self, $msg) = @_;
+    # FIXME: do we have to check the size of msg and split output? 
+    $self->{inout}->send(pack_msg($msg));
+}
+
+sub writeline($$)
+{
+    my ($self, $msg) = @_;
+    $self->write($msg . "\n");
+}
+
+# Demo
+unless (caller) {
+    # my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 0});
+     my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 1});
+     # $client->writeline("Hi there\n");
+     if (scalar @ARGV) {
+  # 	threads = [];
+  # 	Thread.new {
+  # 	    server = TCPServer.new('localhost', 1027);
+  # 	    session = server.accept;
+  # 	    while 'quit' != (line = session.gets);
+  # 	    session.puts line ;
+  # 	}
+  # 	session.close;
+  #   }
+
+  #   threads << Thread.new {
+  # 	print "Connecting...\n";
+  # 	while (1) {
+  # 	    print "input? ";
+  # 	    $line = STDIN;
+  # 	    chomp $line;
+  # 	    last if $line eq 'quit';
+  # 	    # begin
+  # 	    $line = $client->writeline($line);
+  # 		print "Got: #{client.read_msg.chomp}\n";
+  # 	    # rescue EOFError
+  # 	    print "Got EOF\n";
+  # 	    last;
+  # 	    # rescue Exception => e
+  # 	    print "Got $@\n";
+  # 	    last;
+  #           # }
+  # 	}
+  #   }
+  #   threads.each {|t| t.join }
+    }
+    $client->close;
+}
+
+1;

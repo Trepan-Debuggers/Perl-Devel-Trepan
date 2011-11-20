@@ -486,7 +486,7 @@ sub finish($;$$) {
   my $index = $#stack-$count;
   $index = 0 if $index < 0;
   $stack[$index] |= (SINGLE_STEPPING_EVENT | RETURN_EVENT);
-  $DB::single = 0;
+  $DB::single = 1;
   $running = 1;
 }
 

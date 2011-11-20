@@ -10,25 +10,23 @@
 # Some ideas originiated as part of Matt Fleming's 2006 Google Summer of
 # Code project.
 
-use strict; use warnings; no warnings 'redefine';
+use strict; use warnings;
 use Exporter;
 use rlib '../..';
 
 package Devel::Trepan::IO::InputBase;
+no warnings 'redefine';
 
 use Devel::Trepan::Util qw(hash_merge);
-use vars qw(@EXPORT);
+# our @EXPORT;
 
-@EXPORT = qw(DEFAULT_OPTS);
-
-use constant DEFAULT_OPTS => {
-    line_edit => 0,
-};
+my $DEFAULT_OPTS = {line_edit => 0};
+# @EXPORT = qw(DEFAULT_OPTS);
 
 sub new($$;$) {
     my($class, $input, $opts)  = @_;
     $opts ||= {};
-    hash_merge($opts, DEFAULT_OPTS);
+    hash_merge($opts, $DEFAULT_OPTS);
     my $line_edit = $opts->{line_edit};
     my $self = {
 	input     => $input,

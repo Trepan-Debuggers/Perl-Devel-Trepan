@@ -14,7 +14,7 @@ xx (gcd.pl:14)
     #3 file `gcd.pl' at line 21
 <- (gcd.pl:15)
     return gcd($b-$a, $a);
-Return array value:
+Return array value for main::gcd is:
 $VAR1 = 1;
 
 Return array value set to:

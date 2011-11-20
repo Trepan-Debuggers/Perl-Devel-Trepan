@@ -75,7 +75,7 @@ sub load_debugger_command($$)
 	my $name = basename($command_file, '.pm');
 	$self->setup_command($name);
     } else {
-	$self->errmsg("Trouble reading $command_file");
+	$self->errmsg("Trouble reading $command_file $@");
     }
 }
 

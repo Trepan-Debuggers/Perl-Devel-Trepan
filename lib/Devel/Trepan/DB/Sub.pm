@@ -63,7 +63,7 @@ sub sub {
     # Save current single-step setting.
     $stack[-1] = $single;
 
-    # printf "\$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
+    ## printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
     # Turn off all flags except single-stepping or return event.
     $DB::single &= SINGLE_STEPPING_EVENT;
 
@@ -88,7 +88,7 @@ sub sub {
 	if ($single & RETURN_EVENT) {
 	    $DB::return_type = 'array';
 	    @DB::return_value = @ret;
-	    DB::DB() ;
+	    DB::DB($DB::sub) ;
 	    return @DB::return_value;
 	}
 	@ret;
@@ -109,7 +109,7 @@ sub sub {
 	if ($single & RETURN_EVENT) {
 	    $DB::return_type = defined $ret ? 'scalar' : 'undef';
 	    $DB::return_value = $ret;
-	    DB::DB() ;
+	    DB::DB($DB::sub) ;
 	    return $DB::return_value;
 	}
 

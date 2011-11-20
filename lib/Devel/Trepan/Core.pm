@@ -20,7 +20,7 @@ sub add_startup_files($$) {
     }
 }
 
-sub new() {
+sub new {
     my $class = shift;
     my $self = {
 	watch => Devel::Trepan::WatchMgr->new(), # List of watch expressions

@@ -5,10 +5,10 @@
 use warnings; no warnings 'redefine';
 use Exporter;
 
+use rlib '../../..';
+
 package Devel::Trepan::Interface::User;
 use vars qw(@EXPORT @ISA $HAVE_READLINE);
-
-use rlib '../../..';
 
 use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge);
 use if !defined(@ISA), Devel::Trepan::IO::Input;
@@ -32,17 +32,19 @@ use constant DEFAULT_USER_OPTS => {
     history_save   => 1                  # do we save the history?
   };
 
-sub new($;$$$) {
+sub new 
+{
     my($class, $inp, $out, $opts)  = @_;
     $opts = hash_merge($opts, DEFAULT_USER_OPTS);
     my $self = Devel::Trepan::Interface->new($inp, $out, $opts);
     $self->{opts} = $opts;
     bless $self, $class;
-    # @input = if inp.class.ancestors.member?(Trepan::InputBase)
-    #            inp
-    #          else
-    #            Trepan::UserInput.open(inp, {:readline => opts[:readline]})
-    #          end
+    if ($inp && $inp->isa('Devel::Trepan::IO:InputBase')) {
+	$self->{input} = $inp;
+    } else {
+	$self->{input} = Devel::Trepan::IO::Input->new($inp, 
+						       {readline => $opts->{readline}})
+    }
     if ($self->{input}{gnu_readline}) {
 	if ($self->{opts}{complete}) {
 	    my $attribs = $inp->{readline}->Attribs;

@@ -15,6 +15,7 @@ gpl-3.0.txt
 ignore.txt
 lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm
+lib/Devel/Trepan/Client.pm
 lib/Devel/Trepan/CmdProcessor.pm
 lib/Devel/Trepan/CmdProcessor/Command.pm
 lib/Devel/Trepan/CmdProcessor/Command/Action.pm
@@ -128,7 +129,10 @@ lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
 lib/Devel/Trepan/DB/Sub.pm
 lib/Devel/Trepan/Interface.pm
+lib/Devel/Trepan/Interface/Client.pm
+lib/Devel/Trepan/Interface/ComCodes.pm
 lib/Devel/Trepan/Interface/Script.pm
+lib/Devel/Trepan/Interface/Server.pm
 lib/Devel/Trepan/Interface/User.pm
 lib/Devel/Trepan/IO.pm
 lib/Devel/Trepan/IO/InOutBase.pm
@@ -138,6 +142,7 @@ lib/Devel/Trepan/IO/Output.pm
 lib/Devel/Trepan/IO/StringArray.pm
 lib/Devel/Trepan/IO/TCPClient.pm
 lib/Devel/Trepan/IO/TCPPack.pm
+lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
@@ -157,6 +162,7 @@ t/10test-intf-script.t
 t/10test-intf-user.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.pm
+t/10test-io-tcppack.t
 t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t
@@ -216,4 +222,3 @@ t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm
 t/Makefile
-

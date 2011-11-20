@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine';
-
+use warnings; no warnings 'redefine'; 
 use rlib '../../..';
 
+# Interface for debugging a program but having user control
+# reside outside of the debugged process, possibly on another
+# computer
 package Devel::Trepan::Interface::Server;
+our (@ISA);
 
 # Our local modules
 use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
@@ -13,19 +16,15 @@ use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
 use if !defined(@ISA), Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 use if !defined(@ISA), Devel::Trepan::IO::TCPServer;
-
-@ISA = qw(Devel::Trepan::Interface Exporter);
 use strict; 
 
-# Interface for debugging a program but having user control
-# reside outside of the debugged process, possibly on another
-# computer
+@ISA = qw(Devel::Trepan::Interface Exporter);
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
     io => 'TCP'
 };
 
-sub new($;$$$)
+sub new
 {
     my($class, $inout, $out, $connection_opts) = @_;
     $connection_opts = hash_merge($connection_opts, DEFAULT_INIT_CONNECTION_OPTS);

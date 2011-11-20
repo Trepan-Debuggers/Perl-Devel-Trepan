@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # Debugger Socket Input/Output Interface.
 
 use warnings; use strict;
-use Exporter;
 
 use rlib '../../..';
 
@@ -14,7 +13,7 @@ use IO::Socket qw(SOCK_STREAM);
 
 use Devel::Trepan::IO::TCPPack;
 use Devel::Trepan::Util qw(hash_merge);
-our(@ISA, @EXPORT);
+our(@ISA);
 
 use constant CLIENT_SOCKET_OPTS => {
       host    => 'localhost', # Symbolic name
@@ -30,8 +29,7 @@ sub new($;$)
 {
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, CLIENT_SOCKET_OPTS);
-    my $self = {};
-    $self = {
+    my $self = {
 	addr => undef,
 	buf  => '',
 	line_edit => 0, # Our name for GNU readline capability
@@ -55,7 +53,7 @@ sub close($)
 sub is_disconnected($)
 {
     my $self = shift;
-    return $self->{disconnected} eq $self->{state};
+    return 'disconnected' eq $self->{state};
 }
 
 sub open($;$)
@@ -124,42 +122,39 @@ sub writeline($$)
 
 # Demo
 unless (caller) {
-    # my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 0});
-     my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 1});
-     # $client->writeline("Hi there\n");
      if (scalar @ARGV) {
-  # 	threads = [];
-  # 	Thread.new {
-  # 	    server = TCPServer.new('localhost', 1027);
-  # 	    session = server.accept;
-  # 	    while 'quit' != (line = session.gets);
-  # 	    session.puts line ;
-  # 	}
-  # 	session.close;
-  #   }
-
-  #   threads << Thread.new {
-  # 	print "Connecting...\n";
-  # 	while (1) {
-  # 	    print "input? ";
-  # 	    $line = STDIN;
-  # 	    chomp $line;
-  # 	    last if $line eq 'quit';
-  # 	    # begin
-  # 	    $line = $client->writeline($line);
-  # 		print "Got: #{client.read_msg.chomp}\n";
-  # 	    # rescue EOFError
-  # 	    print "Got EOF\n";
-  # 	    last;
-  # 	    # rescue Exception => e
-  # 	    print "Got $@\n";
-  # 	    last;
-  #           # }
-  # 	}
-  #   }
-  #   threads.each {|t| t.join }
-    }
-    $client->close;
+	 # my $pid = fork();
+	 #if ($pid) {
+	     print "Connecting...\n";
+	     my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 1});
+	     $client->writeline("Hi there\n");
+	     # for (;;) {
+	     # 	 undef $!;
+	     # 	 my $line;
+	     # 	 unless (defined( $line = <> )) {
+	     # 	     if (eof) {
+	     # 		 print "Got EOF\n";
+	     # 		 last;
+	     # 	     }
+	     # 	     if ($!) {
+	     # 		 print STDERR $!;
+	     # 		 last;
+	     # 	     }
+	     # 	     chomp $line;
+	     # 	     last if $line eq 'quit';
+	     # 	     $line = $client->writeline($line);
+	     # 	     # print "Got: #{client.read_msg.chomp}\n";
+	     # 	 }
+	     # }
+	     $client->close;
+	 #} else {
+	     # server = TCPServer.new('localhost', 1027);
+	     # session = server.accept;
+	     # while 'quit' != (line = session.gets);
+	     # session.puts line ;
+	 #   exec "nc -l 1027";
+	 # }
+     }
 }
 
 1;

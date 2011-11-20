@@ -12,7 +12,7 @@ xx (gcd.pl:14)
     #1 @ = main::gcd(2, 3) in file `gcd.pl' at line 15
     #2 @ = main::gcd(3, 5) in file `gcd.pl' at line 15
     #3 file `gcd.pl' at line 21
-<- (gcd.pl:15)
+<- (gcd.pl:15) main::gcd
     return gcd($b-$a, $a);
 Return array value for main::gcd is:
 $VAR1 = 1;

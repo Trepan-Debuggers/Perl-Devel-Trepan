@@ -146,7 +146,8 @@ sub format_location($;$$$)
     $self->{line_no}  = $self->{frame}{line};
     
     my $loc = $self->source_location_info;
-    "${ev} (${loc})"
+    my $suffix = $event eq 'return' ? " $DB::_[0]" : '';
+    "${ev} (${loc})$suffix"
 }
 
 sub print_location($;$)

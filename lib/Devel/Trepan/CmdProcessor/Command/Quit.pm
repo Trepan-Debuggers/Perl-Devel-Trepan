@@ -67,7 +67,7 @@ sub run($$)
 	    return;
 	}
     }
-    $self->{DB_single} = $DB::single = 0;
+    $DB::single = 0;
     $self->{proc}->{interfaces} = [];
     # No graceful way to stop threads...
     exit $exitrc;

@@ -70,8 +70,6 @@ sub new($;$$$) {
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
-    $self->{DB_running}     = $DB::running;
-    $self->{DB_single}      = $DB::single;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());

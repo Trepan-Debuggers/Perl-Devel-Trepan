@@ -2,6 +2,7 @@
 c pack_msg
 fin
 info return
+finish
 quit!
 
 

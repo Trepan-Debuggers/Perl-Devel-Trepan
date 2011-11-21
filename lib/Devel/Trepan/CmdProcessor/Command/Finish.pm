@@ -46,6 +46,11 @@ local $MAX_ARGS     = 1;  # Need at most this many
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
+
+    if ($self->{proc}{event} eq 'return') {
+	$proc->errmsg("Can't run ${NAME} while inside a return. Step and try again.");
+	return;
+    }
     
     my ($opts, $level_count) = ({}, 1);
     if (scalar @$args != 1) {

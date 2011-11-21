@@ -465,7 +465,7 @@ sub cont {
 	$stack[$i++] &= ~1;
     }
     $DB::single = 0;
-    return $running = 1;
+    return $DB::running = 1;
 }
 
 # stop before finishing the current subroutine
@@ -590,12 +590,12 @@ sub skippkg {
 }
 
 sub evalcode {
-  my ($client, $expr) = @_;
-  if (defined $expr) {
-    $running = 2;    # hand over to DB() to evaluate in its context
-    $ineval->{$client} = $expr;
-  }
-  return $ineval->{$client};
+    my ($client, $expr) = @_;
+    if (defined $expr) {
+	$DB::running = 2;    # hand over to DB() to evaluate in its context
+	$ineval->{$client} = $expr;
+    }
+    return $ineval->{$client};
 }
 
 sub ready {

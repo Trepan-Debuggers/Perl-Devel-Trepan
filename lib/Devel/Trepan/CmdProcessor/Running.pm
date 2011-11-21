@@ -42,8 +42,6 @@ sub continue($$) {
     } else {
 	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
     };
-    $self->{DB_running} = 1;
-    $self->{DB_single} = 0;
 }
 
 # sub quit(cmd='quit')
@@ -88,7 +86,6 @@ sub evaluate($$$) {
     $DB::eval_str = $self->{dbgr}->evalcode($expr);
     $DB::eval_opts = $opts;
     $DB::result_opts = $opts;
-    $self->{DB_running} = 2;
     $self->{leave_cmd_loop} = 1;
 }
 

@@ -153,6 +153,7 @@ MANIFEST.SKIP
 META.json
 META.yml
 README
+README.md
 t/10test-cmd-kill.t
 t/10test-complete.t
 t/10test-condition.t

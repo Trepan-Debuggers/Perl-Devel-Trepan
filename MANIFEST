@@ -160,7 +160,6 @@ t/10test-db-brkpt.t
 t/10test-intf-script.t
 t/10test-intf-user.t
 t/10test-io-stringarray.t
-t/10test-io-tcppack.pm
 t/10test-io-tcppack.t
 t/10test-linecache.t
 t/10test-load.t

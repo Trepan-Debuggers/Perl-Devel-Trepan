@@ -47,9 +47,9 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     
-    my ($opts, $level_count) = ({}, 0);
+    my ($opts, $level_count) = ({}, 1);
     if (scalar @$args != 1) {
-	# Form is not "finish" which means "finish 0"
+	# Form is not "finish" which means "finish 1"
 	my $count_str = $args->[1];
 	$opts = {
 	    msg_on_error => 

@@ -7,6 +7,7 @@ no warnings 'once';
 use English qw( -no_match_vars );
 
 use constant SINGLE_STEPPING_EVENT =>  1;
+use constant NEXT_STEPPING_EVENT   =>  2;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
 

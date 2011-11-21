@@ -342,8 +342,6 @@ sub process_commands($$$;$)
 	# }
     }
     $self->{cmdloop_posthooks}->run;
-    $DB::single = $self->{DB_single};
-    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the

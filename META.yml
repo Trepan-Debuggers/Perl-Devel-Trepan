@@ -1,0 +1,368 @@
+---
+abstract: "Modular Perl Debugger (akin to Ruby \"Trepanning\" Debuggers)."
+author:
+  - 'Rocky Bernstein <rocky@cpan.org>'
+build_requires:
+  String::Diff: 0
+configure_requires:
+  Module::Build: 0.38
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.112621'
+license: open_source
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Devel-Trepan
+provides:
+  DB::LineCache:
+    file: lib/Devel/Trepan/DB/LineCache.pm
+    version: 0
+  DBBreak:
+    file: lib/Devel/Trepan/DB/Breakpoint.pm
+    version: 0
+  DBDisplay:
+    file: lib/Devel/Trepan/DB/Display.pm
+    version: 0
+  Devel::Trepan:
+    file: lib/Devel/Trepan.pm
+    version: v0.1.1
+  Devel::Trepan::BrkptMgr:
+    file: lib/Devel/Trepan/BrkptMgr.pm
+    version: 0
+  Devel::Trepan::CmdProcessor:
+    file: lib/Devel/Trepan/CmdProcessor.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command:
+    file: lib/Devel/Trepan/CmdProcessor/Command.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Action:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Action.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Alias:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Alias.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Backtrace:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Break:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Break.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Condition:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Continue:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Delete:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Disable:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Display:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Display.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Down:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Down.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Edit:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Edit.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Enable:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Enable.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Eval:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Eval.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Finish:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Frame:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Frame.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Help:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Help.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Breakpoints:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Files:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Frame:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Macros:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Program:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Return:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Kill:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Kill.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::List:
+    file: lib/Devel/Trepan/CmdProcessor/Command/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Macro:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Next:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Next.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Quit:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Restart:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Restart.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Abbrev:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Auto:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Auto::List:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Basename:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Confirm:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Different:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::EvalDisplay:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Highlight:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Max:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Max::List:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Max::Stack:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Max::String:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Max::Width:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Return:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Timer:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Trace:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Trace::Print:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Shell:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Shell.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Abbrev:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Aliases:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Auto:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Auto::Eval:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Auto::List:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Basename:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Basename.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Confirm:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Different:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::EvalDisplay:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Highlight:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Max:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Max::List:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Max::Stack:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Stack.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Max::String:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/String.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Max::Width:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Width.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Timer:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Timer.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Trace:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Trace::Print:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace_Subcmd/Print.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Version:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Version.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::ShowIntSubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::ShowIntSubsubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Source:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Source.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Step:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Step.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Subcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::SubcmdMgr:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Subsubcmd:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::TBreak:
+    file: lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Unalias:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Undisplay:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Up:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Up.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Hook:
+    file: lib/Devel/Trepan/CmdProcessor/Hook.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Mock:
+    file: lib/Devel/Trepan/CmdProcessor/Mock.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Virtual:
+    file: lib/Devel/Trepan/CmdProcessor/Virtual.pm
+    version: 0
+  Devel::Trepan::Complete:
+    file: lib/Devel/Trepan/Complete.pm
+    version: 0
+  Devel::Trepan::Condition:
+    file: lib/Devel/Trepan/Condition.pm
+    version: 0
+  Devel::Trepan::Core:
+    file: lib/Devel/Trepan/Core.pm
+    version: 0
+  Devel::Trepan::DB::Colors:
+    file: lib/Devel/Trepan/DB/Colors.pm
+    version: 0
+  Devel::Trepan::DisplayMgr:
+    file: lib/Devel/Trepan/DB/Display.pm
+    version: 0
+  Devel::Trepan::IO::Input:
+    file: lib/Devel/Trepan/IO/Input.pm
+    version: 0
+  Devel::Trepan::IO::InputBase:
+    file: lib/Devel/Trepan/IO.pm
+    version: 0
+  Devel::Trepan::IO::NullOutput:
+    file: lib/Devel/Trepan/IO/NullOutput.pm
+    version: 0
+  Devel::Trepan::IO::Output:
+    file: lib/Devel/Trepan/IO/Output.pm
+    version: 0
+  Devel::Trepan::IO::OutputBase:
+    file: lib/Devel/Trepan/IO.pm
+    version: 0
+  Devel::Trepan::IO::StringArrayInput:
+    file: lib/Devel/Trepan/IO/StringArray.pm
+    version: 0
+  Devel::Trepan::IO::StringArrayOutput:
+    file: lib/Devel/Trepan/IO/StringArray.pm
+    version: 0
+  Devel::Trepan::Interface:
+    file: lib/Devel/Trepan/Interface.pm
+    version: 0
+  Devel::Trepan::Interface::Script:
+    file: lib/Devel/Trepan/Interface/Script.pm
+    version: 0
+  Devel::Trepan::Interface::User:
+    file: lib/Devel/Trepan/Interface/User.pm
+    version: 0
+  Devel::Trepan::Options:
+    file: lib/Devel/Trepan/Options.pm
+    version: 0.10
+  Devel::Trepan::Util:
+    file: lib/Devel/Trepan/Util.pm
+    version: 0
+  TrepanPosition:
+    file: lib/Devel/Trepan/Position.pm
+    version: 0
+requires:
+  Array::Columnize: v0.3.5
+  Data::Dumper::Perltidy: 0
+  Digest::SHA1: 2.13
+  ExtUtils::PkgConfig: 1.03
+  Psh: v1.8.0
+  Syntax::Highlight::Perl::Improved: 0
+  Test::More: 0
+  perl: 5.010
+  version: 0
+resources:
+  license: http://opensource.org/licenses/gpl-license.php
+version: v0.1.1

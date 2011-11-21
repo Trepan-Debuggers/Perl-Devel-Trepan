@@ -105,8 +105,7 @@ sub next($$)
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
-    $self->{DB_running} = 1;
-    $self->{DB_single} = 2;
+    $self->{dbgr}->next;
 }
 
 sub step($$) 
@@ -114,8 +113,7 @@ sub step($$)
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
-    $self->{DB_running} = 1;
-    $self->{DB_single} = 1;
+    $self->{dbgr}->step;
 }
 
 sub running_initialize($)

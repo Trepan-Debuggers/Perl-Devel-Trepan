@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
+use feature 'switch';
 use rlib '../../../../..';
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
@@ -8,37 +9,81 @@ use vars qw(@ISA @SUBCMD_VARS);
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 use PadWalker qw(peek_my);
+use Data::Dumper;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
 use vars qw(@ISA @SUBCMD_VARS);
 our $CMD = "info variables our";
 our $MIN_ABBREV = length('o');
 our $HELP   = <<"HELP";
 ${CMD}
+${CMD} -v
+${CMD} VAR1 [VAR2...]
 
-List 'my' variables at the current stack level.
+Lists 'my' variables at the current frame. Use the frame changing
+commands like 'up', 'down' or 'frame' set the current frame.
+
+In the first form, give a list of 'my' variable names only. 
+In the second form, list variable names and values
+In the third form, list variable names and values of VAR1, etc.
+
+See also 'set variable', and frame changing commands
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
+sub show_var($$$) 
+{
+    my ($proc, $var_name, $ref) = @_;
+    $proc->msg_nocr("$var_name = ");
+    $proc->msg_nocr(Data::Dumper::Dumper($ref));
+}
+
 sub run($$)
 {
     my ($self, $args) = @_;
+    my @ARGS = @${args};
+    shift @ARGS; shift @ARGS; shift @ARGS;
+
     # FIXME: combine with My.pm
     my $i = 0;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
     my $diff = $i - $DB::stack_depth;
     my $proc = $self->{proc};
+
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     my $my_hash = peek_my($diff + $proc->{frame_index} + 4);
     my @names = sort keys %{$my_hash};
-    if (scalar @names) {
-	$proc->section("my variables");
-	$proc->msg($self->{parent}{parent}->columnize_commands(\@names));
+
+    if (0 == scalar @ARGS) {
+	if (scalar @names) {
+	    $proc->section("my variables");
+	    $proc->msg($self->{parent}{parent}->columnize_commands(\@names));
+	} else {
+	    $proc->errmsg("No 'my' variables at this level");
+	}
     } else {
-	$proc->msg("No 'my' variables at this level");
+	if ($ARGS[0] eq '-v') {
+	    if (scalar @names) {
+		$proc->section("my variables");
+		for my $name (@names) {
+		    show_var($proc, $name, $my_hash->{$name});
+		}
+	    } else {
+		$proc->errmsg("No 'my' variables at this level");
+	    }
+	} else {
+	    for my $name (@ARGS) {
+		if (exists($my_hash->{$name})) {
+		    show_var($proc, $name, $my_hash->{$name});
+		} else {
+		    $proc->errmsg("No 'my' variable $name found at this level");
+		}
+	    }
+	}
     }
 }
 

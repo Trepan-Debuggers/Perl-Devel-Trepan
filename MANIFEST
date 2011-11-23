@@ -7,6 +7,7 @@ example/eval.pl
 example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
+example/my.pl
 example/nexting.pl
 example/test-module.pm
 example/test-require.pl
@@ -48,6 +49,9 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm
 lib/Devel/Trepan/CmdProcessor/Command/Kill.pm
 lib/Devel/Trepan/CmdProcessor/Command/List.pm
@@ -74,6 +78,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
@@ -175,10 +180,12 @@ t/20test-break.t
 t/20test-debug.t
 t/20test-display.t
 t/20test-eval.t
+t/20test-fin.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
 t/20test-list4.t
+t/20test-my.cmd
 t/20test-next.t
 t/20test-seq1.t
 t/20test-step.t
@@ -197,6 +204,10 @@ t/data/eval.cmd
 t/data/eval.right
 t/data/eval2.cmd
 t/data/eval2.right
+t/data/fin.cmd
+t/data/fin.right
+t/data/fin2.cmd
+t/data/fin2.right
 t/data/list1.cmd
 t/data/list1.right
 t/data/list2.cmd
@@ -205,6 +216,8 @@ t/data/list3.cmd
 t/data/list3.right
 t/data/list4.cmd
 t/data/list4.right
+t/data/my.cmd
+t/data/my.right
 t/data/next.cmd
 t/data/next.right
 t/data/seq1.cmd

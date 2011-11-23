@@ -37,8 +37,37 @@ our $SHORT_HELP   = "Information about 'my' variables.";
 sub show_var($$$) 
 {
     my ($proc, $var_name, $ref) = @_;
-    $proc->msg_nocr("$var_name = ");
-    $proc->msg_nocr(Data::Dumper::Dumper($ref));
+    my $dumper;
+    given (substr($var_name, 0, 1)) {
+	when ('$') { 
+	    $dumper = Data::Dumper->new([${$ref}]);
+	    $dumper->Useqq(0);
+	    $dumper->Terse(1);
+	    $dumper->Indent(0);
+	    $proc->msg("$var_name = ".  $dumper->Dump);
+	    }
+	when ('@') { 
+	    $dumper = Data::Dumper->new([$ref]); 
+	    $dumper->Useqq(0);
+	    $dumper->Terse(1);
+	    $dumper->Indent(0);
+	    $proc->msg("$var_name = ".  $dumper->Dump);
+	}
+	when ('%') { 
+	    $dumper = Data::Dumper->new([$ref], [$var_name]);
+	    $dumper->Useqq(0);
+	    $dumper->Terse(0);
+	    $dumper->Indent(0);
+	    $proc->msg($dumper->Dump);
+	}
+	default    {
+	    $dumper = Data::Dumper->new([$ref], [$var_name]); 
+	    $dumper->Useqq(0);
+	    $dumper->Terse(1);
+	    $dumper->Indent(0);
+	    $proc->msg($dumper->Dump);
+	}
+    };
 }
 
 sub run($$)

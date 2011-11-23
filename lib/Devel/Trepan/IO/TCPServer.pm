@@ -48,6 +48,11 @@ sub is_connected($)
     return 'connected' eq $self->{state};
 }
     
+sub is_interactive($)  {
+    my $self = shift;
+    return -t $self->{input};
+}
+
 
 # Closes server connection.
 sub close
@@ -115,7 +120,7 @@ sub write($$)
     my($self, $msg) = @_;
     $self->wait_for_connect() unless $self->is_connected;
     # FIXME: do we have to check the size of msg and split output? 
-    $self->session->print(pack_msg($msg));
+    $self->{session}->print(pack_msg($msg));
 }
 
 sub writeline($$)

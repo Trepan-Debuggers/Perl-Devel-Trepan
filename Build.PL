@@ -42,6 +42,7 @@ my $builder = Module::Build->new(
 	'ExtUtils::PkgConfig'               => '1.03',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 2.13,
+        'PadWalker'                         => 0,
         'Psh'                               => '1.8.0',
         'rlib'                              => '0.02',
         'Syntax::Highlight::Perl::Improved' => 0,

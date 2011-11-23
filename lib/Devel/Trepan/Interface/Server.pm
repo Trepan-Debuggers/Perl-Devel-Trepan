@@ -8,6 +8,7 @@ use rlib '../../..';
 # reside outside of the debugged process, possibly on another
 # computer
 package Devel::Trepan::Interface::Server;
+use English qw( -no_match_vars );
 our (@ISA);
 
 # Our local modules
@@ -64,6 +65,12 @@ sub is_closed($)
 {
     my ($self) = @_;
     $self->{inout}->is_closed
+}
+
+sub is_interactive($)
+{
+    my $self = shift;
+    $self->{input}->is_interactive;
 }
 
 # Called when a dangerous action is about to be done to make sure
@@ -125,6 +132,14 @@ sub msg($;$)
 }
 
 # used to write to a debugger that is connected to this
+# server; `str' written will have a newline added to it
+sub errmsg($;$)
+{
+    my ($self, $msg) = @_;
+    $self->{inout}->writeline(SERVERERR . $msg);
+}
+
+# used to write to a debugger that is connected to this
 # server; `str' written will not have a newline added to it
 sub msg_nocr($$)
 {    
@@ -152,9 +167,26 @@ sub readline($;$)
     if ($prompt) {
 	$self->write_prompt($prompt);
     }
-    my $coded_line = $self->{inout}->read_msg();
-    my $read_ctrl = substr($coded_line,0,1);
-    substr($coded_line, 1);
+    my $coded_line;
+    eval {
+	$coded_line = $self->{inout}->read_msg();
+    };
+    if ($EVAL_ERROR) {
+	print STDERR "Eval error\n";
+	$self->errmsg("Server error. resyncing...");
+	return '';
+    } else {
+	my $read_ctrl = substr($coded_line,0,1);
+	substr($coded_line, 1);
+    }
+}
+
+sub remove_history($;$)
+{
+    my ($self, $which) = @_;
+    return unless ($self->{input}{readline});
+    $which //= $self->{input}{readline}->where_history();
+    $self->{input}{readline}->remove_history($which);
 }
 
 # Return connected

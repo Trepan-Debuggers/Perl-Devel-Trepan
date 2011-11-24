@@ -285,26 +285,12 @@ sub get_onoff($$;$$)
     return undef;
 }
 
-#     include CmdParser
-
-#     sub get_method(meth)
-#       start_binding = 
-#         begin
-#           @frame.binding
-#         rescue
-#           binding
-#         }
-#       if meth.kind_of?(String)
-#         meth_for_string(meth, start_binding)
-#       else
-#         begin
-#           meth_for_parse_struct(meth, start_binding)
-#         rescue NameError
-#           errmsg("Can't evaluate #{meth.name} to get a method")
-#           return nil
-#         }
-#       }
-#     }
+sub is_method($$)
+{
+    my ($self, $method_name) = @_;
+    my ($filename, $fn, $line_num) = DB::find_subline($method_name) ;
+    return !!$line_num;
+}
 
 #     # FIXME: this is a ? method but we return 
 #     # the method value. 

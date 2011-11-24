@@ -20,7 +20,7 @@ use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
 
 BEGIN {
     $ENV{'PERL_RL'} ||= 'Gnu';
-    $HAVE_GNU_READLINE = 0 unless eval("use Term::ReadLine; 1");
+    $HAVE_GNU_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0;
     sub GLOBAL_have_gnu_readline {
         if (!defined($HAVE_GNU_READLINE)) {
             my $term = Term::ReadLine->new('testing');

@@ -9,6 +9,7 @@ example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
 example/nexting.pl
+example/our.pl
 example/TCPPack.pm
 example/test-module.pm
 example/test-require.pl
@@ -237,4 +238,3 @@ t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm
 t/Makefile
-

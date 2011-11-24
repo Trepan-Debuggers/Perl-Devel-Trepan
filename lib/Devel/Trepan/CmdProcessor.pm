@@ -70,6 +70,8 @@ sub new($;$$$) {
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
+    $self->{DB_running}     = $DB::running;
+    $self->{DB_single}      = $DB::single;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
@@ -307,11 +309,11 @@ sub process_commands($$$;$)
 	if (index($self->{event}, 'brkpt') < 0) {
 	    if ($self->is_stepping_skip()) {
 		# || $self->{stack_size} <= $self->{hide_level};
-		$self->{dbgr}->step();
+		$self->{dbgr}->step;
 		return;
 	    }
 	    if ($self->{settings}{traceprint}) {
-		$self->{dbgr}->step();
+		$self->{dbgr}->step;
 		return;
 	    }
 	}
@@ -340,6 +342,8 @@ sub process_commands($$$;$)
 	# }
     }
     $self->{cmdloop_posthooks}->run;
+    $DB::single = $self->{DB_single};
+    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the

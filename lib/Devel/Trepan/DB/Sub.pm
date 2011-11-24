@@ -62,7 +62,7 @@ sub sub {
     $#stack = $stack_depth;
 
     # Save current single-step setting.
-    $stack[-1] = $single;
+    $stack[-1] = $DB::single;
 
     ## printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
     # Turn off all flags except single-stepping or return event.
@@ -85,7 +85,7 @@ sub sub {
 	@ret = &$sub;
 
         # Pop the single-step value back off the stack.
-        $single |= $stack[ $stack_depth-- ];
+        $DB::single |= $stack[ $stack_depth-- ];
 	if ($single & RETURN_EVENT) {
 	    $DB::return_type = 'array';
 	    @DB::return_value = @ret;

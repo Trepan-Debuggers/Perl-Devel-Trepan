@@ -79,7 +79,7 @@ sub delete_by_brkpt($$)
 	next unless defined $candidate;
 	if ($candidate eq $delete_bp) {
 	    $candidate = undef;
-	    $self->{dbgr}->delete_bp($delete_bp);
+	    $self->{dbgr} && $self->{dbgr}->delete_bp($delete_bp);
 	    return $delete_bp;
 	}
     }

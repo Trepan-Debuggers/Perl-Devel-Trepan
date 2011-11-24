@@ -92,7 +92,7 @@ sub read_msg($)
     my($self) = @_;
     if ($self->{state} eq 'connected') {
 	if (!$self->{buf} || is_empty($self)) {
-	    $self->{buf} = $self->{inout}->recv(TCP_MAX_PACKET);
+	    $self->{inout}->recv($self->{buf}, TCP_MAX_PACKET);
 	    if (is_empty($self)) {
 		$self->{state} = 'disconnected';
 		die "EOF while reading on socket";

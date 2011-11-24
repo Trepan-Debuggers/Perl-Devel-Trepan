@@ -75,7 +75,7 @@ sub show_var($$$)
 sub process_args($$$$) {
     my ($self, $args, $hash_ref, $lex_type) = @_;
     my $proc = $self->{proc};
-    my @ARGS = splice(@{$args}, scalar(split(/ /, $CMD)));
+    my @ARGS = @{$args};
     my @names = sort keys %{$hash_ref};
 
     if (0 == scalar @ARGS) {
@@ -118,7 +118,8 @@ sub run($$)
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     my $my_hash = peek_my($diff + $self->{proc}->{frame_index} + 4);
-    $self->process_args($args, $my_hash, 'my');
+    my @ARGS = splice(@{$args}, scalar(split(/ /, $CMD)));
+    $self->process_args(\@ARGS, $my_hash, 'my');
 }
 
 unless (caller) { 

@@ -1,3 +1,4 @@
+# Use with example/my.pl
 info var my $a
 s
 s

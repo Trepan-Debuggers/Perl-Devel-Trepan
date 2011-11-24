@@ -49,8 +49,8 @@ sub run($$)
     my @ARGS = @{$args};
     @ARGS = splice(@ARGS, scalar(split(/ /, $CMD)));
     if (scalar(@ARGS == 0)) {
-	$self->process_args($args, $my_hash, 'my');
-	$self->process_args($args, $our_hash, 'our');
+	$self->process_args(\@ARGS, $my_hash, 'my');
+	$self->process_args(\@ARGS, $our_hash, 'our');
     } else {
 	if ($ARGS[0] eq '-v') {
 	    $self->process_args(['-v'], $my_hash, 'my');
@@ -72,16 +72,7 @@ sub run($$)
 
 unless (caller) { 
     # Demo it.
-    require Devel::Trepan;
-    # require_relative '../../mock'
-    # dbgr, parent_cmd = MockDebugger::setup('set', false)
-    # cmd              = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
-    #                                                      parent_cmd)
-    # cmd.run(cmd.prefix + ['string', '30'])
-    
-    # %w(s lis foo).each do |prefix|
-    #   p [prefix, cmd.complete(prefix)]
-    # end
+
 }
 
 1;

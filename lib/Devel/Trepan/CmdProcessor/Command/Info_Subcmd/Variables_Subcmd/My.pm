@@ -2,19 +2,19 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use feature 'switch';
-use rlib '../../../../..';
-use strict;
+use rlib '../../../../../..';
 use Data::Dumper;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
-our vars (@ISA, @SUBCMD_VARS);
+use vars qw(@ISA @SUBCMD_VARS);
+use strict;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 use PadWalker qw(peek_my);
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-use vars qw(@ISA @SUBCMD_VARS);
 our $CMD = "info variables my";
+our @CMD = split(/ /, $CMD);
 our $MAX_ARGS = 1000;
 our $MIN_ABBREV = length('m');
 our $HELP   = <<"HELP";
@@ -118,7 +118,7 @@ sub run($$)
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     my $my_hash = peek_my($diff + $self->{proc}->{frame_index} + 4);
-    my @ARGS = splice(@{$args}, scalar(split(/ /, $CMD)));
+    my @ARGS = splice(@{$args}, scalar(@CMD));
     $self->process_args(\@ARGS, $my_hash, 'my');
 }
 

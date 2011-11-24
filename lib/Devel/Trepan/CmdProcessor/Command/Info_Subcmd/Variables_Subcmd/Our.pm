@@ -4,12 +4,13 @@ use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::Our;
 
-our (@ISA, @SUBCMD_VARS);
+use vars qw(@ISA @SUBCMD_VARS);
 use strict;
 use Devel::Trepan::CmdProcessor::Command::Info_Subcmd::Variables_Subcmd::My;
 use PadWalker qw(peek_our);
 
 our $CMD = "info variables our";
+my  @CMD = split(/ /, $CMD);
 our $MAX_ARGS = 1000;
 our $MIN_ABBREV = length('o');
 our $HELP   = <<"HELP";
@@ -33,7 +34,7 @@ sub run($$)
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     my $my_hash = peek_our($diff + $self->{proc}->{frame_index} + 4);
-    my @ARGS = splice(@{$args}, scalar(split(/ /, $CMD)));
+    my @ARGS = splice(@{$args}, scalar(@CMD));
     $self->process_args(\@ARGS, $my_hash, 'our');
 }
 

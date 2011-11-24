@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../../..';
-use strict;
+use rlib '../../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::Lexicals;
-our vars (@ISA, @SUBCMD_VARS);
+our (@ISA, @SUBCMD_VARS);
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 use PadWalker qw(peek_my peek_our);
 use Devel::Trepan::CmdProcessor::Command::Info_Subcmd::Variables_Subcmd::My;
 
-use vars qw(@ISA @SUBCMD_VARS);
 our $CMD = "info variables lexicals";
+my  @CMD = split(/ /, $CMD);
 our $MAX_ARGS = 1000;
 our $MIN_ABBREV = length('l');
 our $HELP   = <<"HELP";
@@ -47,7 +46,7 @@ sub run($$)
     my $our_hash = peek_our($diff + $self->{proc}->{frame_index} + 4);
 
     my @ARGS = @{$args};
-    @ARGS = splice(@ARGS, scalar(split(/ /, $CMD)));
+    @ARGS = splice(@ARGS, scalar(@CMD));
     if (scalar(@ARGS == 0)) {
 	$self->process_args(\@ARGS, $my_hash, 'my');
 	$self->process_args(\@ARGS, $our_hash, 'our');

@@ -6,9 +6,8 @@ package Devel::Trepan::CmdProcessor::Command::Info::Variables::Our;
 
 our (@ISA, @SUBCMD_VARS);
 use strict;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
+use Devel::Trepan::CmdProcessor::Command::Info_Subcmd::Variables_Subcmd::My;
 use PadWalker qw(peek_our);
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 our $CMD = "info variables our";
 our $MAX_ARGS = 1000;
@@ -20,7 +19,7 @@ List 'our' variables at the current stack level.
 HELP
 our $SHORT_HELP   = "Information about 'our' variables.";
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Info::Variables::My);
 
 sub run($$)
 {
@@ -34,7 +33,7 @@ sub run($$)
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     my $my_hash = peek_our($diff + $self->{proc}->{frame_index} + 4);
-    Devel::Trepan::CmdProcessor::Command::Info::Variables::My::process_args($self, $args, $my_hash, 'our');
+    $self->process_args($self, $args, $my_hash, 'our');
 }
 
 unless (caller) { 

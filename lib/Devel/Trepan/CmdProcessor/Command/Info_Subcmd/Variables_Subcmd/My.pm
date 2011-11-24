@@ -75,8 +75,7 @@ sub show_var($$$)
 sub process_args($$$$) {
     my ($self, $args, $hash_ref, $lex_type) = @_;
     my $proc = $self->{proc};
-    my @ARGS = @${args};
-    shift @ARGS; shift @ARGS; shift @ARGS;
+    my @ARGS = splice(@{$args}, scalar(split(/ /, $CMD)));
     my @names = sort keys %{$hash_ref};
 
     if (0 == scalar @ARGS) {
@@ -84,7 +83,7 @@ sub process_args($$$$) {
 	    $proc->section("$lex_type variables");
 	    $proc->msg($self->{parent}{parent}->columnize_commands(\@names));
 	} else {
-	    $proc->errmsg("No '$lex_type' variables at this level");
+	    $proc->msg("No '$lex_type' variables at this level");
 	}
     } else {
 	if ($ARGS[0] eq '-v') {
@@ -94,7 +93,7 @@ sub process_args($$$$) {
 		    show_var($proc, $name, $hash_ref->{$name});
 		}
 	    } else {
-		$proc->errmsg("No 'my' variables at this level");
+		$proc->msg("No 'my' variables at this level");
 	    }
 	} else {
 	    for my $name (@ARGS) {

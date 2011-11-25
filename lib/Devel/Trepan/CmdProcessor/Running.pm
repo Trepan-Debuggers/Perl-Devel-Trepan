@@ -46,7 +46,10 @@ sub continue($$) {
     } else {
 	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
     };
-    $self->{DB_running} = 1;
+    if ($self->{leave_cmd_loop}) {
+	$self->{DB_running} = 1;
+	$self->{DB_single} =  0;
+    }
 }
 
 # sub quit(cmd='quit')

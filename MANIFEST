@@ -53,6 +53,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm
@@ -181,6 +182,7 @@ t/10test-util.t
 t/10test-validate.t
 t/20test-autolist.t
 t/20test-break.t
+t/20test-cont.t
 t/20test-debug.t
 t/20test-display.t
 t/20test-eval.t
@@ -200,6 +202,8 @@ t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
+t/data/cont.cmd
+t/data/cont.right
 t/data/debug.cmd
 t/data/debug.right
 t/data/display.cmd

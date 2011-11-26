@@ -13,8 +13,8 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME}[+|-] [into] [count]
 ${NAME} until EXPRESSION
 ${NAME} thread
@@ -60,7 +60,8 @@ use constant ALIASES  => qw(s step+ step- s+ s-);
 use constant CATEGORY => 'running';
 use constant SHORT_HELP => 'Step program (possibly entering called functions)';
 local $NEED_RUNNING = 1;
-our $MIN_ARGS = 0;
+$MIN_ARGS = 0;
+$MAX_ARGS = undef;
 
 my $Keyword_to_related_cmd = {
     'out'  => 'finish',

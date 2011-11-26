@@ -10,8 +10,10 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = 2;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [[FILE] [LINE]]
 
 With no argument, edits file containing most recent line listed.

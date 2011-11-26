@@ -10,8 +10,8 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [count]
 
 Print a stack trace, with the most recent frame at the top.  With a
@@ -29,8 +29,8 @@ HELP
 use constant ALIASES    => qw(bt where T);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Print backtrace of stack frames';
-our $MIN_ARGS    = 0;  # Need at least this many
-our $MAX_ARGS     = 1;  # Need at most this many
+$MIN_ARGS    = 0;  # Need at least this many
+$MAX_ARGS     = 1;  # Need at most this many
 
 sub complete($$)
 { 

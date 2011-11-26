@@ -6,7 +6,7 @@ use Devel::Trepan::IO::Output;
 use Devel::Trepan::Interface::Script;
 
 package Devel::Trepan::Core;
-use vars qw(@ISA);
+use vars qw(@ISA $dbgr);
 @ISA = qw(DB);
 
 sub add_startup_files($$) {
@@ -114,7 +114,7 @@ sub display_lists ($)
     return $self->{proc}{displays}{list};
 }
     
-my $dbgr = __PACKAGE__->new();
+$dbgr = __PACKAGE__->new();
 $dbgr->awaken();
 $dbgr->register();
 $dbgr->ready();

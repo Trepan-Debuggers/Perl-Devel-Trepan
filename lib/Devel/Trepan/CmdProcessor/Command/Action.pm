@@ -18,11 +18,11 @@ unless (defined @ISA) {
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
-our $MIN_ARGS   = 2;      # Need at least this many
-our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
+$MIN_ARGS   = 2;      # Need at least this many
+$MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} POSITION Perl-statement 
 
 Set an action to be done before the line is executed. If line is

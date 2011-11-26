@@ -18,8 +18,8 @@ use strict;
 use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [options] [SUBROUTINE ...]
 
 options: 
@@ -39,7 +39,8 @@ HELP
 
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Read and run debugger commands from a file';
-our $MIN_ARGS     = 1;  # Need at least this many
+$MIN_ARGS     = 1;  # Need at least this many
+$MAX_ARGS     = undef;
 our $SHORT_HELP   = 'Read and run debugger commands from a file';
 
 use constant DEFAULT_OPTIONS => {

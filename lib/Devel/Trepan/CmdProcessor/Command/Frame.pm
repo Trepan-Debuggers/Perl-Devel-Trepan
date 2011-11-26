@@ -10,8 +10,10 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = 2;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [FRAME_NUMBER]
 
 Change the current frame to frame FRAME_NUMBER if specified, or the

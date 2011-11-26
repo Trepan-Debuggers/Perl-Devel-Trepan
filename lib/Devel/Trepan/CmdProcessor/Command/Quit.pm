@@ -10,10 +10,10 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS     = 0;  # Need at most this many
-our $MAX_ARGS     = 2;  # Need at most this many
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS     = 0;  # Need at most this many
+$MAX_ARGS     = 2;  # Need at most this many
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME}[!] [unconditionally] [exit code] 
 
 gentle termination

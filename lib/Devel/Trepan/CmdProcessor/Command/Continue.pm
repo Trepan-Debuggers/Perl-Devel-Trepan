@@ -15,10 +15,10 @@ use vars qw(@ISA);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = 2;
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = 2;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [LOCATION]
 
 Leave the debugger loop and continue execution. Subsequent entry to

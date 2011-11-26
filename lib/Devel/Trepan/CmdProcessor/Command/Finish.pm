@@ -20,8 +20,10 @@ use strict;
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = undef;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [LEVELS]
 
 Continue execution until the program is about to leaving the current

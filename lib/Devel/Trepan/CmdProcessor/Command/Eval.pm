@@ -12,10 +12,10 @@ use Devel::Trepan::Util;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = undef;
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = undef;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [STRING]
 
 Run code in the context of the current frame.

@@ -19,10 +19,10 @@ unless (defined(@ISA)) {
 @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $MIN_ARGS = 0;
-our $MAX_ARGS = 10000;
-our $HELP = <<"HELP";
+$NAME = set_name();
+$MIN_ARGS = 0;
+$MAX_ARGS = 10000;
+$HELP = <<"HELP";
 ${NAME} [command [subcommand]|expression]
 
 Without argument, print the list of available debugger commands.

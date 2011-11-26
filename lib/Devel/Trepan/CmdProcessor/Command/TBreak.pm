@@ -13,8 +13,10 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-local $NAME = set_name();
-local $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = undef;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [LOCATION]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.

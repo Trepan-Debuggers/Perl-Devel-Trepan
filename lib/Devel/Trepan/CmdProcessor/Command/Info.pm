@@ -12,10 +12,10 @@ use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-our $MIN_ARGS   = 0;
-our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
-local $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS   = 0;
+$MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
+$NAME       = set_name();
+$HELP = <<"HELP";
 Generic command for showing things about the program being debugged. 
 
 You can give unique prefix of the name of a subcommand to get

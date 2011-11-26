@@ -12,8 +12,8 @@ use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-local $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 Modifies parts of the debugger environment.
 
 You can give unique prefix of the name of a subcommand to get
@@ -30,7 +30,7 @@ HELP
 use constant CATEGORY => 'support';
 use constant SHORT_HELP => 'Modify parts of the debugger environment';
 local $NEED_STACK     = 0;
-$MAX_ARGS             = 1000;
+$MAX_ARGS             = undef;
 $MIN_ARGS             = 0;
 
 sub run($$) 

@@ -13,8 +13,8 @@ use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME}[+|-] [count]
 
 Step one statement ignoring steps into function calls at this level.
@@ -39,8 +39,8 @@ HELP
 use constant ALIASES    => qw(n next+ next- n+ n-);
 use constant CATEGORY   => 'running';
 use constant SHORT_HELP => 'Step program without entering called functions';
-our   $MIN_ARGS     = 0;
-local $MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
+$MIN_ARGS     = 0;
+$MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
 local $NEED_RUNNING = 1;
 
 # This method runs the command

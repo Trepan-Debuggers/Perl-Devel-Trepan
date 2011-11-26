@@ -13,8 +13,8 @@ use vars qw(@ISA @EXPORT); @ISA = @CMD_ISA; push @ISA, 'Exporter';
 use vars @CMD_VARS;  # Value inherited from parent
 @EXPORT = qw(@CMD_VARS set_name);
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [COUNT]
 
 Move the current frame up in the stack trace (to an older frame). 0 is
@@ -26,7 +26,8 @@ HELP
 use constant ALIASES    => qw(u);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Move frame in the direction of most recent frame';
-our $MAX_ARGS     = 1;  # Need at most this many
+$MIN_ARGS     = 0;  # Need at least this many
+$MAX_ARGS     = 1;  # Need at most this many
 our $NEED_STACK   = 1;
 
 sub complete($$)

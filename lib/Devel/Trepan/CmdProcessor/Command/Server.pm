@@ -18,8 +18,8 @@ use strict;
 use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} [options] FILE
 
 options: 
@@ -36,7 +36,8 @@ HELP
 
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Allow remote connections';
-our $MIN_ARGS     = 0;  # Need at least this many
+$MIN_ARGS     = 0;  # Need at least this many
+$MAX_ARGS     = undef;  # Need at least this many
 
 use constant DEFAULT_OPTIONS => {
     port => 1955,

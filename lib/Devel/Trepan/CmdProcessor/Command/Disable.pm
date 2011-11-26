@@ -27,8 +27,10 @@ use vars @CMD_VARS;  # Value inherited from parent
 # require_relative '../breakpoint'
 # require_relative '../../app/util'
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = 0;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} bpnumber [bpnumber ...]
     
 Disables the breakpoints given as a space separated list of breakpoint

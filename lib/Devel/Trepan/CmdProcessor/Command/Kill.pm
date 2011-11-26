@@ -21,8 +21,10 @@ use strict;
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = 1;
+$NAME = set_name();
+$HELP = <<"HELP";
 $NAME [signal-number|signal-name]
 
 Kill execution of program being debugged.

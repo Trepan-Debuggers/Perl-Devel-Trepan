@@ -21,7 +21,8 @@ sub declared ($) {
     $constant::declared{$full_name};
 }
 
-use vars qw(@CMD_VARS @EXPORT @ISA @CMD_ISA @ALIASES);
+use vars qw(@CMD_VARS @EXPORT @ISA @CMD_ISA @ALIASES $MIN_ARGS
+            $MAX_ARGS $NAME $HELP);
 BEGIN {
     @CMD_VARS = qw($HELP $MAX_ARGS $MIN_ARGS $NAME 
                    $NEED_RUNNING $NEED_STACK @CMD_VARS);

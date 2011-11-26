@@ -25,8 +25,10 @@ use vars @CMD_VARS;  # Value inherited from parent
 # require_relative '../breakpoint'
 # require_relative '../../app/util'
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$MIN_ARGS = 0;
+$MAX_ARGS = undef;
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME} NUM [NUM ...]
     
 Enables breakpoints, watch expressions or actions given as a space

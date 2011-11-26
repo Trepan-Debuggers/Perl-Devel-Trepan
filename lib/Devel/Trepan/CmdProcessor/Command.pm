@@ -85,7 +85,7 @@ sub new($$) {
     $self;
 }
 
-# List commands arranged in an aligned columns
+# List command names aligned in columns
 sub columnize_commands($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};

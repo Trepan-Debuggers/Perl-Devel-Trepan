@@ -21,7 +21,7 @@ our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 ## FIXME: do automatically.
 our $CMD = "info files";
 
-our $MAX_ARGS   = 8;  # Need at most this many - undef -> unlimited.
+use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
 our $HELP = <<"HELP";
 ${CMD} [{FILENAME|.|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
 

@@ -21,10 +21,10 @@ Set a 'my' or 'our' variable
 HELP
 our $SHORT_HELP   = "Set a 'my' or 'our' variable";
 
-our $MIN_ARGS = 2;
-our $MAX_ARGS = 1000;
+use constant MIN_ARGS   => 2;
+use constant MAX_ARGS   => undef;
+use constant NEED_STACK => 1;
 our $MIN_ABBREV = length('var');
-our $NEED_STACK = 1;
 
 sub set_var($$$) 
 {

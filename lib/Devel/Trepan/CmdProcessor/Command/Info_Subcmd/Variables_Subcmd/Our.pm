@@ -11,7 +11,7 @@ use PadWalker qw(peek_our);
 
 our $CMD = "info variables our";
 my  @CMD = split(/ /, $CMD);
-our $MAX_ARGS = 1000;
+use constant MAX_ARGS => undef;
 our $MIN_ABBREV = length('o');
 our $HELP   = <<"HELP";
 ${CMD}

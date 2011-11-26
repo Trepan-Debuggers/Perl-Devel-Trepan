@@ -17,14 +17,14 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 use strict;
 ## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core. 
-use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS 
+use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES
             @SUBCMD_ISA @SUBCMD_VARS);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 use vars @SUBCMD_VARS;  # Value inherited from parent
 
-# $MIN_ARGS      = 0;
-# $MAX_ARGS      = undef;
-# $NEED_STACK    = 0;
+use constant MIN_ARGS   => 0;
+use constant MAX_ARGS   => undef;
+use constant NEED_STACK => 0;
 
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command
@@ -50,8 +50,7 @@ sub new($$$)
     my $parent_name = ucfirst $parent->{name};
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::$parent_name";
     my $excluded_cmd_vars = {'$HELP' => 1, 
-			     '$NAME'=>2, '$MIN_ARGS' => 2, 
-                             '$MAX_ARGS'=>2};
+			     '$NAME'=>2};
     for my $field (@Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS) {
 	next if exists $excluded_cmd_vars->{$field} && 
 	    $excluded_cmd_vars->{$field} == 2;

@@ -11,7 +11,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $MAX_ARGS   = 10000;  # Need at most this many - undef -> unlimited.
+use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
 our $CMD = "info watch";
 our $HELP         = <<"EOH";
 ${CMD} [WATCHPOINT1 WATCHPOINT2 ...]

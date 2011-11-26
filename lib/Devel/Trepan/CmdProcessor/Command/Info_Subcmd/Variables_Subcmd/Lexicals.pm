@@ -12,7 +12,7 @@ use Devel::Trepan::CmdProcessor::Command::Info_Subcmd::Variables_Subcmd::My;
 
 our $CMD = "info variables lexicals";
 my  @CMD = split(/ /, $CMD);
-our $MAX_ARGS = 1000;
+use constant MAX_ARGS => undef;
 our $MIN_ABBREV = length('l');
 our $HELP   = <<"HELP";
 ${CMD}

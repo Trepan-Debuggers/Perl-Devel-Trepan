@@ -7,6 +7,11 @@ use Data::Dumper;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
 use vars qw(@ISA @SUBCMD_VARS);
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant MAX_ARGS => undef;
+EOE
+}
 use strict;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
@@ -15,7 +20,6 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 our $CMD = "info variables my";
 our @CMD = split(/ /, $CMD);
-our $MAX_ARGS = 1000;
 our $MIN_ABBREV = length('m');
 our $HELP   = <<"HELP";
 ${CMD}

@@ -14,10 +14,10 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $HELP = "Set the value about to be returned";
-our $MIN_ARGS = 1;
-our $MAX_ARGS = 1;
+use constant MIN_ARGS   => 1;
+use constant MAX_ARGS   => 1;
+use constant NEED_STACK => 1;
 our $MIN_ABBREV = length('ret');
-our $NEED_STACK = 1;
 
 use Data::Dumper;
 

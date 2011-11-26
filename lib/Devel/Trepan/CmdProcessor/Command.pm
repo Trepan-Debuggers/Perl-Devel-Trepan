@@ -158,16 +158,6 @@ sub short_help($) {
     $self->{short_help} = $ary[0];
 }
 
-# # Define a method called 'complete' on the singleton class.
-# sub self.completion(ary) 
-#       self.send(:define_method, 
-#                 :complete, 
-#                 Proc.new {|prefix| 
-# 			      Trepan::Complete.complete_token(ary, prefix) });
-#     }
-#   }
-# }
-
 unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();

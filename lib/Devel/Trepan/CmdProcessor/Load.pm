@@ -161,7 +161,7 @@ sub setup_command($$)
 # Handle initial completion. We draw from the commands, aliases,
 # and macros for completion. However we won't include aliases which
 # are prefixes of other commands.
-sub complete($$$) 
+sub complete($$$$$) 
 {
     my ($self, $text, $line, $start, $end) = @_;
     $self->{leading_str} = $line;

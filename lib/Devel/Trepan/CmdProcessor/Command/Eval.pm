@@ -109,13 +109,14 @@ sub run($$)
 unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
-  # arg_str = '1 + 2'
-  # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # puts "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}"
-  # arg_str = 'return "foo"'
-  # # def cmd.proc.current_source_text
-  # #   'return "foo"'
-  # # end
-  # # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # # puts "eval? ${arg_str} is: ${cmd.run([cmd.name + '?'])}"
+  # my $arg_str = '1 + 2';
+  # $proc->{cmd_argstr} = $arg_str;
+  # print "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}\n";
+  # $arg_str = 'return "foo"';
+  # # sub cmd.proc.current_source_text
+  # # {
+  # #   'return "foo"';
+  # # }
+  # # $proc->{cmd_argstr} = $arg_str;
+  # # print "eval? ${arg_str} is: ", $cmd->run([$cmd->name + '?'])";
 }

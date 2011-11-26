@@ -92,10 +92,10 @@ unless (caller) {
     # 		      "#{cmd.name} bad2 1+2") {
     # 	@args = split $cmdline;
     # 	$cmd_argstr = cmdline[args[0].size..-1].lstrip;
-    # 	$cmdproc->instance_variable_set('@cmd_argstr', $cmd_argstr);
+    # 	$cmdproc->{cmd_argstr} = $cmd_argstr;
     # 	$cmd->run(@args);
     # }
-    # print $cmdproc->{macros};
+    # print $cmdproc->{macros}, "\n";
 }
 
 1;

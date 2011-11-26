@@ -160,6 +160,11 @@ sub backtrace($;$$$) {
         # Stop processing frames if the user hit control-C.
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
+
+    # The function and args for the stopped line is DB:DB, 
+    # but we want it to be the function and args of the last call.
+    # And the function and args for the file and line that called us
+    # should also be the prior function and args.
     if ($scan_for_DB_sub) {
 	for (my $i=1; $i <= $#callstack; $i++) {
 	    $callstack[$i-1]->{args} = $callstack[$i]->{args};

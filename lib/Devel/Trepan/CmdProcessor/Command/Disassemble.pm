@@ -17,7 +17,7 @@ unless (defined @ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Disassemble subroutine(s)';
-use constant MIN_ARGS  => 1;  # Need at least this many
+use constant MIN_ARGS  => 0;  # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
 use constant NEED_STACK => 0;
 EOE
@@ -44,7 +44,8 @@ options:
     -vt
     -ascii
 
-Use B::Concise to disassemble a subroutine
+Use B::Concise to disassemble a subroutine. SUBROUTINE is not specified,
+use the subroutine where the program is currently stopped.
 HELP
 
 use constant DEFAULT_OPTIONS => {
@@ -95,7 +96,7 @@ sub run($$)
     shift @args;
     my $options = parse_options($self, \@args);
     my $proc = $self->{proc};
-
+    push @args, $proc->subname unless scalar(@args);
 
     for my $method_name (@args) {
 	if ($proc->is_method($method_name)) {

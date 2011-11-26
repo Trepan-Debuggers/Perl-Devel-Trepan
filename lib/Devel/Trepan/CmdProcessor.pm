@@ -125,7 +125,7 @@ sub ok_for_running ($$$$) {
     my ($self, $cmd, $name, $nargs) = @_;
     # TODO check execution_set against execution status.
     # Check we have frame is not null
-    my $min_args = exists $cmd->{min_args} ? $cmd->{min_args} : 0;
+    my $min_args = eval { $cmd->MIN_ARGS } || 0;
     if ($nargs < $min_args) {
 	my $msg = 
 	    sprintf("Command '%s' needs at least %d argument(s); " .
@@ -133,7 +133,7 @@ sub ok_for_running ($$$$) {
         $self->errmsg($msg);
 	return;
     }
-    my $max_args = exists $cmd->{max_args} ? $cmd->{max_args} : 10000;
+    my $max_args = eval { $cmd->MAX_ARGS } || undef;
     if (defined($max_args) && $nargs > $max_args) {
 	my $mess = 
 	    sprintf("Command '%s' needs at most %d argument(s); " .

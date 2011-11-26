@@ -13,13 +13,23 @@ use B::Concise qw(set_style);
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
+unless (defined @ISA) {
+    eval <<"EOE";
+use constant CATEGORY   => 'data';
+use constant SHORT_HELP => 'Disassemble subroutine(s)';
+use constant MIN_ARGS  => 1;  # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [options] [SUBROUTINE ...]
 
 options: 
@@ -36,12 +46,6 @@ options:
 
 Use B::Concise to disassemble a subroutine
 HELP
-
-use constant CATEGORY   => 'data';
-use constant SHORT_HELP => 'Read and run debugger commands from a file';
-$MIN_ARGS     = 1;  # Need at least this many
-$MAX_ARGS     = undef;
-our $SHORT_HELP   = 'Read and run debugger commands from a file';
 
 use constant DEFAULT_OPTIONS => {
     line_style => 'debug',

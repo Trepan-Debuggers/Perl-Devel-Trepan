@@ -9,18 +9,20 @@ use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (defined @ISA) {
-    eval "use constant CATEGORY   => 'breakpoints';";
-    eval "use constant NEED_STACK => 0;";
-    eval "use constant SHORT_HELP => 'Delete some breakpoints';"
+    eval <<"EOE";
+use constant CATEGORY   => 'breakpoints';
+use constant SHORT_HELP => 'Delete some breakpoints';
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
-$MIN_ARGS   = 0;      # Need at least this many
-$MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [bpnumber [bpnumber...]]  
 
 Delete some breakpoints.

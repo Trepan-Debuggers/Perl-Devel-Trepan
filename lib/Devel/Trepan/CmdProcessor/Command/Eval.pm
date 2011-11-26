@@ -6,16 +6,24 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (defined @ISA) {
+    eval <<'EOE';
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
+use constant CATEGORY   => 'data';
+use constant SHORT_HELP => 'Run code in the current context';
+use constant NEED_STACK  => 1;
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
+}
 use strict;
 use Devel::Trepan::Util;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-$MIN_ARGS = 0;
-$MAX_ARGS = undef;
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [STRING]
 
 Run code in the context of the current frame.
@@ -59,11 +67,6 @@ ${NAME}@ \@ARGV  # Make sure the result saved is an array rather than
 See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
-
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
-use constant CATEGORY   => 'data';
-use constant SHORT_HELP => 'Run code in the current context';
-local $NEED_STACK       => 1;
 
 sub complete($$)
 { 

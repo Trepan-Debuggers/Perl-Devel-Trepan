@@ -13,7 +13,7 @@ use File::Spec;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 
 use strict;
-use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS);
+use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS $MIN_ARGS);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 

@@ -12,19 +12,21 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use vars qw(@ISA);
 
 unless (defined @ISA) {
-    eval "use constant ALIASES  => ('kill!')";
-    eval "use constant CATEGORY => 'running'";
-    eval "use constant SHORT_HELP => 'Send this process a POSIX signal'";
+    eval <<'EOE';
+use constant ALIASES  => ('kill!');
+use constant CATEGORY => 'running';
+use constant SHORT_HELP => 'Send this process a POSIX signal';
+use constant MIN_ARGS   => 0; # Need at least this many
+use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
+EOE
 }
 use strict; 
 
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-$MIN_ARGS = 0;
-$MAX_ARGS = 1;
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 $NAME [signal-number|signal-name]
 
 Kill execution of program being debugged.
@@ -47,8 +49,6 @@ Examples:
   $NAME! 9   # above, but no questions asked
 HELP
 
-$MAX_ARGS   = 1;  # Need at most this many
-  
 sub complete($$) {
     my ($self, $prefix) = @_;
     state @completions;

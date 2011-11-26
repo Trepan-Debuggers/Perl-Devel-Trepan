@@ -9,18 +9,20 @@ package Devel::Trepan::CmdProcessor::Command::Break;
 use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(b)";
-    eval "use constant CATEGORY   => 'breakpoints'";
-    eval "use constant SHORT_HELP => 'Set a breakpoint'";
+    eval <<"EOE";
+use constant ALIASES    => qw(b);
+use constant CATEGORY   => 'breakpoints';
+use constant SHORT_HELP => 'Set a breakpoint';
+use constant MIN_ARGS  => 0;   # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-$MIN_ARGS = 0;
-$MAX_ARGS = undef;  # undef -> unlimited
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [LOCATION] [if CONDITION]
 
 Set a breakpoint. If no location is given use the current stopping

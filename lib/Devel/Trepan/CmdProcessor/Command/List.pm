@@ -11,18 +11,20 @@ use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(l list> l>)";
-    eval "use constant CATEGORY   => 'files'";
-    eval "use constant SHORT_HELP => 'List source code'";
+    eval <<'EOE';
+use constant ALIASES    => qw(l list> l>);
+use constant CATEGORY   => 'files';
+use constant SHORT_HELP => 'List source code';
+use constant MIN_ARGS   => 0; # Need at least this many
+use constant MAX_ARGS   => 3; # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-$MIN_ARGS = 0;
-$MAX_ARGS = 3;  # undef -> unlimited
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME}[>] [FILENAME] [FIRST [NUM]]
 ${NAME}[>] LOCATION [NUM]
 

@@ -7,14 +7,26 @@ use Exporter;
 # NOTE: The down command  subclasses this, so beware when changing! 
 package Devel::Trepan::CmdProcessor::Command::Up;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant ALIASES    => qw(u);
+use constant CATEGORY   => 'stack';
+use constant SHORT_HELP => 'Move frame in the direction of most recent frame';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA @EXPORT); @ISA = @CMD_ISA; push @ISA, 'Exporter'; 
 use vars @CMD_VARS;  # Value inherited from parent
 @EXPORT = qw(@CMD_VARS set_name);
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [COUNT]
 
 Move the current frame up in the stack trace (to an older frame). 0 is
@@ -22,13 +34,6 @@ the most recent frame. If no count is given, move up 1.
 
 See also 'down' and 'frame'.
 HELP
-
-use constant ALIASES    => qw(u);
-use constant CATEGORY   => 'stack';
-use constant SHORT_HELP => 'Move frame in the direction of most recent frame';
-$MIN_ARGS     = 0;  # Need at least this many
-$MAX_ARGS     = 1;  # Need at most this many
-our $NEED_STACK   = 1;
 
 sub complete($$)
 { 

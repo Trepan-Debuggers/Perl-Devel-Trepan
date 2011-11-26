@@ -9,12 +9,23 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Next;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant ALIASES    => qw(n next+ next- n+ n-);
+use constant CATEGORY   => 'running';
+use constant SHORT_HELP => 'Step program without entering called functions';
+use constant MIN_ARGS   => 0; # Need at least this many
+use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
+EOE
+}
+
 use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME}[+|-] [count]
 
 Step one statement ignoring steps into function calls at this level.
@@ -36,11 +47,6 @@ Examples:
   ${NAME}
 HELP
 
-use constant ALIASES    => qw(n next+ next- n+ n-);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Step program without entering called functions';
-$MIN_ARGS     = 0;
-$MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
 local $NEED_RUNNING = 1;
 
 # This method runs the command

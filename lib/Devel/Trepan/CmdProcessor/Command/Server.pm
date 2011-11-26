@@ -13,6 +13,15 @@ use Cwd 'abs_path';
 use Getopt::Long qw(GetOptionsFromArray);
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Allow remote connections';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
@@ -32,12 +41,6 @@ HELP
 # FIXME: put back in help.
 # Note that the command startup file ${Devel::Trepan::CMD_INITFILE_BASE} is read automatically
 # via a ${NAME} command the debugger is started.
-
-
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Allow remote connections';
-$MIN_ARGS     = 0;  # Need at least this many
-$MAX_ARGS     = undef;  # Need at least this many
 
 use constant DEFAULT_OPTIONS => {
     port => 1955,

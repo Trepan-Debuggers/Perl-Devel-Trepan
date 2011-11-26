@@ -11,20 +11,22 @@ use if !defined @ISA, Devel::Trepan::Condition ;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (defined @ISA) {
+    eval <<'EOE';
 #   eval "use constant ALIASES    => qw(w);";
-    eval "use constant CATEGORY   => 'breakpoints'";
-    eval "use constant NEED_STACK => 0";
-    eval "use constant SHORT_HELP => 
-         'Set to enter debugger when a watched expression changes'"
+use constant CATEGORY   => 'breakpoints';
+use constant NEED_STACK => 0;
+use constant SHORT_HELP => 
+    'Set to enter debugger when a watched expression changes';
+use constant MIN_ARGS   => 1;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
-$MIN_ARGS   = 1;      # Need at least this many
-$MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} PERL-EXPRESSION
  
 Stop very time PERL-EXPRESSION changes from its prior value.

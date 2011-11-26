@@ -14,13 +14,23 @@ use Cwd 'abs_path';
 use Getopt::Long qw(GetOptionsFromArray);
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Read and run debugger commands from a file';
+use constant MIN_ARGS   => 1;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [options] FILE
 
 options: 
@@ -44,13 +54,6 @@ HELP
 # FIXME: put back in help.
 # Note that the command startup file ${Devel::Trepan::CMD_INITFILE_BASE} is read automatically
 # via a ${NAME} command the debugger is started.
-
-
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Read and run debugger commands from a file';
-$MIN_ARGS     = 1;  # Need at least this many
-$MAX_ARGS     = undef; 
-our $SHORT_HELP   = 'Read and run debugger commands from a file';
 
 use constant DEFAULT_OPTIONS => {
     abort_on_error => 0,

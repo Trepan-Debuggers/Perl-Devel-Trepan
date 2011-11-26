@@ -6,14 +6,25 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Set;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY => 'support';
+use constant SHORT_HELP => 'Modify parts of the debugger environment';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
+}
+
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 use strict;
 use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 Modifies parts of the debugger environment.
 
 You can give unique prefix of the name of a subcommand to get
@@ -26,12 +37,6 @@ For compatability with older ruby-debug "${NAME} auto..." is the
 same as "${NAME} auto ...". For example "${NAME} autolist" is the same 
 as "${NAME} auto list".
 HELP
-
-use constant CATEGORY => 'support';
-use constant SHORT_HELP => 'Modify parts of the debugger environment';
-local $NEED_STACK     = 0;
-$MAX_ARGS             = undef;
-$MIN_ARGS             = 0;
 
 sub run($$) 
 {
@@ -46,7 +51,7 @@ sub run($$)
     $self->SUPER::run($args);
 }
 
-if (__FILE__ eq  $0) {
+unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc, $NAME);

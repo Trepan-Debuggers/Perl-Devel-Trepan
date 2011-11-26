@@ -8,17 +8,19 @@ package Devel::Trepan::CmdProcessor::Command::Macro;
 use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (defined(@ISA)) {
-    eval "use constant CATEGORY   => 'support';";
-    eval "use constant SHORT_HELP => 'Define a macro';";
+    eval <<'EOE';
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Define a macro';
+use constant MIN_ARGS   => 3; # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-$MIN_ARGS = 3;
-$MAX_ARGS = undef;
-$NAME = set_name();
-$HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} MACRO-NAME sub { ... }
 
 Define MACRO-NAME as a debugger macro. Debugger macros get a list of

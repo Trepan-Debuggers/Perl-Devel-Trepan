@@ -11,14 +11,16 @@ package Devel::Trepan::CmdProcessor::Command::Continue;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
-    eval <<"EOE";
-use constant ALIASES    => qw(c cont);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Continue running until end or brkpt';
-use constant MIN_ARGS  => 0;  # Need at least this many
-use constant MAX_ARGS  => 2;  # Need at most this many - undef -> unlimited.
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant ALIASES    => qw(c cont);
+    use constant CATEGORY   => 'running';
+    use constant SHORT_HELP => 'Continue running until end or brkpt';
+    use constant MIN_ARGS   => 0;  # Need at least this many
+    use constant MAX_ARGS   => 2;  # Need at most this many
+    use constant NEED_STACK => 1;
 EOE
-
+}
 
 use strict;
 use vars qw(@ISA);
@@ -44,7 +46,6 @@ Examples:
 See also 'step', 'next', 'finish', 'nexti' commands and "help location".
 HELP
 
-local $NEED_RUNNING = 1;
 
 # This method runs the command
 sub run($$) {

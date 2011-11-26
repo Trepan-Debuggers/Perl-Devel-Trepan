@@ -9,11 +9,12 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 
 unless (defined(@ISA)) {
     eval <<'EOE';
-use constant CATEGORY => 'support';
-use constant SHORT_HELP => 'Modify parts of the debugger environment';
-use constant MIN_ARGS   => 0;     # Need at least this many
-use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
-use constant NEED_STACK => 0;
+    use constant CATEGORY => 'support';
+    use constant SHORT_HELP => 'Modify parts of the debugger environment';
+    use constant MIN_ARGS   => 0;     # Need at least this many
+    use constant MAX_ARGS   => undef; # Need at most this many - 
+                                      # undef -> unlimited.
+    use constant NEED_STACK => 0;
 EOE
 }
 

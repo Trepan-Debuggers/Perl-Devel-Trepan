@@ -97,7 +97,7 @@ sub process_args($$$$) {
 		    show_var($proc, $name, $hash_ref->{$name});
 		}
 	    } else {
-		$proc->msg("No 'my' variables at this level");
+		$proc->msg("No '$lex_type' variables at this level");
 	    }
 	} else {
 	    for my $name (@ARGS) {

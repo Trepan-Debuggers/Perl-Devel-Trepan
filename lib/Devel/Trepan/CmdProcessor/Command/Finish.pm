@@ -13,13 +13,15 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 use vars qw(@ISA);
 unless (defined @ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(fin);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Step to end of current method (step out)';
-use constant MIN_ARGS  => 0;  # Need at least this many
-use constant MAX_ARGS  => 1;  # Need at most this many - undef -> unlimited.
+    use constant ALIASES    => qw(fin);
+    use constant CATEGORY   => 'running';
+    use constant SHORT_HELP => 'Step to end of current method (step out)';
+    use constant MIN_ARGS  => 0;  # Need at least this many
+    use constant MAX_ARGS  => 1;  # Need at most this many - undef -> unlimited.
+    use constant NEED_RUNNING => 1;
 EOE
 }
+
 use strict;
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
@@ -42,8 +44,6 @@ program. In general, '${NAME}', 'step' and 'next' may slow a program down
 while 'break' will have less overhead.
 
 HELP
-
-local $NEED_RUNNING = 1;
 
 # This method runs the command
 sub run($$) {

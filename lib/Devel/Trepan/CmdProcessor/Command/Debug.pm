@@ -7,12 +7,16 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Debug;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
-    eval <<"EOE";
-use constant CATEGORY   => 'data';
-use constant SHORT_HELP => 'debug into a Perl expression';
-use constant MIN_ARGS  => 1;  # Need at least this many
-use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant CATEGORY   => 'data';
+    use constant SHORT_HELP => 'debug into a Perl expression';
+    use constant MIN_ARGS   => 1;      # Need at least this many
+    use constant MAX_ARGS   => undef;  # Need at most this many - 
+                                       # undef -> unlimited.
+    use constant NEED_STACK => 0;
 EOE
+}
 
 use strict;
 use Devel::Trepan::Util;
@@ -31,8 +35,6 @@ Examples:
 ${NAME} finonacci(5)   # Debug fibonacci funcition
 ${NAME} \$x=1; \$y=2;    # Kind of pointless, but doable.
 HELP
-
-local $NEED_STACK       => 0;
 
 # sub complete($$)
 # { 

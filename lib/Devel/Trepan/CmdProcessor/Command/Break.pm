@@ -9,12 +9,13 @@ package Devel::Trepan::CmdProcessor::Command::Break;
 use English qw( -no_match_vars );
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval <<"EOE";
-use constant ALIASES    => qw(b);
-use constant CATEGORY   => 'breakpoints';
-use constant SHORT_HELP => 'Set a breakpoint';
-use constant MIN_ARGS  => 0;   # Need at least this many
-use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+    eval <<'EOE';
+    use constant ALIASES    => qw(b);
+    use constant CATEGORY   => 'breakpoints';
+    use constant SHORT_HELP => 'Set a breakpoint';
+    use constant MIN_ARGS  => 0;   # Need at least this many
+    use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+    use constant NEED_STACK => 1;
 EOE
 }
 
@@ -38,7 +39,6 @@ Examples:
 See also "tbreak", "delete", "info break" and "condition".
 HELP
 
-local $NEED_RUNNING = 1;
 
 
 #  include Trepan::Condition

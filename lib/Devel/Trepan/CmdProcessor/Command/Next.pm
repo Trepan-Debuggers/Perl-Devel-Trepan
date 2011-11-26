@@ -12,11 +12,13 @@ use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (defined(@ISA)) {
     eval <<'EOE';
-use constant ALIASES    => qw(n next+ next- n+ n-);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Step program without entering called functions';
-use constant MIN_ARGS   => 0; # Need at least this many
-use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
+    use constant ALIASES    => qw(n next+ next- n+ n-);
+    use constant CATEGORY   => 'running';
+    use constant SHORT_HELP => 'Step program without entering called functions';
+    use constant MIN_ARGS   => 0; # Need at least this many
+    use constant MAX_ARGS   => 1; # Need at most this many - 
+                                  # undef -> unlimited.
+    use constant NEED_STACK => 1;
 EOE
 }
 
@@ -46,8 +48,6 @@ determines this behavior.
 Examples: 
   ${NAME}
 HELP
-
-local $NEED_RUNNING = 1;
 
 # This method runs the command
 sub run($$) {

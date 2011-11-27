@@ -99,12 +99,13 @@ sub whence_file($)
     my $prog_script = shift;
 
     # If we have an relative or absolute file name, don't do anything.
+    return $prog_script if 
+	File::Spec->file_name_is_absolute($prog_script);
     my $first_char = substr($prog_script, 0, 1);
     return $prog_script if index('./', $first_char) != -1;
 
     for my $dirname (File::Spec->path()) {
 	my $prog_script_try = File::Spec->catfile($dirname, $prog_script);
-	print "trying $prog_script_try\n";
 	return $prog_script_try if -r $prog_script_try;
     }
     # Failure

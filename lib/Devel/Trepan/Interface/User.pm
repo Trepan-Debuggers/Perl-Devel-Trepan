@@ -131,8 +131,10 @@ sub save_history($)
     my $self = shift;
     if ($self->{histfile} && $self->{opts}{history_save} && $self->want_gnu_readline &&
 	$self->{input}{readline}) {
-    	$self->{input}{readline}->StifleHistory($self->{opts}{histsize});
-    	$self->{input}{readline}->WriteHistory($self->{histfile});
+	$self->{input}{readline}->StifleHistory($self->{histsize}) if
+	    $self->{input}{readline}->can("StifleHistory");
+	$self->{input}{readline}->WriteHistory($self->{histfile}) if
+	    $self->{input}{readline}->can("WriteHistory");
     }
 }
 

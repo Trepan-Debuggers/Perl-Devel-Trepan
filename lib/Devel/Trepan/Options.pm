@@ -68,6 +68,7 @@ sub process_options($)
 	 'cd:s'         => \$opts->{initial_dir},
 	 'nx'           => \$opts->{nx},
 	 'readline'     => \$opts->{readline},
+	 'no-readline' => sub { $opts->{readline} = 0},
 	 'x|trace'      => \$opts->{traceprint},
 	 'version'      => \$show_version,
 	);

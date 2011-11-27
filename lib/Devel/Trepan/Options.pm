@@ -181,7 +181,8 @@ trepanpl - Perl "Trepanning" Debugger
       --cd DIR            Change current directory to DIR
       --nx                Don't run user startup file (e.g. .treplrc)
       --port N            TCP/IP port to use on remote connection
-      --readline          Try to use Term::Readline
+      --readline  | --no-readline
+                          Try or don't try to use Term::Readline
       -x|--trace          Simulate line tracing (think POSIX shell set -x)
       --highlight | --no-highlight 
                           Use or don't use ANSI terminal sequences for syntax

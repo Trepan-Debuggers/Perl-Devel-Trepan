@@ -103,6 +103,7 @@ sub whence_file($)
 
     for my $dirname (File::Spec->path()) {
 	my $prog_script_try = File::Spec->catfile($dirname, $prog_script);
+	print "trying $prog_script_try\n";
 	return $prog_script_try if -r $prog_script_try;
     }
     # Failure

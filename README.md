@@ -19,7 +19,7 @@ Then from another shell somewhere else:
  
         host2$ trepanpl --client
 
-Calling the debugger from inside your Progam program using Joshua ben
+To call the debugger from inside your Perl program using Joshua ben
 Jore's Enbugger (http://search.cpan.org/~jjore/Enbugger/) patched with
 the trepan extension
 (https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch):

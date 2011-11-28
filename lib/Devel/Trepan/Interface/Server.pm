@@ -93,18 +93,19 @@ sub confirm($;$$)
 	# begin
         $self->write_confirm($prompt, $default);
 	$reply = $self->readline;
+	chomp($reply);
 	if (defined($reply)) {
 	    ($reply = lc(unpack("A*", $reply))) =~ s/^\s+//;
 	} else {
 	    return $default;
 	}
-      }
-    if (grep(/^${reply}$/, YES)) {
-	return 1;
-    } elsif (grep(/^${reply}$/, NO)) {
-        return 0;
-    } else {
-        $self->msg("Please answer 'yes' or 'no'. Try again.");
+	if (grep(/^${reply}$/, YES)) {
+	    return 1;
+	} elsif (grep(/^${reply}$/, NO)) {
+	    return 0;
+	} else {
+	    $self->msg("Please answer 'yes' or 'no'. Try again.");
+	}
     }
     return $default;
 }

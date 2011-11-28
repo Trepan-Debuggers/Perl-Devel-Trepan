@@ -18,10 +18,11 @@ use constant DEFAULT_INIT_OPTS => {open => 1};
 
 use constant SERVER_SOCKET_OPTS => {
     host    => 'localhost',
-    port    => 1955,
+    port    => 1954,
     timeout => 5,     # FIXME: not used
-    reuse   => 1,  # FIXME: not used. Allow port to be resued on close?
-    open    => 1
+    reuse   => 1,     # FIXME: not used. Allow port to be resued on close?
+    open    => 1,
+    logger  => undef  # Complaints should be sent here.
     # Python has: 'posix' == os.name 
 };
 
@@ -35,6 +36,7 @@ sub new($;$)
 	session   => undef,
 	buf       => '',    # Read buffer
 	state     => 'disconnected',
+	logger    => $opts->{logger},
 	line_edit => 0
     };
     bless $self, $class;
@@ -100,15 +102,28 @@ sub read_msg($)
     while (!$self->{buf} || is_empty($self)) { 
         $self->{session}->recv($self->{buf}, TCP_MAX_PACKET);
     }
-    ($self->{buf}, $data) = unpack_msg($self->{buf});
+    eval {
+	($self->{buf}, $data) = unpack_msg($self->{buf});
+    };
+    if ($EVAL_ERROR) {
+	$self->{buf} = '';
+	die $EVAL_ERROR;
+    }
     return $data;
 }
 
 sub wait_for_connect
 {
     my($self) = @_;
+    if ($self->{logger}) {
+	my $msg = sprintf("Waiting for a connection on port %d at " . 
+			  "address %s...",
+			  $self->{port}, $self->{host});
+	$self->{logger}->msg($msg);
+    }
     $self->{input} = $self->{output} = $self->{session} = 
 	$self->{server}->accept;
+    $self->{logger}->msg("Got connection") if $self->{logger};
     $self->{state} = 'connected';
 }
     
@@ -118,7 +133,7 @@ sub wait_for_connect
 sub write($$)
 {
     my($self, $msg) = @_;
-    $self->wait_for_connect() unless $self->is_connected;
+    $self->wait_for_connect unless $self->is_connected;
     # FIXME: do we have to check the size of msg and split output? 
     $self->{session}->print(pack_msg($msg));
 }

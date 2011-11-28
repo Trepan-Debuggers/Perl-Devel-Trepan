@@ -1,3 +1,4 @@
+# Use with example/gcd.pl
 break
 break gcd
 break 11

@@ -4,9 +4,10 @@ use Devel::Trepan::CmdProcessor;
 use Devel::Trepan::WatchMgr;
 use Devel::Trepan::IO::Output;
 use Devel::Trepan::Interface::Script;
+use Devel::Trepan::Interface::Server;
 
 package Devel::Trepan::Core;
-use vars qw(@ISA);
+use vars qw(@ISA $dbgr);
 @ISA = qw(DB);
 
 sub add_startup_files($$) {
@@ -93,8 +94,19 @@ sub awaken($;$) {
 		print STDERR "Command file '$batch_filename' doesn't exist.\n"	}
 
     } else {
-	my $cmdproc = Devel::Trepan::CmdProcessor->new(undef, $self, 
-						   \%cmdproc_opts);
+	my $intf = undef;
+	if ($opts->{server}) {
+	    $server_opts = {
+		host => $opts->{host},
+		port => $opts->{port}
+	    };
+	    $intf = [
+		Devel::Trepan::Interface::Server->new(undef, undef,
+						      $server_opts)
+		];
+	}
+	my $cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
+						       \%cmdproc_opts);
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};
 	$opts //= {};
@@ -114,7 +126,7 @@ sub display_lists ($)
     return $self->{proc}{displays}{list};
 }
     
-my $dbgr = __PACKAGE__->new();
+$dbgr = __PACKAGE__->new();
 $dbgr->awaken();
 $dbgr->register();
 $dbgr->ready();

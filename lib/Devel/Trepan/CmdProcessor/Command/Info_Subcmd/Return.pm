@@ -15,7 +15,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $HELP = "Show the value about to be returned";
 our $MIN_ABBREV = length('ret');
-our $NEED_STACK = 1;
+use constant NEED_STACK => 1;
 
 use Data::Dumper;
 

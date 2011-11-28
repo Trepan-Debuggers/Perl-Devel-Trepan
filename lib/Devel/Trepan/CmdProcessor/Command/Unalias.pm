@@ -6,6 +6,17 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Unalias;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Remove an alias';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
+EOE
+}
+
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -18,8 +29,6 @@ Remove alias ALIAS
 See also 'alias'.
 HELP
 
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Remove an alias';
 our $ARGS  = 1;
   
 sub complete($$)

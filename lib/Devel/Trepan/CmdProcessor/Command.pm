@@ -21,21 +21,18 @@ sub declared ($) {
     $constant::declared{$full_name};
 }
 
-use vars qw(@CMD_VARS @EXPORT @ISA @CMD_ISA @ALIASES);
+use vars qw(@CMD_VARS @EXPORT @ISA @CMD_ISA @ALIASES $HELP);
 BEGIN {
-    @CMD_VARS = qw($HELP $MAX_ARGS $MIN_ARGS $NAME 
-                   $NEED_RUNNING $NEED_STACK @CMD_VARS);
+    @CMD_VARS = qw($HELP $NAME $NEED_RUNNING $NEED_STACK @CMD_VARS);
 }
 use vars @CMD_VARS;
 @ISA = qw(Exporter);
 
 @CMD_ISA  = qw(Devel::Trepan::CmdProcessor::Command);
-@EXPORT = qw(&set_name @CMD_ISA $MAX_ARGS $MIN_ARGS $NEED_RUNNING 
+@EXPORT = qw(&set_name @CMD_ISA $NEED_RUNNING 
              $NEED_STACK @CMD_VARS declared);
 
 
-$MIN_ARGS = 0;   # run()'s args array must be at least this many
-$MAX_ARGS = 0;   # run()'s args array must be at least this many
 $NEED_STACK = 0; # We'll say that commands which need a stack
                  # to run have to declare that and those that
                  # don't don't have to mention it.
@@ -45,7 +42,6 @@ $NEED_RUNNING = 0; # We'll say that commands which need a a currently
                    # and we've faked the stack. (If this is not so, we can
                    # don't need this and can simple use $NEED_STACK.
 
-$NAME       = 'Name not filled in';
 $HELP       = 'Each command should set help text text';
 use constant CATEGORY => 'Each command should set a category';
 
@@ -85,7 +81,7 @@ sub new($$) {
     $self;
 }
 
-# List commands arranged in an aligned columns
+# List command names aligned in columns
 sub columnize_commands($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
@@ -162,25 +158,15 @@ sub short_help($) {
     $self->{short_help} = $ary[0];
 }
 
-# # Define a method called 'complete' on the singleton class.
-# sub self.completion(ary) 
-#       self.send(:define_method, 
-#                 :complete, 
-#                 Proc.new {|prefix| 
-# 			      Trepan::Complete.complete_token(ary, prefix) });
-#     }
-#   }
-# }
-
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
     my $cmd = Devel::Trepan::CmdProcessor::Command->new($proc);
-    print $cmd->short_help, "\n";
-    print $cmd, "\n";
-    print $cmd->Category, "\n";
-    print $cmd->{name}, "\n";
-    print $cmd->{min_args}, "\n";
+    # print $cmd->short_help, "\n";
+    # print $cmd, "\n";
+    # print $cmd->Category, "\n";
+    # print $cmd->{name}, "\n";
+    # print $cmd->MIN_ARGS, "\n";
     # p cmd.complete('aa');
 }
 

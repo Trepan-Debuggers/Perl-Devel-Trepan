@@ -5,16 +5,24 @@ SYNOPSIS
 
 From a shell: 
 
-        bash$ trepanpl [trepan-opts] perl-program [perl-program-opts]
+        bash$ trepanpl [trepan-opts ] perl-program [perl-program-opts]
 
 Or for those who prefer the traditional Perlish way:
 
-       bash$ perl -d:Trepan perl-program [perl-program-opts]
+        bash$ perl -d:Trepan perl-program [perl-program-opts]
 
-Calling the debugger from inside your Progam program using Joshua ben
+For remote execution:
+
+        host1$ trepanpl --server perl-program ...
+
+Then from another shell somewhere else:
+ 
+        host2$ trepanpl --client
+
+To call the debugger from inside your Perl program using Joshua ben
 Jore's Enbugger (http://search.cpan.org/~jjore/Enbugger/) patched with
 the trepan extension
-(https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch):
+https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch 
 
 	# This needs to be done once and could even be in some sort of conditional code
         require Enbugger; Enbugger->load_debugger( 'trepan' );

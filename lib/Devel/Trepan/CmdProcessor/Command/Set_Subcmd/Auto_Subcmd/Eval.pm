@@ -48,7 +48,7 @@ problem. Another possibility is to go into a real Ruby shell via the
 HELP
 
 our $MIN_ABBREV   = length('ev');
-our $MAX_ARGS     = 1;
+use constant MAX_ARGS => 1;
 our $SHORT_HELP   = "Set evaluation of unrecognized debugger commands";
  
 unless (caller) {

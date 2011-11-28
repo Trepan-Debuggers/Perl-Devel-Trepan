@@ -13,17 +13,17 @@ use File::Spec;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 
 use strict;
-use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES $MAX_ARGS);
+use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 #  include Trepan::Help
 
-$MIN_ARGS      = 0;
-$MAX_ARGS      = undef;
+use constant MIN_ARGS => 0;
+use constant MAX_ARGS => undef;
 $NAME          = '?'; # FIXME: Need to define this, but should 
                       # pick this up from class/file name.
-$NEED_STACK    = 0;
+use constant NEED_STACK => 0;
 
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command
@@ -46,9 +46,7 @@ sub new($$)
     };
     # Initialization
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::";
-    my $excluded_cmd_vars = {'$HELP' => 1, 
-			     '$NAME'=>2, '$MIN_ARGS' => 2, 
-                             '$MAX_ARGS'=>2};
+    my $excluded_cmd_vars = {'$HELP' => 1, '$NAME'=>2};
     for my $field (@CMD_VARS) {
 	next if exists $excluded_cmd_vars->{$field} && 
 	    $excluded_cmd_vars->{$field} == 2;

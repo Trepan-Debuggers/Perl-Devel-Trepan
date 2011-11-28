@@ -21,7 +21,7 @@ our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 ## FIXME: do automatically.
 our $CMD = "info files";
 
-our $MAX_ARGS   = 8;  # Need at most this many - undef -> unlimited.
+use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
 our $HELP = <<"HELP";
 ${CMD} [{FILENAME|.|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
 
@@ -156,13 +156,19 @@ sub run($$)
 	    $processed_arg = $seen{sha1} = 1;
 	}
 
+	## Breakpoints are broken. Something changed to break it and 
+	## I haven't a clue. Furthermore, %{'_<'.$filename} no longer seems
+	## be set so we can't test for == 1 or == 0 in numeric context and
+	## get something.
 	if ($arg eq 'all' || $arg eq 'brkpts') {
-	    unless ($seen{brkpts}) {
-		$proc->msg("Possible breakpoint line numbers:");
-		my @lines = DB::LineCache::trace_line_numbers($canonic_name);
-		my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
-		$proc->msg($fmt_lines);
-	    }
+	    # unless ($seen{brkpts}) {
+	    # 	$proc->msg("Possible breakpoint line numbers:");
+	    # 	my @lines = DB::LineCache::trace_line_numbers($canonic_name);
+	    # 	my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
+	    # 	$proc->msg($fmt_lines);
+	    # }
+	    $proc->msg('Breakpoint reporting is broken -- %{_<$filename} not working');
+
 	    $processed_arg = $seen{brkpts} = 1;
 	}
 

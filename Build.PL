@@ -31,8 +31,11 @@ my $builder = Module::Build->new(
     license             => 'gpl',
     needs_compiler      => 0,
     release_status      => 'stable',
-    configure_requires  => { 'Module::Build' => '0.32',
-                             'ExtUtils::PkgConfig' => 0 },
+    configure_requires  => { 
+	'Module::Build' => '0.32',
+	'ExtUtils::PkgConfig' => 0,
+			      
+    },
     build_requires => {
         'String::Diff'                      => 0,
     },

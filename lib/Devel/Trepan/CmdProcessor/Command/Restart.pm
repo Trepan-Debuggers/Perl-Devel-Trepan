@@ -9,8 +9,13 @@ use English qw( -no_match_vars );
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (defined(@ISA)) {
-    eval "use constant CATEGORY   => 'running';";
-    eval "use constant SHORT_HELP => '(Hard) restart of program via exec()'";
+    eval <<'EOE';
+use constant ALIASES    => ('R');
+use constant CATEGORY   => 'running';;
+use constant SHORT_HELP => '(Hard) restart of program via exec()';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict;
@@ -18,8 +23,6 @@ use vars qw(@ISA);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = undef;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 $NAME 
@@ -27,8 +30,6 @@ $NAME
 Restart debugger and program via an exec call.
 HELP
 
-use constant ALIASES  => ('R');
-  
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;

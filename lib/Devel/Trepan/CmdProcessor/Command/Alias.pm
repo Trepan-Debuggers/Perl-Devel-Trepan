@@ -6,6 +6,17 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Alias;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined @ISA) {
+    eval <<"EOE";
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Add an alias for a debugger command';
+use constant MIN_ARGS  => 0;      # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
+}
+
+
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
@@ -29,8 +40,6 @@ alias s   step   # "s" is now an alias for "step".
 See also 'unalias' and 'show ${NAME}'.
 HELP
 
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Add an alias for a debugger command';
   
 # Run command. 
 sub run($$) {

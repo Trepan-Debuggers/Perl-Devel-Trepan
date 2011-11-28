@@ -2,7 +2,7 @@
 our (@ISA, @EXPORT);
 x1 (TCPPack.pm:18)
     my $msg = shift;
-<- (TCPPack.pm:37) Devel::Trepan::IO::TCPPack::pack_msg
+<- (TCPPack.pm:37) TCPPack::pack_msg
     ($buf, $msg) = unpack_msg(pack_msg($buf));
-Return value for Devel::Trepan::IO::TCPPack::pack_msg is: 0009Hi there!
+Return value for TCPPack::pack_msg is: 0009Hi there!
 *** Can't run finish while inside a return. Step and try again.

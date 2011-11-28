@@ -5,6 +5,17 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Frame;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined @ISA) {
+    eval <<'EOE';
+use constant CATEGORY   => 'stack';
+use constant SHORT_HELP => 'Set frame for use in commands';
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => 2;  # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
@@ -30,11 +41,6 @@ Examples:
 
 See also 'up', 'down' 'where' and 'info thread'.
 HELP
-
-use constant CATEGORY   => 'stack';
-use constant SHORT_HELP => 'Print backtrace of stack frames';
-our $MAX_ARGS     = 1;  # Need at most this many
-our $NEED_STACK   = 1;
 
 sub complete($$)
 { 

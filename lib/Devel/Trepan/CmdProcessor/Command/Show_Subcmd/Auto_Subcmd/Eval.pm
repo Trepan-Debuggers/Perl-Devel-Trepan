@@ -14,7 +14,7 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $MAX_ARGS     = 0;
+use constant MAX_ARGS => 0;
 our $HELP         = <<"HELP";
 
 Evaluate unrecognized debugger commands.

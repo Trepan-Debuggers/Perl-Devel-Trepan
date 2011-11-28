@@ -68,8 +68,10 @@ sub remove_history($;$)
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
-    $which //= $self->{input}{readline}->where_history();
-    $self->{input}{readline}->remove_history($which);
+    $which //= $self->{input}{readline}->where_history() if 
+	$self->{input}{readline}->can("where_history");
+    $self->{input}{readline}->remove_history($which) if
+	$self->{input}{readline}->can("remove_history");
 }
 
 sub is_closed($) 
@@ -117,8 +119,10 @@ sub read_history($)
     }
     $self->{histsize} //= ($ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize});
     if ( -f $self->{histfile} ) {
-	$self->{input}{readline}->StifleHistory($self->{histsize});
-	$self->{input}{readline}->ReadHistory($self->{histfile});
+	$self->{input}{readline}->StifleHistory($self->{histsize}) if
+	    $self->{input}{readline}->can("StifleHistory");
+	$self->{input}{readline}->ReadHistory($self->{histfile}) if
+	    $self->{input}{readline}->can("ReadHistory");
     }
 }
 
@@ -127,8 +131,10 @@ sub save_history($)
     my $self = shift;
     if ($self->{histfile} && $self->{opts}{history_save} && $self->want_gnu_readline &&
 	$self->{input}{readline}) {
-    	$self->{input}{readline}->StifleHistory($self->{opts}{histsize});
-    	$self->{input}{readline}->WriteHistory($self->{histfile});
+	$self->{input}{readline}->StifleHistory($self->{histsize}) if
+	    $self->{input}{readline}->can("StifleHistory");
+	$self->{input}{readline}->WriteHistory($self->{histfile}) if
+	    $self->{input}{readline}->can("WriteHistory");
     }
 }
 

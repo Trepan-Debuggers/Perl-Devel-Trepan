@@ -1,3 +1,4 @@
+# Use with example/gcd.pl
 set basename on
 set highlight off
 set autoeval on

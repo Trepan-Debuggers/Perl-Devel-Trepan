@@ -11,16 +11,19 @@ use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
 unless (defined(@ISA)) {
-    eval "use constant ALIASES    => qw(l list> l>)";
-    eval "use constant CATEGORY   => 'files'";
-    eval "use constant SHORT_HELP => 'List source code'";
+    eval <<'EOE';
+    use constant ALIASES    => qw(l list> l>);
+    use constant CATEGORY   => 'files';
+    use constant SHORT_HELP => 'List source code';
+    use constant MIN_ARGS   => 0; # Need at least this many
+    use constant MAX_ARGS   => 3; # Need at most this many - undef -> unlimited.
+    use constant NEED_STACK => 1;
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = 3;  # undef -> unlimited
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME}[>] [FILENAME] [FIRST [NUM]]
@@ -84,8 +87,6 @@ currently stopped. On line 253 there is a breakpoint 1 which is
 enabled, while at line 255 there is an breakpoint 2 which is
 disabled.
 HELP
-
-local $NEED_RUNNING = 1;
 
 # If last is less than first, assume last is a count rather than an
 # end line number.

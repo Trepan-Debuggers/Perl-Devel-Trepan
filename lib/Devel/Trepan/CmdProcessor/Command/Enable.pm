@@ -12,8 +12,12 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Enable;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (defined @ISA) {
-    eval "use constant CATEGORY => 'breakpoints'";
-    eval "use constant SHORT_HELP => 'Enable some breakpoints'";
+    eval <<"EOE";
+use constant CATEGORY => 'breakpoints';
+use constant SHORT_HELP => 'Enable some breakpoints';
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict;

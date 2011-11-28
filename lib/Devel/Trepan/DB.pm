@@ -123,6 +123,7 @@ BEGIN {
 #
 sub DB {
 
+    # print "+++ in DB single: ${DB::single}\n";
     # lock the debugger and get the thread id for the prompt
     lock($DBGR);
 
@@ -133,7 +134,6 @@ sub DB {
 
     return unless $ready && !$in_debugger;
     local $in_debugger = 1;
-    # print "+++ in DB single: ${DB::single}\n";
     @DB::_ = @_;
     &save;
 
@@ -430,12 +430,6 @@ sub _clientname {
     my $name = shift;
     "$name" =~ /^(.+)=[A-Z]+\(.+\)$/;
     return $1;
-}
-
-sub next {
-    my $s = shift;
-    $DB::single  = NEXT_STEPPING_EVENT;
-    $DB::running = 1;
 }
 
 sub step {

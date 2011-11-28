@@ -7,13 +7,24 @@ package Devel::Trepan::CmdProcessor::Command::Show;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY => 'status';
+use constant SHORT_HELP => 'Show parts of the debugger environment';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
+}
+
 use strict;
 use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-local $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 Generic command for showing things about the debugger.  You can
 give unique prefix of the name of a subcommand to get information
 about just that subcommand.
@@ -21,12 +32,6 @@ about just that subcommand.
 Type ${NAME} for a list of ${NAME} subcommands and what they do.
 Type "help ${NAME} *" for just a list of ${NAME} subcommands.
 HELP
-
-use constant CATEGORY => 'status';
-use constant SHORT_HELP => 'Show parts of the debugger environment';
-local $NEED_STACK     = 0;
-$MAX_ARGS             = 1000;
-$MIN_ARGS             = 0;
 
 sub run($$) 
 {

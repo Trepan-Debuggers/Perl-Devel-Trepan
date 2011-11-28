@@ -19,7 +19,7 @@ Set to run a 'list' command each time we enter the debugger
 HELP
 
 our $MIN_ABBREV   = length('li');
-our $MAX_ARGS     = 1;
+use constant MAX_ARGS => 1;
 our $SHORT_HELP   = "Set to run a 'list' command each time we enter the debugger";
  
 sub run($$)

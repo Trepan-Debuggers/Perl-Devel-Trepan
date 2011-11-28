@@ -7,14 +7,22 @@ package Devel::Trepan::CmdProcessor::Command::Info;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant SHORT_HELP => 'Information about debugged program and its environment'; 
+use constant CATEGORY => 'status';
+use constant MIN_ARGS   => 0;  # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
+}
+
 use strict;
 use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-our $MIN_ARGS   = 0;
-our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
-local $NAME = set_name();
+our $NAME       = set_name();
 our $HELP = <<"HELP";
 Generic command for showing things about the program being debugged. 
 
@@ -24,10 +32,6 @@ information about just that subcommand.
 Type "${NAME}" for a list of "info" subcommands and what they do.
 Type "help ${NAME} *" for just a list of "info" subcommands.
 HELP
-
-use constant CATEGORY => 'status';
-use constant SHORT_HELP => 'Information about debugged program and its environment';
-local $NEED_STACK     = 0;
 
 unless (caller) {
     require Devel::Trepan::CmdProcessor;

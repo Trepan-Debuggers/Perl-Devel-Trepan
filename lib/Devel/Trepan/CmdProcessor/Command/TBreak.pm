@@ -9,12 +9,23 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::TBreak;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant CATEGORY => 'breakpoints';
+use constant SHORT_HELP => 'Set a one-time breakpoint';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-local $NAME = set_name();
-local $HELP = <<"HELP";
+our $NAME = set_name();
+our $HELP = <<"HELP";
 ${NAME} [LOCATION]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.
@@ -27,16 +38,12 @@ Examples:
 See also "break".
 HELP
 
-use constant CATEGORY => 'breakpoints';
-use constant SHORT_HELP => 'Set a one-time breakpoint';
-$NEED_RUNNING = 1;
-
-
 #  include Trepan::Condition
 
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
+    no warnings 'once';
     $self->{dbgr}->set_tbreak($DB::filename, $args->[1]);
 }
 

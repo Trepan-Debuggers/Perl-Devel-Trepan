@@ -5,13 +5,22 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Quit;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant ALIASES    => ('quit!', 'q', 'q!');
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Quit program - gently';
+use constant MIN_ARGS   => 0; # Need at least this many
+use constant MAX_ARGS   => 2; # Need at most this many - undef -> unlimited.
+EOE
+}
+
 use strict;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS     = 0;  # Need at most this many
-our $MAX_ARGS     = 2;  # Need at most this many
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME}[!] [unconditionally] [exit code] 
@@ -32,11 +41,6 @@ Examples:
 
 See also the commands "exit" and "kill".
 HELP
-
-use constant ALIASES    => ('quit!', 'q', 'q!');
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Quit program - gently';
-
 
 # FIXME: Combine 'quit' and 'exit'. The only difference is whether
 # exit! or exit is used.
@@ -67,6 +71,7 @@ sub run($$)
 	    return;
 	}
     }
+    no warnings 'once';
     $DB::single = 0;
     $self->{proc}->{interfaces} = [];
     # No graceful way to stop threads...

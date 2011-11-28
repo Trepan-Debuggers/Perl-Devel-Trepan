@@ -10,13 +10,23 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Continue;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant ALIASES    => qw(c cont);
+    use constant CATEGORY   => 'running';
+    use constant SHORT_HELP => 'Continue running until end or brkpt';
+    use constant MIN_ARGS   => 0;  # Need at least this many
+    use constant MAX_ARGS   => 2;  # Need at most this many
+    use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 use vars qw(@ISA);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = 2;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [LOCATION]
@@ -36,11 +46,6 @@ Examples:
 See also 'step', 'next', 'finish', 'nexti' commands and "help location".
 HELP
 
-use constant ALIASES    => qw(c cont);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Continue running until end or brkpt';
-local $NEED_RUNNING = 1;
-local $MAX_ARGS     = 2;  # Need at most this many
 
 # This method runs the command
 sub run($$) {

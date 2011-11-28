@@ -70,6 +70,8 @@ sub new($;$$$) {
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
+    $self->{DB_running}     = $DB::running;
+    $self->{DB_single}      = $DB::single;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
@@ -123,7 +125,7 @@ sub ok_for_running ($$$$) {
     my ($self, $cmd, $name, $nargs) = @_;
     # TODO check execution_set against execution status.
     # Check we have frame is not null
-    my $min_args = exists $cmd->{min_args} ? $cmd->{min_args} : 0;
+    my $min_args = eval { $cmd->MIN_ARGS } || 0;
     if ($nargs < $min_args) {
 	my $msg = 
 	    sprintf("Command '%s' needs at least %d argument(s); " .
@@ -131,7 +133,7 @@ sub ok_for_running ($$$$) {
         $self->errmsg($msg);
 	return;
     }
-    my $max_args = exists $cmd->{max_args} ? $cmd->{max_args} : 10000;
+    my $max_args = eval { $cmd->MAX_ARGS } || undef;
     if (defined($max_args) && $nargs > $max_args) {
 	my $mess = 
 	    sprintf("Command '%s' needs at most %d argument(s); " .
@@ -307,11 +309,11 @@ sub process_commands($$$;$)
 	if (index($self->{event}, 'brkpt') < 0) {
 	    if ($self->is_stepping_skip()) {
 		# || $self->{stack_size} <= $self->{hide_level};
-		$self->{dbgr}->step();
+		$self->{dbgr}->step;
 		return;
 	    }
 	    if ($self->{settings}{traceprint}) {
-		$self->{dbgr}->step();
+		$self->{dbgr}->step;
 		return;
 	    }
 	}
@@ -340,6 +342,8 @@ sub process_commands($$$;$)
 	# }
     }
     $self->{cmdloop_posthooks}->run;
+    $DB::single = $self->{DB_single};
+    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the

@@ -6,14 +6,24 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Debug;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant CATEGORY   => 'data';
+    use constant SHORT_HELP => 'debug into a Perl expression';
+    use constant MIN_ARGS   => 1;      # Need at least this many
+    use constant MAX_ARGS   => undef;  # Need at most this many - 
+                                       # undef -> unlimited.
+    use constant NEED_STACK => 0;
+EOE
+}
+
 use strict;
 use Devel::Trepan::Util;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 1;
-our $MAX_ARGS = undef;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [STRING]
@@ -25,11 +35,6 @@ Examples:
 ${NAME} finonacci(5)   # Debug fibonacci funcition
 ${NAME} \$x=1; \$y=2;    # Kind of pointless, but doable.
 HELP
-
-# use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
-use constant CATEGORY   => 'data';
-use constant SHORT_HELP => 'debug into a Perl expression';
-local $NEED_STACK       => 0;
 
 # sub complete($$)
 # { 
@@ -44,12 +49,11 @@ sub run($$)
     # Trim leading and trailing spaces.
     $expr =~ s/^\s+//; $expr =~ s/\s+$//;
     my $cmd_name = $args->[0];
+    no warnings 'once';
     my $opts = {
 	return_type => parse_eval_suffix($cmd_name),
 	nest => $DB::level
     };
-    
-    no warnings 'once';
 
     # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.
@@ -63,12 +67,13 @@ unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
   # arg_str = '1 + 2'
-  # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # puts "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}"
-  # arg_str = 'return "foo"'
-  # # def cmd.proc.current_source_text
-  # #   'return "foo"'
-  # # end
-  # # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # # puts "eval? ${arg_str} is: ${cmd.run([cmd.name + '?'])}"
+  # $proc->{cmd_argstr} = $arg_str;
+  # print "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}\n";
+  # $arg_str = 'return "foo"';
+  # # sub cmd.proc.current_source_text
+  # # {
+  # #   'return "foo"';
+  # # }
+  # # $proc->{cmd_argstr} = $arg_str;
+  # # print "eval? ${arg_str} is: ${cmd.run([cmd.name + '?'])}\n";
 }

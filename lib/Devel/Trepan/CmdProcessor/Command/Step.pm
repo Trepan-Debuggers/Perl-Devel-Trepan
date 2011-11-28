@@ -9,12 +9,24 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Step;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+use constant ALIASES  => qw(s step+ step- s+ s-);
+use constant CATEGORY => 'running';
+use constant SHORT_HELP => 'Step program (possibly entering called functions)';
+use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $NAME = set_name();
-our $HELP = <<"HELP";
+$NAME = set_name();
+$HELP = <<"HELP";
 ${NAME}[+|-] [into] [count]
 ${NAME} until EXPRESSION
 ${NAME} thread
@@ -55,12 +67,6 @@ See also the commands:
 'skip', 'jump' (there is no 'hop' yet), 'continue', 'return' and
 'finish' for other ways to progress execution.
 HELP
-
-use constant ALIASES  => qw(s step+ step- s+ s-);
-use constant CATEGORY => 'running';
-use constant SHORT_HELP => 'Step program (possibly entering called functions)';
-local $NEED_RUNNING = 1;
-our $MIN_ARGS = 0;
 
 my $Keyword_to_related_cmd = {
     'out'  => 'finish',

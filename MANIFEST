@@ -9,6 +9,8 @@ example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
 example/nexting.pl
+example/our.pl
+example/TCPPack.pm
 example/test-module.pm
 example/test-require.pl
 GNUmakefile
@@ -28,6 +30,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
 lib/Devel/Trepan/CmdProcessor/Command/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
+lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm
 lib/Devel/Trepan/CmdProcessor/Command/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
 lib/Devel/Trepan/CmdProcessor/Command/Edit.pm
@@ -50,6 +53,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm
@@ -59,6 +63,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Next.pm
 lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
 lib/Devel/Trepan/CmdProcessor/Command/Restart.pm
+lib/Devel/Trepan/CmdProcessor/Command/Server.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm
@@ -177,6 +182,7 @@ t/10test-util.t
 t/10test-validate.t
 t/20test-autolist.t
 t/20test-break.t
+t/20test-cont.t
 t/20test-debug.t
 t/20test-display.t
 t/20test-eval.t
@@ -185,7 +191,7 @@ t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
 t/20test-list4.t
-t/20test-my.cmd
+t/20test-my.t
 t/20test-next.t
 t/20test-seq1.t
 t/20test-step.t
@@ -196,6 +202,8 @@ t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
+t/data/cont.cmd
+t/data/cont.right
 t/data/debug.cmd
 t/data/debug.right
 t/data/display.cmd

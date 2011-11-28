@@ -22,7 +22,8 @@ use strict;
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
-    io => 'TCP'
+    io => 'TCP',
+    logger => undef  # An Inteface. Complaints go here.
 };
 
 sub new
@@ -40,12 +41,14 @@ sub new
         $inout = Devel::Trepan::IO::TCPServer->new($connection_opts);
         # }
     }
-    # For Compatability 
     my $self = {
+	# For Compatability 
     	output => $inout,
     	inout  => $inout,
     	input  => $inout,
-    	interactive => 1 # Or at least so we think initially
+    	interactive => 1, # Or at least so we think initially
+
+	logger => $connection_opts->{logger}
     };
     bless $self, $class;
     return $self;
@@ -73,6 +76,11 @@ sub is_interactive($)
     $self->{input}->is_interactive;
 }
 
+sub has_completion($)
+{
+    0
+}
+
 # Called when a dangerous action is about to be done to make sure
 # it's okay. `prompt' is printed; user response is returned.
 # FIXME: make common routine for this and user.rb
@@ -85,18 +93,19 @@ sub confirm($;$$)
 	# begin
         $self->write_confirm($prompt, $default);
 	$reply = $self->readline;
+	chomp($reply);
 	if (defined($reply)) {
 	    ($reply = lc(unpack("A*", $reply))) =~ s/^\s+//;
 	} else {
 	    return $default;
 	}
-      }
-    if (grep(/^${reply}$/, YES)) {
-	return 1;
-    } elsif (grep(/^${reply}$/, NO)) {
-        return 0;
-    } else {
-        $self->msg("Please answer 'yes' or 'no'. Try again.");
+	if (grep(/^${reply}$/, YES)) {
+	    return 1;
+	} elsif (grep(/^${reply}$/, NO)) {
+	    return 0;
+	} else {
+	    $self->msg("Please answer 'yes' or 'no'. Try again.");
+	}
     }
     return $default;
 }
@@ -172,9 +181,9 @@ sub readline($;$)
 	$coded_line = $self->{inout}->read_msg();
     };
     if ($EVAL_ERROR) {
-	print STDERR "Eval error\n";
-	$self->errmsg("Server error. resyncing...");
-	return '';
+	$self->{logger}->msg($EVAL_ERROR) if $self->{logger};
+	$self->errmsg("Server communication protocol error, resyncing...");
+	return ('#');
     } else {
 	my $read_ctrl = substr($coded_line,0,1);
 	substr($coded_line, 1);

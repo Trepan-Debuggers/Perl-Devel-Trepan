@@ -11,17 +11,20 @@ use strict;
 
 use vars qw(@ISA);
 unless (defined(@ISA)) {
-    eval "use constant ALIASES => ('?')";
-    eval "use constant CATEGORY   => 'support'";
-    eval "use constant SHORT_HELP => 'Print commands or give help for command(s)'";
+    eval <<'EOE';
+use constant ALIASES    => ('?');
+use constant CATEGORY   => 'support';
+use constant SHORT_HELP => 'Print commands or give help for command(s)';
+use constant MIN_ARGS   => 0;  # Need at least this many
+use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 0;
+EOE
 }
 
 @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $MIN_ARGS = 0;
-our $MAX_ARGS = 10000;
 our $HELP = <<"HELP";
 ${NAME} [command [subcommand]|expression]
 
@@ -52,8 +55,6 @@ BEGIN {
     'syntax'      => 'Debugger command syntax'
     };" unless declared('CATEGORIES');
 };
-
-local $NEED_STACK    = 0;
 
 use File::Basename;
 use File::Spec;

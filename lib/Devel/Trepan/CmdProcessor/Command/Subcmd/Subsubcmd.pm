@@ -13,8 +13,8 @@ package Devel::Trepan::CmdProcessor::Command::Subsubcmd;
 use Devel::Trepan::CmdProcessor::Validate;
 
 BEGIN {
-    @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MAX_ARGS $MIN_ABBREV 
-                      $MIN_ARGS $NAME $NEED_STACK $SHORT_HELP @SUBCMD_VARS
+    @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MIN_ABBREV 
+                      $NAME $SHORT_HELP @SUBCMD_VARS
                       @SUBCMD_ISA);
 }
 use strict;
@@ -34,10 +34,10 @@ use vars @SUBCMD_VARS;
 $IN_LIST    = 1;  # Show item in help list of commands
 $RUN_CMD    = 1;  # Run subcommand for those subcommands like "show"
                   # which append current settings to list output.
-$MIN_ARGS   = 0;
-$MAX_ARGS   = 0;
+use constant MIN_ARGS => 0;
+use constant MAX_ARGS => 0;
 $MIN_ABBREV = 1;
-$NEED_STACK = 0;
+use constant NEED_STACK => 0;
 $NAME       = 'your_command_name';
 
 

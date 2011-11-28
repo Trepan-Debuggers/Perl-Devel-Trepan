@@ -3,7 +3,7 @@
 # Subsidiary routines used to "pack" and "unpack" TCP messages.
 use strict; use warnings; no warnings 'redefine';
 
-package Devel::Trepan::IO::TCPPack;
+package TCPPack;
 use POSIX qw(ceil log10);
 use Exporter;
 our (@ISA, @EXPORT);
@@ -24,10 +24,8 @@ sub pack_msg($)
 sub unpack_msg($)
 {
     my $buf = shift;
-    my $strnum = substr($buf, 0, LOG_MAX_MSG);
-    die "Protocol error" unless ($strnum =~ /^\d+$/);
-    my $length  = int($strnum);
-    my $data    = substr($buf, LOG_MAX_MSG, $length);
+    my $length  = int(substr($buf, 0, LOG_MAX_MSG));
+    my $data    = substr($buf, LOG_MAX_MSG, LOG_MAX_MSG + $length);
     $buf        = substr($buf, LOG_MAX_MSG + $length);
     return ($buf, $data);
 }

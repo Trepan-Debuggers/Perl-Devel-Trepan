@@ -9,6 +9,19 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Next;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant ALIASES    => qw(n next+ next- n+ n-);
+    use constant CATEGORY   => 'running';
+    use constant SHORT_HELP => 'Step program without entering called functions';
+    use constant MIN_ARGS   => 0; # Need at least this many
+    use constant MAX_ARGS   => 1; # Need at most this many - 
+                                  # undef -> unlimited.
+    use constant NEED_STACK => 1;
+EOE
+}
+
 use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
@@ -35,13 +48,6 @@ determines this behavior.
 Examples: 
   ${NAME}
 HELP
-
-use constant ALIASES    => qw(n next+ next- n+ n-);
-use constant CATEGORY   => 'running';
-use constant SHORT_HELP => 'Step program without entering called functions';
-our   $MIN_ARGS     = 0;
-local $MAX_ARGS     = 1;   # Need at most this many. FIXME: will be eventually 2
-local $NEED_RUNNING = 1;
 
 # This method runs the command
 sub run($$) {

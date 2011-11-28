@@ -2,20 +2,25 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use feature 'switch';
-use rlib '../../../../..';
-use strict;
-use vars qw(@ISA @SUBCMD_VARS);
-
-package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
-use PadWalker qw(peek_my);
+use rlib '../../../../../..';
 use Data::Dumper;
 
+package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
+use vars qw(@ISA @SUBCMD_VARS);
+unless (defined(@ISA)) {
+    eval <<'EOE';
+    use constant MAX_ARGS => undef;
+EOE
+}
+use strict;
+
+use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
+use PadWalker qw(peek_my);
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-use vars qw(@ISA @SUBCMD_VARS);
-our $CMD = "info variables our";
-our $MIN_ABBREV = length('o');
+our $CMD = "info variables my";
+our @CMD = split(/ /, $CMD);
+our $MIN_ABBREV = length('m');
 our $HELP   = <<"HELP";
 ${CMD}
 ${CMD} -v
@@ -32,7 +37,7 @@ See also 'set variable', and frame changing commands
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
 sub show_var($$$) 
 {
@@ -70,50 +75,55 @@ sub show_var($$$)
     };
 }
 
-sub run($$)
-{
-    my ($self, $args) = @_;
-    my @ARGS = @${args};
-    shift @ARGS; shift @ARGS; shift @ARGS;
 
-    # FIXME: combine with My.pm
-    my $i = 0;
-    while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
-    my $diff = $i - $DB::stack_depth;
+sub process_args($$$$) {
+    my ($self, $args, $hash_ref, $lex_type) = @_;
     my $proc = $self->{proc};
-
-    # FIXME: 4 is a magic fixup constant, also found in DB::finish.
-    # Remove it.
-    my $my_hash = peek_my($diff + $proc->{frame_index} + 4);
-    my @names = sort keys %{$my_hash};
+    my @ARGS = @{$args};
+    my @names = sort keys %{$hash_ref};
 
     if (0 == scalar @ARGS) {
 	if (scalar @names) {
-	    $proc->section("my variables");
+	    $proc->section("$lex_type variables");
 	    $proc->msg($self->{parent}{parent}->columnize_commands(\@names));
 	} else {
-	    $proc->errmsg("No 'my' variables at this level");
+	    $proc->msg("No '$lex_type' variables at this level");
 	}
     } else {
 	if ($ARGS[0] eq '-v') {
 	    if (scalar @names) {
-		$proc->section("my variables");
+		$proc->section("$lex_type variables");
 		for my $name (@names) {
-		    show_var($proc, $name, $my_hash->{$name});
+		    show_var($proc, $name, $hash_ref->{$name});
 		}
 	    } else {
-		$proc->errmsg("No 'my' variables at this level");
+		$proc->msg("No '$lex_type' variables at this level");
 	    }
 	} else {
 	    for my $name (@ARGS) {
-		if (exists($my_hash->{$name})) {
-		    show_var($proc, $name, $my_hash->{$name});
+		if (exists($hash_ref->{$name})) {
+		    show_var($proc, $name, $hash_ref->{$name});
 		} else {
-		    $proc->errmsg("No 'my' variable $name found at this level");
+		    $proc->errmsg("No '$lex_type' variable $name found at this level");
 		}
 	    }
 	}
     }
+}
+
+sub run($$)
+{
+    my ($self, $args) = @_;
+    # FIXME: combine with My.pm
+    my $i = 0;
+    while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
+    my $diff = $i - $DB::stack_depth;
+
+    # FIXME: 4 is a magic fixup constant, also found in DB::finish.
+    # Remove it.
+    my $my_hash = peek_my($diff + $self->{proc}->{frame_index} + 4);
+    my @ARGS = splice(@{$args}, scalar(@CMD));
+    $self->process_args(\@ARGS, $my_hash, 'my');
 }
 
 unless (caller) { 

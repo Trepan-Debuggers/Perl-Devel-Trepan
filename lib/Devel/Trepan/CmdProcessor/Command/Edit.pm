@@ -5,10 +5,20 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Edit;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-use strict;
+unless (defined @ISA) {
+    eval <<"EOE";
+use constant ALIASES    => ('e');
+use constant CATEGORY   => 'files';
+use constant SHORT_HELP => 'Invoke an editor on some source code';
+use constant NEED_STACK => 0;
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => 2;  # Need at most this many - undef -> unlimited.
+EOE
+}
 
+use strict;
 use vars qw(@ISA); @ISA = @CMD_ISA; 
-use vars @CMD_VARS;  # Value inherited from parent
+use vars @CMD_VARS;  # value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
@@ -27,13 +37,6 @@ ${NAME} 7          # Edit current file at line 7
 ${NAME} test.rb    # Edit test.rb, line 1
 ${NAME} test.rb 10 # Edit test.rb  line 10
 HELP
-
-use constant ALIASES    => ('e');
-use constant CATEGORY   => 'files';
-use constant SHORT_HELP => 'Invoke an editor on some source code';
-our $NEED_STACK   = 0;
-our $MAX_ARGS     = 2;  # Need at most this many
-
 
 # This method runs the command
 sub run($$)

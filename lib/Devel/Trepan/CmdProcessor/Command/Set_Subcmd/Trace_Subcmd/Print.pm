@@ -22,7 +22,7 @@ POSIX shells.
 HELP
 
 our $MIN_ABBREV   = length('p');
-our $MAX_ARGS     = 1;
+use constant MAX_ARGS  => 1;
 our $SHORT_HELP   = 'Set print trace events, like "set -x" of POSIX shell';
  
 sub run($$)

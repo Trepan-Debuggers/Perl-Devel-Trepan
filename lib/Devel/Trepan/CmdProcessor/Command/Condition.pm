@@ -10,17 +10,19 @@ use if !defined @ISA, Devel::Trepan::Condition ;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (defined @ISA) {
-    eval "use constant ALIASES    => qw(cond);";
-    eval "use constant CATEGORY   => 'breakpoints';";
-    eval "use constant NEED_STACK => 0;";
-    eval "use constant SHORT_HELP => 
-         'Specify a condition on a breakpoint';"
+    eval <<"EOE";
+use constant ALIASES    => qw(cond);
+use constant CATEGORY   => 'breakpoints';
+use constant NEED_STACK => 0;
+use constant SHORT_HELP => 
+    'Specify a condition on a breakpoint';
+use constant MIN_ARGS  => 2;   # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
 }
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
-our $MIN_ARGS   = 2;      # Need at least this many
-our $MAX_ARGS   = undef;  # Need at most this many - undef -> unlimited.
 
 our $NAME = set_name();
 our $HELP = <<"HELP";

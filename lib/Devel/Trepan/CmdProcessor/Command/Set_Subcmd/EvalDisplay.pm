@@ -13,7 +13,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $HELP = 'Set how you want the evaluation results shown';
 our $MIN_ABBREV = length('evaldi');
-our $MIN_ARGS = 1;
+use constant MIN_ARGS => 1;
 
 # sub complete($$) 
 # {

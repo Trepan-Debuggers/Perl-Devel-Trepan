@@ -6,14 +6,22 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (defined @ISA) {
+    eval <<'EOE';
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
+use constant CATEGORY   => 'data';
+use constant SHORT_HELP => 'Run code in the current context';
+use constant NEED_STACK  => 1;
+use constant MIN_ARGS  => 0;  # Need at least this many
+use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
+EOE
+}
 use strict;
 use Devel::Trepan::Util;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
 
-our $MIN_ARGS = 0;
-our $MAX_ARGS = undef;
 our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [STRING]
@@ -60,11 +68,6 @@ See also 'set autoeval'. The command helps one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
-use constant CATEGORY   => 'data';
-use constant SHORT_HELP => 'Run code in the current context';
-local $NEED_STACK       => 1;
-
 sub complete($$)
 { 
     my ($self, $prefix) = @_;
@@ -106,13 +109,14 @@ sub run($$)
 unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
-  # arg_str = '1 + 2'
-  # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # puts "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}"
-  # arg_str = 'return "foo"'
-  # # def cmd.proc.current_source_text
-  # #   'return "foo"'
-  # # end
-  # # cmd.proc.instance_variable_set('@cmd_argstr', arg_str)
-  # # puts "eval? ${arg_str} is: ${cmd.run([cmd.name + '?'])}"
+  # my $arg_str = '1 + 2';
+  # $proc->{cmd_argstr} = $arg_str;
+  # print "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}\n";
+  # $arg_str = 'return "foo"';
+  # # sub cmd.proc.current_source_text
+  # # {
+  # #   'return "foo"';
+  # # }
+  # # $proc->{cmd_argstr} = $arg_str;
+  # # print "eval? ${arg_str} is: ", $cmd->run([$cmd->name + '?'])";
 }

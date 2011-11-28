@@ -40,13 +40,13 @@ sub start_client($)
     my ($control_code, $line);
     while (1) {
       # begin
-        $control_code, $line = $intf->read_remote;
+        ($control_code, $line) = $intf->read_remote;
       # rescue EOFError, Errno::EPIPE
       #  puts "Remote debugged process closed connection"
       #  last
       # p [control_code, line]
 	given ($control_code) {
-	    when (PRINT) { print "$line\n"; }
+	    when (PRINT) { print "$line"; }
 	    when (CONFIRM_TRUE) {
 		my $response = $intf->confirm($line, 1);
 		$intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
@@ -80,7 +80,7 @@ sub start_client($)
 }
 
 unless (caller) {
-    Devel::Trepan::Client::start_client({host=>'127.0.0.1', port=>1955});
+    Devel::Trepan::Client::start_client({host=>'127.0.0.1', port=>1954});
 }
 
 1;

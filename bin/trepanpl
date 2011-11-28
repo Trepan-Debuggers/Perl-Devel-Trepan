@@ -9,9 +9,16 @@ use File::Basename; use File::Spec;
 use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
 use lib TREPAN_DIR;
 use Devel::Trepan::Options;
+use Devel::Trepan::Client;
 use Data::Dumper;
 
 my $opts = Devel::Trepan::Options::process_options(\@ARGV);
+
+if ($opts->{client}) {
+    Devel::Trepan::Client::start_client({host=>$opts->{host}, 
+					 port=>$opts->{port}});
+    exit;
+}
 
 die "You need a Perl program to run" unless @ARGV;
 

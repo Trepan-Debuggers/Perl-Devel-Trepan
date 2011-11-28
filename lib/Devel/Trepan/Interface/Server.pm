@@ -22,7 +22,8 @@ use strict;
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
-    io => 'TCP'
+    io => 'TCP',
+    logger => undef  # An Inteface. Complaints go here.
 };
 
 sub new
@@ -40,12 +41,14 @@ sub new
         $inout = Devel::Trepan::IO::TCPServer->new($connection_opts);
         # }
     }
-    # For Compatability 
     my $self = {
+	# For Compatability 
     	output => $inout,
     	inout  => $inout,
     	input  => $inout,
-    	interactive => 1 # Or at least so we think initially
+    	interactive => 1, # Or at least so we think initially
+
+	logger => $connection_opts->{logger}
     };
     bless $self, $class;
     return $self;
@@ -71,6 +74,11 @@ sub is_interactive($)
 {
     my $self = shift;
     $self->{input}->is_interactive;
+}
+
+sub has_completion($)
+{
+    0
 }
 
 # Called when a dangerous action is about to be done to make sure
@@ -172,9 +180,9 @@ sub readline($;$)
 	$coded_line = $self->{inout}->read_msg();
     };
     if ($EVAL_ERROR) {
-	print STDERR "Eval error\n";
-	$self->errmsg("Server error. resyncing...");
-	return '';
+	$self->{logger}->msg($EVAL_ERROR) if $self->{logger};
+	$self->errmsg("Server communication protocol error, resyncing...");
+	return ('#');
     } else {
 	my $read_ctrl = substr($coded_line,0,1);
 	substr($coded_line, 1);

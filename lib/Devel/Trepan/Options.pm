@@ -30,6 +30,8 @@ $DEFAULT_OPTIONS = {
     basename     => 0,
     nx           => 0,     # Don't run user startup file (e.g. .treplrc)
     cmdfiles     => [],
+    client       => 0,     # Set 1 if we want to connect to an out-of
+                           # process debugger "server".
     highlight    => 1,
     # Default values used only when 'server' or 'client'
     # (out-of-process debugging)
@@ -39,7 +41,6 @@ $DEFAULT_OPTIONS = {
     readline     => 1,       # Try to use GNU Readline?
 
 };
-
 
 sub show_version()
 {
@@ -63,6 +64,8 @@ sub process_options($)
 	 'host:s'       => \$opts->{host},
 	 'basename'     => \$opts->{basename},
 	 'batch:s'      => \$opts->{batchfile},
+	 'client'       => \$opts->{client},
+	 'server'       => \$opts->{server},
 	 'testing:s'    => \$opts->{testing},
 	 'c|command=s@' => \$opts->{cmdfiles},
 	 'cd:s'         => \$opts->{initial_dir},
@@ -88,6 +91,10 @@ sub process_options($)
 	    $opts->{cmdfiles} = [];
 	}
 	$opts->{nx} = 1;
+    }
+    if ($opts->{server} and $opts->{client}) {
+	printf STDERR 
+	    "Pick only on from of the --server or --client options\n";
     }
     $opts;
 }
@@ -171,23 +178,33 @@ trepanpl - Perl "Trepanning" Debugger
    trepan [options] [[--] perl-program [perl-program-options ...]]
 
    Options:
-      --help              brief help message
-      --man               full documentation
-      --basename          Show basename only on source file listings. 
-                          (Needed in regression tests)
-      -c| --command FILE  Run debugger command file FILE
-      --batch FILE        Like --command, but quit after reading FILE.
-                          This option has precidence over --command and
-                          will also set --mx
-      --cd DIR            Change current directory to DIR
-      --nx                Don't run user startup file (e.g. .treplrc)
-      --port N            TCP/IP port to use on remote connection
+      --help               brief help message
+      --man                full documentation
+      --basename           Show basename only on source file listings. 
+                           (Needed in regression tests)
+      
+      -c| --command FILE   Run debugger command file FILE
+      --batch FILE         Like --command, but quit after reading FILE.
+                           This option has precidence over --command and
+                           will also set --mx
+      --cd DIR             Change current directory to DIR
+      --nx                 Don't run user startup file (e.g. .treplrc)
+
+      --client | --server  Set for out-of-process debugging. The server 
+                           rus the Perl program to be debugged runs. 
+                           The client runs outside of this proces.
+                          
+      --port N             TCP/IP port to use on remote connection
+                           The default is 1954
+      --host NAME          Set DNS name or IP address to communicate on.
+                           The default is 127.0.0.1
+
       --readline  | --no-readline
-                          Try or don't try to use Term::Readline
-      -x|--trace          Simulate line tracing (think POSIX shell set -x)
+                           Try or don't try to use Term::Readline
+      -x|--trace           Simulate line tracing (think POSIX shell set -x)
       --highlight | --no-highlight 
-                          Use or don't use ANSI terminal sequences for syntax
-                          highlight
+                           Use or don't use ANSI terminal sequences for syntax
+                           highlight
 
 =head1 DESCRIPTION
 

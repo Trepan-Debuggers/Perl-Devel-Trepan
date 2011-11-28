@@ -24,8 +24,10 @@ sub pack_msg($)
 sub unpack_msg($)
 {
     my $buf = shift;
-    my $length  = int(substr($buf, 0, LOG_MAX_MSG));
-    my $data    = substr($buf, LOG_MAX_MSG, LOG_MAX_MSG + $length);
+    my $strnum = substr($buf, 0, LOG_MAX_MSG);
+    die "Protocol error" unless ($strnum =~ /^\d+$/);
+    my $length  = int($strnum);
+    my $data    = substr($buf, LOG_MAX_MSG, $length);
     $buf        = substr($buf, LOG_MAX_MSG + $length);
     return ($buf, $data);
 }

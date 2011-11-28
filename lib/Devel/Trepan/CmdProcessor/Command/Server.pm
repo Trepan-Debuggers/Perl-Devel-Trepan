@@ -43,7 +43,7 @@ HELP
 # via a ${NAME} command the debugger is started.
 
 use constant DEFAULT_OPTIONS => {
-    port => 1955,
+    port => 1954,
     host => '127.0.0.1',
 };
 
@@ -69,14 +69,13 @@ sub parse_options($$)
 
 sub run($$)
 {
-    my ($self, $args) = @_;
-    my @args = @$args;
-    my $options = parse_options($self, \@args);
-    my $intf = $self->{proc}{interfaces};
+    my ($self, $args)  = @_;
+    my @args           = @$args;
+    my $proc           = $self->{proc};
+    my $options        = parse_options($self, \@args);
+    my $intf           = $proc->{interfaces};
+    $options->{logger} = $intf->[-1];
     # Push a new server interface.
-    my $msg = sprintf("Waiting for a connection on port %d at address %s...",
-		      $options->{port}, $options->{host});
-    $self->{proc}->msg($msg);
     my $script_intf = Devel::Trepan::Interface::Server->new(undef, undef,
 							    $options);
     push @{$intf}, $script_intf;

@@ -22,4 +22,8 @@ use constant PROMPT        => 'p';
 use constant RESTART       => 'r';
 use constant SERVERERR     => '!';
 
+# This constant indicates a protocol error accross the wire and is
+# used internally for syncronization.
+use constant PROTOERROR    => 'X';
+
 1;

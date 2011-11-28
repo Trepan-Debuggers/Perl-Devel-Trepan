@@ -22,7 +22,7 @@ Then from another shell somewhere else:
 To call the debugger from inside your Perl program using Joshua ben
 Jore's Enbugger (http://search.cpan.org/~jjore/Enbugger/) patched with
 the trepan extension
-(https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch):
+https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch 
 
 	# This needs to be done once and could even be in some sort of conditional code
         require Enbugger; Enbugger->load_debugger( 'trepan' );

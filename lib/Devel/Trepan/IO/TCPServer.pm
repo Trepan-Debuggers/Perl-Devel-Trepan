@@ -119,11 +119,11 @@ sub wait_for_connect
 	my $msg = sprintf("Waiting for a connection on port %d at " . 
 			  "address %s...",
 			  $self->{port}, $self->{host});
-	$self->{logger}->msg($msg);
+	print {$self->{logger}} "$msg\n";
     }
     $self->{input} = $self->{output} = $self->{session} = 
 	$self->{server}->accept;
-    $self->{logger}->msg("Got connection") if $self->{logger};
+    print {$self->{logger}} "Got connection\n" if $self->{logger};
     $self->{state} = 'connected';
 }
     

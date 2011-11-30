@@ -47,7 +47,9 @@ sub new($;$)
 sub is_connected($)
 {
     my $self = shift;
-    return 'connected' eq $self->{state};
+    $self->{state} = 'connected' if 
+	$self->{inout} and $self->{inout}->connected;
+    return $self->{state} eq 'connected';
 }
     
 sub is_interactive($)  {
@@ -61,8 +63,12 @@ sub close
 {
     my $self = shift;
     $self->{state} = 'closing';
-    close($self->{inout}) if $self->{inout};
+    if ($self->{inout}) {
+	close($self->{inout}) ;
+    }
     $self->{state} = 'disconnected';
+    print "FOOO\n";
+    print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 
 sub open($;$)

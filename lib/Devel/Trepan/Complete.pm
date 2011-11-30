@@ -97,6 +97,8 @@ sub next_token($$)
 unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
     my @cmds = keys %{$hash_ref};
+    printf("complete_token(@cmds, '') => %s\n",
+	   join(', ', complete_token(\@cmds, '')));
     printf("complete_token(@cmds, 'a') => %s\n",
 	   join(', ', complete_token(\@cmds, 'a')));
     printf("complete_token(@cmds, 'b') => %s\n",

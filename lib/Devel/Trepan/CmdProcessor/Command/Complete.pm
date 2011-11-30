@@ -33,11 +33,13 @@ HELP
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
+    my @args = @{$args}; shift @args; # remove "complete".
     my $proc = $self->{proc};
     my $cmd_argstr = $proc->{cmd_argstr};
-    my $last_arg = (' ' eq substr($cmd_argstr, -1)) ? '' : $args->[-1];
-    for my $match ($proc->complete($proc->{cmd_argstr}, $last_arg,
-		   0, length($last_arg)-1)) {
+    my $last_arg = (' ' eq substr($cmd_argstr, -1)) ? '' : $args[-1];
+    $last_arg //= '';
+    for my $match ($proc->complete($cmd_argstr, $cmd_argstr,
+		   0, length($cmd_argstr))) {
 	$proc->msg($match);
     }
 }

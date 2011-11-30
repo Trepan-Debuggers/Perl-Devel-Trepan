@@ -49,4 +49,29 @@ $cmd->{proc}{cmd_argstr} = $prefix;
 $cmd->run([$cmd->name, $prefix]);
 is(scalar(@msgs), 2);
 
+# Completion of 'info' should be 'info'
+$prefix = 'info';
+$cmd->{proc}{cmd_argstr} = $prefix;
+@msgs = ();
+$cmd->run([$cmd->name, $prefix]);
+is(scalar(@msgs), 1);
+is($msgs[0], 'info');
+
+# Completion of 'info ' should contain subcommands of 
+# 'info'
+$prefix = 'info ';
+$cmd->{proc}{cmd_argstr} = $prefix;
+@msgs = ();
+$cmd->run([$cmd->name, $prefix]);
+ok(scalar(@msgs) > 1);
+
+# Completion of 'info f' is ['info files', 'info frame']
+$prefix = 'info f';
+$cmd->{proc}{cmd_argstr} = $prefix;
+@msgs = ();
+$cmd->run([$cmd->name, $prefix]);
+is(scalar(@msgs), 2);
+is($msgs[0], 'files');
+is($msgs[1], 'frame');
+
 done_testing();

@@ -23,12 +23,15 @@ EOH
 our $MIN_ABBREV = length('al');
 our $SHORT_HELP = "Show defined aliases";
 
-# sub complete($$) {
-# {
-#     my ($self, $prefix) = @_;
-#     my @cmds = sort keys %{$proc->{aliases}};
-#     Trepan::Complete.complete_token(@cmds, $prefix);
-# }
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    my $proc = $self->{proc};
+    my @candidates = keys %{$proc->{aliases}};
+    my @matches = 
+	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+    sort @matches;
+}    
 
 sub run($$) {
     my ($self, $args) = @_;

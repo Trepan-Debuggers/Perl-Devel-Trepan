@@ -67,6 +67,7 @@ sub new($;$$$) {
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);
+    $self->{completions}    = [];
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
@@ -90,11 +91,25 @@ sub new($;$$$) {
 	) if $self->{settings}{traceprint};
 
     if ($intf->has_completion) {
+	my $list_completion = sub {
+	    my($text, $state) = @_;
+	    $self->list_complete($text, $state);
+	};
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
-	    $self->complete($text, $line, $start, $end);
+	    my @results = $self->complete($text, $line, $start, $end);
+	    # if (scalar @results == 1) {
+	    # 	return $results[0];
+	    # } elsif (scalar @results == 0) {
+	    # 	return ();
+	    # } else {
+	    # 	my $attribs = $intf->{input}{readline}->Attribs;
+	    # 	$attribs->{completion_word} = \@results;
+	    # 	return $results[0];
+	    # }
+	    return @results;
 	};
-	$intf->set_completion($completion);
+	$intf->set_completion($completion, $list_completion);
     }
     return $self;
 }
@@ -287,6 +302,7 @@ sub process_commands($$$;$)
 	    $self->print_location;
 	}
     } else {
+	$self->{completions} = [];
 	$self->frame_setup($frame);
 	$self->{event} = $event;
 

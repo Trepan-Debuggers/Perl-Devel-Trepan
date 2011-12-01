@@ -184,10 +184,14 @@ sub readline($;$) {
 
 sub set_completion($$)
 {
-    my ($self, $completion_fn) = @_;
+    my ($self, $completion_fn, $list_completion_fn) = @_;
     return unless $self->has_completion;
     my $attribs = $self->{input}{readline}->Attribs;
     $attribs->{attempted_completion_function} = $completion_fn;
+    $attribs->{completion_entry_function} = $list_completion_fn;
+
+    # For Term::ReadLine::Perl ? 
+    $attribs->{completion_function} = $completion_fn;
 }
 
 # Demo

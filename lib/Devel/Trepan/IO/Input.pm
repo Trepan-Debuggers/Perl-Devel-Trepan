@@ -19,15 +19,15 @@ use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
 @EXPORT = qw($HAVE_GNU_READLINE);
 
 BEGIN {
-    $ENV{'PERL_RL'} ||= 'Gnu';
+    $ENV{'PERL_RL'} ||= 'perl';
     $HAVE_GNU_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0;
     sub GLOBAL_have_gnu_readline {
         if (!defined($HAVE_GNU_READLINE)) {
             my $term = Term::ReadLine->new('testing');
-            if ($term->ReadLine eq 'Term::ReadLine::Gnu') {
-                $HAVE_GNU_READLINE = 'Gnu';
-            } elsif ($term->ReadLine eq 'Term::ReadLine::Perl') {
+            if ($term->ReadLine eq 'Term::ReadLine::Perl') {
                 $HAVE_GNU_READLINE = 'Perl';
+            } elsif ($term->ReadLine eq 'Term::ReadLine::Gnu') {
+                $HAVE_GNU_READLINE = 'Gnu';
             } else {
                 $HAVE_GNU_READLINE = 0;
             }
@@ -44,7 +44,7 @@ sub new($;$$) {
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
     if ($opts->{readline} && GLOBAL_have_gnu_readline()) {
-	$self->{readline} = Term::ReadLine->new('trepanpl');
+	$self->{readline} = Term::ReadLine->new('trepan.pl');
 	$self->{gnu_readline} = 1;
     } else {
 	$self->{readline} = undef;

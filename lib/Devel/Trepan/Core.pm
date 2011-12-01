@@ -97,8 +97,9 @@ sub awaken($;$) {
 	my $intf = undef;
 	if ($opts->{server}) {
 	    $server_opts = {
-		host => $opts->{host},
-		port => $opts->{port}
+		host   => $opts->{host},
+		port   => $opts->{port},
+		logger => *STDOUT
 	    };
 	    $intf = [
 		Devel::Trepan::Interface::Server->new(undef, undef,

@@ -181,7 +181,7 @@ sub readline($;$)
 	$coded_line = $self->{inout}->read_msg();
     };
     if ($EVAL_ERROR) {
-	$self->{logger}->msg($EVAL_ERROR) if $self->{logger};
+	print {$self->{logger}} "$EVAL_ERROR\n" if $self->{logger};
 	$self->errmsg("Server communication protocol error, resyncing...");
 	return ('#');
     } else {

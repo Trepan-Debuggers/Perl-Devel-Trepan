@@ -43,17 +43,6 @@ BEGIN {
     @DB::D = ();  # Place to save eval results;
 }
 
-# sub sample_completion() {
-#     my ($text, $line, $start, $end) = @_;
-#     if (substr($line, 0, $start) =~ /^\s*$/) {
-# 	return qw(a list of candidates);
-# #	return $term->completion_matches($text,
-# #					 $attribs->{'username_completion_function'});
-#     } else {
-# 	return ();
-#     }
-# }
-
 sub new($;$$$) {
     my ($class, $interfaces, $dbgr, $settings) = @_;
     my $intf;
@@ -67,6 +56,7 @@ sub new($;$$$) {
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);
+    $self->{completions}    = [];
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;
     $self->{cmd_queue}      = [];
@@ -90,11 +80,15 @@ sub new($;$$$) {
 	) if $self->{settings}{traceprint};
 
     if ($intf->has_completion) {
+	my $list_completion = sub {
+	    my($text, $state) = @_;
+	    $self->list_complete($text, $state);
+	};
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
 	    $self->complete($text, $line, $start, $end);
 	};
-	$intf->set_completion($completion);
+	$intf->set_completion($completion, $list_completion);
     }
     return $self;
 }
@@ -287,6 +281,7 @@ sub process_commands($$$;$)
 	    $self->print_location;
 	}
     } else {
+	$self->{completions} = [];
 	$self->frame_setup($frame);
 	$self->{event} = $event;
 

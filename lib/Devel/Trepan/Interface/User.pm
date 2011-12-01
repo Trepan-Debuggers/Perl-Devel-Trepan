@@ -184,10 +184,22 @@ sub readline($;$) {
 
 sub set_completion($$)
 {
-    my ($self, $completion_fn) = @_;
+    my ($self, $completion_fn, $list_completion_fn) = @_;
     return unless $self->has_completion;
     my $attribs = $self->{input}{readline}->Attribs;
+
+    # Silence "used only once warnings" inside ReadLine::Term::Perl.
+    $readline::rl_completion_entry_function = undef;
+    $readline::rl_attempted_completion_function = undef;
+
+    $attribs->{completion_entry_function} = $list_completion_fn;
+
+    # For Term:ReadLine::Gnu
     $attribs->{attempted_completion_function} = $completion_fn;
+
+    # For Term::ReadLine::Perl
+    $readline::rl_completion_function = undef;
+    $attribs->{completion_function} = $completion_fn;
 }
 
 # Demo

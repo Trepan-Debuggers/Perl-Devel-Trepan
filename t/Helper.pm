@@ -3,7 +3,7 @@ require Test::More;
 use String::Diff;
 use File::Spec;
 use File::Basename;
-my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
+my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepan.pl));
 my $debug = $^W;
 
 package Helper;

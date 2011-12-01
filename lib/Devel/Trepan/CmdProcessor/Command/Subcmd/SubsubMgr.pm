@@ -260,9 +260,13 @@ sub list($) {
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
 
-#   sub complete_token_with_next(prefix)
-#     Trepan::Complete.complete_token_with_next(@subcmds.subcmds, prefix)
-#   }
+sub complete_token_with_next($)
+{
+    my ($self, $prefix) = @_;
+    my $subcmds = $self->{subcmds};
+    return Devel::Trepan::Complete::complete_token_with_next($subcmds,
+							     $prefix);
+  }
 
 sub run($$) 
 {

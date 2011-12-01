@@ -74,7 +74,7 @@ sub run($$)
     my $proc           = $self->{proc};
     my $options        = parse_options($self, \@args);
     my $intf           = $proc->{interfaces};
-    $options->{logger} = $intf->[-1];
+    $options->{logger} = $intf->[-1]{output}{output};
     # Push a new server interface.
     my $script_intf = Devel::Trepan::Interface::Server->new(undef, undef,
 							    $options);

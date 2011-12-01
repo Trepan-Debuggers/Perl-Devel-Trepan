@@ -4,10 +4,10 @@ use warnings; use strict;
 use English qw( -no_match_vars );
 use File::Basename;
 use File::Spec;
-my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepanpl));
+my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepan.pl));
 
 use Test::More 'no_plan';
-note( "trepanpl command options" );
+note( "trepan.pl command options" );
 is(-r $trepanpl, 1, "Should be able to read trepanpl program");
 
 my $pid = fork();

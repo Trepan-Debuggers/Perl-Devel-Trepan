@@ -34,7 +34,7 @@ sub new {
     my($class, $inp, $out, $opts)  = @_;
     $opts ||= {};
     my $input_opts = {
-	readline => $opts->{readline}
+	readline => 0
     };
 
     my $self = {

@@ -158,6 +158,19 @@ sub setup_command($$)
     }
   }
 
+sub list_complete($$$)
+{
+    my($self, $text, $state) = @_;
+    state $_i = -1; # clear counter at the first call
+    $_i++;;	
+    my $cw = $self->{completions};
+    for (; $_i <= $#{$cw}; $_i++) {
+	return $cw->[$_i] if ($cw->[$_i] =~ /^\Q$text/);
+    }
+    return undef;
+};
+
+
 # Handle initial completion. We draw from the commands, aliases,
 # and macros for completion. However we won't include aliases which
 # are prefixes of other commands.
@@ -176,7 +189,8 @@ sub complete($$$$$)
     # print "\nlast_line: $last_line, last_start: $last_start, last_end: $last_end\n";
     my $stripped_line;
     ($stripped_line = $line) =~ s/\s*$//;
-    if ($last_line eq $stripped_line) {
+    if ($last_line eq $stripped_line && $stripped_line) {
+	$self->{completions} = \@last_return;
     	return @last_return;
     }
     ($last_line, $last_start, $last_end) = ($line, $start, $end);
@@ -189,6 +203,7 @@ sub complete($$$$$)
 	$last_token = $last_return[0];
 	$last_line = $line . $last_token;
 	$last_end += length($last_token);
+	$self->{completions} = \@last_return;
 	return (@commands);
     }
 
@@ -211,6 +226,7 @@ sub complete($$$$$)
     	    $last_line = $line . $last_token;
     	    $last_end += length($last_token);
     	}
+	$self->{completions} = \@last_return;
     	return @last_return;
     } else {
       for my $pair (@alias_pairs) {
@@ -226,11 +242,13 @@ sub complete($$$$$)
       #   ["#{name} #{args[1..-1].join(' ')}"]
       # }
     }
-    # match_pairs.size == 1
+    # scalar @match_pairs == 1
     @last_return = $self->next_complete($line, $next_blank_pos, 
 					$match_pairs[0]->[1], 
 					$token);
-    return (@last_return);
+    
+    $self->{completions} = \@last_return;
+    return @last_return;
 }
 
 sub next_complete($$$$$)

@@ -47,7 +47,9 @@ sub new($;$)
 sub is_connected($)
 {
     my $self = shift;
-    return 'connected' eq $self->{state};
+    $self->{state} = 'connected' if 
+	$self->{inout} and $self->{inout}->connected;
+    return $self->{state} eq 'connected';
 }
     
 sub is_interactive($)  {
@@ -61,8 +63,12 @@ sub close
 {
     my $self = shift;
     $self->{state} = 'closing';
-    close($self->{inout}) if $self->{inout};
+    if ($self->{inout}) {
+	close($self->{inout}) ;
+    }
     $self->{state} = 'disconnected';
+    print "FOOO\n";
+    print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 
 sub open($;$)
@@ -119,11 +125,11 @@ sub wait_for_connect
 	my $msg = sprintf("Waiting for a connection on port %d at " . 
 			  "address %s...",
 			  $self->{port}, $self->{host});
-	$self->{logger}->msg($msg);
+	print {$self->{logger}} "$msg\n";
     }
     $self->{input} = $self->{output} = $self->{session} = 
 	$self->{server}->accept;
-    $self->{logger}->msg("Got connection") if $self->{logger};
+    print {$self->{logger}} "Got connection\n" if $self->{logger};
     $self->{state} = 'connected';
 }
     

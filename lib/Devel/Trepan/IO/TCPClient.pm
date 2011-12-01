@@ -34,7 +34,8 @@ sub new($;$)
 	buf  => '',
 	line_edit => 0, # Our name for GNU readline capability
 	state     => 'disconnected',
-	inout     => undef
+	inout     => undef,
+	logger    => undef  # Complaints should be sent here.
     };
     bless $self, $class;
     $self->open($opts) if $opts->{open};
@@ -46,7 +47,10 @@ sub close($)
 {
     my $self = shift;
     $self->{state} = 'closing';
-    close($self->{inout}) if $self->{inout};
+    if ($self->{inout}) {
+	$self->{inout}->shutdown(2);
+	close($self->{inout}) 
+    }
     $self->{state} = 'disconnected';
 }
 
@@ -94,9 +98,10 @@ sub read_msg($)
 	if (!$self->{buf} || is_empty($self)) {
 	    $self->{inout}->recv($self->{buf}, TCP_MAX_PACKET);
 	    if (is_empty($self)) {
+		$self->close;
 		$self->{state} = 'disconnected';
 		die "EOF while reading on socket";
-		}
+	    }
         }
 	my $data;
         ($self->{buf}, $data) = unpack_msg($self->{buf});

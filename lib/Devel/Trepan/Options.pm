@@ -12,7 +12,7 @@ use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 
 BEGIN {
-    $PROGRAM_NAME = 'trepanpl';
+    $PROGRAM_NAME = 'trepan.pl';
     $VERSION      = '0.1.2';
 }
 use constant VERSION => $VERSION;
@@ -171,7 +171,7 @@ __END__
     
 =head1 TrepanPl
 
-trepanpl - Perl "Trepanning" Debugger 
+trepan.pl - Perl "Trepanning" Debugger 
 
 =head1 SYNOPSIS
 

@@ -12,7 +12,7 @@ use Exporter;
 
 use Devel::Trepan::Core;
 
-use constant PROGRAM => 'trepanpl';
+use constant PROGRAM => 'trepan.pl';
 
 sub show_version {
     PROGRAM . ", version $Devel::Trepan::VERSION";

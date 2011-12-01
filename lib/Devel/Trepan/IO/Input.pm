@@ -44,7 +44,7 @@ sub new($;$$) {
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
     if ($opts->{readline} && GLOBAL_have_gnu_readline()) {
-	$self->{readline} = Term::ReadLine->new('trepanpl');
+	$self->{readline} = Term::ReadLine->new('trepan.pl');
 	$self->{gnu_readline} = 1;
     } else {
 	$self->{readline} = undef;

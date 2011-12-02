@@ -43,17 +43,6 @@ BEGIN {
     @DB::D = ();  # Place to save eval results;
 }
 
-# sub sample_completion() {
-#     my ($text, $line, $start, $end) = @_;
-#     if (substr($line, 0, $start) =~ /^\s*$/) {
-# 	return qw(a list of candidates);
-# #	return $term->completion_matches($text,
-# #					 $attribs->{'username_completion_function'});
-#     } else {
-# 	return ();
-#     }
-# }
-
 sub new($;$$$) {
     my ($class, $interfaces, $dbgr, $settings) = @_;
     my $intf;
@@ -97,17 +86,7 @@ sub new($;$$$) {
 	};
 	my $completion = sub {
 	    my ($text, $line, $start, $end) = @_;
-	    my @results = $self->complete($text, $line, $start, $end);
-	    # if (scalar @results == 1) {
-	    # 	return $results[0];
-	    # } elsif (scalar @results == 0) {
-	    # 	return ();
-	    # } else {
-	    # 	my $attribs = $intf->{input}{readline}->Attribs;
-	    # 	$attribs->{completion_word} = \@results;
-	    # 	return $results[0];
-	    # }
-	    return @results;
+	    $self->complete($text, $line, $start, $end);
 	};
 	$intf->set_completion($completion, $list_completion);
     }

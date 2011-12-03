@@ -14,8 +14,7 @@ package Devel::Trepan::CmdProcessor;
 use Cwd 'abs_path';
 use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::LineCache;
-
-# require 'linecache'
+no warnings 'redefine';
 
 # require_relative '../app/cmd_parse'
 # require_relative '../app/condition'
@@ -23,14 +22,9 @@ use Devel::Trepan::DB::LineCache;
 # require_relative '../app/thread'
 
 # require_relative 'location' # for resolve_file_with_dir
-# require_relative 'virtual'
 
 #     attr_reader :file_exists_proc  # Like File.exists? but checks using
 #                                    # cached files
-
-#     include Trepanning
-#     include Trepan::ThreadHelper
-#     include Trepan::Condition
 
 # Check that arg is an Integer between opts->{min_value} and
 # opts->{max_value}
@@ -121,9 +115,12 @@ use Devel::Trepan::Util qw(hash_merge);
 #       return $val
 #     }
 
-#     sub get_int_list(args, opts={})
-#       args.map{|arg| get_an_int(arg, opts)}.compact
-#     }
+sub get_int_list($$;$)
+{
+    my ($self, $args, $opts) = @_;
+    $opts //= {};
+    map {$self->get_an_int($_, $opts)} @{$args}; # .compact
+}
     
 # Eval arg and it is an integer return the value. Otherwise
 # return undef;
@@ -313,6 +310,7 @@ sub parse_position($$;$)
     $validate_line_num //= 0;
 
     if (0 == $size) {
+	no warnings 'once';
 	return ($DB::filename, $DB::line, undef, 0, ());
     }
     my ($filename, $line_num, $fn);
@@ -392,8 +390,15 @@ unless (caller) {
 	print "get_int_noerr(${val}) = $result\n";
     }
     
+    no warnings 'redefine';
     require Devel::Trepan::CmdProcessor;
-    my $proc  = Devel::Trepan::CmdProcessor->new;
+    my $proc  = Devel::Trepan::CmdProcessor::new(__PACKAGE__);
+    my @aref = $proc->get_int_list(['1+0', '3-1', '3']);
+    print join(', ', @aref), "\n";
+
+    @aref = $proc->get_int_list(['a', '2', '3']);
+    print join(', ', @aref[1..2]), "\n";
+
     local @position = ();
     sub print_position() {
 	my @call_values = caller(0);
@@ -439,8 +444,6 @@ unless (caller) {
 #     p cmdproc.breakpoint_position("cmdproc.errmsg", false)
 #     p cmdproc.breakpoint_position("cmdproc.errmsg:@0", false)
 #     ### p cmdproc.breakpoint_position(%w(2 if a > b))
-#     p cmdproc.get_int_list(%w(1+0 3-1 3))
-#     p cmdproc.get_int_list(%w(a 2 3))
 }
 
 1;

@@ -1,12 +1,16 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use strict;
 use Exporter;
 use warnings;
 
 use rlib '../../..';
-# require_relative '../app/default'
 
 package Devel::Trepan::CmdProcessor;
+
+use if !defined @ISA, Devel::Trepan::Options;
+use strict;
+our @ISA;
+
+# print "Default term is ", default_term, "\n";
 
 use constant DEFAULT_SETTINGS => {
     abbrev        => 1,      # Allow abbreviations of debugger commands?
@@ -32,7 +36,9 @@ use constant DEFAULT_SETTINGS => {
                              # -1 means compute value. 0
                              # means hide none. Less than 0 means show
                              # all stack entries.
-    highlight     => 'term', # Use terminal highlight? 0 or undef if off.
+
+    highlight     => Devel::Trepan::Options::default_term(), 
+                             # Use terminal highlight? 0 or undef if off.
       
     maxlist       => 10,     # Number of source lines to list 
     maxstack      => 10,     # backtrace limit

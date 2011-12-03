@@ -96,6 +96,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Interactive.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Stack.pm
@@ -244,3 +245,4 @@ t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm
 t/Makefile
+

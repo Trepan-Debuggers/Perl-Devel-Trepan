@@ -20,6 +20,13 @@ use constant PROGRAM_NAME => $PROGRAM_NAME;
 
 @ISA    = qw(Exporter);
 
+# Return whether we want Terminal highlighting by default
+sub default_term() {
+    ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' || 
+		     (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
+	?  'term' : 0
+}
+
 my $home = $ENV{'HOME'} || glob("~");
 my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
@@ -32,7 +39,7 @@ $DEFAULT_OPTIONS = {
     cmdfiles     => [],
     client       => 0,     # Set 1 if we want to connect to an out-of
                            # process debugger "server".
-    highlight    => 1,
+    highlight    => default_term(),
     # Default values used only when 'server' or 'client'
     # (out-of-process debugging)
     port         => 1954,

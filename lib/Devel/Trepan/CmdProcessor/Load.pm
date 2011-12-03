@@ -259,6 +259,8 @@ sub next_complete($$$$$)
     ($next_blank_pos, $token) = 
 	Devel::Trepan::Complete::next_token($str, $next_blank_pos);
     return () if !$token && !$last_token;
+    return () unless defined($cmd);
+    return @{$cmd} if ref($cmd) eq 'ARRAY';
     
     if ($cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);
@@ -284,7 +286,7 @@ sub next_complete($$$$$)
 		return ();
 	    }
 	}
-    } elsif (defined($cmd) &&  $cmd->can('complete')) {
+    } elsif ($cmd->can('complete')) {
 	my @matches = $cmd->complete($token);
 	return () unless scalar @matches;
 	if (substr($str, $next_blank_pos) =~ /\s*$/ ) {

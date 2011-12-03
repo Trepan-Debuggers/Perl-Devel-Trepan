@@ -18,8 +18,13 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $bool =  $proc->{interfaces}->[-1]->is_interactive();
+    my $intf = $proc->{interfaces}->[-1];
+    my $bool =  $inf->is_interactive();
     my $msg = sprintf("Debugger's interactive mode is %s.",  
+		      $self->show_onoff($bool));
+    $proc->msg($msg);
+    $bool = $intf->{input}->have_term_readline();
+    my $msg = sprintf("Terminal Readline capability is %s.",  
 		      $self->show_onoff($bool));
     $proc->msg($msg);
 }

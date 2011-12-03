@@ -58,6 +58,11 @@ sub is_interactive($)  {
 }
 
 
+sub have_term_readline($) 
+{
+    return 0;
+}
+
 # Closes server connection.
 sub close
 {

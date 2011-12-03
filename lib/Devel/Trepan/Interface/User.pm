@@ -8,7 +8,7 @@ use Exporter;
 use rlib '../../..';
 
 package Devel::Trepan::Interface::User;
-use vars qw(@EXPORT @ISA $HAVE_READLINE);
+use vars qw(@EXPORT @ISA);
 
 use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge);
 use if !defined(@ISA), Devel::Trepan::IO::Input;

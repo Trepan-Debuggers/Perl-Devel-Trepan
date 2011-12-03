@@ -60,6 +60,11 @@ sub readline($)
     return $line ;
   }
 
+sub have_term_readline($) 
+{
+    return 0;
+}
+
 #   class << self
 #     # Use this to set where to read from.
 #     sub open(inp, opts={})

@@ -54,6 +54,12 @@ sub new($;$$) {
     return $self;
 }
 
+sub have_term_readline($) 
+{
+    my $self = shift;
+    $self->{gnu_readline};
+}
+
 sub want_gnu_readline($) 
 {
     my $self = shift;

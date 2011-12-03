@@ -112,10 +112,11 @@ sub run($$) {
     }
 
     my $show_all = 1;
+    my $show_actions = 1;
+    my $show_watch = 1;
     my @args = ();
     if (scalar @{$args} > 2) {
-	@args = @{$args};
-	pop @args; pop @args;
+	@args = splice(@{$args}, 2);
 	my $max = $proc->{brkpts}->max;
         my $opts = {
 	    msg_on_error => 
@@ -123,8 +124,8 @@ sub run($$) {
 		min_value => 1,
 		max_value => $max
 	};
-        my $bp_nums = $proc->get_int_list(@args);
-	$show_all = 0;
+        @args = $proc->get_int_list(\@args);
+	$show_all = $show_watch = $show_actions = 0;
     }
 
     my $bpmgr = $proc->{brkpts};
@@ -142,6 +143,7 @@ sub run($$) {
 	} else  {
 	    my @not_found = ();
 	    for my $bp_num (@args)  {
+		next unless $bp_num;
 		my $bp = $bpmgr->find($bp_num);
 		if ($bp) {
 		    $self->bpprint($bp, $verbose);
@@ -149,7 +151,7 @@ sub run($$) {
 		    push @not_found, $bp_num;
 		}
 	    }
-	    unless (scalar @not_found) {
+	    if (scalar @not_found) {
 		my $msg = sprintf("No breakpoint number(s) %s.\n",
 				  join(', ', @not_found));
 		$proc->errmsg($msg);
@@ -157,37 +159,40 @@ sub run($$) {
 	}
     }
 
-    my $actmgr = $proc->{actions};
-    $actmgr->compact;
-    my @actions = @{$actmgr->{list}};
-    if (0 == scalar @actions) {
-	$proc->msg('No actions.');
-    } else {
-	# There's at least one
-	$proc->section("Num Type       Enb Where");
-	if ($show_all) {
-	    for my $action (@actions) {
-		$self->action_print($action, $verbose);
-	    }
-	} else  {
-	    my @not_found = ();
-	    for my $action_num (@args)  {
-		my $action = $actmgr->find($action_num);
-		if ($action) {
-		    $self->actino_print($action, $verbose);
-		} else {
-		    push @not_found, $action_num;
+    if ($show_actions) {
+	my $actmgr = $proc->{actions};
+	$actmgr->compact;
+	my @actions = @{$actmgr->{list}};
+	if (0 == scalar @actions) {
+	    $proc->msg('No actions.');
+	} else {
+	    # There's at least one
+	    $proc->section("Num Type       Enb Where");
+	    if ($show_all) {
+		for my $action (@actions) {
+		    $self->action_print($action, $verbose);
 		}
-	    }
-	    unless (scalar @not_found) {
-		my $msg = sprintf("No action number(s) %s.\n",
-				  join(', ', @not_found));
-		$proc->errmsg($msg);
+	    } else  {
+		my @not_found = ();
+		for my $action_num (@args)  {
+		    my $action = $actmgr->find($action_num);
+		    if ($action) {
+		    $self->actino_print($action, $verbose);
+		    } else {
+			push @not_found, $action_num;
+		    }
+		}
+		unless (scalar @not_found) {
+		    my $msg = sprintf("No action number(s) %s.\n",
+				      join(', ', @not_found));
+		    $proc->errmsg($msg);
+		}
 	    }
 	}
     }
-    $self->{proc}->run_command('info watch');
-
+    if ($show_watch) {
+	$self->{proc}->run_command('info watch');
+    }
 }
 
 if (caller) {

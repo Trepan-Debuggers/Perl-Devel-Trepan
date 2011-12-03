@@ -74,7 +74,7 @@ sub complete($$)
     # 							 $prefix, \@matches);
     # sort (@matches, @aliases);
     sort @matches;
-}    
+}
 
 sub complete_token_with_next($$;$)
 {
@@ -91,6 +91,8 @@ sub complete_token_with_next($$;$)
 	    # } else {
 	    # 	$proc->commands.member?(cmd) ? $proc->commands[cmd] : 0;
 	    # }
+	} else {
+	    push @result, [$cmd, ['*'] ];
 	}
     }
     return @result;

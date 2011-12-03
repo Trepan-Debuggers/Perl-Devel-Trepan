@@ -35,4 +35,12 @@ exit $rc if $rc;
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # And just when you thought we'd never get around to actually 
 # doing something...
-exec ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);
+
+my @ARGS = ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);
+if ($OSNAME eq 'MSWin32') {
+    # I don't understand why but Strawberry Perl has trouble with exec.
+    system @ARGS;
+    exit $?;
+} else {
+    exec @ARGS;
+}

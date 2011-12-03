@@ -94,7 +94,6 @@ sub run($$)
     my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new : 
 	$intf->[-1]{output};
 
-    # require Enbugger; Enbugger->stop;
     my $filename = $args->[-1];
     
     my $expanded_filename = abs_path(glob($filename));

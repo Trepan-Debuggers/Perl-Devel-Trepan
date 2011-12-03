@@ -40,6 +40,7 @@ my @ARGS = ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);
 if ($OSNAME eq 'MSWin32') {
     # I don't understand why but Strawberry Perl has trouble with exec.
     system @ARGS;
+    exit $?;
 } else {
     exec @ARGS;
 }

@@ -1,0 +1,74 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+use warnings; no warnings 'redefine'; no warnings 'once';
+use rlib '../../../../..';
+
+package Devel::Trepan::CmdProcessor::Command::Info::Functions;
+
+use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
+use strict;
+our (@ISA, @SUBCMD_VARS);
+# Values inherited from parent
+use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
+
+## FIXME: do automatically.
+our $CMD = "info functions";
+
+unless (defined @ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
+EOE
+}
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+
+our $HELP = <<"HELP";
+${CMD} [REGEXP]
+
+All functions names or those matching REGEXP
+HELP
+
+our $SHORT_HELP = 'All function names, or those matching REGEXP';
+our $MIN_ABBREV = length('fu');
+
+sub complete($$)
+{ 
+    my ($self, $prefix) = @_;
+    my @functions = sort keys %DB::sub;
+    Devel::Trepan::Complete::complete_token(\@functions, $prefix);
+}
+
+sub run($$) 
+{
+    my ($self, $args) = @_;
+    my $proc = $self->{proc};
+    my $regexp = undef;
+
+    if (@$args == 3) {
+    	$regexp = $args->[2];
+    }
+
+    my @functions = sort keys %DB::sub;
+    @functions = grep /$regexp/, @functions if defined $regexp;
+    if (scalar @functions) {
+	$proc->section('Functions:');
+	# FIXME: make output more like gdb's.
+	for my $fn_name (@functions) {
+	    $proc->msg($fn_name);
+	}
+    } else {
+	$proc->msg("No matching functions");
+    }
+}
+
+unless (caller) {
+    require Devel::Trepan;
+    # Demo it.
+    # require_relative '../../mock'
+    # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
+    # $cmd = __PACKAGE__->new(parent_cmd);
+    # $cmd->run(@$cmd->prefix);
+}
+
+# Suppress a "used-once" warning;
+$HELP || scalar @SUBCMD_VARS;

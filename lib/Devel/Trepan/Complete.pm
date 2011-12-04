@@ -153,7 +153,8 @@ unless (caller) {
     print join(', ', filename_list), "\n";
     print "List of filenames beginning with C:\n";
     print join(', ', filename_list('C')), "\n";
-    print "List of filenames expanded from ~\n";
+    # FIXME: We don't handle ~ expansion right now.
+    #  print "List of filenames expanded from ~\n";
 }
 
 1;

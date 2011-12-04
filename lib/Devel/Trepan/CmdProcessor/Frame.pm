@@ -58,8 +58,8 @@ sub frame_setup($$)
     
     if (defined $frame_aref) {
 	$self->{frames} = $frame_aref;
+	$self->{stack_size}    = $#{$self->{frames}}+1;
     } else {
-
 	### FIXME: look go over this code.
 	my $stack_size = $DB::stack_depth;
 	my $i=0;
@@ -80,9 +80,9 @@ sub frame_setup($$)
 	# $#{$self->{frames}} = $stack_size-1;
 	my @frames = $self->{dbgr}->backtrace(0);
 	$self->{frames} = \@frames;
+	$self->{stack_size}    = $stack_size;
     }
 
-    $self->{stack_size}    = $#{$self->{frames}}+1;
     $self->{frame_index}   = 0;
     $self->{hide_level}    = 0;
     $self->{frame}         = $self->{frames}[0];

@@ -96,7 +96,13 @@ sub run($$)
     shift @args;
     my $options = parse_options($self, \@args);
     my $proc = $self->{proc};
-    push @args, $proc->subname unless scalar(@args);
+    unless (scalar(@args)) {
+	if ($proc->funcname && $proc->funcname ne 'DB::DB') {
+	    push @args, $proc->funcname;
+	} else {
+	    $proc->msg("No function currently recorded");
+	}
+    }
 
     for my $method_name (@args) {
 	if ($proc->is_method($method_name)) {

@@ -96,6 +96,12 @@ sub filename($)
     $self->{frame}{file};
 }
 
+sub funcname($)
+{
+    my $self = shift;
+    $self->{frame}{fn};
+}
+
 sub get_frame($$$) 
 {
     my ($self, $frame_num, $absolute_pos) = @_;

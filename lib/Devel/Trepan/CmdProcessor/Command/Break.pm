@@ -39,7 +39,14 @@ Examples:
 See also "tbreak", "delete", "info break" and "condition".
 HELP
 
-
+# FIXME: include line numbers. Should we include all files? 
+# Combine with BREAK completion.
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    my @completions = sort ('.', DB::LineCache::file_list, DB::subs);
+    Devel::Trepan::Complete::complete_token(\@completions, $prefix);
+}
 
 #  include Trepan::Condition
 

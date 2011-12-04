@@ -264,15 +264,21 @@ sub next_complete($$$$$)
     
     if ($cmd->can("complete_token_with_next")) {
 	my @match_pairs = $cmd->complete_token_with_next($token);
+	print "\n+++1 $cmd\n";
 	return () unless scalar @match_pairs;
+	print "\n+++1a $cmd\n";
 	if ($next_blank_pos >= length($str)) {
+	    printf "\n+++1b %ds\n", scalar @match_pairs;
 	    return map {$_->[0]} @match_pairs;
 	} else {
+	    print "\n+++2 @match_pairs\n";
 	    if (scalar @match_pairs == 1) {
 		if ($next_blank_pos >= length($str) 
 		    && ' ' ne substr($str, length($str)-1)) {
+		    print "\n+++3 $str\n";
 		    return map {$_->[0]} @match_pairs;
 		} elsif ($match_pairs[0]->[0] eq $token) {
+		    print "\n+++4 $str\n";
 		    return $self->next_complete($str, $next_blank_pos, 
 						$match_pairs[0]->[1], 
 						$token);

@@ -70,8 +70,9 @@ $prefix = 'info f';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 2);
+is(scalar(@msgs), 3);
 is($msgs[0], 'files');
 is($msgs[1], 'frame');
+is($msgs[2], 'functions');
 
 done_testing();

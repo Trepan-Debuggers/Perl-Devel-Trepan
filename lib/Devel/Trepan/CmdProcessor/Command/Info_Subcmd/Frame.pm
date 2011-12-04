@@ -34,6 +34,12 @@ HELP
 our $SHORT_HELP = 'Show information about the selected frame';
 our $MIN_ABBREV = length('fr');
 
+sub complete($$)
+{ 
+    my ($self, $prefix) = @_;
+    $self->{proc}->frame_complete($prefix, 1);
+}
+
 sub run($$) 
 {
     my ($self, $args) = @_;

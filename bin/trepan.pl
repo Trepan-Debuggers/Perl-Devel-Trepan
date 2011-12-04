@@ -42,5 +42,5 @@ if ($OSNAME eq 'MSWin32') {
     system @ARGS;
     exit $?;
 } else {
-    exec @ARGS;
+    exec { $ARGS[0]} @ARGS;
 }

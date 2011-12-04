@@ -33,13 +33,14 @@ my $ineval = {};
 #
 ####
 
+use Cwd;
 BEGIN {
     no warnings 'once';
     $ini_warn = $WARNING;
     @ini_INC = @INC;       # Save the contents of @INC before they are modified elsewhere.
     @ini_ARGV = @ARGV;
     $ini_dollar0 = $0;
-    $OS_STARTUP_DIR = `pwd`;
+    $OS_STARTUP_DIR = getcwd;
 
     # these are hardcoded in perl source (some are magical)
     

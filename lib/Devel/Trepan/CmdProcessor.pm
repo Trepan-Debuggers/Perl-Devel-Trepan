@@ -18,7 +18,7 @@ use if !defined @ISA, Data::Dumper; require Data::Dumper::Perltidy;
 
 use rlib '../..';
 
-unless (scalar @ISA) {
+unless (defined @ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     require Devel::Trepan::DB::Display;

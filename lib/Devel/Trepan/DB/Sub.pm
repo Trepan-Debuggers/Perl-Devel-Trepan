@@ -106,7 +106,7 @@ sub sub {
 	}
 
         # Pop the single-step value back off the stack.
-        $single |= $stack[ $stack_depth-- ];
+        $single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
 	if ($single & RETURN_EVENT) {
 	    $DB::return_type = defined $ret ? 'scalar' : 'undef';
 	    $DB::return_value = $ret;

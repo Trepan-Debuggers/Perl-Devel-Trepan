@@ -10,8 +10,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::DB::LineCache;
 
 use strict;
-use vars qw(@ISA @SUBCMD_VARS);
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+our (@ISA, @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -21,7 +20,14 @@ our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 ## FIXME: do automatically.
 our $CMD = "info files";
 
-use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
+unless (defined @ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
+EOE
+}
+
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+
 our $HELP = <<"HELP";
 ${CMD} [{FILENAME|.|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
 
@@ -59,17 +65,10 @@ HELP
 our $SHORT_HELP = 'Show information about the current loaded file(s)';
 our $MIN_ABBREV = length('fi');
 
-sub file_list($) 
-{
-    my $self = shift;
-    sort((DB::LineCache::cached_files(),
-	  keys(%DB::LineCache::file2file_remap)));
-}
-
 sub complete($$)
 {
     my ($self, $prefix) = @_;
-    my @completions = ('.', $self->file_list());
+    my @completions = ('.', DB::LineCache::file_list());
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
@@ -117,7 +116,7 @@ sub run($$)
     # 	}
     } else {
       my @matches = ();
-      for my $try ($self->file_list()) {
+      for my $try (DB::LineCache::file_list()) {
 	  push @matches, $try unless -1 == rindex($try, $filename);
       }
       if (scalar(@matches) > 1) {
@@ -215,7 +214,7 @@ unless (caller) {
     require Devel::Trepan;
     require Devel::Trepan::DB::LineCache;
     DB::LineCache::cache_file(__FILE__);
-    print join(', ', file_list('bogus')), "\n";
+    print join(', ', DB::LineCache::file_list), "\n";
     # Demo it.
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');

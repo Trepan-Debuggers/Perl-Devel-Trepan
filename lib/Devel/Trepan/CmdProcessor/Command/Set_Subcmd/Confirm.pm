@@ -7,11 +7,22 @@ package Devel::Trepan::CmdProcessor::Command::Set::Confirm;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd);
+our @ISA = (Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd);
+use strict;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Set whether to confirm potentially dangerous operations.";
+## FIXME: do automatically.
+our $CMD = "set confirm";
+our $HELP   = <<"HELP";
+${CMD} on|off
+
+Set whether to confirm potentially dangerous operations.
+
+Note some commands like 'quit' and 'kill' have a ! suffixe which turns
+the confirmation off in that specific instance.
+HELP
+our $SHORT_HELP = "Set whether to confirm potentially dangerous operations.";
 our $MIN_ABBREV = length('con');
 
 unless (caller) {

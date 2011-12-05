@@ -54,6 +54,12 @@ sub new($;$$) {
     return $self;
 }
 
+sub have_term_readline($) 
+{
+    my $self = shift;
+    $self->{gnu_readline} && (exists($ENV{'TERM'}) && $ENV{'TERM'} ne 'dumb');
+}
+
 sub want_gnu_readline($) 
 {
     my $self = shift;

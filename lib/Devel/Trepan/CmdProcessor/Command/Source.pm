@@ -9,6 +9,9 @@ use rlib '../../../..';
 use Devel::Trepan::Interface::Script;
 use Devel::Trepan::IO::NullOutput;
 
+# Must be outside of package!
+use if !defined @ISA, Devel::Trepan::Complete ;
+
 package Devel::Trepan::CmdProcessor::Command::Source;
 use Cwd 'abs_path';
 use Getopt::Long qw(GetOptionsFromArray);
@@ -62,13 +65,13 @@ use constant DEFAULT_OPTIONS => {
     verbose => 0
 };
 
-# sub complete($$) {
-#     my ($self, $prefix) = @_;
-#     my $files = Readline::FILENAME_COMPLETION_PROC.call(prefix) || []
-#     my $opts = (qw(-c --continue --no-continue -N --no -y --yes
-#               --verbose --no-verbose), $files);
-#     Devel::Trepan::Complete::complete_token($opts, $prefix) ;
-# }
+sub complete($$) {
+    my ($self, $prefix) = @_;
+    my @files = Devel::Trepan::Complete::filename_list($prefix);
+    my @opts = (qw(-c --continue --no --yes
+              --verbose --no-verbose), @files);
+    Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;
+}
     
 sub parse_options($$)
 {
@@ -94,7 +97,6 @@ sub run($$)
     my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new : 
 	$intf->[-1]{output};
 
-    # require Enbugger; Enbugger->stop;
     my $filename = $args->[-1];
     
     my $expanded_filename = abs_path(glob($filename));

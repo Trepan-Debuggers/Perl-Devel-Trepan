@@ -18,7 +18,7 @@ use if !defined @ISA, Data::Dumper; require Data::Dumper::Perltidy;
 
 use rlib '../..';
 
-unless (scalar @ISA) {
+unless (defined @ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     require Devel::Trepan::DB::Display;
@@ -277,12 +277,12 @@ sub process_commands($$$;$)
 	if ($event eq 'after_nest') {
 	    $self->msg("Leaving nested debug level $DB::level");
 	    $self->{prompt} = compute_prompt($self);
-	    $self->frame_setup($frame);
+	    $self->frame_setup();
 	    $self->print_location;
 	}
     } else {
 	$self->{completions} = [];
-	$self->frame_setup($frame);
+	$self->frame_setup();
 	$self->{event} = $event;
 
 	if ($event eq 'watch') {

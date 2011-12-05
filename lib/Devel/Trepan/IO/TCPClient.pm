@@ -111,6 +111,11 @@ sub read_msg($)
     }
 }
 
+sub have_term_readline($) 
+{
+    return 0;
+}
+
 # This method the debugger uses to write a message unit.
 sub write($$)
 {

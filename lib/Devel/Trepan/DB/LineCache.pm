@@ -235,6 +235,11 @@ sub is_empty($)
     $ref->{lines_href}{plain};
 }
 
+sub file_list()
+{
+    sort((cached_files(), keys(%file2file_remap)));
+}
+
 # Get line +line_number+ from file named +filename+. Return undef if
 # there was a problem. If a file named filename is not found, the
 # function will look for it in the $: array.

@@ -57,6 +57,7 @@ sub backtrace($;$$$) {
     	}
     }
 
+    # print "++count: $count, i $iline\n";
     $count += $i;
 
     my ( @a, $args_ary );
@@ -74,6 +75,7 @@ sub backtrace($;$$$) {
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
 	   ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
+	# print "++file: $file, line $line $fn\n";
 	$i++;
         # Go through the arguments and save them for later.
         @a = ();
@@ -170,8 +172,8 @@ sub backtrace($;$$$) {
 	    $callstack[$i-1]->{args} = $callstack[$i]->{args};
 	    $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
 	}
-	# $callstack[$i]{args} = undef;
-	# $callstack[$i]{fn}   = undef;
+	$callstack[$i]{args} = undef;
+	$callstack[$i]{fn}   = undef;
     }
 
     @callstack;

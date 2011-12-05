@@ -52,37 +52,41 @@ sub frame_low_high($;$)
     return ($low, $high);
 }
 
-sub frame_setup($$$)
+sub frame_setup($$)
 {
-    my ($self, $frame_ary) = @_;
-
-    my $stack_size = $DB::stack_depth;
-    my $i=0;
-    while (my ($pkg, $file, $line, $fn) = caller($i++)) {
-	last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
-    }
-    if ($stack_size <= 0) {
-	# Dynamic debugging didn't set $DB::stack_depth correctly.
-	my $j=$i;
-	while (caller($j++)) {
-	    $stack_size++;
-	}
-	$stack_size++;
-	$DB::stack_depth = $j;
-    } else {
-	$stack_size -= ($i-3);
-    }
-    $self->{stack_size}  = $stack_size;
+    my ($self, $frame_aref) = @_;
     
+    if (defined $frame_aref) {
+	$self->{frames} = $frame_aref;
+	$self->{stack_size}    = $#{$self->{frames}}+1;
+    } else {
+	### FIXME: look go over this code.
+	my $stack_size = $DB::stack_depth;
+	my $i=0;
+	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+	    last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
+	}
+	if ($stack_size <= 0) {
+	    # Dynamic debugging didn't set $DB::stack_depth correctly.
+	    my $j=$i;
+	    while (caller($j++)) {
+		$stack_size++;
+	    }
+	    $stack_size++;
+	    $DB::stack_depth = $j;
+	} else {
+	    $stack_size -= ($i-3);
+	}
+	# $#{$self->{frames}} = $stack_size-1;
+	my @frames = $self->{dbgr}->backtrace(0);
+	$self->{frames} = \@frames;
+	$self->{stack_size}    = $stack_size;
+    }
 
-    $self->{frames} = [];  # place to cache frames
-    $#{$self->{frames}} = $stack_size-1;
-
-    my @frames = $self->{dbgr}->backtrace(1);
-    $self->{frame_index} = 0;
-    $self->{hide_level} = 0;
-    $self->{frame} = $frames[0];
-    $self->{list_line} = $self->line();
+    $self->{frame_index}   = 0;
+    $self->{hide_level}    = 0;
+    $self->{frame}         = $self->{frames}[0];
+    $self->{list_line}     = $self->line();
     $self->{list_filename} = $self->filename();
 }
 
@@ -90,6 +94,12 @@ sub filename($)
 {
     my $self = shift;
     $self->{frame}{file};
+}
+
+sub funcname($)
+{
+    my $self = shift;
+    $self->{frame}{fn};
 }
 
 sub get_frame($$$) 

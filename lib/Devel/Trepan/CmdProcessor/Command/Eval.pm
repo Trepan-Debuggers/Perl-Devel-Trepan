@@ -49,7 +49,7 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-Normally, eval runs in a scalar context and so the result is a
+Normally, eval runs in a scalar context; therefore the result is a
 scalar. However you can force the type of the result by adding the
 apprpropriate sigil @, %, or \$.
 

@@ -407,18 +407,7 @@ sub trace_line_numbers($;$)
     my $fullname = cache($filename, $reload_on_change);
     return undef unless $fullname;
     my $trace_nums_ary = $file_cache{$filename}{trace_nums};
-    return @$trace_nums_ary if $trace_nums_ary;
-    my $lines_ary = $file_cache{$filename}{lines_href}{plain};
-    my @lines = @$lines_ary;
-    my @result = ();
-    for (my $i=1; $i <= $#lines; $i++) {
-	next unless defined $lines[$i];
-	no warnings 'numeric';
-	push @result, $i unless $lines[$i] == 0;
-	use warnings 'numeric'
-    }
-    $file_cache{$filename}{trace_nums} = \@result;
-    return @result;
+    return @$trace_nums_ary;
   }
     
 sub map_file($)
@@ -531,6 +520,7 @@ sub update_cache($;$)
     my $is_eval = filename_is_eval($filename);
     my $path = $is_eval ? $filename: abs_path($filename) || $filename;
     my $lines_href;
+    my @trace_nums = ();
     if ($use_perl_d_file) {
 	my @list = ($filename);
 	if ($is_eval) {
@@ -557,6 +547,7 @@ sub update_cache($;$)
 	    	my @lines = @$raw_lines;
 	    	for (my $i=1; $i<=$#lines; $i++) {
 	    	    if (defined $raw_lines->[$i]) {
+			push @trace_nums, $i if ($raw_lines->[$i] != 0);
 	    		$incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
 	    	    } else {
 	    		$raw_lines->[$i] = $lines_check[$i-1] 
@@ -579,7 +570,8 @@ sub update_cache($;$)
 		stat       => $stat,
 		lines_href => $lines_href,
 		path       => $path,
-		incomplete => $incomplete
+		incomplete => $incomplete,
+		trace_nums => \@trace_nums,
 	    };
 	    $read_file = 1;
         }
@@ -614,7 +606,8 @@ sub update_cache($;$)
 		stat       => $stat,
 		lines_href => $lines_href,
 		path       => $path,
-		incomplete => 0
+		incomplete => 0,
+		trace_nums => \@trace_nums,
 	    };
     $file_cache{$filename} = $entry;
     $file2file_remap{$path} = $filename;

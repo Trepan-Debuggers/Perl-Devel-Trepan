@@ -5,5 +5,13 @@ Breakpoint 2 set in gcd.pl at line 9
 Breakpoint 3 set in gcd.pl at line 11
 Deleted breakpoint 1
 Deleted breakpoint 2
+XXXX matched debugger cache file:
+	gcd.pl
+Possible breakpoint line numbers:
+  2, 3, 9, 11, 13, 14, 15, 18, 20, 21
+*** Line 10 not breakable.
+Use 'info file FILE brkpts' for a list of breakpoint numbers
+*** Subroutine gcd1 not found.
+Use 'info functions' for a list of subroutine names
 x1 (gcd.pl:9)
     my ($a, $b) = @_;

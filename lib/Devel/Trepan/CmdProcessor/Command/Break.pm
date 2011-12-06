@@ -3,6 +3,8 @@
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
+use Devel::Trepan::DB::LineCache;
+use Devel::Trepan::DB::Sub;
 # require_relative '../../app/condition'
 
 package Devel::Trepan::CmdProcessor::Command::Break;
@@ -44,6 +46,7 @@ HELP
 sub complete($$)
 {
     my ($self, $prefix) = @_;
+
     my @completions = sort ('.', DB::LineCache::file_list, DB::subs);
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
@@ -94,8 +97,17 @@ sub run($$) {
 	    }
 	}
 	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, $condition);
+	unless (defined($bp)) {
+	    if ($line_or_fn =~ /^\d+$/) {
+		$proc->msg("Use 'info file FILE brkpts' for a list of " . 
+			   "breakpoint numbers");
+	    } else {
+		$proc->msg("Use 'info functions' for a list of " . 
+			   "subroutine names");
+	    }
+	}
     }
-    if ($bp) {
+    if (defined($bp)) {
 	    my $prefix = $bp->type eq 'tbrkpt' ? 
 		'Temporary breakpoint' : 'Breakpoint' ;
 	    my $id = $bp->id;
@@ -107,8 +119,14 @@ sub run($$) {
 }
 
 unless (caller) {
-    require Devel::Trepan::CmdProcessor::Mock;
-    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    # require Devel::Trepan::Core;
+    # my $db = Devel::Trepan::Core->new;
+    # my $intf = Devel::Trepan::Interface::User->new;
+    # my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
+    # $proc->{stack_size} = 0;
+    # my $cmd = __PACKAGE__->new($proc);
+    # $DB::single = 1;
+    # $cmd->run([$NAME, __LINE__]);
     # my $cmd = __PACKAGE__->new($proc);
     # $cmd->run([$NAME]);
 }

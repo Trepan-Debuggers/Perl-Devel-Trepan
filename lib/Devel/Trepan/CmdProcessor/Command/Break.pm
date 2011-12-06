@@ -46,8 +46,9 @@ HELP
 sub complete($$)
 {
     my ($self, $prefix) = @_;
-
-    my @completions = sort ('.', DB::LineCache::file_list, DB::subs);
+    my $filename = $self->{proc}->filename;
+    my @completions = sort(('.', DB::LineCache::file_list, DB::subs,
+			    DB::LineCache::trace_line_numbers($filename)));
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 

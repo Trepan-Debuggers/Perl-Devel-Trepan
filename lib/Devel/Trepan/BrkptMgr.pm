@@ -35,17 +35,23 @@ sub inspect($)
     $str;
 }    
 
+sub ids($) 
+{
+    my $self = shift;
+    map $_->id, @{$self->compact()};
+}
+
 sub list($) 
 {
     my $self = shift;
-    @{$self->{list}}
+    map defined($_) ? $_ : (),  @{$self->{list}}
 }
 
 # Remove all breakpoints that we have recorded
 sub DESTROY() {
     my $self = shift;
     for my $bp ($self->list) {
-        $self->delete_by_brkpt($bp) if defined($bp);
+        $self->delete_by_brkpt($bp);
     }
     $self->{clear};
 }

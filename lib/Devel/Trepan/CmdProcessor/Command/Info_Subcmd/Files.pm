@@ -87,7 +87,7 @@ sub run($$)
     }
     my $filename = shift @args;
     if ($filename eq '.') {
-        my $frame_file = $proc->{frame}{file};
+        my $frame_file = $proc->filename;
 	$filename = DB::LineCache::map_file($frame_file) ||
 	    abs_path($frame_file);
     }

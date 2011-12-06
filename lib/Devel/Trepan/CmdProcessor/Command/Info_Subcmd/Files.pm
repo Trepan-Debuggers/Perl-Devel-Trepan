@@ -160,14 +160,12 @@ sub run($$)
 	## be set so we can't test for == 1 or == 0 in numeric context and
 	## get something.
 	if ($arg eq 'all' || $arg eq 'brkpts') {
-	    # unless ($seen{brkpts}) {
-	    # 	$proc->msg("Possible breakpoint line numbers:");
-	    # 	my @lines = DB::LineCache::trace_line_numbers($canonic_name);
-	    # 	my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
-	    # 	$proc->msg($fmt_lines);
-	    # }
-	    $proc->msg('Breakpoint reporting is broken -- %{_<$filename} not working');
-
+	    unless ($seen{brkpts}) {
+	    	$proc->msg("Possible breakpoint line numbers:");
+	    	my @lines = DB::LineCache::trace_line_numbers($canonic_name);
+	    	my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
+	    	$proc->msg($fmt_lines);
+	    }
 	    $processed_arg = $seen{brkpts} = 1;
 	}
 

@@ -69,20 +69,33 @@ sub line_events {
 sub set_break {
     my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
     $filename //= $DB::filename;
+    my $change_dbline = $filename ne $DB::filename;
     $type //= 'brkpt';
     $enabled //= 1;
     $fn_or_lineno ||= $DB::lineno;
     $cond ||= '1';
+
+    # If we're not in that file, switch over to it.
+    if ( $change_dbline ) {
+	# Switch debugger's magic structures.
+	my $filekey = '_<' . $filename;
+	*DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+	## $max      = $#dbline;
+    }
+
     my $lineno = $fn_or_lineno;
     if ($fn_or_lineno =~ /\D/) {
 	$lineno = _find_subline($fn_or_lineno) ;
 	unless ($lineno) {
 	    $s->warning("Subroutine $fn_or_lineno not found.\n");
+	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
 	    return undef;
 	}
     }
     if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
 	$s->warning("Line $lineno of $filename not known to be a trace line.\n");
+	
+	*DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
 	return undef;
     }
     unless (defined $id) {
@@ -103,6 +116,7 @@ sub set_break {
 	);
     my $ary_ref = $DB::dbline{$lineno} //= [];
     push @$ary_ref, $brkpt;
+    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
     return $brkpt
 }
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
+use feature 'switch';
 use rlib '../../../..';
 
 use Devel::Trepan::DB::LineCache;
@@ -85,7 +86,14 @@ sub run($$) {
 	} else {
 	    # $arg_count == 1. 
 	    $line_or_fn = $args[0];
-	    $filename = $DB::filename;
+	    if ($line_or_fn =~ /^\d+/) {
+		$filename = $DB::filename;
+	    } else {
+		my @matches = $self->{dbgr}->subs($args[0]);
+		given (scalar(@matches)) {
+		    when (1) { $filename = $matches[0][0]; }
+		}
+	    }
 	}
 	shift @args;
 	if (scalar @args) {
@@ -93,20 +101,11 @@ sub run($$) {
 		shift @args;
 		$condition = join(' ', @args);
 	    } else {
-		$proc->errmsg("Expection 'if' to start breakpoint condition;" . 
+		$proc->errmsg("Expecting 'if' to start breakpoint condition;" . 
 			      " got ${args[0]}");
 	    }
 	}
 	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, $condition);
-	unless (defined($bp)) {
-	    if ($line_or_fn =~ /^\d+$/) {
-		$proc->msg("Use 'info file FILE brkpts' for a list of " . 
-			   "breakpoint numbers");
-	    } else {
-		$proc->msg("Use 'info functions' for a list of " . 
-			   "subroutine names");
-	    }
-	}
     }
     if (defined($bp)) {
 	    my $prefix = $bp->type eq 'tbrkpt' ? 

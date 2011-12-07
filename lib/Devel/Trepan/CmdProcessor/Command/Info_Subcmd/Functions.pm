@@ -51,10 +51,24 @@ sub run($$)
     my @functions = sort keys %DB::sub;
     @functions = grep /$regexp/, @functions if defined $regexp;
     if (scalar @functions) {
-	$proc->section('Functions:');
+	my %FILES = ();
+	for my $function (@functions) {
+	    my $file_range = $DB::sub{$function};
+	    if ($file_range =~ /^(.+):(\d+-\d+)/) {
+		my ($filename, $range) = ($1, $2);
+		$FILES{$filename} ||= []; 
+		push @{$FILES{$filename}}, [$function, $range];
+	    } else {
+		$FILES{$file_range} ||= []; 
+		push @{$FILES{$file_range}}, [$function];
+	    }
+	}
 	# FIXME: make output more like gdb's.
-	for my $fn_name (@functions) {
-	    $proc->msg($fn_name);
+	for my $filename (sort keys %FILES) {
+	    $proc->section($filename);
+	    for my $entry (@{$FILES{$filename}}) {
+		$proc->msg("\t" . join(' is at ', @$entry));
+	    }
 	}
     } else {
 	$proc->msg("No matching functions");

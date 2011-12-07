@@ -15,6 +15,9 @@ my $opts = {
 		push @result, ($line, "\tgcd.pl");
 		$skip_next = 1;
 		next;
+	    } elsif ($line =~ /Line 10 of/) {
+		push(@result, 
+		     '*** Line 10 of XXX not known to be a trace line.');
 	    } else {
 		push @result, $line unless $skip_next;;
 		$skip_next = 0;

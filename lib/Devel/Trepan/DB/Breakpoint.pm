@@ -82,8 +82,7 @@ sub set_break {
 	}
     }
     if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
-	my $suffix = $type eq 'action' ? 'actionable' : 'breakable';
-	$s->warning("Line $lineno not $suffix.\n");
+	$s->warning("Line $lineno of $filename not known to be a trace line.\n");
 	return undef;
     }
     unless (defined $id) {

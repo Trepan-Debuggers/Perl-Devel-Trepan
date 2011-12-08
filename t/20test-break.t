@@ -28,4 +28,9 @@ my $opts = {
     },
     run_opts => " --no-highlight --basename -nx --testing"
 };
-Helper::run_debugger("$test_prog 3 5", 'break.cmd', undef, $opts)
+Helper::run_debugger("$test_prog 3 5", 'break.cmd', undef, $opts);
+
+$test_prog = File::Spec->catfile(dirname(__FILE__), 
+				 qw(.. example TCPPack.pm));
+
+Helper::run_debugger("$test_prog", 'break2.cmd');

@@ -206,6 +206,8 @@ t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
+t/data/break2.cmd
+t/data/break2.right
 t/data/cont.cmd
 t/data/cont.right
 t/data/debug.cmd

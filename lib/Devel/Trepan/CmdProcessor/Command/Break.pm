@@ -90,9 +90,18 @@ sub run($$) {
 		$filename = $DB::filename;
 	    } else {
 		my @matches = $self->{dbgr}->subs($args[0]);
-		given (scalar(@matches)) {
-		    when (1) { $filename = $matches[0][0]; }
+		if (scalar(@matches) == 1) {
+		    $filename = $matches[0][0];
+		} else {
+		    my $canonic_name = DB::LineCache::map_file($args[0]);
+		    if (DB::LineCache::is_cached($canonic_name)) {
+			$filename = $canonic_name;
+		    }
 		}
+	    }
+	    if ($arg_count == 2 && $args[1] =~ /\d+/) {
+		$line_or_fn = $args[1];
+		shift @args;
 	    }
 	}
 	shift @args;

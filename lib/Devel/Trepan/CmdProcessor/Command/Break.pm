@@ -42,8 +42,8 @@ Examples:
 See also "tbreak", "delete", "info break" and "condition".
 HELP
 
-# FIXME: include line numbers. Should we include all files? 
-# Combine with BREAK completion.
+# FIXME: Should we include all files? 
+# Combine with LIST completion.
 sub complete($$)
 {
     my ($self, $prefix) = @_;

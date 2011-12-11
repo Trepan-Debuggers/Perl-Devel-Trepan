@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use warnings; use strict;
+use warnings; use strict; use English;
 use Test::More 'no_plan';
 use rlib '.';
 use Helper;
@@ -18,8 +18,14 @@ my $opts = {
 	    if ($line =~ /.. \(eval \d+\).+ remapped .+:\d+\)/) {
 		$line =~ s/\(eval \d+\).+ remapped .+:(\d+)\)/(eval remapped $1)/;
 	    } elsif ($line =~ /.. \(.+\:\d+\)/) {
-		$line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
-	    }
+		if ($OSNAME eq 'MSWin32') {
+		    $line =~ s/\((?:.+\\)?(.+\:\d+)\)/($1)/;
+		} else {
+		    $line =~ s/\((?:.+\/)?(.+\:\d+)\)/($1)/;
+		}
+	    } elsif ($line =~ /`\(eval \d+\)\[.+:12\]'/) {
+		$line =~ s/`\(eval \d+\)\[.+:12\]'/`(eval 1000)[eval.pl:12]'/;
+	    }     
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result);

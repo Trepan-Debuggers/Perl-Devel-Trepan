@@ -36,11 +36,12 @@ sub canonic_file($$;$)
 
     # For now we want resolved filenames 
     if ($self->{settings}{basename}) {
-	return basename($filename);
+	my $is_eval = DB::LineCache::filename_is_eval($filename);
+	return $is_eval ? $filename : (basename($filename) || $filename);
     } elsif ($resolve) {
     	$filename = DB::LineCache::map_file($filename);
 	my $is_eval = DB::LineCache::filename_is_eval($filename);
-	return $is_eval ? $filename: abs_path($filename) || $filename;
+	return $is_eval ? $filename : (abs_path($filename) || $filename);
     } else {
 	return $filename;
     }

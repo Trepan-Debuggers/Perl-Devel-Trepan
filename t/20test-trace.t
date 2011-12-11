@@ -20,7 +20,7 @@ my $opts = {
 	return ($got_lines, $correct_lines);
     },
     no_cmdfile => 1,
-    run_opts => " --trace --no-highlight -nx"
+    run_opts => " --trace --basename --no-highlight -nx"
 };
 
 my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));

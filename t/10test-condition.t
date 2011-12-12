@@ -20,3 +20,4 @@ note 'Test invalid conditions';
 for my $expr ('1+', "join(', ', \@ARGV", 'join(", , \@ARGV)') {
     is (is_valid_condition($expr), '', "\"$expr\" is not valid Perl");
 }
+done_testing;

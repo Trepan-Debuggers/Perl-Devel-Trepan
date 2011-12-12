@@ -1,4 +1,22 @@
 Revision history for Devel-Trepan
+0.1.3  - Dec 11, 2011
+- Add remote debugging over a TCP socket. See --server and --client
+  on trepan.pl and debugger "server" command
+- Allow break FILENAME LINENUMBER
+- Tests work in Strawberry Perl
+- Complete completion more. Completion offers choices properly by using
+  Term::Complete::Perl
+- Add debugger commands: 
+   * info functions
+   * info variables
+   * server
+   * show interactive
+- Make easier to build on older Perl (but still >= 5.10.0) 
+- Start script trepanpl is now trepan.pl
+- Add '--no-readline' option on trepan.pl
+- Remove "shell" for now. Will reinstate sometime later with Devel::REPL
+  rather than Psh.
+
 0.1.2  - Nov 17, 2011
 - Add nested debugging via the "debug" command
 - Make code work better on cygwin and with some older modules

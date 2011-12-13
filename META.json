@@ -21,19 +21,21 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "ExtUtils::PkgConfig" : 0,
+            "Module::Build" : "0.32"
          }
       },
       "runtime" : {
          "requires" : {
             "Array::Columnize" : "v0.3.5",
             "Data::Dumper::Perltidy" : 0,
-            "Digest::SHA1" : "2.13",
+            "Digest::SHA1" : "2.11",
             "ExtUtils::PkgConfig" : "1.03",
-            "Psh" : "v1.8.0",
+            "PadWalker" : 0,
             "Syntax::Highlight::Perl::Improved" : 0,
             "Test::More" : 0,
             "perl" : "5.010",
+            "rlib" : "0.02",
             "version" : 0
          }
       }
@@ -53,10 +55,14 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "v0.1.1"
+         "version" : "v0.1.3"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::Client" : {
+         "file" : "lib/Devel/Trepan/Client.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor" : {
@@ -83,6 +89,10 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Break.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Complete" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Complete.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Command::Condition" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Condition.pm",
          "version" : 0
@@ -91,12 +101,20 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Continue.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Debug" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Debug.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Command::Delete" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Delete.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Disable" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Disable.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Disassemble" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Display" : {
@@ -147,6 +165,10 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Info::Functions" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Command::Info::Macros" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm",
          "version" : 0
@@ -157,6 +179,26 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Info::Return" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Variables" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Variables::Lexicals" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Variables::My" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Variables::Our" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Watch" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Kill" : {
@@ -181,6 +223,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Restart" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Restart.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Server" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Server.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Set" : {
@@ -259,16 +305,16 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Set::Variable" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm",
-         "version" : 0
-      },
-      "Devel::Trepan::CmdProcessor::Command::Shell" : {
-         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Shell.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Show" : {
@@ -313,6 +359,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Show::Highlight" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Show::Interactive" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Interactive.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Show::Max" : {
@@ -407,6 +457,10 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Up.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Watch" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Watch.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Hook" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Hook.pm",
          "version" : 0
@@ -467,12 +521,36 @@
          "file" : "lib/Devel/Trepan/IO/StringArray.pm",
          "version" : 0
       },
+      "Devel::Trepan::IO::TCPClient" : {
+         "file" : "lib/Devel/Trepan/IO/TCPClient.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::IO::TCPPack" : {
+         "file" : "lib/Devel/Trepan/IO/TCPPack.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::IO::TCPServer" : {
+         "file" : "lib/Devel/Trepan/IO/TCPServer.pm",
+         "version" : 0
+      },
       "Devel::Trepan::Interface" : {
          "file" : "lib/Devel/Trepan/Interface.pm",
          "version" : 0
       },
+      "Devel::Trepan::Interface::Client" : {
+         "file" : "lib/Devel/Trepan/Interface/Client.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::Interface::ComCodes" : {
+         "file" : "lib/Devel/Trepan/Interface/ComCodes.pm",
+         "version" : 0
+      },
       "Devel::Trepan::Interface::Script" : {
          "file" : "lib/Devel/Trepan/Interface/Script.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::Interface::Server" : {
+         "file" : "lib/Devel/Trepan/Interface/Server.pm",
          "version" : 0
       },
       "Devel::Trepan::Interface::User" : {
@@ -481,14 +559,22 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "0.10"
+         "version" : "v0.1.2"
       },
       "Devel::Trepan::Util" : {
          "file" : "lib/Devel/Trepan/Util.pm",
          "version" : 0
       },
+      "Devel::Trepan::WatchMgr" : {
+         "file" : "lib/Devel/Trepan/WatchMgr.pm",
+         "version" : 0
+      },
       "TrepanPosition" : {
          "file" : "lib/Devel/Trepan/Position.pm",
+         "version" : 0
+      },
+      "WatchPoint" : {
+         "file" : "lib/Devel/Trepan/WatchMgr.pm",
          "version" : 0
       }
    },
@@ -498,5 +584,5 @@
          "http://opensource.org/licenses/gpl-license.php"
       ]
    },
-   "version" : "v0.1.1"
+   "version" : "v0.1.3"
 }

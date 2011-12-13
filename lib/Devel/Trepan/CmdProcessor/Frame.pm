@@ -179,7 +179,7 @@ sub print_stack_entry()
 	my $call_str = $not_last_frame ? 
 	    "$frame->{wantarray} = $s$args in " : '';
 	my $prefix_call = "$prefix$call_str";
-	my $file_line   = $self->canonic_file($file) . " at line $frame->{line}";
+	my $file_line   = $file . " at line $frame->{line}";
 	
 	if (length($prefix_call) + length($file_line) <= $opts->{maxwidth}) {
 	    $self->msg($prefix_call . $file_line);

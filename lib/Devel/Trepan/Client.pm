@@ -28,11 +28,17 @@ sub new
     bless $self, $class;
 }
 
-# FIXME: use routine from a User interface. Also use msg() later on.
 sub errmsg($$)
 {
     my ($self, $msg) = @_;
-    print STDERR "** $msg\n";
+    $self->{intf}{user}->errmsg($msg);
+}
+
+sub msg($$)
+{
+    my ($self, $msg) = @_;
+    chomp $msg;
+    $self->{intf}{user}->msg($msg);
 }
 
 sub run_command($$$$)
@@ -66,7 +72,7 @@ sub start_client($)
 {
     my $options = shift;
     printf "Client option given\n";
-    my $dbgr = Devel::Trepan::Client->new(
+    my $client = Devel::Trepan::Client->new(
 	{client      => 1,
 	 cmdfiles    => [],
 	 initial_dir => $options->{chdir},
@@ -74,19 +80,19 @@ sub start_client($)
 	 host        => $options->{host},
 	 port        => $options->{port}}
     );
-    my $intf = $dbgr->{intf};
+    my $intf = $client->{intf};
     my ($control_code, $line);
     while (1) {
 	eval {
 	    ($control_code, $line) = $intf->read_remote;
 	};
 	if ($EVAL_ERROR) {
-	    print "Remote debugged process closed connection\n";
+	    $client->msg("Remote debugged process closed connection");
 	    last;
 	}
 	# p [control_code, line]
 	given ($control_code) {
-	    when (PRINT) { print "$line"; }
+	    when (PRINT) { $client->msg("$line"); }
 	    when (CONFIRM_TRUE) {
 		my $response = $intf->confirm($line, 1);
 		$intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
@@ -100,24 +106,24 @@ sub start_client($)
 		my $leave_loop = 0;
 		until ($leave_loop) {
 		    eval {
-			$command = $dbgr->{user_inputs}[0]->read_command($line);
+			$command = $client->{user_inputs}[0]->read_command($line);
 		    };
 		    # if ($intf->is_input_eof) {
 		    # 	print "user-side EOF. Quitting...\n";
 		    # 	last;
 		    # }
 		    if ($EVAL_ERROR) {
-			if (scalar @{$dbgr->{user_inputs}} == 0) {
-			    print "user-side EOF. Quitting...\n";
+			if (scalar @{$client->{user_inputs}} == 0) {
+			    $client->msg("user-side EOF. Quitting...");
 			    last;
 			} else {
-			    shift @{$dbgr->{user_inputs}};
+			    shift @{$client->{user_inputs}};
 			    next;
 			}
 		    };
-		    $leave_loop = $dbgr->run_command($intf, $command);
+		    $leave_loop = $client->run_command($intf, $command);
 		    if ($EVAL_ERROR) {
-			print "Remote debugged process died\n";
+			$client->msg("Remote debugged process died");
 			last;
 		    }
 		}
@@ -128,7 +134,7 @@ sub start_client($)
 	    when (RESTART) { 
 		$intf->close;
 		# Make another connection..
-		$dbgr = Devel::Trepan::Client->new(
+		$client = Devel::Trepan::Client->new(
 		    {client      => 1,
 		     cmdfiles    => [],
 		     initial_dir => $options->{chdir},
@@ -136,13 +142,13 @@ sub start_client($)
 		     host        => $options->{host},
 		     port        => $options->{port}}
 		    );
-		$intf = $dbgr->{intf};
+		$intf = $client->{intf};
 	    }
 	    when (SERVERERR) {
-		$dbgr->errmsg($line);
+		$client->errmsg($line);
 	    }
 	    default {
-		$dbgr->errmsg("Unknown control code: '$control_code'");
+		$client->errmsg("Unknown control code: '$control_code'");
 	    }
 	}
     }

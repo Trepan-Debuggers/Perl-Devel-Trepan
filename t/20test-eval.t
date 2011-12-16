@@ -25,6 +25,9 @@ my $opts = {
 		}
 	    } elsif ($line =~ /`\(eval \d+\)\[.+:12\]'/) {
 		$line =~ s/`\(eval \d+\)\[.+:12\]'/`(eval 1000)[eval.pl:12]'/;
+	    } elsif ($line =~ /^sub five/) {
+		# Perl 5.10.0 doesn't show "sub five() {"
+		next;
 	    }     
 	    push @result, $line;
 	}

@@ -10,42 +10,49 @@ use feature 'switch';
 package Devel::Trepan::Client;
 use Devel::Trepan::Interface::ComCodes;
 use Devel::Trepan::Interface::Client;
-# use Devel::Trepan::Interface::Script;
+use Devel::Trepan::Interface::Script;
 use English;
 
 sub new
 {
     my ($class, $settings) = @_;
+    my  $intf = Devel::Trepan::Interface::Client->new( 
+	undef, undef, undef, undef, 
+	{host => $settings->{host},
+	 port => $settings->{port}}
+	);
     my $self = {
-	intf => Devel::Trepan::Interface::Client->new( 
-	    undef, undef, undef, undef, 
-	    {host => $settings->{host},
-	     port => $settings->{port}}
-	),
-	user_inputs => []
+	intf => $intf,
+	user_inputs => [$intf->{user}]
     };
     bless $self, $class;
+}
+
+# FIXME: use routine from a User interface. Also use msg() later on.
+sub errmsg($$)
+{
+    my ($self, $msg) = @_;
+    print STDERR "** $msg\n";
 }
 
 sub run_command($$$$)
 {
     my ($self, $intf, $current_command) = @_;
     if (substr($current_command, 0, 1) eq '.') {
-	my $current_command = substr($current_command, 1);
+	$current_command = substr($current_command, 1);
         my @args = split(' ', $current_command);
 	my $cmd_name = shift @args;
 	my $script_file = shift @args;
 	given($cmd_name) {
 	    when ("source") { 
-		printf "Got source: '%s'\n", $script_file; 
-		# unshift @{$self->{user_inputs}}, $intf->{user};
-		# my $script_intf = 
-		#     Devel::Trepan::Interface::Script->new($script_file);
-		# $intf->{user} = $script_intf->{input};
-		return 0;
+		# FIXME expand ~ and pats and verify file name.
+		my $script_intf = 
+		    Devel::Trepan::Interface::Script->new($script_file);
+		unshift @{$self->{user_inputs}}, $script_intf->{input};
+		$current_command = $script_intf->read_command;
 	    };
 	    default {
-		printf STDERR "Unknown command: '%s'\n", $args[0]; 
+		$self->errmsg(sprintf "Unknown command: '%s'", $cmd_name);
 		return 0;
 	    }
 	};
@@ -93,7 +100,7 @@ sub start_client($)
 		my $leave_loop = 0;
 		until ($leave_loop) {
 		    eval {
-			$command = $intf->read_command($line);
+			$command = $dbgr->{user_inputs}[0]->read_command($line);
 		    };
 		    # if ($intf->is_input_eof) {
 		    # 	print "user-side EOF. Quitting...\n";
@@ -131,8 +138,11 @@ sub start_client($)
 		    );
 		$intf = $dbgr->{intf};
 	    }
+	    when (SERVERERR) {
+		$dbgr->errmsg($line);
+	    }
 	    default {
-		print STDERR "** Unknown control code: '$control_code'\n";
+		$dbgr->errmsg("Unknown control code: '$control_code'");
 	    }
 	}
     }

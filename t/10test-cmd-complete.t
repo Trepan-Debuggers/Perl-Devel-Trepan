@@ -14,7 +14,7 @@ BEGIN {
 require Devel::Trepan::CmdProcessor;
 
 # Monkey::Patch doesn't work with methods with prototypes;
-state $counter = 1;
+state $counter //= 1;
 sub monkey_patch_instance
 {
     my($instance, $method, $code) = @_;

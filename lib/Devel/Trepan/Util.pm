@@ -73,6 +73,14 @@ sub extract_expression($)
     return $text;
 }
 
+sub invalid_filename($)
+{
+    my $filename = shift;
+    return "Command file '$filename' doesn't exist"   unless -f $filename;
+    return "Command file '$filename' is not readable" unless -r $filename; 
+    return undef;
+}
+
 sub parse_eval_suffix($)
 {
     my $cmd = shift;
@@ -88,6 +96,15 @@ unless (caller) {
     my $config = {};
     hash_merge $config, $default_config;
     print Dumper($config), "\n";
+
+    for my $file (__FILE__, 'bogus') { 
+	my $result = invalid_filename($file);
+	if (defined($result)) {
+	    print "$result\n";
+	} else {
+	    print "$file exists\n";
+	}
+    }
 
     $config = {
 	term_adjust   => 1,

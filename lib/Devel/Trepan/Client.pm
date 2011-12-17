@@ -51,7 +51,12 @@ sub run_command($$$$)
 	my $script_file = shift @args;
 	given($cmd_name) {
 	    when ("source") { 
-		# FIXME expand ~ and pats and verify file name.
+		my $result = 
+		    Devel::Trepan::Util::invalid_filename($script_file);
+		unless (defined $result) {
+		    $self->errmsg($result);
+		    return 0;
+		}
 		my $script_intf = 
 		    Devel::Trepan::Interface::Script->new($script_file);
 		unshift @{$self->{user_inputs}}, $script_intf->{input};

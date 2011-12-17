@@ -77,3 +77,12 @@ for my $pair (
 	       $pair->[0], parse_eval_suffix($pair->[0]), $pair->[1]));
 }
 
+
+for my $pair 
+    ([__FILE__, ''],
+     ['bogus', 1]) {
+	my ($name, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::invalid_filename($name);
+	is(!!$result, $expect, $result // "$name should exist");
+}
+

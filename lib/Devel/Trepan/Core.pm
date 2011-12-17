@@ -5,6 +5,7 @@ use Devel::Trepan::WatchMgr;
 use Devel::Trepan::IO::Output;
 use Devel::Trepan::Interface::Script;
 use Devel::Trepan::Interface::Server;
+use Devel::Trepan::Util;
 
 package Devel::Trepan::Core;
 use vars qw(@ISA $dbgr);
@@ -73,26 +74,23 @@ sub awaken($;$) {
     }
 
     if (my $batch_filename = $opts->{testing} // $opts->{batchfile}) {
-	if (-f $batch_filename) {
-	    if (-r $batch_filename)  {
-		my $output  = Devel::Trepan::IO::Output->new;
-		my $script_opts = 
-		    $opts->{testing} ? {abort_on_error => 0} : {};
-		my $script_intf = 
-		    Devel::Trepan::Interface::Script->new($batch_filename, 
-							  $output, 
-							  $script_opts);
-		my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
-							       $self, 
-							       \%cmdproc_opts);
-		$self->{proc} = $cmdproc;
-		$main::TREPAN_CMDPROC = $self->{proc};
-	    } else {
-		print STDERR "Command file '$batch_filename' is not readable.\n";
-	    }
+	my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
+	if (defined $result) {
+	    print STDERR "$result\n" 
 	} else {
-		print STDERR "Command file '$batch_filename' doesn't exist.\n"	}
-
+	    my $output  = Devel::Trepan::IO::Output->new;
+	    my $script_opts = 
+		$opts->{testing} ? {abort_on_error => 0} : {};
+	    my $script_intf = 
+		Devel::Trepan::Interface::Script->new($batch_filename, 
+						      $output, 
+						      $script_opts);
+	    my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
+							   $self, 
+							   \%cmdproc_opts);
+	    $self->{proc} = $cmdproc;
+	    $main::TREPAN_CMDPROC = $self->{proc};
+        }
     } else {
 	my $intf = undef;
 	if ($opts->{server}) {

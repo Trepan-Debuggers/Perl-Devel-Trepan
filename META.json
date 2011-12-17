@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112150",
    "license" : [
       "open_source"
    ],
@@ -55,7 +55,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "v0.1.3"
+         "version" : "v0.1.4"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -559,7 +559,7 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "v0.1.2"
+         "version" : "v0.1.4"
       },
       "Devel::Trepan::Util" : {
          "file" : "lib/Devel/Trepan/Util.pm",
@@ -584,5 +584,5 @@
          "http://opensource.org/licenses/gpl-license.php"
       ]
    },
-   "version" : "v0.1.3"
+   "version" : "v0.1.2"
 }

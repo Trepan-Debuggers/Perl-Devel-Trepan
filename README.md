@@ -1,7 +1,7 @@
 Devel::Trepan -- A new Perl debugger
 ====================================
 
-A modular, testable debugger in the style of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki)
+A modular, testable debugger in the style of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki).
 
 SYNOPSIS
 --------
@@ -34,15 +34,10 @@ To install this Devel::Trepan, run the following commands:
 	make test
 	[sudo] make install
 
-AUTHOR
-------
-
-Rocky Bernstein <rocky@cpan.org>
-
 LICENSE AND COPYRIGHT
 ---------------------
 
-Copyright (C) 2011 Rocky Bernstein
+Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

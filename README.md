@@ -1,7 +1,8 @@
-NAME
-    Devel::Trepan -- A new Perl debugger
+Devel::Trepan -- A new Perl debugger
+====================================
 
 SYNOPSIS
+--------
 
 From a shell: 
 
@@ -22,6 +23,7 @@ Jore's [Enbugger](http://search.cpan.org/~jjore/Enbugger/):
         Enbugger->stop;  # or Enbugger->stop if ... 
 
 INSTALLATION
+------------
 
 To install this Devel::Trepan, run the following commands:
 
@@ -31,19 +33,22 @@ To install this Devel::Trepan, run the following commands:
 	[sudo] make install
 
 AUTHOR
+------
     Rocky Bernstein <rocky@cpan.org>
 
 LICENSE AND COPYRIGHT
+---------------------
 
 Copyright (C) 2011 Rocky Bernstein
 
-    This program is distributed WITHOUT ANY WARRANTY, including but not
-    limited to the implied warranties of merchantability or fitness for a
-    particular purpose.
+This program is distributed WITHOUT ANY WARRANTY, including but not
+limited to the implied warranties of merchantability or fitness for a
+particular purpose.
 
-    The program is free software. You may distribute it and/or modify it
-    under the terms of the GNU General Public License as published by the
-    Free Software Foundation (either version 2 or any later version) and the
-    Perl Artistic License as published by O’Reilly Media, Inc. Please open
-    the files named gpl-2.0.txt and Artistic for a copy of these licenses.
+The program is free software. You may distribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation (either version 2 or any later version) and
+the Perl Artistic License as published by O’Reilly Media, Inc. Please
+open the files named gpl-2.0.txt and Artistic for a copy of these
+licenses.
 

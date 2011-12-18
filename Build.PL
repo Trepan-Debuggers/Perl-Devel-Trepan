@@ -33,16 +33,15 @@ my $builder = Module::Build->new(
     release_status      => 'stable',
     configure_requires  => { 
 	'Module::Build' => '0.32',
-	'ExtUtils::PkgConfig' => 0,
 			      
     },
     build_requires => {
-        'String::Diff'                      => 0,
+        'String::Diff'        => 0,
+	'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
     },
     requires => {
 	'perl'                              => '5.010',               
 	'Array::Columnize'                  => '0.3.5',
-	'ExtUtils::PkgConfig'               => '1.03',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA1'                      => 2.11,
         'PadWalker'                         => 0,
@@ -54,6 +53,4 @@ my $builder = Module::Build->new(
     sign                => ($ENV{PERL_MB_NOSIGN} ? 0 : 1),
     );
 
-#distclean : unlink lib/perliso9660.pm, lib/perlmmc.pm lib/perlcdio.pm
-# c files?
 $builder->create_build_script();

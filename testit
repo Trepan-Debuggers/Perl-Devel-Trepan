@@ -1,3 +1,0 @@
-#!/bin/bash
-cd lib
-/usr/bin/env perl -d:Trepan $*

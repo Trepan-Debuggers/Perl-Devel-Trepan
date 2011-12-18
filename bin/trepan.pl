@@ -5,9 +5,9 @@
 use strict; use warnings; use English qw( -no_match_vars );
 
 use File::Basename; use File::Spec;
-
 use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
-use lib TREPAN_DIR;
+
+use rlib TREPAN_DIR;
 use Devel::Trepan::Options;
 use Devel::Trepan::Client;
 use Data::Dumper;

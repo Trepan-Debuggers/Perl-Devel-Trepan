@@ -33,6 +33,8 @@ print "$output\n" if $rc;
 exit $rc if $rc;
 
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
+# print Dumper($opts), "\n";
+
 # And just when you thought we'd never get around to actually 
 # doing something...
 

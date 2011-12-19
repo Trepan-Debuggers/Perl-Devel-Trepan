@@ -36,7 +36,8 @@ $DEFAULT_OPTIONS = {
     testing      => undef,
     basename     => 0,
     nx           => 0,     # Don't run user startup file (e.g. .treplrc)
-    cmdfiles     => [],
+    cmdfiles     => [],    # Files containing debugger commands to 'source'
+    cmddir       => [],    # Additional directories of debugger commands
     client       => 0,     # Set 1 if we want to connect to an out-of
                            # process debugger "server".
     highlight    => default_term(),
@@ -74,7 +75,8 @@ sub process_options($)
 	 'client'       => \$opts->{client},
 	 'server'       => \$opts->{server},
 	 'testing:s'    => \$opts->{testing},
-	 'c|command=s@' => \$opts->{cmdfiles},
+	 'command=s@' => \$opts->{cmdfiles},
+	 'cmddir=s@'    => \$opts->{cmddir},
 	 'cd:s'         => \$opts->{initial_dir},
 	 'nx'           => \$opts->{nx},
 	 'readline'     => \$opts->{readline},
@@ -135,22 +137,24 @@ unless (caller) {
     print Dumper($opts), "\n";
     my $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--version);
-	my $opts = process_options(\@argv);
-	exit 0;
+    	my @argv = qw(--version);
+    	my $opts = process_options(\@argv);
+    	exit 0;
     } else {
-	waitpid($pid, 0);
-	print "exit code: ", $?>>8, "\n";
+    	waitpid($pid, 0);
+    	print "exit code: ", $?>>8, "\n";
     }
     $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--cd /tmp);
+	my @argv = qw(--cd /tmp --cmddir /tmp);
 	my $opts = process_options(\@argv);
+	print Dumper($opts), "\n";
 	exit 0;
     } else {
 	waitpid($pid, 0);
 	print "exit code: ", $?>>8, "\n";
     }
+    exit;
     $pid = fork();
     if ($pid == 0) {
 	my @argv = qw(--cd /bogus);
@@ -190,7 +194,8 @@ trepan.pl - Perl "Trepanning" Debugger
       --basename           Show basename only on source file listings. 
                            (Needed in regression tests)
       
-      -c| --command FILE   Run debugger command file FILE
+      -c| --command FILE   Run or 'source' debugger command file FILE
+      --cmddir DIR         Read DIR for additional debugger commands
       --batch FILE         Like --command, but quit after reading FILE.
                            This option has precidence over --command and
                            will also set --mx
@@ -215,7 +220,7 @@ trepan.pl - Perl "Trepanning" Debugger
 
 =head1 DESCRIPTION
 
-B<trepanpl> is a gdb-like debugger. Much of the interface and code has
+B<trepan.pl> is a gdb-like debugger. Much of the interface and code has
 been adapted from the trepanning debuggers of Ruby.
 
 =cut

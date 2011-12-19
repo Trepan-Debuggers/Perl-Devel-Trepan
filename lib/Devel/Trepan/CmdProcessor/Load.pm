@@ -27,7 +27,8 @@ use Devel::Trepan::Complete;
 # attr_reader   :leading_str     # leading part of string. Used in 
 #                                # command completion
 
-  # "initialize" for multi-file class. Called from main.rb's "initialize".
+# "initialize" for multi-file class. Called from 
+# Devel::Trepan::CmdProcessor->new in CmdProcessor.pm
 sub load_cmds_initialize($)
 {
     my $self = shift;
@@ -35,8 +36,10 @@ sub load_cmds_initialize($)
     $self->{aliases}  = {};
     $self->{macros}   = {};
     
-    my @cmd_dirs = ( File::Spec->catfile(dirname(__FILE__), 'Command') );
-    # push @cmd_dirs, $self->{settings}->{user_cmd_dir} if $self-settings->{user_cmd_dir}
+    my @cmd_dirs = ( 
+	File::Spec->catfile(dirname(__FILE__), 'Command'),
+	@{$self->{settings}{cmddir}}
+	);
     for my $cmd_dir (@cmd_dirs) {
 	$self->load_debugger_commands($cmd_dir) if -d $cmd_dir;
     }

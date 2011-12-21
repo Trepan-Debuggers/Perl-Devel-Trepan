@@ -2,7 +2,8 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 set auto eval is on.
 $DB::D[0] = $VAR1 = 3;
-$DB::D[1] = $VAR1 = 2;
+$DB::D[1] =
+@{$VAR1 = [ '3', '5' ];}
 $DB::D[2] =
 @{$VAR1 = [ '3', '5' ];}
 $DB::D[3] = 2
@@ -11,7 +12,7 @@ x1 (gcd.pl:9)
     my ($a, $b) = @_;
 -- (gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
-$DB::D[5] = $VAR1 = '3';
-$DB::D[6] = $VAR1 = '5';
+$DB::D[5] = 3
+$DB::D[6] = 5
 $DB::D[7] =
 @{$VAR1 = [ '3', '5' ];}

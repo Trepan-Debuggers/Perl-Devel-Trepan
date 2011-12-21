@@ -55,8 +55,7 @@ sub current_source_text(;$)
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
-    $text = DB::LineCache::getline($filename, $line_number, 
-						  $opts); 
+    $text = DB::LineCache::getline($filename, $line_number, $opts); 
     return $text;
 }
   

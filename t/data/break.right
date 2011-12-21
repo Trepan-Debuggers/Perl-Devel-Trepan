@@ -3,6 +3,8 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 Breakpoint 1 set in gcd.pl at line 18
 Breakpoint 2 set in gcd.pl at line 9
 Breakpoint 3 set in gcd.pl at line 11
+Breakpoint 4 set in gcd.pl at line 3
+Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.
 Deleted breakpoint 1
 Deleted breakpoint 2
 XXXX matched debugger cache file:

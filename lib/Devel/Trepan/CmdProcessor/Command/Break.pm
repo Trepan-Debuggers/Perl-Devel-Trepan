@@ -124,6 +124,13 @@ sub run($$) {
 	    my $line_num = $bp->line_num;
 	    $proc->{brkpts}->add($bp);
 	    $proc->msg("$prefix $id set in $filename at line $line_num");
+	    # Warn if we are setting a breakpoint on a line that starts
+	    # "use.."
+	    my $text = DB::LineCache::getline($bp->filename, $line_num, 
+					      {output => 'plain'});
+	    if (defined($text) && $text =~ /^\s*use\s+/) {
+		$proc->msg("Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.");
+	    }
     }
 }
 

@@ -417,7 +417,11 @@ sub run_command($$)
     # Eval anything that's not a command or has been
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
-	$self->evaluate($current_command, {nest => 0});
+	my $opts = {nest => 0};
+	if ($current_command =~ /^\s*([%\$\@])/) {
+	    $opts->{return_type} = $1;
+	}
+	$self->evaluate($current_command, $opts);
 	return;
     }
     $self->undefined_command($cmd_name);

@@ -24,8 +24,10 @@ sub add_startup_files($$) {
 
 sub new {
     my $class = shift;
+    my %ORIG_SIG = %SIG; # Makes a copy of %SIG;
     my $self = {
 	watch => Devel::Trepan::WatchMgr->new(), # List of watch expressions
+	orig_sig => \%ORIG_SIG
     };
     bless $self, $class;
 }

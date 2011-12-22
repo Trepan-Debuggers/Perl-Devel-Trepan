@@ -282,8 +282,8 @@ sub process_commands($$$;$)
 	}
     } else {
 	$self->{completions} = [];
-	$self->frame_setup();
 	$self->{event} = $event;
+	$self->frame_setup();
 
 	if ($event eq 'watch') {
 	    my $msg = sprintf("Watchpoint %s: `%s' changed", 

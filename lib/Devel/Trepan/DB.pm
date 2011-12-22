@@ -400,10 +400,72 @@ sub save {
 }
 
 sub catch {
-  for (@clients) { $_->awaken; }
-  $event = 'interrupt';
-  $DB::signal = 1;
-  $ready = 1;
+    # for (@clients) { $_->awaken; }
+    @DB::_ = @_;
+    $DB::caller = [caller];
+    ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
+     $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
+     $DB::hinthash
+    ) = @{$DB::caller};
+    $event = 'post-mortem';
+    $running = 0;
+    for my $c (@clients) {
+	# Now sit in an event loop until something sets $running
+	my $after_eval = 0;
+	do {
+	    # Show display expresions
+	    my $display_aref = $c->display_lists;
+	    for my $disp (@$display_aref) {
+		next unless $disp && $disp->enabled;
+		# FIXME: allow more than just scalar contexts.
+		my $eval_result =  
+		    &DB::eval_with_return($usrctxt, $disp->arg, 
+					  $disp->return_type, @saved);
+		my $mess = sprintf("%d: $eval_result", $disp->number);
+		$c->output($mess);
+	    }
+
+	    given ($after_eval) {
+		when (1) {$event = 'after_eval'; }
+		when (2) {$event = 'after_nest'; }
+		default { ; }
+	    }
+	    
+	    # call client event loop; must not block
+	    $c->idle($event, 0);
+	    $after_eval = 0;
+	    if ($running == 2 && defined($eval_str)) { 
+		# client wants something eval-ed
+		# FIXME: turn into subroutine.
+		
+		my $return_type = $eval_opts->{return_type};
+		
+		given ($return_type) {
+		    when ('$') {
+			$eval_result = 
+			    &DB::eval_with_return($usrctxt, $eval_str, 
+						  $return_type, @saved);
+		    }
+		    when ('@') {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    }
+		    when ('%') {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    } 
+		    default {
+			$eval_result = 
+			    &DB::eval_with_return($usrctxt, $eval_str, 
+						  $return_type, @saved);
+		    }
+		}
+		
+		$after_eval = 1;
+		$running = 0;
+	    }
+	} until $running;
+    }
 }
 
 ####

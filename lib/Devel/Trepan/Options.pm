@@ -30,23 +30,23 @@ sub default_term() {
 my $home = $ENV{'HOME'} || glob("~");
 my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
-    initial_dir  => undef, # If --cd option was given, we save it here.
-    initfile     => $initfile,
-    batchfile    => undef,
-    testing      => undef,
     basename     => 0,
-    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
-    cmdfiles     => [],    # Files containing debugger commands to 'source'
-    cmddir       => [],    # Additional directories of debugger commands
+    batchfile    => undef,
     client       => 0,     # Set 1 if we want to connect to an out-of
                            # process debugger "server".
-    highlight    => default_term(),
-    # Default values used only when 'server' or 'client'
-    # (out-of-process debugging)
-    port         => 1954,
+    cmddir       => [],    # Additional directories of debugger commands
+    cmdfiles     => [],    # Files containing debugger commands to 'source'
+    highlight    => default_term(),    
+                           # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost', 
-    traceprint   => 0,       # set -x tracing? 
+    initfile     => $initfile,
+    initial_dir  => undef, # If --cd option was given, we save it here.
+    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
+    port         => 1954,
+    post_mortem  => 0,       # Go into debugger on die? 
     readline     => 1,       # Try to use GNU Readline?
+    testing      => undef,
+    traceprint   => 0,       # set -x tracing? 
 
 };
 
@@ -64,25 +64,26 @@ sub process_options($)
     my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
-	 'help'         => \$help,
-	 'man'          => \$man,
-	 'port:n'       => \$opts->{port},
-	 'highlight'    => \$opts->{highlight},
-	 'no-highlight' => sub { $opts->{highlight} = 0},
-	 'host:s'       => \$opts->{host},
 	 'basename'     => \$opts->{basename},
 	 'batch:s'      => \$opts->{batchfile},
+	 'cd:s'         => \$opts->{initial_dir},
 	 'client'       => \$opts->{client},
+	 'cmddir=s@'    => \$opts->{cmddir},
+	 'command=s@' => \$opts->{cmdfiles},
+	 'help'         => \$help,
+	 'highlight'    => \$opts->{highlight},
+	 'host:s'       => \$opts->{host},
+	 'man'          => \$man,
+	 'no-highlight' => sub { $opts->{highlight} = 0},
+	 'no-readline' => sub { $opts->{readline} = 0},
+	 'nx'           => \$opts->{nx},
+	 'port:n'       => \$opts->{port},
+	 'post-mortem'  => \$opts->{post_mortem},
+	 'readline'     => \$opts->{readline},
 	 'server'       => \$opts->{server},
 	 'testing:s'    => \$opts->{testing},
-	 'command=s@' => \$opts->{cmdfiles},
-	 'cmddir=s@'    => \$opts->{cmddir},
-	 'cd:s'         => \$opts->{initial_dir},
-	 'nx'           => \$opts->{nx},
-	 'readline'     => \$opts->{readline},
-	 'no-readline' => sub { $opts->{readline} = 0},
-	 'x|trace'      => \$opts->{traceprint},
 	 'version'      => \$show_version,
+	 'x|trace'      => \$opts->{traceprint},
 	);
     
     pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__), 
@@ -206,11 +207,12 @@ trepan.pl - Perl "Trepanning" Debugger
                            rus the Perl program to be debugged runs. 
                            The client runs outside of this proces.
                           
-      --port N             TCP/IP port to use on remote connection
-                           The default is 1954
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1
 
+      --port N             TCP/IP port to use on remote connection
+                           The default is 1954
+      --post-mortem        Enter debugger on die
       --readline  | --no-readline
                            Try or don't try to use Term::Readline
       -x|--trace           Simulate line tracing (think POSIX shell set -x)

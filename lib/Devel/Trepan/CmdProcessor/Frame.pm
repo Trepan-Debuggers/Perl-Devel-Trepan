@@ -63,22 +63,30 @@ sub frame_setup($$)
 	### FIXME: look go over this code.
 	my $stack_size = $DB::stack_depth;
 	my $i=0;
-	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
-	    last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
-	}
-	if ($stack_size <= 0) {
-	    # Dynamic debugging didn't set $DB::stack_depth correctly.
-	    my $j=$i;
-	    while (caller($j++)) {
-		$stack_size++;
-	    }
-	    $stack_size++;
-	    $DB::stack_depth = $j;
-	} else {
-	    $stack_size -= ($i-3);
-	}
-	# $#{$self->{frames}} = $stack_size-1;
 	my @frames = $self->{dbgr}->backtrace(0);
+	if ($self->{event} eq 'post-mortem') {
+	    $stack_size = 0;
+	    for my $frame (@frames) {
+		next unless defined($frame) && exists($frame->{file});
+		$stack_size ++;
+	    }
+	    printf "stack size is %d\n", $stack_size;
+	} else {
+	    while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+		last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
+	    } 
+	    if ($stack_size <= 0) {
+		# Dynamic debugging didn't set $DB::stack_depth correctly.
+		my $j=$i;
+		while (caller($j++)) {
+		    $stack_size++;
+		}
+		$stack_size++;
+		$DB::stack_depth = $j;
+	    } else {
+		$stack_size -= ($i-3);
+	    }
+	}
 	$self->{frames} = \@frames;
 	$self->{stack_size}    = $stack_size;
     }

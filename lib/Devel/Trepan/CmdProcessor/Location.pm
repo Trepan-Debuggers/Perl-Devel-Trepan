@@ -16,17 +16,18 @@ use Devel::Trepan::DB::LineCache;
 
 my $EVENT2ICON = {
     'brkpt'          => 'xx',
-    'tbrkpt'         => 'x1',
     'call'           => '->',
     'debugger-call'  => ':o',
     'end'            => '-|',
-    'line'           => '--',
     'interrupt'      => 'oo',
-    'signal'         => '!!',
+    'line'           => '--',
+    'post-mortem'    => 'XX',
     'return'         => '<-',
+    'signal'         => '!!',
+    'tbrkpt'         => 'x1',
     'trace'          => '==',
-    'watch'          => 'wa',
     'unknown'        => '?!',
+    'watch'          => 'wa',
 };
 
 sub canonic_file($$;$)
@@ -55,8 +56,7 @@ sub current_source_text(;$)
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
-    $text = DB::LineCache::getline($filename, $line_number, 
-						  $opts); 
+    $text = DB::LineCache::getline($filename, $line_number, $opts); 
     return $text;
 }
   

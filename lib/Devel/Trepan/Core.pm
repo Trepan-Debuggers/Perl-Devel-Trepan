@@ -24,8 +24,10 @@ sub add_startup_files($$) {
 
 sub new {
     my $class = shift;
+    my %ORIG_SIG = %SIG; # Makes a copy of %SIG;
     my $self = {
 	watch => Devel::Trepan::WatchMgr->new(), # List of watch expressions
+	orig_sig => \%ORIG_SIG
     };
     bless $self, $class;
 }
@@ -67,8 +69,11 @@ sub awaken($;$) {
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
+
+    $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
+
     my %cmdproc_opts = ();
-    for my $field (qw(basename highlight readline traceprint)) {
+    for my $field (qw(basename cmddir highlight readline traceprint)) {
 	# print "field $field $opts->{$field}\n";
 	$cmdproc_opts{$field} = $opts->{$field};
     }

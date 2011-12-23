@@ -3,7 +3,7 @@
 #   Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
 #
 #
-=head1 NAME Linecache
+=head1 NAME DB::LineCache
 
 DB::LineCache - package to read and cache lines of a Perl program. 
 
@@ -19,13 +19,13 @@ The routines here may be is useful when a small random sets of lines
 are read from a single file, in particular in a debugger to show
 source lines.
 
-  use 'DB::LineCache'
-  lines = DB::LineCache::getlines('/tmp/myperl.pl')
+  use DB::LineCache;
+  $lines = DB::LineCache::getlines('/tmp/myperl.pl')
   # The following lines have same effect as the above.
   $: << '/tmp'
-  Dir.chdir('/tmp') {lines = DB::LineCache::getlines('myperl.pl')
+  Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
 
-  line = DB::LineCache::getline('/tmp/myperl.pl', 6)
+  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
   # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
 
   DB::LineCache::clear_file_cache
@@ -246,10 +246,10 @@ sub file_list()
 # 
 # Examples:
 # 
-#  lines = LineCache::getline('/tmp/myfile.rb')
+#  $lines = LineCache::getline('/tmp/myfile.rb')
 #  # Same as above
 #  $: << '/tmp'
-#  lines = LineCache.getlines('myfile.rb')
+#  $lines = LineCache.getlines('myfile.rb')
 #
 sub getline($$;$)
 {

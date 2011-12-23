@@ -19,32 +19,33 @@ our $HELP         = <<"HELP";
 Evaluate unrecognized debugger commands.
 
 Often inside the debugger, one would like to be able to run arbitrary
-Ruby commands without having to preface Python expressions with \"print\" or
+Perl commands without having to preface expressions with \"print\" or
 \"eval\". Setting \"auto eval\" on will cause unrecognized debugger
 commands to be evaluated as a Perl expression. 
 
-Note that if this is set, on error the message shown on type a bad
+If the expression starts with \%, \@, or \$ the context will be set 
+to a hash, array or scalar accordingly.
+
+Note that if auto eval is set, the message shown on type a bad
 debugger command changes from:
 
   Undefined command: \"fdafds\". Try \"help\".
 
 to something more Perl-specific such as:
 
-  NameError: name 'fdafds' is not defined
+  Unquoted string "fdasfdsa" may clash with future reserved word
 
 One other thing that trips people up is when setting auto eval is that
 there are some short debugger commands that sometimes one wants to use
 as a variable, such as in an assignment statement. For example:
 
-  \$s = 5
+  s /a/b/  # Note the space after the s
 
-which produce when 'auto eval' is on:
-  *** Command 'step' can take at most 1 argument(s); got 2.
-
-because by default, 's' is an alias for the debugger 'step'
+is not a Perl subtitute command but a "step" command when 'auto eval'
+is on because by default, 's' is an alias for the debugger 'step'
 command. It is possible to remove that alias if this causes constant
-problem. Another possibility is to go into a real Ruby shell via the
-'irb' command.
+problem. Another possibility is to go into a real shell via the
+'shell' command.  
 HELP
 
 our $MIN_ABBREV   = length('ev');

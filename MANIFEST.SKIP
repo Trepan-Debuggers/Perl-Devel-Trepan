@@ -1,18 +1,20 @@
+#!include_default
+# Avoid configuration metadata file
+^MYMETA\.
 
-#!start included /usr/share/perl/5.10/ExtUtils/MANIFEST.SKIP
-# Avoid version control files.
-\bhow-to-make-a-release.txt$
-\bDevel-Trepan-.*\.gz$
-\bRCS\b
-\bCVS\b
-\bSCCS\b
-,v$
-\btmp\b
-\btestit\b
-\B\.svn\b
-\B\.git\b
-\B\.gitignore\b
-\b_darcs\b
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\bBuild.bat$
+\b_build
+\bBuild.COM$
+\bBUILD.COM$
+\bbuild.com$
+^MANIFEST\.SKIP
+
+# Avoid archives of this distribution
+\bDevel-Trepan-[\d\.\_]+
+^MYMETA.yml$
+^MYMETA\.json$
 
 # Avoid Makemaker generated and utility files.
 \bMANIFEST\.bak
@@ -22,13 +24,6 @@
 \bpm_to_blib\.ts$
 \bpm_to_blib$
 \bblibdirs\.ts$         # 6.18 through 6.25 generated this
-
-# No data/trepan/Enbugger-trepan.patch
-\bdata/Enbugger-trepan\.patch$
-
-# Avoid Module::Build generated and utility files.
-\bBuild$
-\b_build/
 
 # Avoid temp and backup files.
 ~$
@@ -42,18 +37,5 @@
 
 # Avoid Devel::Cover files.
 \bcover_db\b
-#!end included /usr/share/perl/5.10/ExtUtils/MANIFEST.SKIP
 
 
-# Avoid Module::Build generated and utility files.
-\bBuild$
-\bBuild.bat$
-\b_build
-\bBuild.COM$
-\bBUILD.COM$
-\bbuild.com$
-
-# Avoid archives of this distribution
-\bDevel-Trepan-[\d\.\_]+
-^MYMETA.yml$
-^MYMETA\.json$

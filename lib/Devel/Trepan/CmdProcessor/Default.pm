@@ -20,6 +20,8 @@ use constant DEFAULT_SETTINGS => {
     
     basename      => 0,      # Show basename of filenames only
     confirm       => 1,      # Confirm potentially dangerous operations?
+    cmddir        => [],     # Additional directories to load commands
+	                     # from
     different     => 0,      # stop *only* when  different position? 
     
     debugdbgr     => 0,      # Debugging the debugger

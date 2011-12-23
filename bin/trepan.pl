@@ -5,9 +5,9 @@
 use strict; use warnings; use English qw( -no_match_vars );
 
 use File::Basename; use File::Spec;
-
 use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
-use lib TREPAN_DIR;
+
+use rlib TREPAN_DIR;
 use Devel::Trepan::Options;
 use Devel::Trepan::Client;
 use Data::Dumper;
@@ -33,6 +33,8 @@ print "$output\n" if $rc;
 exit $rc if $rc;
 
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
+# print Dumper($opts), "\n";
+
 # And just when you thought we'd never get around to actually 
 # doing something...
 

@@ -89,7 +89,7 @@ sub canonic_signame($)
     return $signame;
 }
 
-my @FATAL_SIGNALS = ('KILL', 'STOP');
+my %FATAL_SIGNALS = ('KILL' => 1, 'STOP' => 1);
 
 # I copied these from GDB source code.
 my %SIGNAL_DESCRIPTION = (
@@ -176,6 +176,7 @@ sub new($$)
 	orig_set_signal  => %SIG,
 	info_fmt => '%-14s%-4s\t%-4s\t%-5s\t%-4s\t%s',
     };
+    bless $self, $class;
     
     $self->{header} = sprintf($self->{info_fmt}, 'Signal', 'Stop', 'Print',
 			      'Stack', 'Pass', 'Description');
@@ -187,38 +188,40 @@ sub new($$)
 	initialize_handler($signame);
         action($signame, 'SIGINT stop print nostack nopass');
     }
+    $self;
 }
 
-#     def initialize_handler(self, signame):
-#         if signame in fatal_signals: return False
-#         signum = lookup_signum(signame)
-#         if signum is None: return False
+sub initialize_handler($$)
+{
+    my ($self, $sig) = @_;
+    my $signame = canonic_signame($sig);
+    return 0 unless defined($signame);
+    return 0 unless exists($FATAL_SIGNALS{$signame});
         
-#         try:
-#             old_handler = signal.getsignal(signum)
-#         except ValueError:
-#             # On some OS's (Redhat 8), SIGNUM's are listed (like
-#             # SIGRTMAX) that getsignal can't handle.
-#             old_handler = None
-#             if signame in self.sigs:
-#                 self.sigs.pop(signame)
-#                 pass
+    # try:
+    my $old_handler = $SIG{$signame};
+    # except ValueError:
+    # On some OS's (Redhat 8), SIGNUM's are listed (like
+    # SIGRTMAX) that getsignal can't handle.
+    if (exists($self->{sigs}{$signame})) {
+	$self->{sigs}->pop($signame);
+    }
 
-#         if signame in self.ignore_list:
-#             self.sigs[signame] = SigHandler(self.dbgr, signame, signum, 
-#                                             old_handler,
-#                                             None, False,
-#                                             print_stack=False,
-#                                             pass_along=True)
-#         else:
-#             self.sigs[signame] = SigHandler(self.dbgr, signame, signum, 
-#                                             old_handler,
-#                                             self.dbgr.intf[-1].msg,
-#                                             True,
-#                                             print_stack=False,
-#                                             pass_along=False)
-#             pass
-#         return True
+    my $signum = lookup_signum($signame);
+    if (exists($self->{$signame}{ignore_list})) {
+	$self->{sigs}->[$signame] = 
+	    SigHandler->new($self->{dbgr}, $signame, $signum, 
+			    &old_handler,
+			    undef, 0,  0, 1);
+    } else {
+	$self->{sigs}->[$signame] = 
+	    SigHandler->new($self->{dbgr}, $signame, $signum, 
+			    &old_handler,
+			    &{$self->{dbgr}{intf}[-1]->msg},
+			    1, 0, 0);
+    }
+    return 1;
+}
 
 #     def set_signal_replacement(self, signum, handle):
 #         '''A replacement for signal.signal which chains the signal behind

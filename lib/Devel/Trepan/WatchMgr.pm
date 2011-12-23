@@ -30,7 +30,7 @@ package Devel::Trepan::WatchMgr;
 
 sub new($$) 
 {
-    my ($class,$dbgr) = @_;
+    my ($class, $dbgr) = @_;
     my $self = {};
     $self->{dbgr} = $dbgr;
     bless $self, $class;

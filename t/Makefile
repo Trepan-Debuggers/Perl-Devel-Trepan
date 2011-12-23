@@ -1,10 +1,11 @@
-#: Whatever it is you want to do, it should be handled by the main
+# Whatever it is you want to do, it should be handled by the main
 # (parent) Makefile. So reissue make from there.
-.PHONY: all
+PHONY=check all
 
-#: Whatever it is you want to do, it should be handled by the parent
+#: Default target - the parent's testing or "check" target
 all:
 	$(MAKE) -C .. -f GNUmakefile check
 
+#: Whatever it is you want to do, it should be handled by the parent
 %:
 	$(MAKE) -C .. -f GNUmakefile $@

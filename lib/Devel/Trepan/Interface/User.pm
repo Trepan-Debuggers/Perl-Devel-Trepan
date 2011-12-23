@@ -10,9 +10,9 @@ use rlib '../../..';
 package Devel::Trepan::Interface::User;
 use vars qw(@EXPORT @ISA);
 
-use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge);
+use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge YN);
 use if !defined(@ISA), Devel::Trepan::IO::Input;
-use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
+use if !defined(@ISA), Devel::Trepan::Interface;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 use strict; 
@@ -97,7 +97,7 @@ sub confirm($$$) {
 	($response = lc(unpack("A*", $response))) =~ s/^\s+//;
 	# We don't catch "Yes, I'm sure" or "NO!", but I leave that 
 	# as an exercise for the reader.
-	last if grep(/^${response}$/, @YN);
+	last if grep(/^${response}$/, @Devel::Trepan::Util::YN);
 	$self->msg( "Please answer 'yes' or 'no'. Try again.");
     }
     $self->remove_history;

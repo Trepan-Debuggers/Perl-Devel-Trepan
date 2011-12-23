@@ -12,7 +12,7 @@ package Devel::Trepan::Interface;
 use rlib '../..';
 use vars qw(@EXPORT @ISA @YN);
 @ISA = qw(Exporter);
-@EXPORT = qw(YES NO YES_OR_NO @YN readline close new);
+@EXPORT = qw(readline close new);
 
 use Devel::Trepan::IO::Input;
 use Devel::Trepan::IO::Output;
@@ -24,11 +24,6 @@ use Devel::Trepan::IO::Output;
 #  - another interface in another process or computer
 
 # attr_accessor :history_save, :interactive, :input, :output
-
-use constant YES => qw(y yes oui si yep ja);
-@YN = YES;
-use constant NO => qw(n no non nope nein);
-push(@YN, NO);
 
 sub new {
     my($class, $inp, $out, $opts)  = @_;
@@ -152,9 +147,6 @@ sub save_history($$) {}
 
 # Demo
 if (__FILE__ eq $0) {
-    print join(', ', YES), "\n";
-    print join(', ', NO), "\n";
-    print join(', ', @YN), "\n";
     my $interface = Devel::Trepan::Interface->new;
 }
 

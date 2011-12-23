@@ -3,10 +3,21 @@
 use strict; use warnings;
 use feature 'switch';
 package Devel::Trepan::Util;
-use vars qw(@EXPORT @ISA);
+use vars qw(@EXPORT @ISA @YN);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression
-                 parse_eval_suffix);
+                 parse_eval_suffix YES NO YES_OR_NO @YN);
 @ISA = qw(Exporter);
+
+use constant YES => qw(y yes oui si yep ja);
+@YN = YES;
+use constant NO => qw(n no non nope nein);
+push(@YN, NO);
+
+sub YN($) 
+{
+    my $response = shift;
+    !!grep(/^${response}$/i, @YN);
+}
 
 # Hash merge like Ruby has.
 sub hash_merge($$) {
@@ -145,6 +156,11 @@ unless (caller) {
     for my $cmd (qw(eval eval$ eval% eval@ evaluate% none)) {
 	printf "parse_eval_suffix($cmd) => '%s'\n", parse_eval_suffix($cmd);
     }
+
+    for my $resp (qw(yes no Y NO nein nien huh?)) {
+	printf "YN($resp) => '%s'\n", YN($resp);
+    }
+
 }
 
 1;

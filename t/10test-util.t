@@ -84,5 +84,20 @@ for my $pair
 	my ($name, $expect) = @$pair;
 	my $result = Devel::Trepan::Util::invalid_filename($name);
 	is(!!$result, $expect, $result // "$name should exist");
+};
+
+for my $pair 
+    (['yes', 1],
+     ['no',  1],
+     ['Y',   1],
+     ['NO',  1],
+     ['nein', 1],
+     ['nien', ''],
+     ['huh?', '']) {
+	my ($resp, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::YN($resp);
+	is($result, $expect, $resp);
 }
+
+
 

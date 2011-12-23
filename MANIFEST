@@ -4,6 +4,7 @@ Build.PL
 ChangeLog
 Changes
 example/eval.pl
+example/except-bug1.pl
 example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
@@ -39,6 +40,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Enable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
 lib/Devel/Trepan/CmdProcessor/Command/Frame.pm
+lib/Devel/Trepan/CmdProcessor/Command/Handle.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt
 lib/Devel/Trepan/CmdProcessor/Command/Help/examples.txt
@@ -158,6 +160,7 @@ lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
+lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm
 Makefile.PL
@@ -182,6 +185,7 @@ t/10test-options.t
 t/10test-position.t
 t/10test-proc-hook.t
 t/10test-proc-load.t
+t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
 t/20test-autolist.t

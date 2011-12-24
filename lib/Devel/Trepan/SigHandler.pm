@@ -20,10 +20,11 @@
 #         ignore=True, print=False, pass=True
 #     
 #
+use rlib '../../..'; 
+use Devel::Trepan::Util;
 
 # Manages Signal Handling information for the debugger
 package Devel::Trepan::SigMgr;
-
 use Exporter;
 use vars qw(@EXPORT);
 @EXPORT    = qw( lookup_signum lookup_signame );
@@ -144,20 +145,18 @@ my %SIGNAL_DESCRIPTION = (
 #     - Do we print/not print when signal is caught
 #     - Do we pass/not pass the signal to the program
 #     - Do we stop/not stop when signal is caught
-
+#
 #     Parameter dbgr is a Debugger object. ignore is a list of
 #     signals to ignore. If you want no signals, use [] as None uses the
 #     default set. Parameter default_print specifies whether or not we
 #     print receiving a signals that is not ignored.
-
+#
 #     All the methods which change these attributes return None on error, or
 #     True/False if we have set the action (pass/print/stop) for a signal
 #     handler.
-
-
-sub new($$)
+sub new($$$$$)
 {
-    my ($class, $print_fn, $ignore_list) = @_;
+    my ($class, $print_fn, $errprint_fn, $secprint_fn, $ignore_list) = @_;
     # Ignore signal handling initially for these known signals.
     unless (defined($ignore_list)) {
 	$ignore_list = {
@@ -182,6 +181,8 @@ sub new($$)
 
     my $self = {
 	print_fn    => $print_fn,
+	errprint_fn => $errprint_fn // $print_fn,
+	secprint_fn => $secprint_fn // $print_fn,
         sigs        => {},
         siglist     => @signame,
 	ignore_list => $ignore_list,
@@ -207,7 +208,7 @@ sub initialize_handler($$)
     my ($self, $sig) = @_;
     my $signame = canonic_signame($sig);
     return 0 unless defined($signame);
-    return 0 unless exists($FATAL_SIGNALS{$signame});
+    return 0 if exists($FATAL_SIGNALS{$signame});
         
     # try:
     my $old_handler = $SIG{$signame};
@@ -299,10 +300,10 @@ sub print_info_signal_entry($$)
     my $sig_obj = $self->{sigs}{$signame};
     if (exists $self->{sigs}{$signame}) {
 	$msg = sprintf($self->{info_fmt}, $signame, 
-		       bool2YN($sig_obj->{b_stop}),
-		       bool2YN($sig_obj->{print_method}),
-		       bool2YN($sig_obj->{print_stack}),
-		       bool2YN($sig_obj->{pass_along}),
+		       Devel::Trepan::Util::bool2YN($sig_obj->{b_stop}),
+		       Devel::Trepan::Util::bool2YN($sig_obj->{print_fn}),
+		       Devel::Trepan::Util::bool2YN($sig_obj->{print_stack}),
+		       Devel::Trepan::Util::bool2YN($sig_obj->{pass_along}),
 		       $description); 
     } else {
 	# Fake up an entry as though signame were in sigs.
@@ -319,12 +320,13 @@ sub info_signal($$)
     my @args = @$args;
     return undef unless scalar @args;
     my $print_fn = $self->{print_fn};
+    my $secprint_fn = $self->{secprint_fn};
     my $signame = $args->[0];
     if ($signame eq  'handle' or $signame eq 'signal') {
 	# This has come from dbgr's info command
 	if (scalar @args == 1) {
 	    # Show all signal handlers
-	    $print_fn->($self->{header});
+	    $secprint_fn->($self->{header});
 	    for my $sn (@$self->{siglist}) {
 		$self->print_info_signal_entry($signame);
 	    }
@@ -335,106 +337,119 @@ sub info_signal($$)
     }
 
     $signame = canonic_signame($signame);
-    $print_fn->($self->{header});
+    $secprint_fn->($self->{header});
     $self->print_info_signal_entry($signame);
     return 1;
 }
 
-#     def action(self, arg):
-#         """Delegate the actions specified in 'arg' to another
-#         method.
-#         """
-#         if not arg:
-#             self.info_signal(['handle'])
-#             return True
-#         args = arg.split()
-#         signame = args[0]
-#         signame = canonic_signame($args[0]);
-#         if not signame: return
+# Delegate the actions specified in string $arg to another
+# method.
+sub action($$)
+{
+    my ($self, $arg) = @_;
+    if (!defined($arg)) {
+	$self->info_signal(['handle']);
+	return 1;
+    }
+    my @args = split ' ', $arg;
+    my $signame = canonic_signame(shift @args);
+    return unless defined $signame;
 
-#         if len(args) == 1:
-#             self.info_signal([signame])
-#             return True
-#         # We can display information about 'fatal' signals, but not
-#         # change their actions.
-#         if signame in fatal_signals:
-#             return None
+    if (scalar @args == 0) { 
+	$self->info_signal([$signame]);
+	return 1;
+    }
 
-#         if signame not in self.sigs.keys():
-#             if not self.initialize_handler(signame): return None
-#             pass
+    # We can display information about 'fatal' signals, but not
+    # change their actions.
+    return 0 if (exists $FATAL_SIGNALS{$signame});
 
-#         # multiple commands might be specified, i.e. 'nopass nostop'
-#         for attr in args[1:]:
-#             if attr.startswith('no'):
-#                 on = False
-#                 attr = attr[2:]
-#             else:
-#                 on = True
-#             if 'stop'.startswith(attr):
-#                 self.handle_stop(signame, on)
-#             elif 'print'.startswith(attr) and len(attr) >= 2:
-#                 self.handle_print(signame, on)
-#             elif 'pass'.startswith(attr):
-#                 self.handle_pass(signame, on)
-#             elif 'ignore'.startswith(attr):
-#                 self.handle_ignore(signame, on)
-#             elif 'stack'.startswith(attr):
-#                 self.handle_print_stack(signame, on)
-#             else:
-#                 self.dbgr.intf[-1].errmsg('Invalid arguments')
-#                 pass
-#             pass
-#         return self.check_and_adjust_sighandler(signame, self.sigs)
+    unless (exists $self->{sigs}{$signame}) {
+	return 0 unless $self->initialize_handler($signame);
+    }
 
-#     def handle_print_stack(self, signame, print_stack):
-#         """Set whether we stop or not when this signal is caught.
-#         If 'set_stop' is True your program will stop when this signal
-#         happens."""
-#         self.sigs[signame].print_stack = print_stack
-#         return print_stack
+    # multiple commands might be specified, i.e. 'nopass nostop'
+    for my $attr (@args) {
+	my $on = 1;
+	if (0 == index($attr, 'no')) {
+	    $on = 0;
+	    $attr = substr($attr, 2);
+	}
+	if (0 == index($attr, 'stop')) {
+	    $self->handle_stop($signame, $on);
+	} elsif (0 == index($attr, 'print')) {
+	    # use Enbugger; Enbugger->load_debugger('trepan'); Enbugger->stop;
+	    $self->handle_print($signame, $on);
+	} elsif (0 == index($attr, 'pass')) {
+	    $self->handle_pass($signame, $on);
+	} elsif (0 == index($attr, 'ignore')) {
+	    $self->handle_ignore($signame, $on);
+	} elsif (0 == index($attr, 'stack')) {
+	    $self->handle_print_stack($signame, $on);
+	} else {
+	    $self->{errprt_fn}->('Invalid arguments')
+	}
+    }
+    ## return self.check_and_adjust_sighandler($signame, $self->{sigs});
+}
 
-#     def handle_stop(self, signame, set_stop):
-#         """Set whether we stop or not when this signal is caught.
-#         If 'set_stop' is True your program will stop when this signal
-#         happens."""
-#         if set_stop:
-#             self.sigs[signame].b_stop       = True
-#             # stop keyword implies print AND nopass
-#             self.sigs[signame].print_method = self.dbgr.intf[-1].msg
-#             self.sigs[signame].pass_along   = False
-#         else:
-#             self.sigs[signame].b_stop       = False
-#             pass
-#         return set_stop
+# Set whether we stop or not when this signal is caught.
+# If 'set_stop' is True your program will stop when this signal
+# happens.
+sub handle_print_stack($$$) 
+{
+    my ($self, $signame, $print_stack) = @_;
+    $self->{sigs}{$signame}{print_stack} = $print_stack;
+}
 
-#     def handle_pass(self, signame, set_pass):
-#         """Set whether we pass this signal to the program (or not)
-#         when this signal is caught. If set_pass is True, Dbgr should allow
-#         your program to see this signal.
-#         """
-#         self.sigs[signame].pass_along = set_pass
-#         if set_pass:
-#             # Pass implies nostop
-#             self.sigs[signame].b_stop = False
-#             pass
-#         return set_pass
+# Set whether we stop or not when this signal is caught.
+# If 'set_stop' is True your program will stop when this signal
+# happens.
+sub handle_stop($$$)
+{
+    my ($self, $signame, $set_stop) = @_;
+    if ($set_stop) {
+	$self->{sigs}{signame}{b_stop} = 1;
+	# stop keyword implies print AND nopass
+	$self->{sigs}{$signame}{print_fn} = $self->{print_fn};
+	$self->{sigs}{$signame}{pass_along} = 0;
+    } else {
+	$self->{sigs}{$signame}{b_stop} = 0;
+    }
+}
 
-#     def handle_ignore(self, signame, set_ignore):
-#         """'pass' and 'noignore' are synonyms. 'nopass and 'ignore' are
-#         synonyms."""
-#         self.handle_pass(signame, not set_ignore)
-#         return set_ignore
+# Set whether we pass this signal to the program (or not)
+# when this signal is caught. If set_pass is True, Dbgr should allow
+# your program to see this signal.
+sub handle_pass($$$)
+{
+    my ($self, $signame, $set_pass) = @_;
+    $self->{sigs}{$signame}{pass_along} = $set_pass;
+    if ($set_pass) {
+	# Pass implies nostop
+	$self->{sigs}{$signame}{b_stop} = 0;
+    }
+}    
 
-#     def handle_print(self, signame, set_print):
-#         """Set whether we print or not when this signal is caught."""
-#         if set_print:
-#             self.sigs[signame].print_method = self.dbgr.intf[-1].msg
-#         else:
-#             self.sigs[signame].print_method = None
-#             pass
-#         return set_print
-#     pass
+# 'pass' and 'noignore' are synonyms. 'nopass and 'ignore' are
+# synonyms.
+sub handle_ignore($$$)
+{
+    my ($self, $signame, $set_ignore) = @_;
+    $self->handle_pass($signame, !$set_ignore);
+}
+
+# Set whether we print or not when this signal is caught.
+sub handle_print($$$)
+{
+    my ($self, $signame, $set_print) = @_;
+    if ($set_print) {
+	$self->{sigs}{$signame}{print_fn} = $self->{print_fn};
+    } else {
+	$self->{sigs}{$signame}{print_fn} = undef;
+    }
+}
+
 
 #     Store information about what we do when we handle a signal,
 #
@@ -444,7 +459,7 @@ sub info_signal($$)
 #
 #     Parameters:
 #        signame : name of signal (e.g. SIGUSR1 or USR1)
-#        print_method routine to use for "print"
+#        print_fn routine to use for "print"
 #        stop routine to call to invoke debugger when stopping
 #        pass_along: True is signal is to be passed to user's handler
 package Devel::Trepan::SigHandler;
@@ -473,17 +488,17 @@ sub new($$$$$$;$$)
 sub handle($$$)
 {
     my ($self, $signum, $frame) = @_;
-    if ($self->{print_method}) {
+    if ($self->{print_fn}) {
 	my $msg = sprintf('\nProgram received signal %s.', 
 			  $self->{signame});
-	$self->{print_method}->($msg);
+	$self->{print_fn}->($msg);
     }
     # if ($self->{print_stack}) {
     # 	import traceback;
     # 	my @strings = traceback.format_stack(frame);
     # 	for my $s (@strings) {
     # 	    chomp $s;
-    # 	    $self->{print_method}->($s);
+    # 	    $self->{print_fn}->($s);
     # 	}
     # }
     # if ($self->{b_stop}) {
@@ -506,18 +521,9 @@ sub handle($$$)
 
 # When invoked as main program, do some basic tests of a couple of functions
 unless (caller) {
-    # for signum in range(signal.NSIG):
-    #     signame = lookup_signame(signum)
-    #     if signame is not None:
-    #         assert(signum == lookup_signum(signame))
-    #         # Try without the SIG prefix
-    #         assert(signum == lookup_signum(signame[3:]))
-    #         pass
-    #     pass
-
     for my $i (15, -15, 300) {
         printf("lookup_signame(%d) => %s\n", $i, 
-	       Devel::Trepan::SigMgr::lookup_signame($i) // 'undef');
+	       devel::trepan::sigmgr::lookup_signame($i) // 'undef');
     }
     
     for my $sig ('term', 'TERM', 'NotThere') {
@@ -530,21 +536,24 @@ unless (caller) {
 	       Devel::Trepan::SigMgr::canonic_signame($i) // 'undef');
     }
     
-    # from import_relative import import_relative
-    # Mdebugger = import_relative('debugger', '..', 'pydbgr')
-    # dbgr = Mdebugger.Debugger()
     eval 'sub myprint($) { my $msg = shift; print "$msg\n";  }';
 
     my $h = Devel::Trepan::SigMgr->new(\&myprint);
     $h->info_signal(["TRAP"]);
-    # Set to known value
-    # h.action('SIGUSR1')
-    # h.action('usr1 print pass stop')
-    $h->info_signal(['USR1']);
-    # # noprint implies no stop
-    # h.action('SIGUSR1 noprint')
-    # h.info_signal(['USR1'])
-    # h.action('foo nostop')
+    # USR1 is set to known value
+    $h->action('SIGUSR1');
+
+    eval 'sub doit($$) {
+      my ($h, $arg) = @_; 
+      print "$arg\n"; 
+      $h->action($arg);}
+     }';
+    doit($h, 'usr1 print pass');
+    $h->info_signal(["USR1"]);
+    # noprint implies no stop
+    doit($h, 'usr1 noprint');
+    $h->info_signal(["USR1"]);
+    doit($h, 'foo nostop');
     # # stop keyword implies print
     # h.action('SIGUSR1 stop')
     # h.info_signal(['SIGUSR1'])

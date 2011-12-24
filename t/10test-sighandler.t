@@ -14,6 +14,16 @@ BEGIN {
 
 import Devel::Trepan::SigHandler;
 
+for my $signum (0.. scalar(keys(%SIG))-1) {
+    my $signame = Devel::Trepan::SigMgr::lookup_signame($signum);
+    if (defined $signame) {
+        is(Devel::Trepan::SigMgr::lookup_signum($signame), $signum);
+        # Try with the SIG prefix
+        is(Devel::Trepan::SigMgr::lookup_signum('SIG' . $signame), $signum);
+    }
+}
+
+
 for my $pair ([15, 'TERM'], [-15, 'TERM'], [300, undef]) {
     my ($i, $expect) = @$pair;
     is(Devel::Trepan::SigMgr::lookup_signame($i), $expect);

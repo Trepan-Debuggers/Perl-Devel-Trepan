@@ -22,7 +22,7 @@
 #
 
 # Manages Signal Handling information for the debugger
-package SignalManager;
+package Devel::Trepan::SigMgr;
 
 use vars qw(@EXPORT);
 @EXPORT    = qw( lookup_signum lookup_signame );
@@ -433,19 +433,19 @@ sub initialize_handler($$)
 #         return set_print
 #     pass
 
-# class SigHandler:
-#     """Store information about what we do when we handle a signal,
-
+#     Store information about what we do when we handle a signal,
+#
 #     - Do we print/not print when signal is caught
 #     - Do we pass/not pass the signal to the program
 #     - Do we stop/not stop when signal is caught
-
+#
 #     Parameters:
 #        signame : name of signal (e.g. SIGUSR1 or USR1)
 #        print_method routine to use for "print"
 #        stop routine to call to invoke debugger when stopping
 #        pass_along: True is signal is to be passed to user's handler
-#     """
+
+package SigHandler;
 #     def __init__(self, dbgr, signame, signum, old_handler,
 #                  print_method, b_stop,
 #                  print_stack=False, pass_along=True):
@@ -503,17 +503,18 @@ unless (caller) {
     #     pass
 
     for my $i (15, -15, 300) {
-        printf "lookup_signame(%d) => %s\n", $i, lookup_signame($i) // 'undef';
+        printf("lookup_signame(%d) => %s\n", $i, 
+	       Devel::Trepan::SigMgr::lookup_signame($i) // 'undef');
     }
     
     for my $sig ('term', 'TERM', 'NotThere') {
         printf("lookup_signum(%s) => %s\n", $sig, 
-	       lookup_signum($sig) // 'undef');
+	       Devel::Trepan::SigMgr::lookup_signum($sig) // 'undef');
     }
     
     for my $i ('15', '-15', 'term', 'sigterm', 'TERM', '300', 'bogus') {
         printf("canonic_signame(%s) => %s\n", $i, 
-	       canonic_signame($i) // 'undef');
+	       Devel::Trepan::SigMgr::canonic_signame($i) // 'undef');
     }
     
     # from import_relative import import_relative

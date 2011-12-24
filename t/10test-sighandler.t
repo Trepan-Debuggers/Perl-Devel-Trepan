@@ -16,18 +16,18 @@ import Devel::Trepan::SigHandler;
 
 for my $pair ([15, 'TERM'], [-15, 'TERM'], [300, undef]) {
     my ($i, $expect) = @$pair;
-    is(SignalManager::lookup_signame($i), $expect);
+    is(Devel::Trepan::SigMgr::lookup_signame($i), $expect);
 }
     
 for my $pair (['term', 15], ['TERM', 15], ['NotThere', undef]) {
     my ($sig, $expect) = @$pair;
-    is(SignalManager::lookup_signum($sig), $expect);
+    is(Devel::Trepan::SigMgr::lookup_signum($sig), $expect);
 }
     
 for my $pair (['15', 'TERM'], ['-15', 'TERM'], ['term', 'TERM'], 
 	   ['sigterm', 'TERM'], ['TERM', 'TERM'], ['300', undef], 
 	   ['bogus', undef]) {
     my ($i, $expect) = @$pair;
-    is(SignalManager::canonic_signame($i), $expect);
+    is(Devel::Trepan::SigMgr::canonic_signame($i), $expect);
 }
 

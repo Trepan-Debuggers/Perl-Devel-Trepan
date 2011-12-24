@@ -99,5 +99,13 @@ for my $pair
 	is($result, $expect, $resp);
 }
 
-
-
+for my $pair 
+    ([1,      'Yes'],
+     [0,      'No'],
+     ['',     'No'],
+     ['Foo',  'Yes'],
+     [undef,  'No']) {
+	my ($resp, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::bool2YN($resp);
+	is($result, $expect, 'bool2YN of ' . ($resp // 'undef'));
+}

@@ -24,6 +24,7 @@
 # Manages Signal Handling information for the debugger
 package Devel::Trepan::SigMgr;
 
+use Exporter;
 use vars qw(@EXPORT);
 @EXPORT    = qw( lookup_signum lookup_signame );
 @ISA = qw(Exporter);
@@ -156,37 +157,47 @@ my %SIGNAL_DESCRIPTION = (
 
 sub new($$)
 {
-    my ($class, $dbgr, $ignore_list, $default_print) = @_;
-    $default_print //= 1;
+    my ($class, $print_fn, $ignore_list) = @_;
     # Ignore signal handling initially for these known signals.
     unless (defined($ignore_list)) {
-	$ignore_list = ['ALRM',    'CHLD',  'URG',
-			'IO',      'CLD',
-			'VTALRM',  'PROF',  'WINCH',  'POLL',
-			'WAITING', 'LWP',   'CANCEL', 'TRAP',
-			'TERM',    'QUIT',  'ILL'];
+	$ignore_list = {
+	    'ALRM'    => 1,    
+	    'CHLD'    => 1,  
+	    'URG'     => 1,
+	    'IO'      => 1, 
+	    'CLD'     => 1,
+	    'VTALRM'  => 1,  
+	    'PROF'    => 1,  
+	    'WINCH'   => 1,  
+	    'POLL'    => 1,
+	    'WAITING' => 1, 
+	    'LWP'     => 1,
+	    'CANCEL'  => 1, 
+	    'TRAP'    => 1,
+	    'TERM'    => 1,
+	    'QUIT'    => 1,
+	    'ILL'     => 1
+	};
     };
 
     my $self = {
-	dbgr  => $dbgr,
-        # dbgr.core.add_ignore(SigHandler.handle)
-        sigs  => {},
-        siglist => @signame,
+	print_fn    => $print_fn,
+        sigs        => {},
+        siglist     => @signame,
 	ignore_list => $ignore_list,
-	orig_set_signal  => %SIG,
-	info_fmt => '%-14s%-4s\t%-4s\t%-5s\t%-4s\t%s',
+	orig_set_signal  => \%SIG,
+	info_fmt => "%-14s%-4s\t%-4s\t%-5s\t%-4s\t%s",
     };
+
     bless $self, $class;
     
     $self->{header} = sprintf($self->{info_fmt}, 'Signal', 'Stop', 'Print',
 			      'Stack', 'Pass', 'Description');
     # signal.signal = self.set_signal_replacement
 
-    # *$self->{default_print}} = $dbgr->intf->[-1]->&msg} if $default_print;
-
     for my $signame (keys %SIG) {
-	initialize_handler($signame);
-        action($signame, 'SIGINT stop print nostack nopass');
+	initialize_handler($self, $signame);
+        ## $self->action($signame, 'SIGINT stop print nostack nopass');
     }
     $self;
 }
@@ -203,22 +214,22 @@ sub initialize_handler($$)
     # except ValueError:
     # On some OS's (Redhat 8), SIGNUM's are listed (like
     # SIGRTMAX) that getsignal can't handle.
-    if (exists($self->{sigs}{$signame})) {
-	$self->{sigs}->pop($signame);
-    }
+    # if (exists($self->{sigs}{$signame})) {
+    # 	$self->{sigs}->pop($signame);
+    # }
 
     my $signum = lookup_signum($signame);
-    if (exists($self->{$signame}{ignore_list})) {
-	$self->{sigs}->[$signame] = 
-	    SigHandler->new($self->{dbgr}, $signame, $signum, 
-			    &old_handler,
-			    undef, 0,  0, 1);
+    my $print_fn = $self->{print_fn};
+    if (exists($self->{ignore_list}{$signame})) {
+	$self->{sigs}{$signame} = 
+	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
+					   \&old_handler,
+					   0,  0, 1);
     } else {
-	$self->{sigs}->[$signame] = 
-	    SigHandler->new($self->{dbgr}, $signame, $signum, 
-			    &old_handler,
-			    &{$self->{dbgr}{intf}[-1]->msg},
-			    1, 0, 0);
+	$self->{sigs}{$signame} = 
+	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
+					   \&old_handler,
+					   1, 0, 0);
     }
     return 1;
 }
@@ -278,64 +289,56 @@ sub initialize_handler($$)
 #             pass
 #         return
 
-#     def is_name_or_number(self, name_num):
-#         signame = canonic_signame(name_num)
-#         if signame is None:
-#             self.dbgr.intf[-1].errmsg(("%s is not a signal number" +
-#                                        " I know about.")  % name_num)
-#             return False
-#         elif False == signame:
-#             self.dbgr.intf[-1].errmsg(("%s is not a signal name I " +
-#                                        "know about.") % name_num)
-#             return False
-#         return signame
+# Print status for a single signal name (signame)
+sub print_info_signal_entry($$)
+{
+    my ($self, $signame) = @_;
+    my $description = (exists $SIGNAL_DESCRIPTION{$signame}) ? 
+	$SIGNAL_DESCRIPTION{$signame} : '';
+    my $msg;
+    my $sig_obj = $self->{sigs}{$signame};
+    if (exists $self->{sigs}{$signame}) {
+	$msg = sprintf($self->{info_fmt}, $signame, 
+		       bool2YN($sig_obj->{b_stop}),
+		       bool2YN($sig_obj->{print_method}),
+		       bool2YN($sig_obj->{print_stack}),
+		       bool2YN($sig_obj->{pass_along}),
+		       $description); 
+    } else {
+	# Fake up an entry as though signame were in sigs.
+	$msg = sprintf($self->{info_fmt}, $signame, 
+		       'No', 'No', 'No', 'Yes', $description); 
+    }
+    $self->{print_fn}->($msg);
+}
 
-#     def print_info_signal_entry(self, signame):
-#         """Print status for a single signal name (signame)"""
-#         if signame in signal_description:
-#             description=signal_description[signame]
-#         else:
-#             description=""
-#             pass
-#         if signame not in self.sigs.keys():
-#             # Fake up an entry as though signame were in sigs.
-#             self.dbgr.intf[-1].msg(self.info_fmt
-#                                    % (signame, 'No', 'No', 'No', 'Yes', 
-#                                       description))
-#             return
-            
-#         sig_obj = self.sigs[signame]
-#         self.dbgr.intf[-1].msg(self.info_fmt % 
-#                                (signame, 
-#                                 YN(sig_obj.b_stop),
-#                                 YN(sig_obj.print_method is not None),
-#                                 YN(sig_obj.print_stack),
-#                                 YN(sig_obj.pass_along),
-#                                 description))
-#         return
+# Print information about a signal
+sub info_signal($$)
+{
+    my ($self, $args) = @_;
+    my @args = @$args;
+    return undef unless scalar @args;
+    my $print_fn = $self->{print_fn};
+    my $signame = $args->[0];
+    if ($signame eq  'handle' or $signame eq 'signal') {
+	# This has come from dbgr's info command
+	if (scalar @args == 1) {
+	    # Show all signal handlers
+	    $print_fn->($self->{header});
+	    for my $sn (@$self->{siglist}) {
+		$self->print_info_signal_entry($signame);
+	    }
+	    return 1;
+	} else {
+	    $signame = $args->[1];
+	}
+    }
 
-#     def info_signal(self, args):
-#         """Print information about a signal"""
-#         if len(args) == 0: return None
-#         signame = args[0]
-#         if signame in ['handle', 'signal']:
-#             # This has come from dbgr's info command
-#             if len(args) == 1:
-#                 # Show all signal handlers
-#                 self.dbgr.intf[-1].msg(self.header)
-#                 self.dbgr.intf[-1].msg("")
-#                 for signame in self.siglist:
-#                     self.print_info_signal_entry(signame)
-#                 return True
-#             else:
-#                 signame = args[1]
-#                 pass
-#             pass
-
-#         signame = self.is_name_or_number(signame)
-#         self.dbgr.intf[-1].msg(self.header)
-#         self.print_info_signal_entry(signame)
-#         return True
+    $signame = canonic_signame($signame);
+    $print_fn->($self->{header});
+    $self->print_info_signal_entry($signame);
+    return 1;
+}
 
 #     def action(self, arg):
 #         """Delegate the actions specified in 'arg' to another
@@ -346,7 +349,7 @@ sub initialize_handler($$)
 #             return True
 #         args = arg.split()
 #         signame = args[0]
-#         signame = self.is_name_or_number(args[0])
+#         signame = canonic_signame($args[0]);
 #         if not signame: return
 
 #         if len(args) == 1:
@@ -444,52 +447,62 @@ sub initialize_handler($$)
 #        print_method routine to use for "print"
 #        stop routine to call to invoke debugger when stopping
 #        pass_along: True is signal is to be passed to user's handler
+package Devel::Trepan::SigHandler;
 
-package SigHandler;
-#     def __init__(self, dbgr, signame, signum, old_handler,
-#                  print_method, b_stop,
-#                  print_stack=False, pass_along=True):
+sub new($$$$$$;$$)
+{
+    my($class, $print_fn, $signame, $signum, $old_handler,
+       $b_stop, $print_stack, $pass_along) = @_;
 
-#         self.dbgr         = dbgr
-#         self.old_handler  = old_handler
-#         self.pass_along   = pass_along
-#         self.print_method = print_method
-#         self.print_stack  = print_stack
-#         self.signame      = signame
-#         self.signum       = signum
-#         self.b_stop       = b_stop
-#         return
+    $print_stack //= 0, $pass_along //= 1;
 
-#     def handle(self, signum, frame):
-#         """This method is called when a signal is received."""
-#         if self.print_method:
-#             self.print_method('\nProgram received signal %s.'
-#                               % self.signame)
-#         if self.print_stack:
-#             import traceback
-#             strings = traceback.format_stack(frame)
-#             for s in strings:
-#                 if s[-1] == '\n': s = s[0:-1]
-#                 self.print_method(s)
-#                 pass
-#             pass
-#         if self.b_stop:
-#             core = self.dbgr.core
-#             old_trace_hook_suspend = core.trace_hook_suspend
-#             core.trace_hook_suspend = True
-#             core.stop_reason = ('intercepting signal %s (%d)' % 
-#                                 (self.signame, signum))
-#             core.processor.event_processor(frame, 'signal', signum)
-#             core.trace_hook_suspend = old_trace_hook_suspend
-#             pass
-#         if self.pass_along:
-#             # pass the signal to the program 
-#             if self.old_handler:
-#                 self.old_handler(signum, frame)
-#                 pass
-#             pass
-#         return
-#     pass
+    my $self = {
+	print_fn     => $print_fn,
+        old_handler  => $old_handler,
+	pass_along   => $pass_along,
+        print_stack  => $print_stack,
+        signame      => $signame,
+        signum       => $signum,
+        b_stop       => $b_stop
+    };
+    bless $self, $class;
+    $self;
+}
+
+# This method is called when a signal is received.
+sub handle($$$)
+{
+    my ($self, $signum, $frame) = @_;
+    if ($self->{print_method}) {
+	my $msg = sprintf('\nProgram received signal %s.', 
+			  $self->{signame});
+	$self->{print_method}->($msg);
+    }
+    # if ($self->{print_stack}) {
+    # 	import traceback;
+    # 	my @strings = traceback.format_stack(frame);
+    # 	for my $s (@strings) {
+    # 	    chomp $s;
+    # 	    $self->{print_method}->($s);
+    # 	}
+    # }
+    # if ($self->{b_stop}) {
+    # 	core = self.dbgr.core;
+    # 	old_trace_hook_suspend = core.trace_hook_suspend;
+    # 	core.trace_hook_suspend = 1;
+    # 	core.stop_reason = ('intercepting signal %s (%d)' % 
+    # 			    (self.signame, signum));
+    # 	core.processor.event_processor(frame, 'signal', signum);
+    # 	core.trace_hook_suspend = old_trace_hook_suspend;
+    # }
+    if ($self->{pass_along}) {
+	# pass the signal to the program 
+	if ($self->{old_handler}) {
+	    $self->{old_handler}->($signum, $frame);
+	}
+    }
+}
+
 
 # When invoked as main program, do some basic tests of a couple of functions
 unless (caller) {
@@ -520,12 +533,14 @@ unless (caller) {
     # from import_relative import import_relative
     # Mdebugger = import_relative('debugger', '..', 'pydbgr')
     # dbgr = Mdebugger.Debugger()
-    # h = SignalManager(dbgr)
-    # h.info_signal(["TRAP"])
-    # # Set to known value
+    eval 'sub myprint($) { my $msg = shift; print "$msg\n";  }';
+
+    my $h = Devel::Trepan::SigMgr->new(\&myprint);
+    $h->info_signal(["TRAP"]);
+    # Set to known value
     # h.action('SIGUSR1')
     # h.action('usr1 print pass stop')
-    # h.info_signal(['USR1'])
+    $h->info_signal(['USR1']);
     # # noprint implies no stop
     # h.action('SIGUSR1 noprint')
     # h.info_signal(['USR1'])

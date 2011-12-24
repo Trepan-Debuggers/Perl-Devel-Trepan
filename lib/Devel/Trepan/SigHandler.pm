@@ -20,11 +20,11 @@
 #         ignore=True, print=False, pass=True
 #     
 #
-use rlib '../../..'; 
-use Devel::Trepan::Util;
+use rlib '../..'; 
 
 # Manages Signal Handling information for the debugger
 package Devel::Trepan::SigMgr;
+use Devel::Trepan::Util;
 use Exporter;
 use vars qw(@EXPORT);
 @EXPORT    = qw( lookup_signum lookup_signame );
@@ -194,11 +194,12 @@ sub new($$$$$)
     
     $self->{header} = sprintf($self->{info_fmt}, 'Signal', 'Stop', 'Print',
 			      'Stack', 'Pass', 'Description');
+
     # signal.signal = self.set_signal_replacement
 
     for my $signame (keys %SIG) {
 	initialize_handler($self, $signame);
-        ## $self->action($signame, 'SIGINT stop print nostack nopass');
+        $self->action($signame, 'SIGINT stop print nostack nopass');
     }
     $self;
 }
@@ -235,60 +236,64 @@ sub initialize_handler($$)
     return 1;
 }
 
-#     def set_signal_replacement(self, signum, handle):
-#         '''A replacement for signal.signal which chains the signal behind
-#         the debugger's handler'''
-#         signame = lookup_signame(signum)
-#         if signame is None:
-#             self.dbgr.intf[-1].errmsg(("%s is not a signal number" +
-#                                        " I know about.")  % signum)
-#             return False
-#         # Since the intent is to set a handler, we should pass this
-#         # signal on to the handler
-#         self.sigs[signame].pass_along = True
-#         if self.check_and_adjust_sighandler(signame, self.sigs):
-#             self.sigs[signame].old_handler = handle
-#             return True
-#         return False
+# A replacement for signal.signal which chains the signal behind
+# the debugger's handler
+sub set_signal_replacement($$$)
+{
+    my ($self, $signum, $handle) = @_;
+    my $signame = lookup_signame($signum);
+    unless(defined $signame) {
+	my $msg = sprintf "%d is not a signal number I know about.", $signum;
+	$self->{errprint}->($msg);
+	return 0;
+    }
+    # Since the intent is to set a handler, we should pass this
+    # signal on to the handler
+    $self->{sigs}{$signame}->pass_along = 1;
+    if ($self->check_and_adjust_sighandler($signame)) {
+	$self->{sigs}{$signame}{old_handler} = $handle;
+	return 1;
+    }
+    return 0;
+}
             
-#     def check_and_adjust_sighandler(self, signame, sigs):
-#         """Check to see if a single signal handler that we are interested in
-#         has changed or has not been set initially. On return self.sigs[signame]
-#         should have our signal handler. True is returned if the same or adjusted,
-#         False or None if error or not found."""
-#         signum = lookup_signum(signame)
-#         try:
-#             old_handler = signal.getsignal(signum)
-#         except ValueError:
-#             # On some OS's (Redhat 8), SIGNUM's are listed (like
-#             # SIGRTMAX) that getsignal can't handle.
-#             if signame in self.sigs:
-#                 sigs.pop(signame)
-#                 pass
-#             return None
-#         if old_handler != self.sigs[signame].handle:
-#             if old_handler not in [signal.SIG_IGN, signal.SIG_DFL]:
-#                 # save the program's signal handler
-#                 sigs[signame].old_handler = old_handler
-#                 pass
-#             # set/restore _our_ signal handler
-#             try:
-# #                signal.signal(signum, self.sigs[signame].handle)
-#                self._orig_set_signal(signum, self.sigs[signame].handle)
-#             except ValueError:
-#                 # Probably not in main thread
-#                 return False
-#             pass
-#         return True
+# Check to see if a single signal handler that we are interested in
+# has changed or has not been set initially. On return self->{sigs}{$signame}
+# should have our signal handler. True is returned if the same or adjusted,
+# False or undef if error or not found.
+sub check_and_adjust_sighandler($$)
+{
+    my ($self, $signame) = @_;
+    my $sigs = $self->{sigs};
+    # try:
+    my $old_handler = $SIG{$signame};
+    # except ValueError:
+    # On some OS's (Redhat 8), SIGNUM's are listed (like
+    # SIGRTMAX) that getsignal can't handle.
+    #if signame in self.sigs:
+    # sigs.pop(signame)
+    #        pass
+    #    return None
+    if (defined($old_handler) && $old_handler ne $sigs->{$signame}) {
+	# if old_handler not in [signal.SIG_IGN, signal.SIG_DFL]:
+        # save the program's signal handler
+	$sigs->{$signame}{old_handler} = $old_handler;
+	# set/restore _our_ signal handler
+        #
+	$SIG{$signame} = $sigs->{$signame};
+    }
+    return 1;
+}
 
-#     def check_and_adjust_sighandlers(self):
-#         """Check to see if any of the signal handlers we are interested in have
-#         changed or is not initially set. Change any that are not right. """
-#         for signame in self.sigs.keys():
-#             if not self.check_and_adjust_sighandler(signame, self.sigs):
-#                 break
-#             pass
-#         return
+# Check to see if any of the signal handlers we are interested in have
+# changed or is not initially set. Change any that are not right.
+sub check_and_adjust_sighandlers($)
+{
+    my $self = shift;
+    for my $signame (keys %{$self->{sigs}}) {
+	last unless ($self->check_and_adjust_sighandler($signame));
+    }
+}
 
 # Print status for a single signal name (signame)
 sub print_info_signal_entry($$)
@@ -300,10 +305,10 @@ sub print_info_signal_entry($$)
     my $sig_obj = $self->{sigs}{$signame};
     if (exists $self->{sigs}{$signame}) {
 	$msg = sprintf($self->{info_fmt}, $signame, 
-		       Devel::Trepan::Util::bool2YN($sig_obj->{b_stop}),
-		       Devel::Trepan::Util::bool2YN($sig_obj->{print_fn}),
-		       Devel::Trepan::Util::bool2YN($sig_obj->{print_stack}),
-		       Devel::Trepan::Util::bool2YN($sig_obj->{pass_along}),
+		       bool2YN($sig_obj->{b_stop}),
+		       bool2YN($sig_obj->{print_fn}),
+		       bool2YN($sig_obj->{print_stack}),
+		       bool2YN($sig_obj->{pass_along}),
 		       $description); 
     } else {
 	# Fake up an entry as though signame were in sigs.
@@ -378,7 +383,6 @@ sub action($$)
 	if (0 == index($attr, 'stop')) {
 	    $self->handle_stop($signame, $on);
 	} elsif (0 == index($attr, 'print')) {
-	    # use Enbugger; Enbugger->load_debugger('trepan'); Enbugger->stop;
 	    $self->handle_print($signame, $on);
 	} elsif (0 == index($attr, 'pass')) {
 	    $self->handle_pass($signame, $on);
@@ -390,7 +394,7 @@ sub action($$)
 	    $self->{errprt_fn}->('Invalid arguments')
 	}
     }
-    ## return self.check_and_adjust_sighandler($signame, $self->{sigs});
+    return $self->check_and_adjust_sighandler($signame);
 }
 
 # Set whether we stop or not when this signal is caught.
@@ -523,7 +527,7 @@ sub handle($$$)
 unless (caller) {
     for my $i (15, -15, 300) {
         printf("lookup_signame(%d) => %s\n", $i, 
-	       devel::trepan::sigmgr::lookup_signame($i) // 'undef');
+	       Devel::Trepan::SigMgr::lookup_signame($i) // 'undef');
     }
     
     for my $sig ('term', 'TERM', 'NotThere') {
@@ -536,18 +540,23 @@ unless (caller) {
 	       Devel::Trepan::SigMgr::canonic_signame($i) // 'undef');
     }
     
-    eval 'sub myprint($) { my $msg = shift; print "$msg\n";  }';
+    eval <<'EOE';  # Have to eval else fns defined when caller() is false
+    sub doit($$) {
+	my ($h, $arg) = @_; 
+	print "$arg\n"; 
+	$h->action($arg);
+    }
+    sub myprint($) { 
+	my $msg = shift; 
+	print "$msg\n";  
+    }
+EOE
 
     my $h = Devel::Trepan::SigMgr->new(\&myprint);
     $h->info_signal(["TRAP"]);
     # USR1 is set to known value
     $h->action('SIGUSR1');
 
-    eval 'sub doit($$) {
-      my ($h, $arg) = @_; 
-      print "$arg\n"; 
-      $h->action($arg);}
-     }';
     doit($h, 'usr1 print pass');
     $h->info_signal(["USR1"]);
     # noprint implies no stop

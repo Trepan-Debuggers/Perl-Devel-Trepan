@@ -41,3 +41,14 @@ for my $pair (['15', 'TERM'], ['-15', 'TERM'], ['term', 'TERM'],
     is(Devel::Trepan::SigMgr::canonic_signame($i), $expect);
 }
 
+sub mysighandler($) {
+    my $num = shift; 
+    print "Signal $num caught\n";  
+}
+
+sub myprint($) { 
+    my $msg = shift; 
+    print "$msg\n";  
+}
+
+my $h = Devel::Trepan::SigMgr->new(\&mysighandler, \&myprint);

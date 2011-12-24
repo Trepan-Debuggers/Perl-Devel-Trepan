@@ -154,9 +154,10 @@ my %SIGNAL_DESCRIPTION = (
 #     All the methods which change these attributes return None on error, or
 #     True/False if we have set the action (pass/print/stop) for a signal
 #     handler.
-sub new($$$$$)
+sub new($$$$$$)
 {
-    my ($class, $print_fn, $errprint_fn, $secprint_fn, $ignore_list) = @_;
+    my ($class, $handler, $print_fn, $errprint_fn, $secprint_fn, 
+	$ignore_list) = @_;
     # Ignore signal handling initially for these known signals.
     unless (defined($ignore_list)) {
 	$ignore_list = {
@@ -180,6 +181,7 @@ sub new($$$$$)
     };
 
     my $self = {
+	handler     => $handler,
 	print_fn    => $print_fn,
 	errprint_fn => $errprint_fn // $print_fn,
 	secprint_fn => $secprint_fn // $print_fn,
@@ -199,8 +201,8 @@ sub new($$$$$)
 
     for my $signame (keys %SIG) {
 	initialize_handler($self, $signame);
-        $self->action($signame, 'SIGINT stop print nostack nopass');
     }
+    $self->action('SIGINT stop print nostack nopass');
     $self;
 }
 
@@ -222,6 +224,7 @@ sub initialize_handler($$)
 
     my $signum = lookup_signum($signame);
     my $print_fn = $self->{print_fn};
+    $SIG{$signame} = $self->{handler};
     if (exists($self->{ignore_list}{$signame})) {
 	$self->{sigs}{$signame} = 
 	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
@@ -240,10 +243,9 @@ sub initialize_handler($$)
 # the debugger's handler
 sub set_signal_replacement($$$)
 {
-    my ($self, $signum, $handle) = @_;
-    my $signame = lookup_signame($signum);
-    unless(defined $signame) {
-	my $msg = sprintf "%d is not a signal number I know about.", $signum;
+    my ($self, $signame, $handle) = @_;
+    unless(exists $self->{$signame}) {
+	my $msg = sprintf "%s is not a signal name I know about.", $signame;
 	$self->{errprint}->($msg);
 	return 0;
     }
@@ -280,7 +282,7 @@ sub check_and_adjust_sighandler($$)
 	$sigs->{$signame}{old_handler} = $old_handler;
 	# set/restore _our_ signal handler
         #
-	$SIG{$signame} = $sigs->{$signame};
+	$SIG{$signame} = $self->{handler};
     }
     return 1;
 }
@@ -539,9 +541,10 @@ unless (caller) {
         printf("canonic_signame(%s) => %s\n", $i, 
 	       Devel::Trepan::SigMgr::canonic_signame($i) // 'undef');
     }
-    
+
+    my $h; # Is used in myhandler.
     eval <<'EOE';  # Have to eval else fns defined when caller() is false
-    sub doit($$) {
+    sub do_action($$) {
 	my ($h, $arg) = @_; 
 	print "$arg\n"; 
 	$h->action($arg);
@@ -550,19 +553,25 @@ unless (caller) {
 	my $msg = shift; 
 	print "$msg\n";  
     }
+    sub mysighandler($) {
+	my $name = shift; 
+	print "++ Signal $name caught\n";  
+	$h->info_signal(["USR1"]);
+    }
 EOE
 
-    my $h = Devel::Trepan::SigMgr->new(\&myprint);
+    $h = Devel::Trepan::SigMgr->new(\&mysighandler, \&myprint);
     $h->info_signal(["TRAP"]);
     # USR1 is set to known value
     $h->action('SIGUSR1');
 
-    doit($h, 'usr1 print pass');
+    do_action($h, 'usr1 print pass');
     $h->info_signal(["USR1"]);
     # noprint implies no stop
-    doit($h, 'usr1 noprint');
+    do_action($h, 'usr1 noprint');
     $h->info_signal(["USR1"]);
-    doit($h, 'foo nostop');
+    do_action($h, 'foo nostop');
+    kill 10, $$;
     # # stop keyword implies print
     # h.action('SIGUSR1 stop')
     # h.info_signal(['SIGUSR1'])

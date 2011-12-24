@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+use warnings;  
+# FIXME: Can't use strict;
 use rlib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
@@ -49,7 +53,7 @@ sub idle($$$)
 sub output($) 
 {
     my ($self, $msg) = @_;
-    $proc = $self->{proc};
+    my $proc = $self->{proc};
     chomp($msg);
     $proc->msg($msg);
 }
@@ -57,7 +61,7 @@ sub output($)
 sub warning($) 
 {
     my ($self, $msg) = @_;
-    $proc = $self->{proc};
+    my $proc = $self->{proc};
     chomp($msg);
     $proc->errmsg($msg);
 }
@@ -99,7 +103,7 @@ sub awaken($;$) {
     } else {
 	my $intf = undef;
 	if ($opts->{server}) {
-	    $server_opts = {
+	    my $server_opts = {
 		host   => $opts->{host},
 		port   => $opts->{port},
 		logger => *STDOUT

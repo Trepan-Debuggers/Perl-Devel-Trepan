@@ -82,7 +82,7 @@ sub extract_expression($)
     # } elsif ($text =~ /^\s*case\s+/) {
     #     # EXPRESSION in: case EXPESSION
     #     $text =~ s/^\s*case\s*//;
-    # } elsif ($text =~ /^\s*def\s*.*\(.+\)/) {
+    # } elsif ($text =~ /^\s*sub\s*.*\(.+\)/) {
     #     $text =~ s/^\s*sub\s*.*\((.*)\)/\(\1\)/;
     } elsif ($text =~ /^\s*[A-Za-z_][A-Za-z0-9_\[\]]*\s*=[^=>]/) {
         # RHS of an assignment statement.
@@ -161,7 +161,7 @@ unless (caller) {
     }
 
     for my $cmd (qw(eval eval$ eval% eval@ evaluate% none)) {
-	printf "parse_eval_suffix($cmd) => '%s'\n", parse_eval_suffix($cmd);
+	print "parse_eval_suffix($cmd) => '". parse_eval_suffix($cmd) . "'\n";
     }
 
     for my $resp (qw(yes no Y NO nein nien huh?)) {

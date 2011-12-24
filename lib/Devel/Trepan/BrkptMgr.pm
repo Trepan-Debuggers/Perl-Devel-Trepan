@@ -147,6 +147,7 @@ sub reset($)
 
 unless (caller) {
 
+    eval <<'EOE';
     sub bp_status($$)
     { 
 	my ($brkpts, $i) = @_;
@@ -155,6 +156,7 @@ unless (caller) {
 	print $brkpts->inspect();
 	print "--- ${i} ---\n";
     }
+EOE
 
 require Devel::Trepan::Core;
 my $dbgr = Devel::Trepan::Core->new;

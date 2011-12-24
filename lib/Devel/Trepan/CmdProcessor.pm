@@ -448,10 +448,12 @@ unless (caller) {
     }
     $DB::level = 1;
     my $prompt = $proc->{prompt} = compute_prompt($proc);
+    eval <<'EOE';
     sub foo() {
 	my @call_values = caller(0);
 	return @call_values;
     }
+EOE
     print "prompt setting: $prompt\n";
     $DB::level = 2;
     $prompt = $proc->{prompt} = compute_prompt($proc);

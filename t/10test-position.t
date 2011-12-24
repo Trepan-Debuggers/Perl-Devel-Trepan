@@ -4,7 +4,7 @@ use warnings;
 use rlib '../lib';
 
 use Test::More 'no_plan';
-note( "Testing TrepanPosition" );
+note( "Testing Devel::Trepan::Position" );
 
 BEGIN {
 use_ok( 'Devel::Trepan::Position' );

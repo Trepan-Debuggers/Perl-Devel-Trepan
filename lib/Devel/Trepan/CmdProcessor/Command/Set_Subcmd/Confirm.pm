@@ -19,7 +19,7 @@ ${CMD} on|off
 
 Set whether to confirm potentially dangerous operations.
 
-Note some commands like 'quit' and 'kill' have a ! suffixe which turns
+Note some commands like 'quit' and 'kill' have a ! suffix which turns
 the confirmation off in that specific instance.
 HELP
 our $SHORT_HELP = "Set whether to confirm potentially dangerous operations.";

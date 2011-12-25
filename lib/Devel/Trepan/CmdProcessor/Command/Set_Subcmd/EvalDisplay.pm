@@ -10,16 +10,25 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
+our $CMD = "set confirm";
+our $HELP   = <<"HELP";
+${CMD} {tidy|dumper}
 
-our $HELP = 'Set how you want the evaluation results shown';
+Set how you want the evaluation results show.
+
+The 'tidy' option sets to use Data::Dumper::Perltidy. 'dumper' uses 
+Data::Dumper.
+HELP
+
+our $SHORT_HELP = 'Set how you want the evaluation results shown';
 our $MIN_ABBREV = length('evaldi');
 use constant MIN_ARGS => 1;
 
-# sub complete($$) 
-# {
-#     my ($self, $prefix) = @_;
-#     Devel::Trepan::Complete::complete_token(qw(on off reset), $prefix);
-# }
+sub complete($$) 
+{
+    my ($self, $prefix) = @_;
+    Devel::Trepan::Complete::complete_token(['dumper', 'tidy'], $prefix);
+}
 
 sub run($$)
 { 

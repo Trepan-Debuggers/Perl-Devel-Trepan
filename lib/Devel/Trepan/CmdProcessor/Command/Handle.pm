@@ -67,12 +67,12 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
 
-    $self->msg("Not finished yet...");
-    # if ($self->{dbgr}->{sigmgr.action(' '.join(args[1:]))
-    # 			    and scalar @{$arg}s > 2) {
-    # 	# Show results of recent change
-    # 	self.debugger.sigmgr.info_signal([args[1]]);
-    # }
+    my $sigmgr = $self->{dbgr}{sigmgr};
+    if ($sigmgr->action($proc->{cmd_argstr}) &&
+	scalar(@{$args}) > 2) {
+	# Show results of recent change
+	$sigmgr->info_signal([$args->[1]]);
+    }
 }
 
 unless(caller) {
@@ -84,6 +84,3 @@ unless(caller) {
     my $cmd = __PACKAGE__->new($proc);
     $cmd->run([$NAME]);
 }
-
-
-

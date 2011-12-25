@@ -662,18 +662,12 @@ sub ready {
 
 # stubs
     
-sub init {}
 sub stop {}
 sub idle {}
 sub cleanup {}
 sub output {}
 sub warning {}
 sub showfile {}
-
-#
-# client init
-#
-for (@clients) { $_->init }
 
 $SIG{'INT'} = \&DB::catch;
 

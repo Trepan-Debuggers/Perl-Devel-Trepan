@@ -26,14 +26,14 @@ use rlib '../..';
 package Devel::Trepan::SigMgr;
 use Devel::Trepan::Util;
 use Exporter;
-use vars qw(@EXPORT);
-@EXPORT    = qw( lookup_signum lookup_signame );
+use vars qw(@EXPORT %signo @signame);
+@EXPORT    = qw( lookup_signum lookup_signame %signo @signame);
 @ISA = qw(Exporter);
 
 use warnings; use strict;
 
-my %signo;
-my @signame;
+our %signo;
+our @signame;
 
 use Config;
 
@@ -186,7 +186,6 @@ sub new($$$$$$)
 	errprint_fn => $errprint_fn // $print_fn,
 	secprint_fn => $secprint_fn // $print_fn,
         sigs        => {},
-        siglist     => @signame,
 	ignore_list => $ignore_list,
 	orig_set_signal  => \%SIG,
 	info_fmt => "%-14s%-4s\t%-4s\t%-5s\t%-4s\t%s",
@@ -305,28 +304,18 @@ sub info_signal($$)
 {
     my ($self, $args) = @_;
     my @args = @$args;
-    return undef unless scalar @args;
     my $print_fn = $self->{print_fn};
     my $secprint_fn = $self->{secprint_fn};
-    my $signame = $args->[0];
-    if ($signame eq  'handle' or $signame eq 'signal') {
-	# This has come from dbgr's info command
-	if (scalar @args == 1) {
-	    # Show all signal handlers
-	    $secprint_fn->($self->{header});
-	    for my $sn (@$self->{siglist}) {
-		$self->print_info_signal_entry($signame);
-	    }
-	    return 1;
+    @args = @signame if (0 == scalar @args);
+    $secprint_fn->($self->{header});
+    for my $signame (@args) {
+	my $canonic_signame = canonic_signame($signame);
+	if (defined($canonic_signame)) {
+	    $self->print_info_signal_entry($canonic_signame);
 	} else {
-	    $signame = $args->[1];
+	    $self->{errprint_fn}->("$signame is not a signal I know about");
 	}
     }
-
-    $signame = canonic_signame($signame);
-    $secprint_fn->($self->{header});
-    $self->print_info_signal_entry($signame);
-    return 1;
 }
 
 # Delegate the actions specified in string $arg to another
@@ -340,7 +329,7 @@ sub action($$)
     }
     my @args = split ' ', $arg;
     my $signame = canonic_signame(shift @args);
-    return unless defined $signame;
+    return 0 unless defined $signame;
 
     if (scalar @args == 0) { 
 	$self->info_signal([$signame]);
@@ -373,9 +362,10 @@ sub action($$)
 	} elsif (0 == index($attr, 'stack')) {
 	    $self->handle_print_stack($signame, $on);
 	} else {
-	    $self->{errprt_fn}->('Invalid arguments')
+	    $self->{errprint_fn}->("Invalid argument $attr");
 	}
     }
+    return 1
     # return $self->check_and_adjust_sighandler($signame);
 }
 
@@ -475,7 +465,7 @@ sub handle($)
 {
     my ($self) = @_;
     my $signame = $self->{signame};
-    if (exists($self->{print_fn})) {
+    if (exists($self->{print_fn}) && $self->{print_fn}) {
 	my $msg = sprintf("\nProgram received signal $signame.");
 	$self->{print_fn}->($msg);
     }
@@ -501,10 +491,10 @@ sub handle($)
     }
 }
 
-
-
 # When invoked as main program, do some basic tests of a couple of functions
 unless (caller) {
+    print join(', ', keys %Devel::Trepan::SigMgr::signo), "\n";
+    print join(', ', sort {$a <=> $b} values %Devel::Trepan::SigMgr::signo), "\n";
     for my $i (15, -15, 300) {
         printf("lookup_signame(%d) => %s\n", $i, 
 	       Devel::Trepan::SigMgr::lookup_signame($i) // 'undef');
@@ -559,12 +549,13 @@ EOE
     do_action($h, 'usr1 print nopass', 'USR1');
     $h->info_signal(['USR1']);
     kill 10, $$;
-    # # stop keyword implies print
+    # stop keyword implies print
     do_action($h, 'USR1 stop', 'USR1');
-    $h->info_signal(['USR1']);
+    $h->info_signal(['USR2', 'USR1']);
     kill 10, $$;
     # h.action('SIGUSR1 noprint')
-    # h.info_signal(['SIGUSR1'])
-    # h.action('SIGUSR1 nopass stack')
-    # h.info_signal(['SIGUSR1'])
+    print '-' x 30, "\n";
+    $h->info_signal([]);
+    # $h->action('SIGUSR1 nopass stack');
+    # $h->info_signal(['SIGUSR1']);
 }

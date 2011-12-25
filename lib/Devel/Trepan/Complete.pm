@@ -1,6 +1,6 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use strict;
-use warnings;
+use feature ":5.10";  # Includes "state" feature.
+use warnings; use strict; 
 use Exporter;
 
 
@@ -8,7 +8,7 @@ package Devel::Trepan::Complete;
 use vars qw(@ISA @EXPORT);
 @ISA = qw(Exporter);
 @EXPORT = qw(complete_token complete_token_with_next 
-             next_token
+             next_token signal_complete
              complete_token_filtered_with_next);
 
 # Return an Array of String found from Array of String
@@ -125,6 +125,20 @@ sub filename_list(;$$)
     return @files;
 }
 
+# Custom completion routines
+sub signal_complete($) {
+    my ($prefix) = @_;
+    state @completions;
+    unless(@completions) {
+	@completions = keys %SIG;
+	my $last_sig = scalar @completions;
+	push @completions, map({lc $_} @completions);
+	my @nums = (-$last_sig .. $last_sig);
+	push @completions, @nums;
+    }
+    complete_token(\@completions, $prefix);
+}
+
 
 unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
@@ -153,6 +167,8 @@ unless (caller) {
     print join(', ', filename_list), "\n";
     print "List of filenames beginning with C:\n";
     print join(', ', filename_list('C')), "\n";
+
+    print join(', ', signal_complete('C')), "\n";
     # FIXME: We don't handle ~ expansion right now.
     #  print "List of filenames expanded from ~\n";
 }

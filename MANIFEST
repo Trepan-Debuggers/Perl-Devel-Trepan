@@ -56,6 +56,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
@@ -165,7 +166,6 @@ lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm
 Makefile.PL
 MANIFEST			This list of files
-MANIFEST.SKIP
 META.json
 META.yml
 README
@@ -188,6 +188,7 @@ t/10test-proc-load.t
 t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
+t/10test-watchmgr.t
 t/20test-autolist.t
 t/20test-break.t
 t/20test-cont.t
@@ -251,4 +252,3 @@ t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm
-t/Makefile

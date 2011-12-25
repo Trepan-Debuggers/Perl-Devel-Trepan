@@ -58,4 +58,5 @@ for my $tuple (
     my @expect = map {[$_, $hash_ref->{$_}]} @$result_keys;
     my @result = complete_token_with_next($hash_ref, $prefix);
     is(@result, @expect, "matching ${prefix}");
+    # cmp_ok(signal_complete(''), '>', 1, 'complete on empty string');
 }

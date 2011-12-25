@@ -3,8 +3,9 @@
 use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
-# use '../../app/complete'
 
+# FIXME: Complete doesn't work if in package.
+use Devel::Trepan::Complete; 
 package Devel::Trepan::CmdProcessor::Command::Kill;
 
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
@@ -51,17 +52,8 @@ HELP
 
 sub complete($$) {
     my ($self, $prefix) = @_;
-    state @completions;
-    unless(@completions) {
-	@completions = keys %SIG;
-	my $last_sig = scalar @completions;
-	push @completions, map({lc $_} @completions);
-	my @nums = (-$last_sig .. $last_sig);
-	push @completions, @nums;
-	push @completions, 'unconditionally';
-    }
-    my @matches = 
-	Devel::Trepan::Complete::complete_token(\@completions, $prefix);
+    my @matches = Devel::Trepan::Complete::signal_complete($prefix);
+    push @matches, 'unconditionally' if 0 == index('unconditionally', $prefix);
     sort @matches;
 }
     

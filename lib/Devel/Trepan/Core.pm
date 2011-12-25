@@ -5,6 +5,7 @@ use warnings;
 use rlib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::CmdProcessor;
+use Devel::Trepan::SigHandler;
 use Devel::Trepan::WatchMgr;
 use Devel::Trepan::IO::Output;
 use Devel::Trepan::Interface::Script;
@@ -30,15 +31,11 @@ sub new {
     my $class = shift;
     my %ORIG_SIG = %SIG; # Makes a copy of %SIG;
     my $self = {
-	watch => Devel::Trepan::WatchMgr->new(), # List of watch expressions
+	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
 	orig_sig => \%ORIG_SIG
     };
     bless $self, $class;
-}
-
-# Called by DB to initialize us.
-sub init() {
-    print "init called\n";
+    return $self;
 }
 
 # Called when debugger is ready for reading commands. Main
@@ -48,6 +45,22 @@ sub idle($$$)
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
     $proc->process_commands($DB::caller, $event, $args);
+}
+
+# Called on catching a signal that SigHandler says
+# we should enter the debugger for. That it there is 'stop'
+# set on that signal.
+sub signal_handler($$$)
+{
+    my ($self, $signame) = @_;
+    $DB::signal = 1;
+    $DB::caller = [caller(1)];
+    ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
+     $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
+     $DB::hinthash
+    ) = @{$DB::caller};
+    my $proc = $self->{proc};
+    $proc->process_commands($DB::caller, 'signal', [$signame]);
 }
 
 sub output($) 
@@ -118,6 +131,12 @@ sub awaken($;$) {
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};
 	$opts //= {};
+
+	$self->{sigmgr} = 
+	    Devel::Trepan::SigMgr->new(sub{ $self->signal_handler(@_) },
+				       sub {$cmdproc->msg(@_)},
+				       sub {$cmdproc->errmsg(@_)},
+				       sub {$cmdproc->section(@_)});
 	
 	for my $startup_file (@{$opts->{cmdfiles}}) {
 	    add_startup_files($cmdproc, $startup_file);
@@ -133,7 +152,9 @@ sub display_lists ($)
     my $self = shift;
     return $self->{proc}{displays}{list};
 }
-    
+
+# FIXME: should probably remove the next line and put the 
+# below inside new, and adjust DB.
 $dbgr = __PACKAGE__->new();
 $dbgr->awaken();
 $dbgr->register();

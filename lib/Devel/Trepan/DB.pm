@@ -547,8 +547,8 @@ sub finish($;$$) {
 
     my $index = $#stack-$count;
     $index = 0 if $index < 0;
-    $stack[$index] = RETURN_EVENT;
-    # $DB::single = RETURN_EVENT;
+    $stack[$index] |= RETURN_EVENT;
+    $DB::single = RETURN_EVENT;
     $DB::running = 1;
 }
 

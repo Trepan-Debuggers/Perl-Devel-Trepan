@@ -5,12 +5,17 @@
 use strict; use warnings; use English qw( -no_match_vars );
 
 use File::Basename; use File::Spec;
-use constant TREPAN_DIR => File::Spec->catfile(dirname(__FILE__), '..', 'lib');
+my $file = File::Spec->rel2abs(__FILE__);
+my $TREPAN_DIR = File::Spec->catfile(dirname($file), '..', 'lib');
+$TREPAN_DIR = '/src/external-vcs/Perl-Devel-Trepan/lib';
 
-use rlib TREPAN_DIR;
-use Devel::Trepan::Options;
-use Devel::Trepan::Client;
-use Data::Dumper;
+eval <<'EOE';
+    use lib $TREPAN_DIR;
+    use Devel::Trepan::Options;
+    use Devel::Trepan::Client;
+    use Data::Dumper;
+EOE
+die $EVAL_ERROR if $EVAL_ERROR;
 
 my $opts = Devel::Trepan::Options::process_options(\@ARGV);
 
@@ -38,7 +43,7 @@ $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # And just when you thought we'd never get around to actually 
 # doing something...
 
-my @ARGS = ($EXECUTABLE_NAME, '-I', TREPAN_DIR, '-d:Trepan', @ARGV);
+my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan', @ARGV);
 if ($OSNAME eq 'MSWin32') {
     # I don't understand why but Strawberry Perl has trouble with exec.
     system @ARGS;

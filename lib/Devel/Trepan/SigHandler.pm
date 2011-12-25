@@ -395,7 +395,7 @@ sub handle_stop($$$)
 {
     my ($self, $signame, $set_stop) = @_;
     if ($set_stop) {
-	$self->{sigs}{signame}{b_stop} = 1;
+	$self->{sigs}{$signame}{b_stop} = 1;
 	# stop keyword implies print AND nopass
 	$self->{sigs}{$signame}{print_fn} = $self->{print_fn};
 	$self->{sigs}{$signame}{pass_along} = 0;
@@ -562,6 +562,7 @@ EOE
     # # stop keyword implies print
     do_action($h, 'USR1 stop', 'USR1');
     $h->info_signal(['USR1']);
+    kill 10, $$;
     # h.action('SIGUSR1 noprint')
     # h.info_signal(['SIGUSR1'])
     # h.action('SIGUSR1 nopass stack')

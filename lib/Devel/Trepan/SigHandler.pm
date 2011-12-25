@@ -200,7 +200,10 @@ sub new($$$$$$)
 	initialize_handler($self, $signame);
 	# $self->check_and_adjust_sighandler($signame);
     }
-    $self->action('SIGINT stop print nostack nopass');
+    $self->action('INT stop print nostack nopass');
+    for my $sig ('CHLD', 'CLD') {
+	$self->action("$sig nostop noprint nostack pass") if exists $SIG{$sig};
+    }
     $self;
 }
 
@@ -212,7 +215,6 @@ sub initialize_handler($$)
     return 0 if exists($FATAL_SIGNALS{$signame});
         
     # try:
-    my $old_handler = $SIG{$signame};
     # except ValueError:
     # On some OS's (Redhat 8), SIGNUM's are listed (like
     # SIGRTMAX) that getsignal can't handle.
@@ -224,16 +226,14 @@ sub initialize_handler($$)
     my $print_fn = $self->{print_fn};
     if (exists($self->{ignore_list}{$signame})) {
 	$self->{sigs}{$signame} = 
-	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
-					   $self->{handler}, $old_handler,
-					   0,  0, 1);
+	    Devel::Trepan::SigHandler->new($print_fn, $signame, 
+					   $self->{handler}, 0,  0, 1);
     } else {
 	$self->{sigs}{$signame} = 
-	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
-					   $self->{handler}, $old_handler,
-					   1, 0, 0);
+	    Devel::Trepan::SigHandler->new($print_fn, $signame, 
+					   $self->{handler}, 1, 0, 0);
     }
-    $SIG{$signame} = sub { $self->{sigs}{$signame}->handle(@_) };
+    $SIG{$signame} = $self->{sigs}{$signame}->{handle};
     return 1;
 }
 
@@ -255,13 +255,17 @@ sub check_and_adjust_sighandler($$)
     #        pass
     #    return None
     my $sig = $sigs->{$signame};
-    if (defined($old_handler) && $old_handler ne $sig->{old_handler}) {
+    if (defined($old_handler) && 
+	(!defined($sig->{old_handler}) ||
+	 $old_handler ne $sig->{old_handler})) {
 	# if old_handler not in [signal.SIG_IGN, signal.SIG_DFL]:
         # save the program's signal handler
-	$sig->{old_handler} = $old_handler;
+	# printf "Changing $signame...\n";
+	# print $sig->{old_handler}, $old_handler, "\n";
+	# $sig->{old_handler} = $old_handler;
 	# set/restore _our_ signal handler
         #
-	$SIG{$signame} = \{$sig->handle};
+	$SIG{$signame} = $sig->{handle};
     }
     return 1;
 }
@@ -365,8 +369,9 @@ sub action($$)
 	    $self->{errprint_fn}->("Invalid argument $attr");
 	}
     }
-    return 1
-    # return $self->check_and_adjust_sighandler($signame);
+    $self->check_and_adjust_sighandler($signame);
+    return 1;
+
 }
 
 # Set whether we stop or not when this signal is caught.
@@ -439,9 +444,9 @@ sub handle_print($$$)
 #        pass_along: True is signal is to be passed to user's handler
 package Devel::Trepan::SigHandler;
 
-sub new($$$$$$$;$$)
+sub new($$$$$;$$)
 {
-    my($class, $print_fn, $signame, $signum, $handler, $old_handler,
+    my($class, $print_fn, $signame, $handler, 
        $b_stop, $print_stack, $pass_along) = @_;
 
     $print_stack //= 0, $pass_along //= 1;
@@ -449,19 +454,20 @@ sub new($$$$$$$;$$)
     my $self = {
 	print_fn     => $print_fn,
         handler      => $handler,
-        old_handler  => $old_handler,
+        old_handler  => $SIG{$signame},
 	pass_along   => $pass_along,
         print_stack  => $print_stack,
         signame      => $signame,
-        signum       => $signum,
-        b_stop       => $b_stop
+        signum       => Devel::Trepan::SigMgr::lookup_signum($signame),
+        b_stop       => $b_stop,
     };
     bless $self, $class;
+    $self->{handle} = sub{ $self->handle(@_) };
     $self;
 }
 
 # This method is called when a signal is received.
-sub handle($)
+sub handle
 {
     my ($self) = @_;
     my $signame = $self->{signame};

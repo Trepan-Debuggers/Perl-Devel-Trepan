@@ -53,13 +53,15 @@ sub idle($$$)
 sub signal_handler($$$)
 {
     my ($self, $signame) = @_;
-    $DB::signal = 1;
+    $DB::running = 0;
+    $DB::step    = 0;
     $DB::caller = [caller(1)];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
     ) = @{$DB::caller};
     my $proc = $self->{proc};
+    $DB::signal = 1;
     $proc->process_commands($DB::caller, 'signal', [$signame]);
 }
 
@@ -133,7 +135,8 @@ sub awaken($;$) {
 	$opts //= {};
 
 	$self->{sigmgr} = 
-	    Devel::Trepan::SigMgr->new(sub{ $self->signal_handler(@_) },
+	    Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
+					    $self->signal_handler(@_) },
 				       sub {$cmdproc->msg(@_)},
 				       sub {$cmdproc->errmsg(@_)},
 				       sub {$cmdproc->section(@_)});

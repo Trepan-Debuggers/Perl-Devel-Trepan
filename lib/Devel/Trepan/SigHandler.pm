@@ -197,10 +197,9 @@ sub new($$$$$$)
     $self->{header} = sprintf($self->{info_fmt}, 'Signal', 'Stop', 'Print',
 			      'Stack', 'Pass', 'Description');
 
-    # signal.signal = self.set_signal_replacement
-
     for my $signame (keys %SIG) {
 	initialize_handler($self, $signame);
+	# $self->check_and_adjust_sighandler($signame);
     }
     $self->action('SIGINT stop print nostack nopass');
     $self;
@@ -224,41 +223,21 @@ sub initialize_handler($$)
 
     my $signum = lookup_signum($signame);
     my $print_fn = $self->{print_fn};
-    $SIG{$signame} = $self->{handler};
     if (exists($self->{ignore_list}{$signame})) {
 	$self->{sigs}{$signame} = 
 	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
-					   \&old_handler,
+					   $self->{handler}, $old_handler,
 					   0,  0, 1);
     } else {
 	$self->{sigs}{$signame} = 
 	    Devel::Trepan::SigHandler->new($print_fn, $signame, $signum, 
-					   \&old_handler,
+					   $self->{handler}, $old_handler,
 					   1, 0, 0);
     }
+    $SIG{$signame} = sub { $self->{sigs}{$signame}->handle(@_) };
     return 1;
 }
 
-# A replacement for signal.signal which chains the signal behind
-# the debugger's handler
-sub set_signal_replacement($$$)
-{
-    my ($self, $signame, $handle) = @_;
-    unless(exists $self->{$signame}) {
-	my $msg = sprintf "%s is not a signal name I know about.", $signame;
-	$self->{errprint}->($msg);
-	return 0;
-    }
-    # Since the intent is to set a handler, we should pass this
-    # signal on to the handler
-    $self->{sigs}{$signame}->pass_along = 1;
-    if ($self->check_and_adjust_sighandler($signame)) {
-	$self->{sigs}{$signame}{old_handler} = $handle;
-	return 1;
-    }
-    return 0;
-}
-            
 # Check to see if a single signal handler that we are interested in
 # has changed or has not been set initially. On return self->{sigs}{$signame}
 # should have our signal handler. True is returned if the same or adjusted,
@@ -276,13 +255,14 @@ sub check_and_adjust_sighandler($$)
     # sigs.pop(signame)
     #        pass
     #    return None
-    if (defined($old_handler) && $old_handler ne $sigs->{$signame}) {
+    my $sig = $sigs->{$signame};
+    if (defined($old_handler) && $old_handler ne $sig->{old_handler}) {
 	# if old_handler not in [signal.SIG_IGN, signal.SIG_DFL]:
         # save the program's signal handler
-	$sigs->{$signame}{old_handler} = $old_handler;
+	$sig->{old_handler} = $old_handler;
 	# set/restore _our_ signal handler
         #
-	$SIG{$signame} = $self->{handler};
+	$SIG{$signame} = \{$sig->handle};
     }
     return 1;
 }
@@ -396,7 +376,7 @@ sub action($$)
 	    $self->{errprt_fn}->('Invalid arguments')
 	}
     }
-    return $self->check_and_adjust_sighandler($signame);
+    # return $self->check_and_adjust_sighandler($signame);
 }
 
 # Set whether we stop or not when this signal is caught.
@@ -456,7 +436,6 @@ sub handle_print($$$)
     }
 }
 
-
 #     Store information about what we do when we handle a signal,
 #
 #     - Do we print/not print when signal is caught
@@ -470,15 +449,16 @@ sub handle_print($$$)
 #        pass_along: True is signal is to be passed to user's handler
 package Devel::Trepan::SigHandler;
 
-sub new($$$$$$;$$)
+sub new($$$$$$$;$$)
 {
-    my($class, $print_fn, $signame, $signum, $old_handler,
+    my($class, $print_fn, $signame, $signum, $handler, $old_handler,
        $b_stop, $print_stack, $pass_along) = @_;
 
     $print_stack //= 0, $pass_along //= 1;
 
     my $self = {
 	print_fn     => $print_fn,
+        handler      => $handler,
         old_handler  => $old_handler,
 	pass_along   => $pass_along,
         print_stack  => $print_stack,
@@ -491,14 +471,15 @@ sub new($$$$$$;$$)
 }
 
 # This method is called when a signal is received.
-sub handle($$$)
+sub handle($)
 {
-    my ($self, $signum, $frame) = @_;
-    if ($self->{print_fn}) {
-	my $msg = sprintf('\nProgram received signal %s.', 
-			  $self->{signame});
+    my ($self) = @_;
+    my $signame = $self->{signame};
+    if (exists($self->{print_fn})) {
+	my $msg = sprintf("\nProgram received signal $signame.");
 	$self->{print_fn}->($msg);
     }
+
     # if ($self->{print_stack}) {
     # 	import traceback;
     # 	my @strings = traceback.format_stack(frame);
@@ -507,22 +488,19 @@ sub handle($$$)
     # 	    $self->{print_fn}->($s);
     # 	}
     # }
-    # if ($self->{b_stop}) {
-    # 	core = self.dbgr.core;
-    # 	old_trace_hook_suspend = core.trace_hook_suspend;
-    # 	core.trace_hook_suspend = 1;
-    # 	core.stop_reason = ('intercepting signal %s (%d)' % 
-    # 			    (self.signame, signum));
-    # 	core.processor.event_processor(frame, 'signal', signum);
-    # 	core.trace_hook_suspend = old_trace_hook_suspend;
-    # }
+
+    if ($self->{b_stop}) {
+    	$self->{handler}->($signame);
+    }
+
     if ($self->{pass_along}) {
-	# pass the signal to the program 
-	if ($self->{old_handler}) {
-	    $self->{old_handler}->($signum, $frame);
-	}
+    	# pass the signal to the program 
+    	if ($self->{old_handler}) {
+    	    $self->{old_handler}->($signame);
+    	}
     }
 }
+
 
 
 # When invoked as main program, do some basic tests of a couple of functions
@@ -544,8 +522,8 @@ unless (caller) {
 
     my $h; # Is used in myhandler.
     eval <<'EOE';  # Have to eval else fns defined when caller() is false
-    sub do_action($$) {
-	my ($h, $arg) = @_; 
+    sub do_action($$$) {
+	my ($h, $arg, $sig) = @_; 
 	print "$arg\n"; 
 	$h->action($arg);
     }
@@ -553,28 +531,37 @@ unless (caller) {
 	my $msg = shift; 
 	print "$msg\n";  
     }
-    sub mysighandler($) {
+    sub orig_sighandler($) {
 	my $name = shift; 
-	print "++ Signal $name caught\n";  
+	print "++ Orig Signal $name caught\n";  
+	$h->info_signal(["USR1"]);
+    }
+    sub stop_sighandler($) {
+	my $name = shift; 
+	print "++ Stop Signal $name caught\n";  
 	$h->info_signal(["USR1"]);
     }
 EOE
 
-    $h = Devel::Trepan::SigMgr->new(\&mysighandler, \&myprint);
+    $SIG{'USR1'} = \&orig_sighandler;
+    $h = Devel::Trepan::SigMgr->new(\&stop_sighandler, \&myprint);
     $h->info_signal(["TRAP"]);
     # USR1 is set to known value
     $h->action('SIGUSR1');
 
-    do_action($h, 'usr1 print pass');
-    $h->info_signal(["USR1"]);
+    do_action($h, 'usr1 print pass', 'USR1');
+    $h->info_signal(['USR1']);
     # noprint implies no stop
-    do_action($h, 'usr1 noprint');
-    $h->info_signal(["USR1"]);
+    # do_action($h, 'usr1 noprint');
+    print '-' x 30, "\n";
+    kill 10, $$;
     do_action($h, 'foo nostop');
+    do_action($h, 'usr1 print nopass', 'USR1');
+    $h->info_signal(['USR1']);
     kill 10, $$;
     # # stop keyword implies print
-    # h.action('SIGUSR1 stop')
-    # h.info_signal(['SIGUSR1'])
+    do_action($h, 'USR1 stop', 'USR1');
+    $h->info_signal(['USR1']);
     # h.action('SIGUSR1 noprint')
     # h.info_signal(['SIGUSR1'])
     # h.action('SIGUSR1 nopass stack')

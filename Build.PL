@@ -36,14 +36,14 @@ my $builder = Module::Build->new(
 			      
     },
     build_requires => {
-        'String::Diff'        => 0,
-	'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
+        # 'String::Diff'        => 0,
+	# 'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
     },
     requires => {
 	'perl'                              => '5.010',               
 	'Array::Columnize'                  => '0.3.5',
 	'Data::Dumper::Perltidy'            => 0,
-        'Digest::SHA1'                      => 2.11,
+        'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'rlib'                              => '0.02',
         'Syntax::Highlight::Perl::Improved' => 0,

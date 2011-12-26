@@ -17,7 +17,6 @@
 use strict;
 use warnings;
 use Module::Build;
-use ExtUtils::PkgConfig;
 use Config;
 
 my $builder = Module::Build->new( 

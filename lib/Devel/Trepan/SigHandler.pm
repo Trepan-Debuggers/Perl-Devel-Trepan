@@ -198,7 +198,7 @@ sub new($$$$$$)
 
     for my $signame (keys %SIG) {
 	initialize_handler($self, $signame);
-	# $self->check_and_adjust_sighandler($signame);
+	$self->check_and_adjust_sighandler($signame);
     }
     $self->action('INT stop print nostack nopass');
     for my $sig ('CHLD', 'CLD') {
@@ -227,13 +227,12 @@ sub initialize_handler($$)
     if (exists($self->{ignore_list}{$signame})) {
 	$self->{sigs}{$signame} = 
 	    Devel::Trepan::SigHandler->new($print_fn, $signame, 
-					   $self->{handler}, 0,  0, 1);
+					   $self->{handler}, 0, 0, 1);
     } else {
 	$self->{sigs}{$signame} = 
 	    Devel::Trepan::SigHandler->new($print_fn, $signame, 
 					   $self->{handler}, 1, 0, 0);
     }
-    $SIG{$signame} = $self->{sigs}{$signame}->{handle};
     return 1;
 }
 
@@ -246,7 +245,7 @@ sub check_and_adjust_sighandler($$)
     my ($self, $signame) = @_;
     my $sigs = $self->{sigs};
     # try:
-    my $old_handler = $SIG{$signame};
+    my $current_handler = $SIG{$signame};
     # except ValueError:
     # On some OS's (Redhat 8), SIGNUM's are listed (like
     # SIGRTMAX) that getsignal can't handle.
@@ -255,15 +254,12 @@ sub check_and_adjust_sighandler($$)
     #        pass
     #    return None
     my $sig = $sigs->{$signame};
-    if (defined($old_handler) && 
-	(!defined($sig->{old_handler}) ||
-	 $old_handler ne $sig->{old_handler})) {
+    if (!defined($current_handler) ||
+	(defined($sig->{handle}) && $current_handler ne $sig->{handle})) {
 	# if old_handler not in [signal.SIG_IGN, signal.SIG_DFL]:
-        # save the program's signal handler
-	# printf "Changing $signame...\n";
-	# print $sig->{old_handler}, $old_handler, "\n";
-	# $sig->{old_handler} = $old_handler;
-	# set/restore _our_ signal handler
+        # Save the debugged program's signal handler
+	$sig->{old_handler} = $current_handler if defined $current_handler;
+	# (re)set signal handler the debugger signal handler.
         #
 	$SIG{$signame} = $sig->{handle};
     }

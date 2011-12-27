@@ -61,7 +61,7 @@ sub signal_handler($$$)
      $DB::hinthash
     ) = @{$DB::caller};
     my $proc = $self->{proc};
-    $DB::signal = 1;
+    $DB::signal = 2;
     $proc->process_commands($DB::caller, 'signal', [$signame]);
 }
 

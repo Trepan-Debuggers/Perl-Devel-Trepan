@@ -90,6 +90,7 @@ sub new($;$$$) {
 	};
 	$intf->set_completion($completion, $list_completion);
     }
+    $B::Data::Dumper::Deparse = 1;
     return $self;
 }
 

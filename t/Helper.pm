@@ -1,6 +1,5 @@
 use warnings; use strict;
 require Test::More;
-use String::Diff;
 use File::Spec;
 use File::Basename;
 my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepan.pl));
@@ -44,14 +43,12 @@ sub run_debugger($$;$$)
     if (Test::More::is($right_string, $output, 'Output comparison')) {
         unlink $got_filename;
     } else {
-        my $diff = String::Diff::diff_merge($output, $right_string);
-
         open (GOT_FH, '>', $got_filename)
             or die "Cannot open '$got_filename' for writing - $OS_ERROR";
-        print GOT_FH $output;
+        # print GOT_FH $output;
         close GOT_FH;
 
-        Test::More::diag($diff);
+        Test::More::diag("Compare $got_filename with $right_filename");
     }
     return;
 }

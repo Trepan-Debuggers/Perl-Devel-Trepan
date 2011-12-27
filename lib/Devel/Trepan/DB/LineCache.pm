@@ -33,7 +33,7 @@ source lines.
 
 =cut
 
-use Digest::SHA1;
+use Digest::SHA;
 
 use version; $VERSION = '0.1.0';
 
@@ -367,7 +367,7 @@ sub DB::LineCache::sha1($)
     return undef unless exists $file_cache{$filename};
     my $sha1 = $file_cache{$filename}{sha1};
     return $sha1->hexdigest if exists $file_cache{$filename}{sha1};
-    $sha1 = Digest::SHA1->new;
+    $sha1 = Digest::SHA->new('sha1');
     my $line_ary = $file_cache{$filename}{lines_href}{plain};
     for my $line (@$line_ary) {
 	next unless defined $line;
@@ -424,7 +424,7 @@ sub map_script($$)
     if (exists $script2file{$script}) {
 	$script2file{$script};
     } else  {
-	# my $sha1 = Digest::SHA1->new();
+	# my $sha1 = Digest::SHA->new('sha1');
 	# $sha1->add($string);
 	my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
 				       TMPDIR => 1);

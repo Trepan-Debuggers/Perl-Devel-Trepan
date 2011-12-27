@@ -28,7 +28,7 @@ if ($opts->{client}) {
 die "You need a Perl program to run" unless @ARGV;
 
 # Resolve program name if it is not readable
-$ARGV[0] = whence_file $ARGV[0] unless (-r $ARGV[0]);
+$ARGV[0] = whence_file($ARGV[0]) unless -r $ARGV[0];
 
 # Check that the debugged Perl program is syntactically valid.
 my $cmd = "$EXECUTABLE_NAME -c " . join(' ', @ARGV) . " 2>&1";

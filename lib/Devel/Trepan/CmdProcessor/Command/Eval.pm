@@ -8,7 +8,7 @@ package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (defined @ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 use constant NEED_STACK  => 1;

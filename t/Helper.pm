@@ -40,15 +40,19 @@ sub run_debugger($$;$$)
     $got_filename = $ext_file->('got');
     # TODO : Perhaps make sure we optionally use eq_or_diff from 
     # Test::Differences here.
-    if (Test::More::is($right_string, $output, 'Output comparison')) {
+    if (Test::More::ok($right_string eq $output, 'Output comparison')) {
         unlink $got_filename;
     } else {
         open (GOT_FH, '>', $got_filename)
             or die "Cannot open '$got_filename' for writing - $OS_ERROR";
-        # print GOT_FH $output;
+        print GOT_FH $output;
         close GOT_FH;
-
-        Test::More::diag("Compare $got_filename with $right_filename");
+        Test::More::diag("Compare $got_filename with $right_filename:");
+	my $output = `diff -u $right_filename $got_filename 2>&1`;
+	my $rc = $? >> 8;
+	$output = `diff $right_filename $got_filename 2>&1` 
+	     if ($rc > 1) || ($rc < 0) ;
+        Test::More::diag($output);
     }
     return;
 }

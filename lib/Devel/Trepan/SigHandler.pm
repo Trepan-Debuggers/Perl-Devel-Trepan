@@ -198,12 +198,13 @@ sub new($$$$$$)
 
     for my $signame (keys %SIG) {
 	initialize_handler($self, $signame);
+	next if $signame eq 'CHLD' || $signame eq 'CLD';
 	$self->check_and_adjust_sighandler($signame);
     }
     $self->action('INT stop print nostack nopass');
-    for my $sig ('CHLD', 'CLD') {
-	$self->action("$sig nostop noprint nostack pass") if exists $SIG{$sig};
-    }
+    # for my $sig ('CHLD', 'CLD') {
+    # 	$self->action("$sig nostop noprint nostack pass") if exists $SIG{$sig};
+    # }
     $self;
 }
 

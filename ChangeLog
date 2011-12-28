@@ -1,16 +1,202 @@
+2011-12-26  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Add
+	'p' as an alias for eval.
+
+2011-12-26  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 821b71c8ecb721f0ea5d753190f369d384ad361a Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Dec 26 22:04:37 2011 -0500
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: Don't include ExtUtils::PkgConfig.
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/Helper.pm: Reduce dependencies
+	for build. Use Digest::SHA instead of Digest::SHA1.  Don't use
+	String::Diff.
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm: Add
+	better help and completion for 'set evaldisplay'. Typo in Confirm.
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/SigHandler.pm,
+	t/10test-complete.t: Work on "stop" action when signal is external
+	to debugged process
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/Complete.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/SigHandler.pm,
+	t/10test-complete.t: Signal handling largely works! Add 'info
+	signal' Add common completion method for signals. Fix a typo here
+	and there.
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm: A perlish kind of bug
+
+2011-12-25  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm: Close to being usable.
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm,
+	lib/Devel/Trepan/DB.pm: bin/trepan.pl: Fix up so we really
+	require_relative. Return.pm: guard against undef. DB.pm futz with
+	"finish" which is currently borked.
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm, t/10test-sighandler.t: Move
+	sighandler code. For such a simple straightforward feature and
+	implementation, this is proving to be more code than I had
+	remembered.
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/Util.pm: Remove Core.pm
+	warnings and make strict even if we can't 'use strict'
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm: Rough cut port of Python code
+	finished. Still need to go over to make it work.
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-watchmgr.t: Add unit test for watch points
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/BrkptMgr.pm, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/WatchMgr.pm, t/10test-position.t: Fix bugs in
+	WatchMgr. make sure fns in demo code are not defined if not
+	demo'ing.
+
+2011-12-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm, t/10test-sighandler.t: More code
+	(and thus more tests) signal handling. Still not complete though.
+
+2011-12-23  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm, lib/Devel/Trepan/Util.pm,
+	t/10test-util.t: Fill in more of the signal handling code.
+
+2011-12-23  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm, t/10test-sighandler.t: put Signal
+	Manager under Devel::Trepan namespace
+
+2011-12-23  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm, lib/Devel/Trepan/WatchMgr.pm: Port
+	a little more code.
+
+2011-12-23  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, MANIFEST.SKIP,
+	lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/SigHandler.pm, t/10test-sighandler.t: Start signal
+	handler routines - not working yet.
+
+2011-12-22  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit cc75fab14c49ba80e39ebc7d72356817b6f1c3d1 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Thu Dec 22 22:39:01 2011 -0500
+
+2011-12-22  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm: Save %SIG before debugger modifies it.
+
+2011-12-21  Rocky Bernstein <rocky@cpan.org>
+
+	* example/except-bug1.pl, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/Options.pm: Add
+	post-mortem debugging. For now option --port-mortem. Should add a
+	"set" command too.
+
+2011-12-21  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m, lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/data/break.cmd,
+	t/data/break.right, t/data/debug.right, t/data/eval.right: Warn if
+	we try to set a breakpoint on a "use" statement.  Auto evaluation
+	now looks at the statement for a sigil to get the return context by
+	default.
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/Options.pm: Allow user-specified debugger command
+	directores via trepan.pl option --cmddir. Useful in testing without
+	installing the split-out the 'shell' command which resides in a
+	different project.
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST.SKIP, bin/trepan.pl, data/Enbugger-trepan.patch, testit: 
+	More Administriva: remove unused files and adjust MANIFEST.SKIP
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* README, README.md: More README futzing
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: More markdown futzing
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Slightly better markdown - use headings and remove a
+	blockquote
+
+2011-12-18  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, README, README.md, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm: Administrivia: Go over readme, bump
+	version and clean up Build.PL.
+
+2011-12-16  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm: Get ready for 0.1.4 release
+
+2011-12-16  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/Util.pm, t/10test-util.t: 
+	Add to Trepan::Devel::Util a simple filename validation routine
+
 2011-12-16  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/Client.pm: (Re)use debugger user output print routines
 
 2011-12-16  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-12-16  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/Interface/Script.pm: 
-	Handling commands on client side is starting to work. In particular
-	.source. Handle Server error return message on client side.
+	* : commit 12ca44c1025f957886968d4a6a1b6b405be67f5c Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Fri Dec 16 06:07:55 2011 -0500
 
 2011-12-16  Rocky Bernstein <rocky@cpan.org>
 
@@ -19,12 +205,8 @@
 
 2011-12-12  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-12-12  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/IO/Input.pm: Guard against Term::ReadLine::Perl
-	dying on initialization.
+	* : commit b8b0f7a49c1dd73a456a75eb38f5309566a9b575 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Dec 12 20:56:58 2011 -0500
 
 2011-12-11  Rocky Bernstein <rocky@cpan.org>
 
@@ -41,7 +223,6 @@
 	t/data/eval2.right: tests work now under strawberry Pelr and its
 	DOSish filename conventions. exec -> system in Strawberry Perl and
 	more $OSNAME testing. Some bugs fixed in filename canonicalization.
-
 
 2011-12-09  Rocky Bernstein <rocky@cpan.org>
 
@@ -88,33 +269,19 @@
 
 2011-12-06  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
+	* : commit ed20492cb7e1e0591393a9125fadd07ac5806c4a Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Tue Dec 6 06:31:31 2011 -0500
 
 2011-12-06  Rocky Bernstein <rocky@cpan.org>
 
-	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm, t/20test-break.t,
-	t/data/break.cmd, t/data/break.right: Suggest how to get valid
-	breakpoint locations. Test errors in "breakpoint" command.
-
-2011-12-06  Rocky Bernstein <rocky@cpan.org>
-
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-12-05  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
-	lib/Devel/Trepan/DB/LineCache.pm: Fix up valid trace line
-	accumulation which can be seen via "info file . brkpts"
+	* : commit 1b1c727821f57f15d4d16b66aa1cfdb1b38dc39a Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Dec 5 23:02:23 2011 -0500
 
 2011-12-04  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
-
-2011-12-04  Rocky Bernstein <rocky@cpan.org>
-
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+	* : commit f859032b0941534acc891a0de6529891b7b91fa3 Merge: 75afabe
+	8549ac4 Author: Rocky Bernstein <rocky@cpan.org> Date:   Sun Dec 4
+	17:54:44 2011 -0500
 
 2011-12-04  Rocky Bernstein <rocky@cpan.org>
 
@@ -154,8 +321,8 @@
 	lib/Devel/Trepan/CmdProcessor/Frame.pm,
 	lib/Devel/Trepan/CmdProcessor/Validate.pm,
 	lib/Devel/Trepan/DB/Backtrace.pm: Fix up "info frame", e.g. better
-	help, nows take a frame parameter. Validate: fix in max/min checking
-	caused by Perl automatic coersion
+	help, nows take a frame parameter.  Validate: fix in max/min
+	checking caused by Perl automatic coersion
 
 2011-12-04  Rocky Bernstein <rocky@cpan.org>
 
@@ -185,13 +352,8 @@
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-12-03  Rocky Bernstein <rocky@cpan.org>
-
-	* bin/trepan.pl, lib/Devel/Trepan/DB.pm: Remove `pwd` since that's
-	OS specific. Use exec { $args[0] } @args instead of exec @args since
-	that's safer.
+	* : commit f69e6a3b4f1b1374b2eeb49c6a46b1794342a246 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sat Dec 3 19:13:53 2011 -0500
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 
@@ -210,7 +372,7 @@
 	lib/Devel/Trepan/CmdProcessor/Default.pm,
 	lib/Devel/Trepan/DB/Sub.pm, lib/Devel/Trepan/IO/Input.pm,
 	lib/Devel/Trepan/Options.pm: Don't use syntax highlighting if TERM
-	is dumb (other than dumb EMACS). DB::Sub.pm guard against stack
+	is dumb (other than dumb EMACS).  DB::Sub.pm guard against stack
 	which might not be set. This happens when Enbugger is used.
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
@@ -236,28 +398,18 @@
 
 	* lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
 	lib/Devel/Trepan/Interface/Script.pm: A Script interface's msg when
-	in server mode needs to use the server write. The way we do this is
+	in server mode needs to use the server write.  The way we do this is
 	a little hacky, but it's what we use for now.
 
 2011-12-01  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+	* : commit d4642b4734a98c18a45d2080f6553bbfe7f0d3e8 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Thu Dec 1 23:09:35 2011 -0500
 
 2011-12-01  Rocky Bernstein <rocky@cpan.org>
 
-	* lib/Devel/Trepan/Client.pm: Towards client-side command
-	processing.
-
-2011-12-01  Rocky Bernstein <rocky@cpan.org>
-
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
-
-2011-12-01  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm: Add more
-	completion subroutines now that completion largely works.
+	* : commit d31a9e5233d57cd55055d67ac0b4ff482298f4eb Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Thu Dec 1 02:46:28 2011 -0500
 
 2011-12-01  Rocky Bernstein <rocky@cpan.org>
 
@@ -304,13 +456,8 @@
 
 2011-11-28  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
-
-2011-11-28  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/Interface/Server.pm: Fix bug in server confirm()
-	caused mis-translation of the Ruby code.
+	* : commit 8b87e300152476313d490897113d87490a531c8d Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Nov 28 07:13:21 2011 -0500
 
 2011-11-27  Rocky Bernstein <rocky@cpan.org>
 
@@ -339,7 +486,6 @@
 2011-11-26  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/Options.pm: Add --no-readline option to trepanpl
-
 
 2011-11-26  Rocky Bernstein <rocky@cpan.org>
 
@@ -493,7 +639,6 @@
 
 	* lib/Devel/Trepan/CmdProcessor/Command.pm: Fix Grammar in comment.
 
-
 2011-11-24  Rocky Bernstein <rocky@cpan.org>
 
 	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Running.pm,
@@ -556,29 +701,13 @@
 
 2011-11-23  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+	* : commit 8a85aee6cbc45069f4e6a353d1f31bdc688f0c8c Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Wed Nov 23 23:54:44 2011 -0500
 
 2011-11-23  Rocky Bernstein <rocky@cpan.org>
 
-	* lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm,
-	lib/Devel/Trepan/CmdProcessor/Validate.pm,
-	lib/Devel/Trepan/IO/Input.pm: Fix bug where GNU readline was not
-	set. Add "Disassemble" routine via B::Concise.
-
-2011-11-23  Rocky Bernstein <rocky@cpan.org>
-
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
-
-2011-11-23  Rocky Bernstein <rocky@cpan.org>
-
-	* Build.PL, lib/Devel/Trepan/Client.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Server.pm,
-	lib/Devel/Trepan/IO/TCPClient.pm, lib/Devel/Trepan/IO/TCPServer.pm,
-	lib/Devel/Trepan/Interface/ComCodes.pm,
-	lib/Devel/Trepan/Interface/Server.pm: More work on out-of-process
-	debugging. Some bugs removed, some remain. Add "server" debugger
-	command.
+	* : commit dc72e86264a435620e78578fe3c9e378919345ec Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Wed Nov 23 07:01:42 2011 -0500
 
 2011-11-22  Rocky Bernstein <rocky@cpan.org>
 
@@ -589,32 +718,13 @@
 
 2011-11-22  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
+	* : commit 18f1bfd062fca3147f770f39fd31cc9e5b8cfab1 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Nov 21 22:39:01 2011 -0500
 
 2011-11-21  Rocky Bernstein <rocky@cpan.org>
 
-	*
-	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
-	My.pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm: 
-	Add "set variable" to allow a 'my' or 'our' variable to be set.
-	Expand "info variables" to allow a list of variable values to be
-	shown or all of them. More work is needed here.
-
-2011-11-21  Rocky Bernstein <rocky@cpan.org>
-
-	Merge branch 'master' of
-	git://github.com/rocky/Perl-Devel-Trepan
-
-2011-11-21  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
-	.gitignore,
-	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
-	My.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
-	Our.pm: Add "info var my" and "info var our"
+	* : commit 20afecf63179fb415bbcc28caa1c63878e6b3ad6 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Nov 21 12:10:17 2011 -0500
 
 2011-11-21  Rocky Bernstein <rocky@cpan.org>
 
@@ -684,7 +794,6 @@
 	lib/Devel/Trepan/Interface/Server.pm: More work on out-of-processes
 	debugging. Add a "server" interface. TCP client/server IO rough cut.
 
-
 2011-11-19  Rocky Bernstein <rocky@cpan.org>
 
 	* t/10test-io-tcppack.pm, t/10test-io-tcppack.t: Oopps wrong
@@ -734,7 +843,6 @@
 
 	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: In 0.1.2dev now
 
-
 2011-11-13  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Tidy up eval
@@ -782,7 +890,6 @@
 2011-11-13  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/DB.pm: Undo inadvertant change to turn off trace
-
 
 2011-11-13  Rocky Bernstein <rocky@cpan.org>
 
@@ -854,7 +961,7 @@
 	lib/Devel/Trepan/CmdProcessor/Running.pm, lib/Devel/Trepan/DB.pm,
 	t/20test-watch1.t, t/data/watch1.right, t/data/watch2.cmd,
 	t/data/watch2.right: Make sure watch expression stop through
-	continue. Go over help on various commands.
+	continue.  Go over help on various commands.
 
 2011-11-11  Rocky Bernstein <rocky@cpan.org>
 
@@ -1014,11 +1121,10 @@
 	lib/Devel/Trepan/CmdProcessor/Running.pm, lib/Devel/Trepan/Core.pm,
 	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Breakpoint.pm,
 	lib/Devel/Trepan/WatchMgr.pm: Remove $is_eval param on idle
-	callback. Start evaluate cmdprocessor routine from Eval.pm command.
-	To be used in Watch.pm  Some changes that meant for previous commit:
-	Show changed value on watched expression. Store $dbgr object
-	properly in Core. Use Watch struct in DB.pm (meant for last commit)
-
+	callback.  Start evaluate cmdprocessor routine from Eval.pm command.
+	To be used in Watch.pm Some changes that meant for previous commit: Show changed value on
+	watched expression. Store $dbgr object properly in Core. Use Watch
+	struct in DB.pm (meant for last commit)
 
 2011-11-10  Rocky Bernstein <rocky@cpan.org>
 
@@ -1237,21 +1343,12 @@
 
 2011-10-29  R. Bernstein <rocky.bernstein@gmail.com>
 
-	Merge pull request #2 from rurban/master  Use of qw(...) as
-	parentheses is deprecated
-
-2011-10-29  Reini Urban <rurban@cpanel.net>
-
-	* lib/Devel/Trepan/Util.pm: Use of qw(...) as parentheses is
-	deprecated
+	* : Merge pull request #2 from rurban/master Use of qw(...) as parentheses is deprecated
 
 2011-10-28  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-10-28  Rocky Bernstein <rocky@cpan.org>
-
-	* lib/Devel/Trepan/DB/Colors.pm: Fix up some terminal colors.
+	* : commit e0bfa838423516c6c701c84159bd066313afea9c Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Fri Oct 28 21:32:21 2011 -0400
 
 2011-10-27  Rocky Bernstein <rocky@cpan.org>
 
@@ -1315,7 +1412,7 @@
 
 2011-10-27  Rocky Bernstein <rocky@cpan.org>
 
-	* Build.PL, Changes, MANIFEST: Get ready for 0.10 release. Build.PL
+	* Build.PL, Changes, MANIFEST: Get ready for 0.10 release.  Build.PL
 	stringify and dotify Psh version. Submit to facist kwalitee
 	standards.
 
@@ -1387,7 +1484,7 @@
 	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
 	lib/Devel/Trepan/DB.pm, t/data/eval.cmd, t/data/eval.right: eval
 	should correctly report @_ now by saving it in DB::sub and assigning
-	@_ before eval. Also fix another bug in Command/Eval.
+	@_ before eval.  Also fix another bug in Command/Eval.
 
 2011-10-16  Rocky Bernstein <rocky@cpan.org>
 
@@ -1398,7 +1495,6 @@
 2011-10-15  Rocky Bernstein <rocky@cpan.org>
 
 	* t/data/eval.cmd, t/data/eval.right: Check "my" variables in eval.
-
 
 2011-10-15  Rocky Bernstein <rocky@cpan.org>
 
@@ -1527,12 +1623,8 @@
 
 2011-10-10  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-10-10  Rocky Bernstein <rocky@cpan.org>
-
-	* Artistic, MANIFEST, README, gpl-3.0.txt, ignore.txt: Add a README
-	and license info.
+	* : commit d577ae75c12b5bf57c88776cd1e98b101ddc514d Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Oct 10 21:49:53 2011 -0400
 
 2011-10-09  Rocky Bernstein <rocky@cpan.org>
 
@@ -1571,18 +1663,8 @@
 
 2011-10-08  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-10-08  Rocky Bernstein <rocky@cpan.org>
-
-	* MANIFEST,
-	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
-	m,
-	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/List.
-	pm, t/20test-autolist.t, t/data/autolist.cmd, t/data/autolist.right: 
-	Add "set/show autolist". Correct/improve some command documentation.
-
+	* : commit 4fdc79de1809b379a6aa8d53736c0a53a0424c5d Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sat Oct 8 20:58:29 2011 -0400
 
 2011-10-08  Rocky Bernstein <rocky@cpan.org>
 
@@ -1592,9 +1674,8 @@
 	lib/Devel/Trepan/DB/LineCache.pm, t/10test-proc-hook.t,
 	t/10test-proc-load.t, t/20test-list3.t, t/data/list1.right,
 	t/data/list2.right, t/data/list3.cmd, t/data/list3.right: Fix "list"
-	help documentation. Start adding command hook code. Fix bug in
+	help documentation. Start adding command hook code.  Fix bug in
 	listing files and mysterious bug in listing highlighed source code.
-
 
 2011-10-08  Rocky Bernstein <rocky@cpan.org>
 
@@ -1645,14 +1726,8 @@
 
 2011-10-04  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-09-29  Rocky Bernstein <rocky@cpan.org>
-
-	* MANIFEST, example/nexting.pl, t/20test-break.t, t/20test-step.t,
-	t/Helper.pm, t/data/.gitignore, t/data/step.cmd, t/data/step.right: 
-	Add second debugger command integration test: step. Break out
-	run_debugger into helper Helper.pm
+	* : commit 528b64fe9e429313ca3c0524286e6a209b64d0cc Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Thu Sep 29 07:16:47 2011 -0400
 
 2011-09-28  Rocky Bernstein <rocky@cpan.org>
 
@@ -1681,7 +1756,7 @@
 	t/test-linecache.t, t/test-load.t, t/test-options.t,
 	t/test-position.t, t/test-proc-load.t, t/test-util.t,
 	t/test-validate.t: Add first integration test for trepanpl --help
-	and --version options. Rename tests to accomodate unit versus
+	and --version options.  Rename tests to accomodate unit versus
 	integration tests.
 
 2011-09-27  Rocky Bernstein <rocky@cpan.org>
@@ -1709,7 +1784,7 @@
 2011-09-27  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Breakpoint.pm: Attempt
-	simplification and correction of DB::cont and DB::set_break. Really
+	simplification and correction of DB::cont and DB::set_break.  Really
 	need to add "parse_position".
 
 2011-09-26  Rocky Bernstein <rocky@cpan.org>
@@ -1945,7 +2020,7 @@
 	lib/Devel/Trepan/Interface/Script.pm,
 	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm: We
 	can now read a user debugger profile, e.g. ~/.treplrc and pass
-	options trepanpl to Core via TREPANPL_OPTS. Some bugs fixed in the
+	options trepanpl to Core via TREPANPL_OPTS.  Some bugs fixed in the
 	Script interface and shy away from a more massive shutdown on every
 	Interface destroy.
 
@@ -2158,8 +2233,8 @@
 
 	* Makefile, example/gcd-dbg.pl, lib/Devel/Trepan/DB.pm: DB.pm: Now
 	works with Enbugger. Some improvements (like proper stack tracking)
-	are desirable. Remove more of the unneeded OO DB stuff which got in
-	the way. Makefile: compatiblity for us old-timers. gcd-dbg.pl: an
+	are desirable.  Remove more of the unneeded OO DB stuff which got in
+	the way.  Makefile: compatiblity for us old-timers.  gcd-dbg.pl: an
 	example of using with Enbugger.
 
 2011-09-05  Rocky Bernstein <rocky@cpan.org>
@@ -2180,7 +2255,7 @@
 	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/IO/Input.pm,
 	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm: Can
 	now list which lines are ok to breakpoint at. LineCache is now uses
-	strict. trepanp -> trepanpl.
+	strict.  trepanp -> trepanpl.
 
 2011-09-04  Rocky Bernstein <rocky@cpan.org>
 
@@ -2191,7 +2266,6 @@
 
 	* lib/Devel/Trepan/Options.pm: Ooops forgot to initialize a variable
 
-
 2011-09-04  Rocky Bernstein <rocky@cpan.org>
 
 	* bin/trepanp,
@@ -2199,7 +2273,7 @@
 	lib/Devel/Trepan/Options.pm, lib/Devel/Trepan/Util.pm: trepanp:
 	Check that the debugged Perl program is syntactically valid and
 	resolve file name using PATH if we can't find it. Start options
-	processing. Files.pm: fill out showing file attributes.
+	processing.  Files.pm: fill out showing file attributes.
 
 2011-09-04  Rocky Bernstein <rocky@cpan.org>
 
@@ -2408,13 +2482,8 @@
 
 2011-08-28  Rocky Bernstein <rocky@cpan.org>
 
-	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
-
-2011-08-28  r <rocky@gnu.org>
-
-	* lib/Devel/Trepan/CmdProcessor/Default.pm,
-	lib/Devel/Trepan/CmdProcessor/Msg.pm: Add Term::ANSIColor bold and
-	underline to message "section" and "errmsg".
+	* : commit 078b3ff6c10d25dec0fd007b0e94df44439aaf5b Author: r
+	<rocky@gnu.org> Date:   Sun Aug 28 01:06:03 2011 -0400
 
 2011-08-28  r <rocky@gnu.org>
 

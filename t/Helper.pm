@@ -50,6 +50,11 @@ sub run_debugger($$;$$)
         Test::More::diag("Compare $got_filename with $right_filename:");
 	my $output = `diff -u $right_filename $got_filename 2>&1`;
 	my $rc = $? >> 8;
+	# GNU diff returns 0 if files are equal, 1 if different and 2
+	# if something went wrong. We also should take care of the
+	# case where diff isn't installed. So although we expect a 1
+	# for GNU diff, we'll also take accept 0, but any other return
+	# code means some sort of failure.
 	$output = `diff $right_filename $got_filename 2>&1` 
 	     if ($rc > 1) || ($rc < 0) ;
         Test::More::diag($output);

@@ -14,7 +14,7 @@ use File::Basename;
 use File::Spec;
 use Devel::Trepan::DB::LineCache;
 
-my $EVENT2ICON = {
+our $EVENT2ICON = {
     'brkpt'          => 'xx',
     'call'           => '->',
     'debugger-call'  => ':o',

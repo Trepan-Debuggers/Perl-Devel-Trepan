@@ -7,7 +7,6 @@ use strict; use warnings; use English qw( -no_match_vars );
 use File::Basename; use File::Spec;
 my $file = File::Spec->rel2abs(__FILE__);
 my $TREPAN_DIR = File::Spec->catfile(dirname($file), '..', 'lib');
-$TREPAN_DIR = '/src/external-vcs/Perl-Devel-Trepan/lib';
 
 eval <<'EOE';
     use lib $TREPAN_DIR;

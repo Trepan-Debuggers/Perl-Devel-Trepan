@@ -1,6 +1,5 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
-use feature ":5.10";  # Includes "state" feature.
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 

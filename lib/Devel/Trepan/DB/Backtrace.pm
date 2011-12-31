@@ -39,9 +39,10 @@ stack frame. Each has the following keys and values:
 # subroutine args.
 sub backtrace($;$$$) {
     my ($self, $skip, $count, $scan_for_DB_sub) = @_;
-    $skip //= 0;  $count //= 1e9;
+    $skip = 0 unless defined($skip);  
+    $count = 1e9 unless defined($count);
 
-    $scan_for_DB_sub //= 1;
+    $scan_for_DB_sub ||= 1;
     # print "scan: $scan_for_DB_sub\n";
 
     # These variables are used to capture output from caller();

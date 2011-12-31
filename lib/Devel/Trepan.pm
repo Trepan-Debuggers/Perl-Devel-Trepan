@@ -1,5 +1,4 @@
 #!/usr/bin/env perl 
-use feature ":5.10";  
 use vars qw($TREPAN_CMDPROC);
 use rlib '..';
 

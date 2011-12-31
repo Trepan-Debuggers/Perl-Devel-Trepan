@@ -20,7 +20,7 @@ sub new($;$)
 {    
     my ($class, $list) = @_;
     my $self = {};
-    $list //= [];
+    $list = [] unless defined $list;
     $self->{list} = $list;
     bless $self, $class;
     $self;
@@ -108,7 +108,8 @@ sub hook_initialize($)
     $self->{timer_hook}     = ['timer', 
 			       sub{
 				   my $now = Time::HiRes::time;
-				   $self->{time_last} //= $now;
+				   $self->{time_last} = $now unless 
+				       defined $self->{time_last};
 				   my $mess = sprintf("%g seconds", $now - $self->{time_last});
 				   $self->msg($mess);
 				   $self->{time_last} = $now;

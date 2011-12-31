@@ -97,7 +97,9 @@ sub awaken($;$) {
 	$cmdproc_opts{$field} = $opts->{$field};
     }
 
-    if (my $batch_filename = $opts->{testing} // $opts->{batchfile}) {
+    my $batch_filename = $opts->{testing};
+    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
+    if (defined $batch_filename) {
 	my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
 	if (defined $result) {
 	    print STDERR "$result\n" 
@@ -132,7 +134,7 @@ sub awaken($;$) {
 						       \%cmdproc_opts);
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};
-	$opts //= {};
+	$opts = {} unless defined $opts;
 
 	$self->{sigmgr} = 
 	    Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;

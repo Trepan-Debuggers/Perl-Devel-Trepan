@@ -1,7 +1,6 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
-use feature 'switch';
 use rlib '../../../..';
 
 # disable breakpoint command. The difference however is that the
@@ -134,10 +133,12 @@ sub run($$)
 	}
 	my $i = $proc->get_an_int($num_str);
 	if (defined $i) {
-	    given ($type) {
-		when('a') { enable_action($proc, $i); } 
-		when('b') { enable_breakpoint($proc, $i); } 
-		when('w') { enable_watchpoint($proc, $i); } 
+	    if ('a' eq $type) {
+		disable_action($proc, $i); 
+	    } elsif ('b' eq $type) {
+		disable_breakpoint($proc, $i); 
+	    } elsif ('w' eq $type) {
+		disable_watchpoint($proc, $i);
 	    }
 	}
     }

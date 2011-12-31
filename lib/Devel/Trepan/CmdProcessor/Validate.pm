@@ -6,7 +6,6 @@
 use strict; use warnings;
 use Exporter;
 
-use feature 'switch';
 use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
@@ -118,7 +117,7 @@ use Devel::Trepan::Util qw(hash_merge);
 sub get_int_list($$;$)
 {
     my ($self, $args, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     map {$self->get_an_int($_, $opts)} @{$args}; # .compact
 }
     
@@ -263,7 +262,7 @@ sub get_int_noerr($$)
 sub get_onoff($$;$$) 
 {
     my ($self, $arg, $default, $print_error) = @_;
-    $print_error //= 1;
+    $print_error = 1 unless defined $print_error;
     unless (defined $arg) {
         unless (defined $default) {
 	    if ($print_error) {
@@ -307,7 +306,7 @@ sub parse_position($$;$)
     my @args = @$args;
     my $size = scalar @args;
     my $gobble_count = 0;
-    $validate_line_num //= 0;
+    $validate_line_num = 0 unless defined $validate_line_num;
 
     if (0 == $size) {
 	no warnings 'once';
@@ -386,7 +385,7 @@ unless (caller) {
     
     for my $val (qw(1 1E bad 1+1 -5)) {
 	my $result = get_int_noerr('bogus', $val);
-	$result //= '<undef>';
+	$result = '<undef>' unless defined $result;
 	print "get_int_noerr(${val}) = $result\n";
     }
     

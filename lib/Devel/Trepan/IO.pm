@@ -70,7 +70,7 @@ package Devel::Trepan::IO::OutputBase;
 sub new($$;$)
 {
     my ($class, $out, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
 
     my $self = {
 	output => $out,

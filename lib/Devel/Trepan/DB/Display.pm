@@ -102,7 +102,7 @@ sub add($$;$)
 {
     my ($self, $display,$return_type) = @_;
     $self->{max}++;
-    $return_type //= '$';
+    $return_type = '$' unless defined $return_type;
     my $number = $self->{max};
     my $disp = DBDisplay->new(
 	number      => $number, 
@@ -163,11 +163,14 @@ unless (caller) {
     { 
 	my ($displays, $i) = @_;
 	printf "list size: %s\n", $displays->size();
-	printf "max: %d\n", $displays->max() // -1;
+	my $max = $displays->max();
+	$max = -1 unless defined $max;
+	printf "max: %d\n", $max;
 	print $displays->inspect();
 	print "--- ${i} ---\n";
     }
 
+    eval "use rlib '..';";
     require Devel::Trepan::Core;
     my $dbgr = Devel::Trepan::Core->new;
     my $displays = Devel::Trepan::DisplayMgr->new($dbgr);

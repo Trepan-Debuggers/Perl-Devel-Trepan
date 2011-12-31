@@ -2,8 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 use strict;
-eval "use rlib '../..'";
-use feature 'switch';
+use rlib '../..';
 
 # require_relative 'default'                # default debugger settings
 
@@ -49,23 +48,20 @@ sub run_command($$$$)
         my @args = split(' ', $current_command);
 	my $cmd_name = shift @args;
 	my $script_file = shift @args;
-	given($cmd_name) {
-	    when ("source") { 
-		my $result = 
-		    Devel::Trepan::Util::invalid_filename($script_file);
-		unless (defined $result) {
-		    $self->errmsg($result);
-		    return 0;
-		}
-		my $script_intf = 
-		    Devel::Trepan::Interface::Script->new($script_file);
-		unshift @{$self->{user_inputs}}, $script_intf->{input};
-		$current_command = $script_intf->read_command;
-	    };
-	    default {
-		$self->errmsg(sprintf "Unknown command: '%s'", $cmd_name);
+	if ('source' eq $cmd_name) {
+	    my $result = 
+		Devel::Trepan::Util::invalid_filename($script_file);
+	    unless (defined $result) {
+		$self->errmsg($result);
 		return 0;
 	    }
+	    my $script_intf = 
+		Devel::Trepan::Interface::Script->new($script_file);
+	    unshift @{$self->{user_inputs}}, $script_intf->{input};
+	    $current_command = $script_intf->read_command;
+	} else {
+	    $self->errmsg(sprintf "Unknown command: '%s'", $cmd_name);
+	    return 0;
 	};
     } eval {
 	$intf->write_remote(COMMAND, $current_command);
@@ -96,65 +92,58 @@ sub start_client($)
 	    last;
 	}
 	# p [control_code, line]
-	given ($control_code) {
-	    when (PRINT) { $client->msg("$line"); }
-	    when (CONFIRM_TRUE) {
-		my $response = $intf->confirm($line, 1);
-		$intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
-	    }
-	    when (CONFIRM_FALSE) {
-		my $response = $intf->confirm($line, 1);
-		$intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
-	    }
-	    when (PROMPT) {
-		my $command;
-		my $leave_loop = 0;
-		until ($leave_loop) {
-		    eval {
-			$command = $client->{user_inputs}[0]->read_command($line);
-		    };
-		    # if ($intf->is_input_eof) {
-		    # 	print "user-side EOF. Quitting...\n";
-		    # 	last;
-		    # }
-		    if ($EVAL_ERROR) {
-			if (scalar @{$client->{user_inputs}} == 0) {
-			    $client->msg("user-side EOF. Quitting...");
-			    last;
-			} else {
-			    shift @{$client->{user_inputs}};
-			    next;
-			}
-		    };
-		    $leave_loop = $client->run_command($intf, $command);
-		    if ($EVAL_ERROR) {
-			$client->msg("Remote debugged process died");
+	if (PRINT eq $control_code) {
+	    $client->msg("$line");
+	} elsif (CONFIRM_TRUE eq $control_code) {
+	    my $response = $intf->confirm($line, 1);
+	    $intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
+	} elsif (CONFIRM_FALSE eq $control_code) {
+	    my $response = $intf->confirm($line, 1);
+	    $intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
+	} elsif (PROMPT eq $control_code) {
+	    my $command;
+	    my $leave_loop = 0;
+	    until ($leave_loop) {
+		eval {
+		    $command = $client->{user_inputs}[0]->read_command($line);
+		};
+		# if ($intf->is_input_eof) {
+		# 	print "user-side EOF. Quitting...\n";
+		# 	last;
+		# }
+		if ($EVAL_ERROR) {
+		    if (scalar @{$client->{user_inputs}} == 0) {
+			$client->msg("user-side EOF. Quitting...");
 			last;
+		    } else {
+			shift @{$client->{user_inputs}};
+			next;
 		    }
+		};
+		$leave_loop = $client->run_command($intf, $command);
+		if ($EVAL_ERROR) {
+		    $client->msg("Remote debugged process died");
+		    last;
 		}
 	    }
-	    when (QUIT) { 
-		last 
-	    }
-	    when (RESTART) { 
-		$intf->close;
-		# Make another connection..
-		$client = Devel::Trepan::Client->new(
-		    {client      => 1,
-		     cmdfiles    => [],
-		     initial_dir => $options->{chdir},
-		     nx          => 1,
-		     host        => $options->{host},
-		     port        => $options->{port}}
-		    );
-		$intf = $client->{intf};
-	    }
-	    when (SERVERERR) {
-		$client->errmsg($line);
-	    }
-	    default {
-		$client->errmsg("Unknown control code: '$control_code'");
-	    }
+	} elsif (QUIT eq $control_code) { 
+	    last;
+	} elsif (RESTART eq $control_code) { 
+	    $intf->close;
+	    # Make another connection..
+	    $client = Devel::Trepan::Client->new(
+		{client      => 1,
+		 cmdfiles    => [],
+		 initial_dir => $options->{chdir},
+		 nx          => 1,
+		 host        => $options->{host},
+		 port        => $options->{port}}
+		);
+	    $intf = $client->{intf};
+	} elsif (SERVERERR eq $control_code) {
+	    $client->errmsg($line);
+	} else {
+	    $client->errmsg("Unknown control code: '$control_code'");
 	}
     }
 }

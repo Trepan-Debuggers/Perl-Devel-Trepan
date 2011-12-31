@@ -99,6 +99,11 @@ sub eval_with_return {
 	    }
 	}
 	
+        # Restore those old values.
+        $DB::trace  = $otrace;
+        $DB::single = $osingle;
+        $DEBUGGING  = $od;
+
 	my $EVAL_ERROR_SAVE = $EVAL_ERROR;
 	if ($EVAL_ERROR_SAVE) {
 	    _warnall($EVAL_ERROR_SAVE);
@@ -120,12 +125,6 @@ sub eval_with_return {
 		}
 	    }
 	}
-
-        # Restore those old values.
-        $DB::trace  = $otrace;
-        $DB::single = $osingle;
-        $DEBUGGING  = $od;
-
     }
 }
 1;

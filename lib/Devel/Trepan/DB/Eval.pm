@@ -109,7 +109,7 @@ sub eval_with_return {
 		when ('$') {
 		    return $eval_result;
 		}
-		when ('$') {
+		when ('@') {
 		    return @eval_result;
 		}
 		when ('%') {

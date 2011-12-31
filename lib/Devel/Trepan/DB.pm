@@ -180,6 +180,7 @@ sub DB {
 						'$',
 						@saved);
 	    my $old_val = $wp->old_value;
+	    no warnings 'once';
 	    next if !defined($old_value) and !defined($new_val);
 	    my $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {

@@ -100,7 +100,7 @@ sub run($$)
 	$expr = $proc->{cmd_argstr};
     }
     {
-	my $opts->{return_type} = parse_eval_suffix($cmd_name);
+	my $opts = {return_type => parse_eval_suffix($cmd_name)};
 	no warnings 'once';
 	$proc->evaluate($expr, $opts);
     }

@@ -2,7 +2,7 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 use strict;
-eval "use rlib '../..'";
+use rlib '../..';
 use feature 'switch';
 
 # require_relative 'default'                # default debugger settings

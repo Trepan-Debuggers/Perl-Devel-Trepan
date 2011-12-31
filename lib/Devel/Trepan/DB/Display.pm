@@ -168,6 +168,7 @@ unless (caller) {
 	print "--- ${i} ---\n";
     }
 
+    eval "use rlib '..';";
     require Devel::Trepan::Core;
     my $dbgr = Devel::Trepan::Core->new;
     my $displays = Devel::Trepan::DisplayMgr->new($dbgr);

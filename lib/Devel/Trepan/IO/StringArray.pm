@@ -2,11 +2,11 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 # Simulate I/O using lists of strings.
+use rlib '../../..';
 
 package Devel::Trepan::IO::StringArrayInput;
 use warnings; use strict;
 
-use rlib '../../..';
 use Devel::Trepan::IO;
 
 use vars qw(@ISA);

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 
+use rlib '../..';
+
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
 package Devel::Trepan::CmdProcessor;
@@ -16,12 +18,10 @@ use vars qw(@EXPORT @ISA $eval_result);
 # Showing eval results can be done using either data dump package.
 use if !defined @ISA, Data::Dumper; require Data::Dumper::Perltidy;
 
-use rlib '../..';
-
 unless (defined @ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
-    require Devel::Trepan::DB::Display;
+    eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::User;
     require Devel::Trepan::CmdProcessor::Virtual;
     require Devel::Trepan::CmdProcessor::Default;

@@ -115,10 +115,13 @@ sub set_break {
 	filename  => $filename,
 	line_num  => $lineno
 	);
-    my $ary_ref = $DB::dbline{$lineno} = [] unless defined $DB::dbline{$lineno};
+    
+    my $ary_ref;
+    $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
+    $ary_ref = $DB::dbline{$lineno};
     push @$ary_ref, $brkpt;
     *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-    return $brkpt
+    return $brkpt;
 }
 
 # Set a temporary breakpoint
@@ -152,6 +155,8 @@ sub delete_bp($$) {
 # If not found, return (undef, undef, undef);
 sub find_subline {
     my $fn_name = shift;
+    $fn_name =~ s/\'/::/;
+    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
     $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
     my $filename = $DB::filename;
     if (exists $DB::sub{$fn_name}) {

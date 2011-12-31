@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-use feature ":5.10";  # Includes "state" feature.
 use strict;
 use warnings;
 use rlib '../lib';
@@ -11,8 +10,9 @@ BEGIN {
 use_ok( 'Devel::Trepan::WatchMgr' );
 }
 
+my $i = 0;
 sub wp_status($$$) {
-    state $i = 0;
+    $i = 0;
     my ($wp, $size, $max) = @_;
     is($wp->size, $size, "size step $i");
     is($wp->max, $max,  "max step $i");

@@ -69,7 +69,7 @@ sub line_events {
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
     my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
-    $filename = $DB::filename unless $DB::filename;
+    $filename = $DB::filename unless defined $filename;
     my $change_dbline = $filename ne $DB::filename;
     $type = 'brkpt' unless defined $type;
     $enabled = 1 unless defined $enabled;

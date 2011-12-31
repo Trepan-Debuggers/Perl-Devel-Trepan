@@ -93,7 +93,8 @@ sub process_options($)
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
 	defined($opts->{initial_dir});
-    my $batch_filename = $opts->{testing} // $opts->{batchfile};
+    my $batch_filename = $opts->{testing};
+    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
     if ($batch_filename) {
 	if (scalar(@{$opts->{cmdfiles}}) != 0) {
 	    printf(STDERR "--batch option disables command files: %s\n", 

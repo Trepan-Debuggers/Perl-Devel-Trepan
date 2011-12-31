@@ -137,7 +137,7 @@ sub cached_files() {
 sub checkcache(;$$)
 {
     my ($filename, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
 
     my $use_perl_d_file = $opts->{use_perl_d_file};
 
@@ -177,7 +177,7 @@ sub checkcache(;$$)
 sub cache_script($;$) 
 {
     my ($script, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     update_script_cache($script, $opts) unless 
 	(exists $script_cache{$script});
     $script;
@@ -198,11 +198,11 @@ sub cache($;$)
 sub cache_file($;$$) 
 {
     my ($filename, $reload_on_change, $opts) = @_;
-    $opts //={};
+    $opts = {} unless defined $opts;
     if (exists $file_cache{$filename}) {
 	checkcache($filename) if $reload_on_change;
     } else {
-	$opts->{use_perl_d_file} //= 1;
+	$opts->{use_perl_d_file} = 1 unless defined $opts->{use_perl_d_file};
 	update_cache($filename, $opts);
     }
     if (exists $file_cache{$filename}) {
@@ -254,7 +254,7 @@ sub file_list()
 sub getline($$;$)
 {
     my ($file_or_script, $line_number, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = map_file($file_or_script);
     ($filename, $line_number) = map_file_line($filename, $line_number);
@@ -276,7 +276,7 @@ sub getlines($;$);
 sub getlines($;$)
 {
     my ($filename, $opts) = @_;
-    $opts //= {use_perl_d_file => 1};
+    $opts = {use_perl_d_file => 1} unless defined $opts;
     my ($reload_on_change, $use_perl_d_file) = 
         ($opts->{reload_on_change}, $opts->{use_perl_d_file});
     checkcache($filename) if $reload_on_change;
@@ -353,7 +353,8 @@ sub remap_file_lines($$$$)
     my ($from_file, $to_file, $range_ref, $start) = @_;
     my @range = @$range_ref;
     $to_file = $from_file unless $to_file;
-    my $ary_ref = ${$file2file_remap_lines{$to_file}} //= [];
+    my $ary_ref = ${$file2file_remap_lines{$to_file}};
+    $ary_ref = [] unless defined $ary_ref;
     # FIXME: need to check for overwriting ranges: whether
     # they intersect or one encompasses another.
     push @$ary_ref, [$from_file, @range, $start];
@@ -510,8 +511,9 @@ sub update_cache($;$)
 {
     my ($filename, $opts) = @_;
     my $read_file = 0;
-    $opts //={};
-    my $use_perl_d_file = $opts->{use_perl_d_file} //= 1;
+    $opts = {} unless defined $opts;
+    my $use_perl_d_file = $opts->{use_perl_d_file};
+    $use_perl_d_file = 1 unless defined $use_perl_d_file;
 
     return undef unless $filename;
 

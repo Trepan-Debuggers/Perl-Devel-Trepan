@@ -183,8 +183,8 @@ sub new($$$$$$)
     my $self = {
 	handler     => $handler,
 	print_fn    => $print_fn,
-	errprint_fn => $errprint_fn // $print_fn,
-	secprint_fn => $secprint_fn // $print_fn,
+	errprint_fn => $errprint_fn || $print_fn,
+	secprint_fn => $secprint_fn || $print_fn,
         sigs        => {},
 	ignore_list => $ignore_list,
 	orig_set_signal  => \%SIG,
@@ -446,7 +446,8 @@ sub new($$$$$;$$)
     my($class, $print_fn, $signame, $handler, 
        $b_stop, $print_stack, $pass_along) = @_;
 
-    $print_stack //= 0; $pass_along //= 1;
+    $print_stack = 0 unless defined $print_stack;
+    $pass_along  = 1 unless defined $pass_along;
 
     my $self = {
 	print_fn     => $print_fn,
@@ -500,17 +501,17 @@ unless (caller) {
     print join(', ', sort {$a <=> $b} values %Devel::Trepan::SigMgr::signo), "\n";
     for my $i (15, -15, 300) {
         printf("lookup_signame(%d) => %s\n", $i, 
-	       Devel::Trepan::SigMgr::lookup_signame($i) // 'undef');
+	       Devel::Trepan::SigMgr::lookup_signame($i) || 'undef');
     }
     
     for my $sig ('term', 'TERM', 'NotThere') {
         printf("lookup_signum(%s) => %s\n", $sig, 
-	       Devel::Trepan::SigMgr::lookup_signum($sig) // 'undef');
+	       Devel::Trepan::SigMgr::lookup_signum($sig) || 'undef');
     }
     
     for my $i ('15', '-15', 'term', 'sigterm', 'TERM', '300', 'bogus') {
         printf("canonic_signame(%s) => %s\n", $i, 
-	       Devel::Trepan::SigMgr::canonic_signame($i) // 'undef');
+	       Devel::Trepan::SigMgr::canonic_signame($i) || 'undef');
     }
 
     my $h; # Is used in myhandler.

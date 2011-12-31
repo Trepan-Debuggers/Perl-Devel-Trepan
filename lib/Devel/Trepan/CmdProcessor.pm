@@ -8,9 +8,7 @@ use rlib '../..';
 package Devel::Trepan::CmdProcessor;
 
 use English qw( -no_match_vars );
-use feature ":5.10";  # Includes "state" feature.
 use Exporter;
-use feature 'switch';
 use warnings; no warnings 'redefine';
 
 use vars qw(@EXPORT @ISA $eval_result);
@@ -90,7 +88,7 @@ sub new($;$$$) {
 	};
 	$intf->set_completion($completion, $list_completion);
     }
-    $B::Data::Dumper::Deparse = 1;
+    # $B::Data::Dumper::Deparse = 1;
     return $self;
 }
 
@@ -205,15 +203,15 @@ sub process_command_and_quit($)
     }
 }
 
+my $last_eval_value = 0;
 # This is the main entry point.
 sub process_commands($$$;$)
 {
     my ($self, $frame, $event, $arg) = @_;
-    state $last_i = 0;
     $event = 'unknown' unless defined($event);
     if ($event eq 'after_eval' or $event eq 'after_nest') {
 	my $val_str;
-	my $prefix="\$DB::D[$last_i] =";
+	my $prefix="\$DB::D[$last_eval_value] =";
 
 	# Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
 	# Having a non-empty @ARGV will cause Tidy to croak.
@@ -222,47 +220,43 @@ sub process_commands($$$;$)
 	my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
 	    ? \&Data::Dumper::Perltidy::Dumper
 	    : \&Data::Dumper::Dumper;
-	given ($DB::eval_opts->{return_type}) {
-	    when ('$') {
-		if (defined $DB::eval_result) {
-		    $DB::D[$last_i++] = $DB::eval_result;
-		    $val_str = $fn->($DB::eval_result);
-		    chomp $val_str;
-		} else {
-		    $DB::eval_result = '<undef>' ;
-		}
-		$self->msg("$prefix $DB::eval_result");
+	my $return_type = $DB::eval_opts->{return_type};
+	if ('$' eq $return_type) {
+	    if (defined $DB::eval_result) {
+		$DB::D[$last_eval_value++] = $DB::eval_result;
+		$val_str = $fn->($DB::eval_result);
+		chomp $val_str;
+	    } else {
+		$DB::eval_result = '<undef>' ;
 	    }
-	    when ('@') {
-		if (defined @DB::eval_result) {
-		    $val_str = $fn->(\@DB::eval_result);
-		    chomp $val_str;
-		    @{$DB::D[$last_i++]} = @DB::eval_result;
-		} else {
-		    $val_str = '<undef>'
-		}
-		$self->msg("$prefix\n\@\{$val_str}");
-	    } 
-	    when ('%') {
-		if (%DB::eval_result) {
-		    $DB::D[$last_i++] = \%DB::eval_result;
-		    $val_str = $fn->(%DB::eval_result);
-		    chomp $val_str;
-		} else {
-		    $val_str = '<undef>'
-		}
-		$self->msg("$prefix\n\%{$val_str}");
-	    } 
-	    default {
-		if (defined $DB::eval_result) {
-		    $DB::D[$last_i++] = $fn->($DB::eval_result);
-		    $val_str = $fn->($DB::eval_result);
-		    chomp $val_str;
-		} else {
-		    $val_str = '<undef>'
-		}
-		$self->msg("$prefix ${val_str}");
+	    $self->msg("$prefix $DB::eval_result");
+	} elsif ('@' eq $return_type) {
+	    if (defined @DB::eval_result) {
+		$val_str = $fn->(\@DB::eval_result);
+		chomp $val_str;
+		@{$DB::D[$last_eval_value++]} = @DB::eval_result;
+	    } else {
+		$val_str = '<undef>'
 	    }
+	    $self->msg("$prefix\n\@\{$val_str}");
+	} elsif ('%' eq $return_type) {
+	    if (%DB::eval_result) {
+		$DB::D[$last_eval_value++] = \%DB::eval_result;
+		$val_str = $fn->(%DB::eval_result);
+		chomp $val_str;
+	    } else {
+		$val_str = '<undef>'
+	    }
+	    $self->msg("$prefix\n\%{$val_str}");
+	}  else {
+	    if (defined $DB::eval_result) {
+		$DB::D[$last_eval_value++] = $fn->($DB::eval_result);
+		$val_str = $fn->($DB::eval_result);
+		chomp $val_str;
+	    } else {
+		$val_str = '<undef>'
+	    }
+	    $self->msg("$prefix ${val_str}");
 	}
 
 	if (defined($self->{set_wp})) {

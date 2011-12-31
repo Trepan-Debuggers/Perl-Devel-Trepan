@@ -70,7 +70,6 @@ sub frame_setup($$)
 		next unless defined($frame) && exists($frame->{file});
 		$stack_size ++;
 	    }
-	    printf "stack size is %d\n", $stack_size;
 	} else {
 	    while (my ($pkg, $file, $line, $fn) = caller($i++)) {
 		last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
@@ -96,6 +95,9 @@ sub frame_setup($$)
     $self->{frame}         = $self->{frames}[0];
     $self->{list_line}     = $self->line();
     $self->{list_filename} = $self->filename();
+    if ($self->{dbgr}{caught_signal}) {
+	$self->adjust_frame(4, 0);
+    }
 }
 
 sub filename($)

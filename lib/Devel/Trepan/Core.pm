@@ -32,7 +32,8 @@ sub new {
     my %ORIG_SIG = %SIG; # Makes a copy of %SIG;
     my $self = {
 	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
-	orig_sig => \%ORIG_SIG
+	orig_sig => \%ORIG_SIG,
+	caught_signal => 0
     };
     bless $self, $class;
     return $self;
@@ -45,6 +46,7 @@ sub idle($$$)
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
     $proc->process_commands($DB::caller, $event, $args);
+    $self->{caught_signal} = 0;
 }
 
 # Called on catching a signal that SigHandler says
@@ -61,8 +63,9 @@ sub signal_handler($$$)
      $DB::hinthash
     ) = @{$DB::caller};
     my $proc = $self->{proc};
+    $self->{caught_signal} = 1;
     $DB::signal = 2;
-    $proc->process_commands($DB::caller, 'signal', [$signame]);
+    $DB::signal = 0;  # A bogus statement.
 }
 
 sub output($) 

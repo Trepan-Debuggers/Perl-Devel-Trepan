@@ -19,5 +19,7 @@ if ($pid) {
 } else {
     print "running $test_prog\n";
     my $opts = {do_test => 0};
-    Helper::run_debugger("$test_prog $tempfile", 'sig.cmd', undef, $opts);
+    my $ok = Helper::run_debugger("$test_prog $tempfile", 'sig.cmd', undef, 
+				  $opts);
+    exit $ok;
 }

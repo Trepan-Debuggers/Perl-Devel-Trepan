@@ -8,6 +8,10 @@ my $debug = $^W;
 package Helper;
 use File::Basename qw(dirname); use File::Spec;
 use English qw( -no_match_vars ) ;
+
+
+# Runs debugger in subshell. 0 is returned if everything went okay.
+# nonzero if something went wrong.
 sub run_debugger($$;$$)
 {
     my ($test_invoke, $cmd_filename, $right_filename, $opts) = @_;
@@ -35,6 +39,7 @@ sub run_debugger($$;$$)
     if ($opts->{do_test}) {
 	Test::More::is($rc, 0, 'Debugger command executed successfully');
     }
+    return $rc if $rc;
     open(RIGHT_FH, "<$right_filename");
     undef $INPUT_RECORD_SEPARATOR;
     my $right_string = <RIGHT_FH>;
@@ -48,6 +53,7 @@ sub run_debugger($$;$$)
 	if $opts->{do_test};
     if ($equal_output) {
         unlink $got_filename;
+	return 0;
     } else {
         open (GOT_FH, '>', $got_filename)
             or die "Cannot open '$got_filename' for writing - $OS_ERROR";
@@ -64,8 +70,8 @@ sub run_debugger($$;$$)
 	$output = `diff $right_filename $got_filename 2>&1` 
 	     if ($rc > 1) || ($rc < 0) ;
         Test::More::diag($output);
+	return 1;
     }
-    return;
 }
 
 1;

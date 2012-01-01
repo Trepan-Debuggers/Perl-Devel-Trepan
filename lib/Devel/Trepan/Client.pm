@@ -3,10 +3,6 @@
 
 use strict;
 use rlib '../..';
-<<<<<<< HEAD
-=======
-use feature 'switch';
->>>>>>> e66af7af0197752563ce357b3102fbeecd2cb067
 
 # require_relative 'default'                # default debugger settings
 

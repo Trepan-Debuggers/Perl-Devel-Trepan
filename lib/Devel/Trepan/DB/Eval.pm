@@ -104,6 +104,7 @@ sub eval_with_return {
 	    $eval_str = '';
 	    return undef;
 	} else {
+<<<<<<< HEAD
 	    if ('$' eq $return_type) {
 		return $eval_result;
 	    } elsif ('@' eq $return_type) {
@@ -112,6 +113,21 @@ sub eval_with_return {
 		return %eval_result;
 	    }  else {
 		return $eval_result;
+=======
+	    given ($return_type) {
+		when ('$') {
+		    return $eval_result;
+		}
+		when ('@') {
+		    return @eval_result;
+		}
+		when ('%') {
+		    return %eval_result;
+		} 
+		default {
+		    return $eval_result;
+		}
+>>>>>>> e66af7af0197752563ce357b3102fbeecd2cb067
 	    }
 	}
     }

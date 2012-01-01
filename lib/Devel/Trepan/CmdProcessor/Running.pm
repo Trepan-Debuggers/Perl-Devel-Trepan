@@ -2,7 +2,6 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
 
-use feature 'switch';
 use rlib '../../..';
 
 use Devel::Trepan::Position;
@@ -68,10 +67,13 @@ sub parse_next_step_suffix($$)
 {
     my ($self, $step_cmd) = @_;
     my $opts = {};
-    given (substr($step_cmd, -1)) {
-	when ('-') { $opts->{different_pos} = 0; }
-	when ('+') { $opts->{different_pos} = 1; } 
-	when ('=') { $opts->{different_pos} = $self->{settings}{different}; }
+    my $sigil = substr($step_cmd, -1);
+    if ('-' eq $sigil) {
+	$opts->{different_pos} = 0;
+    } elsif ('+' eq $sigil) { 
+	$opts->{different_pos} = 1;
+    } elsif ('=' eq $sigil) { 
+	$opts->{different_pos} = $self->{settings}{different}; 
 	# when ('!') { $opts->{stop_events} = {'raise' => 1} };
 	# when ('<') { $opts->{stop_events} = {'return' => 1}; }
 	# when ('>') { 
@@ -81,9 +83,8 @@ sub parse_next_step_suffix($$)
 	# 	$opts->{stop_events} = {'call' => 1; }
 	#     }
 	# }
-	default {
-	    $opts->{different_pos} = $self->{settings}{different};
-	}
+    } else {
+	$opts->{different_pos} = $self->{settings}{different};
     }
     return $opts;
 }

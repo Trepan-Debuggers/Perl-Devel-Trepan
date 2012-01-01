@@ -39,7 +39,7 @@ my $builder = Module::Build->new(
 	# 'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
     },
     requires => {
-	'perl'                              => '5.010',               
+	'perl'                              => '5.008',               
 	'Array::Columnize'                  => '0.3.5',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA'                       => 0,

@@ -11,7 +11,7 @@ use English qw( -no_match_vars ) ;
 sub run_debugger($$;$$)
 {
     my ($test_invoke, $cmd_filename, $right_filename, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     Test::More::note( "running $test_invoke with $cmd_filename" );
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
     my $full_cmd_filename = File::Spec->catfile(dirname(__FILE__), 

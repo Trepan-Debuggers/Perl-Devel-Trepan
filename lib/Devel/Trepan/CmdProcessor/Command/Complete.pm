@@ -37,7 +37,7 @@ sub run($$) {
     my $proc = $self->{proc};
     my $cmd_argstr = $proc->{cmd_argstr};
     my $last_arg = (' ' eq substr($cmd_argstr, -1)) ? '' : $args[-1];
-    $last_arg //= '';
+    $last_arg = '' unless defined $last_arg;
     for my $match ($proc->complete($cmd_argstr, $cmd_argstr,
 		   0, length($cmd_argstr))) {
 	$proc->msg($match);

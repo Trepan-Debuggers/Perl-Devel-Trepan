@@ -41,7 +41,8 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $count_str = $args->[1] // 1;
+    my $count_str = $args->[1];
+    $count_str = 1 unless defined $count_str;
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
 	'msg_on_error' => 

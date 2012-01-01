@@ -83,7 +83,7 @@ for my $pair
      ['bogus', 1]) {
 	my ($name, $expect) = @$pair;
 	my $result = Devel::Trepan::Util::invalid_filename($name);
-	is(!!$result, $expect, $result // "$name should exist");
+	is(!!$result, $expect, $result || "$name should exist");
 };
 
 for my $pair 
@@ -107,5 +107,5 @@ for my $pair
      [undef,  'No']) {
 	my ($resp, $expect) = @$pair;
 	my $result = Devel::Trepan::Util::bool2YN($resp);
-	is($result, $expect, 'bool2YN of ' . ($resp // 'undef'));
+	is($result, $expect, 'bool2YN of ' . ($resp || 'undef'));
 }

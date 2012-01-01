@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use feature 'switch';
 use rlib '../../../../../..';
 use Data::Dumper;
 
@@ -43,35 +42,31 @@ sub show_var($$$)
 {
     my ($proc, $var_name, $ref) = @_;
     my $dumper;
-    given (substr($var_name, 0, 1)) {
-	when ('$') { 
-	    $dumper = Data::Dumper->new([${$ref}]);
-	    $dumper->Useqq(0);
-	    $dumper->Terse(1);
-	    $dumper->Indent(0);
-	    $proc->msg("$var_name = ".  $dumper->Dump);
-	    }
-	when ('@') { 
-	    $dumper = Data::Dumper->new([$ref]); 
-	    $dumper->Useqq(0);
-	    $dumper->Terse(1);
-	    $dumper->Indent(0);
-	    $proc->msg("$var_name = ".  $dumper->Dump);
-	}
-	when ('%') { 
-	    $dumper = Data::Dumper->new([$ref], [$var_name]);
-	    $dumper->Useqq(0);
-	    $dumper->Terse(0);
-	    $dumper->Indent(0);
-	    $proc->msg($dumper->Dump);
-	}
-	default    {
-	    $dumper = Data::Dumper->new([$ref], [$var_name]); 
-	    $dumper->Useqq(0);
-	    $dumper->Terse(1);
-	    $dumper->Indent(0);
-	    $proc->msg($dumper->Dump);
-	}
+    my $type = substr($var_name, 0, 1);
+    if ('$' eq $type) {
+	$dumper = Data::Dumper->new([${$ref}]);
+	$dumper->Useqq(0);
+	$dumper->Terse(1);
+	$dumper->Indent(0);
+	$proc->msg("$var_name = ".  $dumper->Dump);
+    } elsif ('@' eq $type) { 
+	$dumper = Data::Dumper->new([$ref]); 
+	$dumper->Useqq(0);
+	$dumper->Terse(1);
+	$dumper->Indent(0);
+	$proc->msg("$var_name = ".  $dumper->Dump);
+    } elsif ('%' eq $type) { 
+	$dumper = Data::Dumper->new([$ref], [$var_name]);
+	$dumper->Useqq(0);
+	$dumper->Terse(0);
+	$dumper->Indent(0);
+	$proc->msg($dumper->Dump);
+    } else {
+	$dumper = Data::Dumper->new([$ref], [$var_name]); 
+	$dumper->Useqq(0);
+	$dumper->Terse(1);
+	$dumper->Indent(0);
+	$proc->msg($dumper->Dump);
     };
 }
 

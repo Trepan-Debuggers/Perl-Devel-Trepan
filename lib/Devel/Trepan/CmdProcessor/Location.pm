@@ -14,7 +14,7 @@ use File::Basename;
 use File::Spec;
 use Devel::Trepan::DB::LineCache;
 
-my $EVENT2ICON = {
+our $EVENT2ICON = {
     'brkpt'          => 'xx',
     'call'           => '->',
     'debugger-call'  => ':o',
@@ -33,7 +33,7 @@ my $EVENT2ICON = {
 sub canonic_file($$;$)
 {
     my ($self, $filename, $resolve) = @_;
-    $resolve //= 1;
+    $resolve = 1 unless defined $resolve;
 
     # For now we want resolved filenames 
     if ($self->{settings}{basename}) {
@@ -52,7 +52,7 @@ sub canonic_file($$;$)
 sub current_source_text(;$)
 {
     my ($self, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
@@ -104,10 +104,10 @@ sub resolve_file_with_dir($$)
 sub text_at($;$) 
 {
     my ($self, $opts) = @_;
-    $opts //= {
+    $opts = {
 	reload_on_change => $self->{settings}{reload},
 	output           => $self->{settings}{highlight},
-    };
+    } unless defined $opts;
 
     my $line_no = $self->line();
     my $text;
@@ -135,9 +135,9 @@ sub text_at($;$)
 sub format_location($;$$$)
 {
     my ($self, $event, $frame, $frame_index) = @_;
-    $event       //= $self->{event};
-    $frame       //= $self->{frame};
-    $frame_index //= $self->{frame_index};
+    $event       = $self->{event} unless defined $event;
+    $frame       = $self->{frame} unless defined $frame;
+    $frame_index = $self->{frame_index} unless defined $frame_index;
     my $text       = undef;
     my $ev         = '  ';
     if (defined($self->{event}) && 0 == $frame_index) {
@@ -154,7 +154,7 @@ sub format_location($;$$$)
 sub print_location($;$)
 {
     my ($self,$opts) = @_;
-    $opts //= {output => $self->{settings}{highlight}};
+    $opts = {output => $self->{settings}{highlight}} unless defined $opts;
     my $loc  = $self->format_location;
     $self->msg(${loc});
 

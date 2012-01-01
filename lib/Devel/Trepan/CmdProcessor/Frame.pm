@@ -36,7 +36,7 @@ sub adjust_frame($$$)
 sub frame_complete($$;$)
 {
     my ($self, $prefix, $direction) = @_;
-    $direction //= 1;
+    $direction = 1 unless defined $direction;
     my ($low, $high) = $self->frame_low_high($direction);
     my @ary = ($low..$high);
     Devel::Trepan::Complete::complete_token(\@ary, $prefix);
@@ -45,7 +45,7 @@ sub frame_complete($$;$)
 sub frame_low_high($;$)
 {
     my ($self, $direction) = @_;
-    $direction //= 1;
+    $direction = 1 unless defined $direction;
     my $stack_size = $self->{stack_size};
     my ($low, $high) = (-$stack_size, $stack_size-1);
     ($low, $high) = ($high, $low) if ($direction < 0);
@@ -149,7 +149,7 @@ sub line($)
 sub print_stack_entry()
 {
     my ($self, $frame, $i, $prefix, $opts) = @_;
-    $opts->{maxstack} //= 1e9;
+    $opts->{maxstack} = 1e9 unless defined $opts->{maxstack};
     # Set the separator so arrays print nice.
     local $LIST_SEPARATOR = ', ';
 

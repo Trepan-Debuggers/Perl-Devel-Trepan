@@ -155,6 +155,8 @@ sub delete_bp($$) {
 # If not found, return (undef, undef, undef);
 sub find_subline {
     my $fn_name = shift;
+    $fn_name =~ s/\'/::/;
+    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
     $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
     my $filename = $DB::filename;
     if (exists $DB::sub{$fn_name}) {

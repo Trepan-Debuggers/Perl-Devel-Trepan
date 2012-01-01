@@ -40,6 +40,7 @@ use vars qw(@ISA);
 our $self = __PACKAGE__->new;
 package main;
 $DB::filename = __FILE__;
+no warnings 'once';
 $DB::dbline = [] unless defined($DB::line); 
 $DB::dbline[__LINE__+1] = 1;
 my $brkpt = DB::set_break($self, __FILE__, __LINE__, '1', undef, 'brkpt');

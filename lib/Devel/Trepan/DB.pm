@@ -289,9 +289,10 @@ sub DB {
 
 		    local $nest = $eval_opts->{nest};
 		    my $return_type = $eval_opts->{return_type};
+		    $return_type = '' unless defined $return_type;
 
 		    if ('$' eq $return_type) {
-			$eval_result = 
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
 		    } elsif ('@' eq $return_type) {
@@ -301,7 +302,7 @@ sub DB {
 			&DB::eval_with_return($usrctxt, $eval_str, 
 					      $return_type, @saved);
 		    } else {
-			$eval_result = 
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
 		    }

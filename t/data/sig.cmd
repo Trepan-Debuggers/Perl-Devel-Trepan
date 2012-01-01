@@ -4,11 +4,3 @@ c 10
 handle HUP pass
 c
 
-
-
-
-
-
-
-
-

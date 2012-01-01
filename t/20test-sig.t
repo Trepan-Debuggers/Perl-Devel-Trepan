@@ -23,3 +23,19 @@ if ($pid) {
 				  $opts);
     exit $ok;
 }
+$pid = fork();
+if ($pid) {
+    sleep 1 until -r $tempfile;
+    open (my $fh, '<', $tempfile) or die $OS_ERROR;
+    my $kill_pid = <$fh>;
+    chomp $kill_pid;
+    kill('HUP', $kill_pid);
+    waitpid($pid, 0);
+    is($CHILD_ERROR >> 8, 0);
+} else {
+    print "running $test_prog\n";
+    my $opts = {do_test => 0};
+    my $ok = Helper::run_debugger("$test_prog $tempfile", 'sig2.cmd', undef, 
+				  $opts);
+    exit $ok;
+}

@@ -446,12 +446,8 @@ sub new($$$$$;$$)
     my($class, $print_fn, $signame, $handler, 
        $b_stop, $print_stack, $pass_along) = @_;
 
-<<<<<<< HEAD
-    $print_stack //= 0; $pass_along //= 1;
-=======
     $print_stack = 0 unless defined $print_stack;
     $pass_along  = 1 unless defined $pass_along;
->>>>>>> 8bff2b7b8eae6bf8497797f7ae6e7b15563473c6
 
     my $self = {
 	print_fn     => $print_fn,

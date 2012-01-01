@@ -65,7 +65,6 @@ sub signal_handler($$$)
     my $proc = $self->{proc};
     $self->{caught_signal} = 1;
     $DB::signal = 2;
-    $DB::signal = 0;  # A bogus statement.
 }
 
 sub output($) 

@@ -289,6 +289,7 @@ sub DB {
 
 		    local $nest = $eval_opts->{nest};
 		    my $return_type = $eval_opts->{return_type};
+		    $return_type ||= '';
 
 		    if ('$' eq $return_type) {
 			$eval_result = 

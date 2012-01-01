@@ -221,6 +221,7 @@ sub process_commands($$$;$)
 	    ? \&Data::Dumper::Perltidy::Dumper
 	    : \&Data::Dumper::Dumper;
 	my $return_type = $DB::eval_opts->{return_type};
+	$return_type ||= '';
 	if ('$' eq $return_type) {
 	    if (defined $DB::eval_result) {
 		$DB::D[$last_eval_value++] = $DB::eval_result;

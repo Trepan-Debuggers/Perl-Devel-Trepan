@@ -64,6 +64,8 @@ sub frame_setup($$)
 	my $stack_size = $DB::stack_depth;
 	my $i=0;
 	my @frames = $self->{dbgr}->backtrace(0);
+	@frames = splice(@frames, 2) if $self->{dbgr}{caught_signal};
+
 	if ($self->{event} eq 'post-mortem') {
 	    $stack_size = 0;
 	    for my $frame (@frames) {
@@ -95,9 +97,6 @@ sub frame_setup($$)
     $self->{frame}         = $self->{frames}[0];
     $self->{list_line}     = $self->line();
     $self->{list_filename} = $self->filename();
-    if ($self->{dbgr}{caught_signal}) {
-	$self->adjust_frame(4, 0);
-    }
 }
 
 sub filename($)

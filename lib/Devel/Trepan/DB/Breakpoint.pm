@@ -115,10 +115,13 @@ sub set_break {
 	filename  => $filename,
 	line_num  => $lineno
 	);
-    my $ary_ref = $DB::dbline{$lineno} = [] unless defined $DB::dbline{$lineno};
+    
+    my $ary_ref;
+    $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
+    $ary_ref = $DB::dbline{$lineno};
     push @$ary_ref, $brkpt;
     *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-    return $brkpt
+    return $brkpt;
 }
 
 # Set a temporary breakpoint

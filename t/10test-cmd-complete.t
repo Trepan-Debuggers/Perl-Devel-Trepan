@@ -32,8 +32,7 @@ monkey_patch_instance($cmdproc,
 				   });
 my $cmd = Devel::Trepan::CmdProcessor::Command::Complete->new($cmdproc);
 
-for my $tuple (['d',  6],
-	       ['b',  2],
+for my $tuple (['b',  2],
 	       ['bt', 1]) {
     my ($prefix, $expected) = @{$tuple};
     $cmd->{proc}{cmd_argstr} = $prefix;

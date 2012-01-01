@@ -43,6 +43,7 @@ my $builder = Module::Build->new(
 	'Array::Columnize'                  => '0.3.5',
 	'Data::Dumper::Perltidy'            => 0,
         'Digest::SHA'                       => 0,
+	'Getopt::Long'                      => 0,
         'PadWalker'                         => 0,
         'rlib'                              => '0.02',
         'Syntax::Highlight::Perl::Improved' => 0,

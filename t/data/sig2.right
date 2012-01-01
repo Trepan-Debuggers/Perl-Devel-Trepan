@@ -1,0 +1,16 @@
+-- (signal.pl:9)
+$SIG{'HUP'} = \&hup_handler;
+set auto eval is on.
+x1 (signal.pl:10)
+my $tempfile;
+Signal        Stop	Print	Stack	Pass	Description
+HUP           Yes 	Yes 	No   	No  	Hangup
+
+Program received signal HUP.
+!! (signal.pl:21)
+    sleep 1;
+-- (signal.pl:21)
+    sleep 1;
+-- (signal.pl:21)
+    sleep 1;
+$DB::D[0] = 1

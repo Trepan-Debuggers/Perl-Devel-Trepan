@@ -5,8 +5,15 @@ use English qw( -no_match_vars );
 
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Options" );
+
+if( $Test::More::VERSION >= 1.0 ) {
+    plan skip_all => "STO's smokers cause weird problems";
+} else {
+    plan 'no_plan';
+}
+
 
 BEGIN {
     use_ok( 'Devel::Trepan::Options' );

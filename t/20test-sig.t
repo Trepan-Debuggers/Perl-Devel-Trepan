@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use warnings; use strict;
+use English;
+use rlib '.';
+use Helper;
+my $test_prog = File::Spec->catfile(dirname(__FILE__), 
+				    qw(.. example signal.pl));
+my $tempfile = "/tmp/signal.$$";
+my $pid = fork();
+if ($pid) {
+    eval "use Test::More 'no_plan';";
+    sleep 1 until -r $tempfile;
+    open (my $fh, '<', $tempfile) or die $OS_ERROR;
+    my $kill_pid = <$fh>;
+    chomp $kill_pid;
+    kill('HUP', $kill_pid);
+    waitpid($pid, 0);
+    is($CHILD_ERROR >> 8, 0);
+} else {
+    print "running $test_prog\n";
+    my $opts = {do_test => 0};
+    Helper::run_debugger("$test_prog $tempfile", 'sig.cmd', undef, $opts);
+}

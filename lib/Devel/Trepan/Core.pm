@@ -98,6 +98,7 @@ sub awaken($;$) {
 	# print "field $field $opts->{$field}\n";
 	$cmdproc_opts{$field} = $opts->{$field};
     }
+    my $cmdproc;
 
     my $batch_filename = $opts->{testing};
     $batch_filename = $opts->{batchfile} unless defined $batch_filename;
@@ -113,9 +114,9 @@ sub awaken($;$) {
 		Devel::Trepan::Interface::Script->new($batch_filename, 
 						      $output, 
 						      $script_opts);
-	    my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
-							   $self, 
-							   \%cmdproc_opts);
+	    $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
+							$self, 
+							\%cmdproc_opts);
 	    $self->{proc} = $cmdproc;
 	    $main::TREPAN_CMDPROC = $self->{proc};
         }
@@ -132,19 +133,12 @@ sub awaken($;$) {
 						      $server_opts)
 		];
 	}
-	my $cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
-						       \%cmdproc_opts);
+	$cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
+						    \%cmdproc_opts);
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};
 	$opts = {} unless defined $opts;
 
-	$self->{sigmgr} = 
-	    Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
-					    $self->signal_handler(@_) },
-				       sub {$cmdproc->msg(@_)},
-				       sub {$cmdproc->errmsg(@_)},
-				       sub {$cmdproc->section(@_)});
-	
 	for my $startup_file (@{$opts->{cmdfiles}}) {
 	    add_startup_files($cmdproc, $startup_file);
 	}
@@ -152,6 +146,12 @@ sub awaken($;$) {
 	    add_startup_files($cmdproc, $opts->{initfile});
 	}
     }
+    $self->{sigmgr} = 
+	Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
+					$self->signal_handler(@_) },
+				   sub {$cmdproc->msg(@_)},
+				   sub {$cmdproc->errmsg(@_)},
+				   sub {$cmdproc->section(@_)});
 }
 
 sub display_lists ($)

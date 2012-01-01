@@ -520,7 +520,7 @@ sub update_cache($;$)
     delete $file_cache{$filename};
 
     my $is_eval = filename_is_eval($filename);
-    my $path = $is_eval ? $filename: abs_path($filename) || $filename;
+    my $path = $is_eval ? $filename : abs_path($filename) || $filename;
     my $lines_href;
     my @trace_nums = ();
     if ($use_perl_d_file) {

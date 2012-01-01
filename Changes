@@ -1,5 +1,19 @@
 Revision history for Devel-Trepan
 
+0.1.5  - Jan 1, 2012
+- Works on Perl 5.8 (Only 5.8.9 tested)
+- Add rudimentary signal handling
+- Warn if we try to set a breakpoint on a "use" statement line.
+- Auto evaluation will determine the return type based on the first (sigil)
+  character of an expression, e.g. the expression: %ENV treated as a hash, and
+  the expression @ARGV is treated as an array by default. Use explicit overrides
+  to change this. For example: "eval$ @ARGV + 1" or "$ @ARGV+1"
+- add --cmddir option to all addition of user-specified commands. As a
+  a result...
+  * 'disassemble' and 'shell' commands are now in a separate package
+- In line with the above, reduce the minimum number of dependencies needed
+  to build.
+
 0.1.4  - Dec 16, 2011
 - Works on ActiveState Perl and Perl 10.0
 - Fix CPANTS errors when Term::ReadLine::Perl dies in ->new()

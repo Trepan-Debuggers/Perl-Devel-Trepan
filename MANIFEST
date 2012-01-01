@@ -244,6 +244,8 @@ t/data/seq1.cmd
 t/data/seq1.right
 t/data/sig.cmd
 t/data/sig.right
+t/data/sig2.cmd
+t/data/sig2.right
 t/data/step.cmd
 t/data/step.right
 t/data/trace1.cmd

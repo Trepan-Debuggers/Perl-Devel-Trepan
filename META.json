@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
    "license" : [
       "open_source"
    ],
@@ -14,14 +14,8 @@
    },
    "name" : "Devel-Trepan",
    "prereqs" : {
-      "build" : {
-         "requires" : {
-            "String::Diff" : 0
-         }
-      },
       "configure" : {
          "requires" : {
-            "ExtUtils::PkgConfig" : 0,
             "Module::Build" : "0.32"
          }
       },
@@ -29,12 +23,12 @@
          "requires" : {
             "Array::Columnize" : "v0.3.5",
             "Data::Dumper::Perltidy" : 0,
-            "Digest::SHA1" : "2.11",
-            "ExtUtils::PkgConfig" : "1.03",
+            "Digest::SHA" : 0,
+            "Getopt::Long" : 0,
             "PadWalker" : 0,
             "Syntax::Highlight::Perl::Improved" : 0,
             "Test::More" : 0,
-            "perl" : "5.010",
+            "perl" : "5.0080",
             "rlib" : "0.02",
             "version" : 0
          }
@@ -55,7 +49,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "v0.1.4"
+         "version" : "v0.1.5"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -113,10 +107,6 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Disable.pm",
          "version" : 0
       },
-      "Devel::Trepan::CmdProcessor::Command::Disassemble" : {
-         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm",
-         "version" : 0
-      },
       "Devel::Trepan::CmdProcessor::Command::Display" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Display.pm",
          "version" : 0
@@ -143,6 +133,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Frame" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Frame.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Handle" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Handle.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Help" : {
@@ -179,6 +173,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Info::Return" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Info::Signals" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Info::Variables" : {
@@ -559,7 +557,15 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "v0.1.4"
+         "version" : "v0.1.5"
+      },
+      "Devel::Trepan::SigHandler" : {
+         "file" : "lib/Devel/Trepan/SigHandler.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::SigMgr" : {
+         "file" : "lib/Devel/Trepan/SigHandler.pm",
+         "version" : 0
       },
       "Devel::Trepan::Util" : {
          "file" : "lib/Devel/Trepan/Util.pm",
@@ -584,5 +590,5 @@
          "http://opensource.org/licenses/gpl-license.php"
       ]
    },
-   "version" : "v0.1.4"
+   "version" : "v0.1.5"
 }

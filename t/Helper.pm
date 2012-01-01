@@ -12,6 +12,7 @@ sub run_debugger($$;$$)
 {
     my ($test_invoke, $cmd_filename, $right_filename, $opts) = @_;
     $opts = {} unless defined $opts;
+    $opts->{do_test} = 1 unless exists $opts->{do_test};
     Test::More::note( "running $test_invoke with $cmd_filename" );
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
     my $full_cmd_filename = File::Spec->catfile(dirname(__FILE__), 
@@ -27,11 +28,13 @@ sub run_debugger($$;$$)
     $run_opts .= " --testing $full_cmd_filename" unless ($opts->{no_cmdfile});
     $right_filename = $ext_file->('right') unless defined($right_filename);
     my $cmd = "$EXECUTABLE_NAME $trepanpl $run_opts $test_invoke";
-    print $cmd, "\n" if $debug;
+    print $cmd, "\n"  if $debug;
     my $output = `$cmd`;
-    print $output if $debug;
+    print "$output\n" if $debug;
     my $rc = $? >> 8;
-    Test::More::is($rc, 0, 'Debugger command executed successfully');
+    if ($opts->{do_test}) {
+	Test::More::is($rc, 0, 'Debugger command executed successfully');
+    }
     open(RIGHT_FH, "<$right_filename");
     undef $INPUT_RECORD_SEPARATOR;
     my $right_string = <RIGHT_FH>;
@@ -40,7 +43,10 @@ sub run_debugger($$;$$)
     $got_filename = $ext_file->('got');
     # TODO : Perhaps make sure we optionally use eq_or_diff from 
     # Test::Differences here.
-    if (Test::More::ok($right_string eq $output, 'Output comparison')) {
+    my $equal_output = $right_string eq $output;
+    Test::More::ok($right_string eq $output, 'Output comparison') 
+	if $opts->{do_test};
+    if ($equal_output) {
         unlink $got_filename;
     } else {
         open (GOT_FH, '>', $got_filename)

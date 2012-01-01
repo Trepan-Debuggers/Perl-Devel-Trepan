@@ -11,6 +11,7 @@ example/gcd.pl
 example/my.pl
 example/nexting.pl
 example/our.pl
+example/signal.pl
 example/TCPPack.pm
 example/test-module.pm
 example/test-require.pl
@@ -203,6 +204,7 @@ t/20test-list4.t
 t/20test-my.t
 t/20test-next.t
 t/20test-seq1.t
+t/20test-sig.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
@@ -241,6 +243,8 @@ t/data/next.cmd
 t/data/next.right
 t/data/seq1.cmd
 t/data/seq1.right
+t/data/sig.cmd
+t/data/sig.right
 t/data/step.cmd
 t/data/step.right
 t/data/trace1.cmd

@@ -262,7 +262,9 @@ sub check_and_adjust_sighandler($$)
 	$sig->{old_handler} = $current_handler if defined $current_handler;
 	# (re)set signal handler the debugger signal handler.
         #
-	$SIG{$signame} = $sig->{handle};
+	if (exists $sig->{handle}) {
+            $SIG{$signame} = $sig->{handle};
+        }
     }
     return 1;
 }

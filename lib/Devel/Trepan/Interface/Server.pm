@@ -59,7 +59,7 @@ sub close($)
 {
     my ($self) = @_;
     if ($self->{inout} && $self->{inout}->is_connected) {
-	$self->{inout}->write(QUIT + 'bye');
+	$self->{inout}->write(QUIT . 'bye');
 	$self->{inout}->close;
     }
 }

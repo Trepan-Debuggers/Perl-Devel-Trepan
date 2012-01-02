@@ -1,5 +1,9 @@
 Revision history for Devel-Trepan
 
+0.1.7  - Jan 2, 2012
+
+- Perl 5.8.8 tolerance.
+
 0.1.6  - Jan 2, 2012
 
 - Rereleased because of weird interaction in rlib.

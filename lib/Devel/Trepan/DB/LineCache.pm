@@ -260,7 +260,8 @@ sub getline($$;$)
     ($filename, $line_number) = map_file_line($filename, $line_number);
     ## print "+++FILENAME $filename\n";
     my $lines = getlines($filename, $opts);
-    if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
+    if (defined $lines && @$lines && $line_number > 0 && 
+	$line_number <= scalar @$lines) {
 	my $line = $lines->[$line_number-1];
 	chomp $line if defined $line;
         return $line;
@@ -520,7 +521,10 @@ sub update_cache($;$)
     delete $file_cache{$filename};
 
     my $is_eval = filename_is_eval($filename);
-    my $path = $is_eval ? $filename : abs_path($filename) || $filename;
+    my $path = $filename;
+    unless ($is_eval) {
+	$path = abs_path($filename) if -f $filename;
+    }
     my $lines_href;
     my @trace_nums = ();
     if ($use_perl_d_file) {

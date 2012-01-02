@@ -13,7 +13,7 @@ use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.1.5';
+    $VERSION      = '0.1.6';
 }
 use constant VERSION => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;

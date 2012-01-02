@@ -8,6 +8,7 @@ my $debug = $^W;
 package Helper;
 use File::Basename qw(dirname); use File::Spec;
 use English qw( -no_match_vars ) ;
+use Config;
 
 
 # Runs debugger in subshell. 0 is returned if everything went okay.
@@ -19,8 +20,13 @@ sub run_debugger($$;$$)
     $opts->{do_test} = 1 unless exists $opts->{do_test};
     Test::More::note( "running $test_invoke with $cmd_filename" );
     my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
-    my $full_cmd_filename = File::Spec->catfile(dirname(__FILE__), 
-						'data', $cmd_filename);
+    my $dirname = dirname(__FILE__);
+    my $full_cmd_filename = File::Spec->catfile($dirname, 'data', 
+						$cmd_filename);
+
+    # rlib seems to flip out if it can't find trepan.pl
+    my $bin_dir = File::Spec->catfile($dirname, '..', 'bin');
+    $ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH};
 
     my $ext_file = sub {
         my ($ext) = @_;

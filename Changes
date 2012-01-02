@@ -1,5 +1,9 @@
 Revision history for Devel-Trepan
 
+0.1.6  - Jan 2, 2012
+
+- Rereleased because of weird interaction in rlib.
+
 0.1.5  - Jan 1, 2012
 - Works on Perl 5.8 (Only 5.8.9 tested)
 - Add rudimentary signal handling

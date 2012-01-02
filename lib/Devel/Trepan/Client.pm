@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 
 use strict; use Config; use Cwd 'abs_path';
 
@@ -7,7 +7,7 @@ use strict; use Config; use Cwd 'abs_path';
 BEGIN {
     my $dirname = dirname(__FILE__);
     my $bin_dir = File::Spec->catfile($dirname, '..', '..', '..', 'bin');
-    $ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH};
+    $ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH} if -d $bin_dir;
 }
 use rlib '../..';
 

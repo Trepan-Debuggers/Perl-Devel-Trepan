@@ -36,7 +36,6 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         # 'String::Diff'        => 0,
-	# 'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
     },
     requires => {
 	'perl'                              => '5.0080',               

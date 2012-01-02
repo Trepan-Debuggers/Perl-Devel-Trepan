@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -87,22 +87,25 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $expr;
+    my $code_to_eval;
     my $cmd_name = $args->[0];
     if (1 == scalar @$args) {
-	$expr  = $proc->current_source_text();
+	$code_to_eval  = $proc->current_source_text();
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
-	    $expr = Devel::Trepan::Util::extract_expression($expr);
-	    $proc->msg("eval: ${expr}");
+	    $code_to_eval = 
+		Devel::Trepan::Util::extract_code_to_evalession($code_to_eval);
+	    $proc->msg("eval: ${code_to_eval}");
 	}
     } else {
-	$expr = $proc->{cmd_argstr};
+	$code_to_eval = $proc->{cmd_argstr};
     }
     {
 	my $opts = {return_type => parse_eval_suffix($cmd_name)};
 	no warnings 'once';
-	$proc->evaluate($expr, $opts);
+	# FIXME: 4 below iss a magic fixup constant, also found in
+	# DB::finish.  Remove it.
+	$proc->eval($code_to_eval, $opts, 4);
     }
 }
 

@@ -59,7 +59,8 @@ sub run($$) {
 	my $opts = {return_type => '$'}; 
 	my $mess = sprintf("Watch expression %d `%s' set", $wp->id, $expr);
 	$proc->msg($mess);
-	$proc->evaluate($expr, $opts);
+	# FIXME: 4 below is a magic fixup constant.
+	$proc->eval($expr, $opts, 4);
 	$proc->{set_wp} = $wp;
 
 	# Without setting $DB::trace = 1, it is possible

@@ -116,9 +116,9 @@ sub run($$)
 
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
-    my $my_hash = peek_my($diff + $self->{proc}->{frame_index} + 4);
+    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + 4);
     my @ARGS = splice(@{$args}, scalar(@CMD));
-    $self->process_args(\@ARGS, $my_hash, 'my');
+    $self->process_args(\@ARGS, $var_hash, 'my');
 }
 
 unless (caller) { 

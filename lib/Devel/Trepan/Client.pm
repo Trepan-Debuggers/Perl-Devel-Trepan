@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
-use strict;
+use strict; use Config; use Cwd 'abs_path';
+
+# rlib seems to flip out if it can't find trepan.pl
+BEGIN {
+    my $dirname = dirname(__FILE__);
+    my $bin_dir = File::Spec->catfile($dirname, '..', '..', '..', 'bin');
+    $ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH};
+}
 use rlib '../..';
 
 # require_relative 'default'                # default debugger settings

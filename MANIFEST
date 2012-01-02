@@ -1,6 +1,6 @@
 Artistic
 bin/trepan.pl
-Build.PL                        Proto Build creator
+Build.PL			Proto Build creator
 ChangeLog
 Changes
 example/eval.pl
@@ -122,6 +122,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Up.pm
 lib/Devel/Trepan/CmdProcessor/Command/Watch.pm
 lib/Devel/Trepan/CmdProcessor/Default.pm
+lib/Devel/Trepan/CmdProcessor/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Help.pm
 lib/Devel/Trepan/CmdProcessor/Hook.pm
@@ -169,8 +170,8 @@ MANIFEST			This list of files
 META.json
 META.yml
 README				README in perlpod format for CPAN
-README.md                       README in Markdown format for github
-t/10test-cmd-complete.t         Note: t/10*.t tests are unit tests
+README.md			README in Markdown format for github
+t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
 t/10test-complete.t
 t/10test-condition.t
@@ -189,7 +190,7 @@ t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
 t/10test-watchmgr.t
-t/20test-autolist.t             Note: t/20*.t tests are integration tests
+t/20test-autolist.t		Note: t/20*.t tests are integration tests
 t/20test-break.t
 t/20test-cont.t
 t/20test-debug.t
@@ -256,4 +257,4 @@ t/data/watch1.cmd
 t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
-t/Helper.pm                     Helper routine for integration tests
+t/Helper.pm			Helper routine for integration tests

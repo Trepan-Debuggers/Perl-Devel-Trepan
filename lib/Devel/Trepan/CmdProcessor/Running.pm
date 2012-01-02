@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
-
 use rlib '../../..';
 
 use Devel::Trepan::Position;
@@ -87,16 +86,6 @@ sub parse_next_step_suffix($$)
 	$opts->{different_pos} = $self->{settings}{different};
     }
     return $opts;
-}
-
-sub evaluate($$$) {
-    my ($self, $expr, $opts) = @_;
-    no warnings 'once';
-    $DB::eval_str = $self->{dbgr}->evalcode($expr);
-    $DB::eval_opts = $opts;
-    $DB::result_opts = $opts;
-    $self->{DB_running} = 2;
-    $self->{leave_cmd_loop} = 1;
 }
 
 # Does whatever setup needs to be done to set to ignore stepping
@@ -206,4 +195,4 @@ sub is_stepping_skip()
     return $skip_val;
 }
 
-1;
+scalar "Just one part of the larger Devel::Trepan::CmdProcessor";

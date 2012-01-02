@@ -1,5 +1,6 @@
 -- (my.pl:3)
-my $a = 1;
+my $a = 100;
+set auto eval is on.
 *** No 'my' variable $a found at this level
 -- (my.pl:16)
 foo 5;
@@ -8,10 +9,13 @@ foo 5;
 -- (my.pl:11)
     my @b = (1, "b");
 $a = 5
+$DB::D[0] = 6
 --> #1 file `my.pl' at line 16
    (my.pl:16)
 foo 5;
-$a = 1
+$a = 100
+Evaluation in this frame may not find local values
+$DB::D[1] = 101
 -- (my.pl:12)
     my %h = (1 =>'foo', 'food' => 'fight');
 @b = [1,'b']

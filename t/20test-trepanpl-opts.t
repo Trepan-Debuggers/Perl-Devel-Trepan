@@ -1,17 +1,15 @@
 #!/usr/bin/env perl
-use strict;
 use warnings; use strict;
 use English qw( -no_match_vars );
 use Config;
-use File::Basename;
-use File::Spec;
-my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepan.pl));
+use File::Basename; use File::Spec;
+my $dirname = dirname(__FILE__);
+my $trepanpl = File::Spec->catfile($dirname, qw(.. bin trepan.pl));
 
 use Test::More;
 note( "trepan.pl command options" );
 
 # rlib seems to flip out if it can't find trepan.pl
-my $dirname = dirname(__FILE__);
 my $bin_dir = File::Spec->catfile($dirname, '..', 'bin');
 $ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH};
 

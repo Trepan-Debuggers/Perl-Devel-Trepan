@@ -28,6 +28,7 @@ unless (defined @ISA) {
     require Devel::Trepan::CmdProcessor::Hook;
     require Devel::Trepan::CmdProcessor::Frame;
     require Devel::Trepan::CmdProcessor::Location;
+    require Devel::Trepan::CmdProcessor::Eval;
     require Devel::Trepan::CmdProcessor::Running;
     require Devel::Trepan::CmdProcessor::Validate;
 }
@@ -204,25 +205,22 @@ sub process_command_and_quit($)
 }
 
 my $last_eval_value = 0;
-# This is the main entry point.
-sub process_commands($$$;$)
-{
-    my ($self, $frame, $event, $arg) = @_;
-    $event = 'unknown' unless defined($event);
-    if ($event eq 'after_eval' or $event eq 'after_nest') {
-	my $val_str;
-	my $prefix="\$DB::D[$last_eval_value] =";
 
-	# Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
-	# Having a non-empty @ARGV will cause Tidy to croak.
-	local @ARGV=();
-
-	my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
+sub process_after_eval($) {
+    my ($self) = @_;
+    my $val_str;
+    my $prefix="\$DB::D[$last_eval_value] =";
+    
+    # Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
+    # Having a non-empty @ARGV will cause Tidy to croak.
+    local @ARGV=();
+    
+    my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
 	    ? \&Data::Dumper::Perltidy::Dumper
 	    : \&Data::Dumper::Dumper;
-	my $return_type = $DB::eval_opts->{return_type};
-	$return_type = '' unless defined $return_type;
-	if ('$' eq $return_type) {
+    my $return_type = $DB::eval_opts->{return_type};
+    $return_type = '' unless defined $return_type;
+    if ('$' eq $return_type) {
 	    if (defined $DB::eval_result) {
 		$DB::D[$last_eval_value++] = $DB::eval_result;
 		$val_str = $fn->($DB::eval_result);
@@ -231,7 +229,7 @@ sub process_commands($$$;$)
 		$DB::eval_result = '<undef>' ;
 	    }
 	    $self->msg("$prefix $DB::eval_result");
-	} elsif ('@' eq $return_type) {
+    } elsif ('@' eq $return_type) {
 	    if (defined @DB::eval_result) {
 		$val_str = $fn->(\@DB::eval_result);
 		chomp $val_str;
@@ -240,7 +238,7 @@ sub process_commands($$$;$)
 		$val_str = '<undef>'
 	    }
 	    $self->msg("$prefix\n\@\{$val_str}");
-	} elsif ('%' eq $return_type) {
+    } elsif ('%' eq $return_type) {
 	    if (%DB::eval_result) {
 		$DB::D[$last_eval_value++] = \%DB::eval_result;
 		$val_str = $fn->(%DB::eval_result);
@@ -249,7 +247,7 @@ sub process_commands($$$;$)
 		$val_str = '<undef>'
 	    }
 	    $self->msg("$prefix\n\%{$val_str}");
-	}  else {
+    }  else {
 	    if (defined $DB::eval_result) {
 		$DB::D[$last_eval_value++] = $fn->($DB::eval_result);
 		$val_str = $fn->($DB::eval_result);
@@ -258,18 +256,27 @@ sub process_commands($$$;$)
 		$val_str = '<undef>'
 	    }
 	    $self->msg("$prefix ${val_str}");
-	}
-
-	if (defined($self->{set_wp})) {
+    }
+    
+    if (defined($self->{set_wp})) {
 	    $self->{set_wp}->old_value($DB::eval_result);
 	    $self->{set_wp} = undef;
-	}
-	
-	$DB::eval_opts = {
+    }
+    
+    $DB::eval_opts = {
 	    return_type => '',
-	};
-	$DB::eval_result = undef;
-	@DB::eval_result = undef;
+    };
+    $DB::eval_result = undef;
+    @DB::eval_result = undef;
+}
+
+# This is the main entry point.
+sub process_commands($$$;$)
+{
+    my ($self, $frame, $event, $arg) = @_;
+    $event = 'unknown' unless defined($event);
+    if ($event eq 'after_eval' or $event eq 'after_nest') {
+	process_after_eval($self);
 	if ($event eq 'after_nest') {
 	    $self->msg("Leaving nested debug level $DB::level");
 	    $self->{prompt} = compute_prompt($self);
@@ -413,11 +420,29 @@ sub run_command($$)
     # Eval anything that's not a command or has been
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
-	my $opts = {nest => 0};
+	my $opts = {nest => 0, return_type => '$'};
 	if ($current_command =~ /^\s*([%\$\@])/) {
 	    $opts->{return_type} = $1;
 	}
-	$self->evaluate($current_command, $opts);
+
+	# FIXME: 2 below is a magic fixup constant, also found in
+	# DB::finish.  Remove it.
+	if (0 == $self->{frame_index}) {
+	    $self->eval($current_command, $opts, 2);
+	} else {
+	    my $return_type = $DB::eval_opts->{return_type} = 
+		$opts->{return_type};
+	    if ('$' eq $opts->{return_type}) {
+		$DB::eval_result = $self->eval($current_command, $opts, 2);
+	    } elsif ('@' eq $opts->{return_type}) {
+		@DB::eval_result = $self->eval($current_command, $opts, 2);
+	    } elsif ('%' eq $opts->{return_type}) {
+		%DB::eval_result = $self->eval($current_command, $opts, 2);
+	    } else {
+		$DB::eval_result = $self->eval($current_command, $opts, 2);
+	    }
+	    process_after_eval($self);
+	}
 	return;
     }
     $self->undefined_command($cmd_name);

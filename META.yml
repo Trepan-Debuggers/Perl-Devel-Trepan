@@ -24,7 +24,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: v0.1.5
+    version: v0.1.6
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -405,7 +405,7 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: v0.1.5
+    version: v0.1.6
   Devel::Trepan::SigHandler:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
@@ -437,4 +437,4 @@ requires:
   version: 0
 resources:
   license: http://opensource.org/licenses/gpl-license.php
-version: v0.1.5
+version: v0.1.6

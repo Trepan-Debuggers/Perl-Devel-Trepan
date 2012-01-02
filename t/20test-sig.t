@@ -3,6 +3,10 @@ use warnings; use strict;
 use English;
 use rlib '.';
 use Helper;
+if ($OSNAME eq 'MSWin32') {
+    eval "use Test::More skip_all => 
+     'Strawberry Perl might not handle signals properly'";
+}
 my $test_prog = File::Spec->catfile(dirname(__FILE__), 
 				    qw(.. example signal.pl));
 my $tempfile = "/tmp/signal.$$";

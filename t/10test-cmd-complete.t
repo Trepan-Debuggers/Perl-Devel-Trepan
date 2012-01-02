@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-use feature ":5.10";  # Includes "state" feature.
 use strict; use warnings; 
 no warnings 'redefine'; no warnings 'once';
 use rlib '../lib';
@@ -14,7 +13,7 @@ BEGIN {
 require Devel::Trepan::CmdProcessor;
 
 # Monkey::Patch doesn't work with methods with prototypes;
-state $counter //= 1;
+my $counter = 1;
 sub monkey_patch_instance
 {
     my($instance, $method, $code) = @_;
@@ -33,8 +32,7 @@ monkey_patch_instance($cmdproc,
 				   });
 my $cmd = Devel::Trepan::CmdProcessor::Command::Complete->new($cmdproc);
 
-for my $tuple (['d',  6],
-	       ['b',  2],
+for my $tuple (['b',  2],
 	       ['bt', 1]) {
     my ($prefix, $expected) = @{$tuple};
     $cmd->{proc}{cmd_argstr} = $prefix;

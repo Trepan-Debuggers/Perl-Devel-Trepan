@@ -68,8 +68,10 @@ sub remove_history($;$)
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
-    $which //= $self->{input}{readline}->where_history() if 
-	$self->{input}{readline}->can("where_history");
+    if ($self->{input}{readline}->can("where_history")) {
+	my $where_history = $self->{input}{readline}->where_history();
+	$which = $where_history unless defined $which;
+    }
     $self->{input}{readline}->remove_history($which) if
 	$self->{input}{readline}->can("remove_history");
 }
@@ -117,7 +119,8 @@ sub read_history($)
 	my $dirname = $ENV{'HOME'} || $ENV{'HOMEPATH'} || glob('~');
 	$self->{histfile} = File::Spec->catfile($dirname, $opts{file_history});
     }
-    $self->{histsize} //= ($ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize});
+    my $histsize = $ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize};
+    $self->{histsize} = $histsize unless defined $self->{histsize};
     if ( -f $self->{histfile} ) {
 	$self->{input}{readline}->StifleHistory($self->{histsize}) if
 	    $self->{input}{readline}->can("StifleHistory");
@@ -167,7 +170,7 @@ sub want_gnu_readline($)
 
 sub read_command($;$) {
     my($self, $prompt)  = @_;
-    $prompt //= '(trepanpl) ';
+    $prompt = '(trepanpl) ' unless defined $prompt;
     $self->readline($prompt);
 }
 

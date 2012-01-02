@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
-
-use feature 'switch';
 use rlib '../../..';
 
 use Devel::Trepan::Position;
@@ -68,10 +66,13 @@ sub parse_next_step_suffix($$)
 {
     my ($self, $step_cmd) = @_;
     my $opts = {};
-    given (substr($step_cmd, -1)) {
-	when ('-') { $opts->{different_pos} = 0; }
-	when ('+') { $opts->{different_pos} = 1; } 
-	when ('=') { $opts->{different_pos} = $self->{settings}{different}; }
+    my $sigil = substr($step_cmd, -1);
+    if ('-' eq $sigil) {
+	$opts->{different_pos} = 0;
+    } elsif ('+' eq $sigil) { 
+	$opts->{different_pos} = 1;
+    } elsif ('=' eq $sigil) { 
+	$opts->{different_pos} = $self->{settings}{different}; 
 	# when ('!') { $opts->{stop_events} = {'raise' => 1} };
 	# when ('<') { $opts->{stop_events} = {'return' => 1}; }
 	# when ('>') { 
@@ -81,21 +82,10 @@ sub parse_next_step_suffix($$)
 	# 	$opts->{stop_events} = {'call' => 1; }
 	#     }
 	# }
-	default {
-	    $opts->{different_pos} = $self->{settings}{different};
-	}
+    } else {
+	$opts->{different_pos} = $self->{settings}{different};
     }
     return $opts;
-}
-
-sub evaluate($$$) {
-    my ($self, $expr, $opts) = @_;
-    no warnings 'once';
-    $DB::eval_str = $self->{dbgr}->evalcode($expr);
-    $DB::eval_opts = $opts;
-    $DB::result_opts = $opts;
-    $self->{DB_running} = 2;
-    $self->{leave_cmd_loop} = 1;
 }
 
 # Does whatever setup needs to be done to set to ignore stepping
@@ -205,4 +195,4 @@ sub is_stepping_skip()
     return $skip_val;
 }
 
-1;
+scalar "Just one part of the larger Devel::Trepan::CmdProcessor";

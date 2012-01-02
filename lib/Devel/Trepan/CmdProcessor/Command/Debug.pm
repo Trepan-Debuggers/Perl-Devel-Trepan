@@ -60,7 +60,8 @@ sub run($$)
     my $full_expr = 
 	"\$DB::single = 1;\n\$^D |= DB::db_stop;\n\$DB::in_debugger=0;\n" . 
 	$expr;
-    $proc->evaluate($full_expr, $opts);
+    # FIXME: 4 below is a magic fixup constant.
+    $proc->eval($full_expr, $opts, 4);
 }
 
 unless (caller) {

@@ -5,6 +5,8 @@ set auto eval on
 @ARGV
 @ @ARGV
 $ @ARGV
+# An eval with no sigil. We once had a bug here
+use English
 eval 3+4
 # Check that "my" variables can be evaluated properly
 c gcd

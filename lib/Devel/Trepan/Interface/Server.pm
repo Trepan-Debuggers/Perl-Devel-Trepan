@@ -121,7 +121,7 @@ sub is_connected($)
 sub finalize($;$)
 {
     my ($self, $last_wishes) = @_;
-    $last_wishes //= 'QUIT';
+    $last_wishes = 'QUIT' unless defined $last_wishes;
     $self->{inout}->writeline($last_wishes) if $self->is_connected;
     $self->close;
 }
@@ -194,7 +194,7 @@ sub remove_history($;$)
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
-    $which //= $self->{input}{readline}->where_history();
+    $which = $self->{input}{readline}->where_history() unless defined $which;
     $self->{input}{readline}->remove_history($which);
 }
 

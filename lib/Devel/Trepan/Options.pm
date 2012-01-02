@@ -13,7 +13,7 @@ use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.1.5';
+    $VERSION      = '0.1.6';
 }
 use constant VERSION => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
@@ -93,7 +93,8 @@ sub process_options($)
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
 	defined($opts->{initial_dir});
-    my $batch_filename = $opts->{testing} // $opts->{batchfile};
+    my $batch_filename = $opts->{testing};
+    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
     if ($batch_filename) {
 	if (scalar(@{$opts->{cmdfiles}}) != 0) {
 	    printf(STDERR "--batch option disables command files: %s\n", 

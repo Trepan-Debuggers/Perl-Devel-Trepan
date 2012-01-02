@@ -271,7 +271,7 @@ sub run($$)
 	if (exists($DB::dbline{$lineno}) and 
 	    my $brkpts = $DB::dbline{$lineno}) {
 	    my $found = 0;
-	    for my $bp  (@{$brkpts}) {
+	    for my $bp (@{$brkpts}) {
 		if (defined($bp)) {
 		    $a_pad = sprintf('%02d', $bp->id);
 		    $s .= $bp->icon_char;

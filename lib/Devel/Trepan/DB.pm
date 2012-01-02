@@ -7,7 +7,6 @@
 use rlib '../..';
 
 package DB;
-use feature 'switch';
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
@@ -275,10 +274,10 @@ sub DB {
 		    $c->output($mess);
 		}
 
-		given ($after_eval) {
-		    when (1) {$event = 'after_eval'; }
-		    when (2) {$event = 'after_nest'; }
-		    default { ; }
+		if (1 == $after_eval ) {
+		    $event = 'after_eval';
+		} elsif (2 == $after_eval) {
+		    $event = 'after_nest'
 		}
 
 		# call client event loop; must not block
@@ -290,26 +289,22 @@ sub DB {
 
 		    local $nest = $eval_opts->{nest};
 		    my $return_type = $eval_opts->{return_type};
+		    $return_type = '' unless defined $return_type;
 
-		    given ($return_type) {
-			when ('$') {
-			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, 
-						      $return_type, @saved);
-			}
-			when ('@') {
+		    if ('$' eq $return_type) {
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
-			}
-			when ('%') {
+		    } elsif ('@' eq $return_type) {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    } elsif ('%' eq $return_type) {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    } else {
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
-			} 
-			default {
-			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, 
-						      $return_type, @saved);
-			}
 		    }
 
 		    if ($nest) {
@@ -426,10 +421,10 @@ sub catch {
 		$c->output($mess);
 	    }
 
-	    given ($after_eval) {
-		when (1) {$event = 'after_eval'; }
-		when (2) {$event = 'after_nest'; }
-		default { ; }
+	    if (1 == $after_eval ) {
+		$event = 'after_eval';
+	    } elsif (2 == $after_eval) {
+		$event = 'after_nest'
 	    }
 	    
 	    # call client event loop; must not block
@@ -441,25 +436,20 @@ sub catch {
 		
 		my $return_type = $eval_opts->{return_type};
 		
-		given ($return_type) {
-		    when ('$') {
-			$eval_result = 
-			    &DB::eval_with_return($usrctxt, $eval_str, 
-						  $return_type, @saved);
-		    }
-		    when ('@') {
+		if ('$' eq $return_type) {
+		    $eval_result = 
 			&DB::eval_with_return($usrctxt, $eval_str, 
 					      $return_type, @saved);
-		    }
-		    when ('%') {
+		} elsif ('@' eq $return_type) {
+		    &DB::eval_with_return($usrctxt, $eval_str, 
+					  $return_type, @saved);
+		} elsif ('%' eq $return_type) {
+		    &DB::eval_with_return($usrctxt, $eval_str, 
+					  $return_type, @saved);
+		} else {
+		    $eval_result = 
 			&DB::eval_with_return($usrctxt, $eval_str, 
 					      $return_type, @saved);
-		    } 
-		    default {
-			$eval_result = 
-			    &DB::eval_with_return($usrctxt, $eval_str, 
-						  $return_type, @saved);
-		    }
 		}
 		
 		$after_eval = 1;

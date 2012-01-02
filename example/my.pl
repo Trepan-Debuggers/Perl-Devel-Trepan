@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict; use warnings;
-my $a = 1;
+my $a = 100;
 sub bar($) {
     my $h = shift;
     return $h;

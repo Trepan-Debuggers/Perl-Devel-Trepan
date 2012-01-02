@@ -5,6 +5,7 @@
 use strict; use warnings; use English qw( -no_match_vars );
 
 use File::Basename; use File::Spec;
+my $dirname = dirname(__FILE__);
 my $file = File::Spec->rel2abs(__FILE__);
 my $TREPAN_DIR = File::Spec->catfile(dirname($file), '..', 'lib');
 

@@ -32,7 +32,8 @@ sub new {
     my %ORIG_SIG = %SIG; # Makes a copy of %SIG;
     my $self = {
 	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
-	orig_sig => \%ORIG_SIG
+	orig_sig => \%ORIG_SIG,
+	caught_signal => 0
     };
     bless $self, $class;
     return $self;
@@ -45,6 +46,7 @@ sub idle($$$)
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
     $proc->process_commands($DB::caller, $event, $args);
+    $self->{caught_signal} = 0;
 }
 
 # Called on catching a signal that SigHandler says
@@ -61,8 +63,8 @@ sub signal_handler($$$)
      $DB::hinthash
     ) = @{$DB::caller};
     my $proc = $self->{proc};
+    $self->{caught_signal} = 1;
     $DB::signal = 2;
-    $proc->process_commands($DB::caller, 'signal', [$signame]);
 }
 
 sub output($) 
@@ -96,8 +98,11 @@ sub awaken($;$) {
 	# print "field $field $opts->{$field}\n";
 	$cmdproc_opts{$field} = $opts->{$field};
     }
+    my $cmdproc;
 
-    if (my $batch_filename = $opts->{testing} // $opts->{batchfile}) {
+    my $batch_filename = $opts->{testing};
+    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
+    if (defined $batch_filename) {
 	my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
 	if (defined $result) {
 	    print STDERR "$result\n" 
@@ -109,9 +114,9 @@ sub awaken($;$) {
 		Devel::Trepan::Interface::Script->new($batch_filename, 
 						      $output, 
 						      $script_opts);
-	    my $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
-							   $self, 
-							   \%cmdproc_opts);
+	    $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
+							$self, 
+							\%cmdproc_opts);
 	    $self->{proc} = $cmdproc;
 	    $main::TREPAN_CMDPROC = $self->{proc};
         }
@@ -128,19 +133,12 @@ sub awaken($;$) {
 						      $server_opts)
 		];
 	}
-	my $cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
-						       \%cmdproc_opts);
+	$cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
+						    \%cmdproc_opts);
 	$self->{proc} = $cmdproc;
 	$main::TREPAN_CMDPROC = $self->{proc};
-	$opts //= {};
+	$opts = {} unless defined $opts;
 
-	$self->{sigmgr} = 
-	    Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
-					    $self->signal_handler(@_) },
-				       sub {$cmdproc->msg(@_)},
-				       sub {$cmdproc->errmsg(@_)},
-				       sub {$cmdproc->section(@_)});
-	
 	for my $startup_file (@{$opts->{cmdfiles}}) {
 	    add_startup_files($cmdproc, $startup_file);
 	}
@@ -148,6 +146,12 @@ sub awaken($;$) {
 	    add_startup_files($cmdproc, $opts->{initfile});
 	}
     }
+    $self->{sigmgr} = 
+	Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
+					$self->signal_handler(@_) },
+				   sub {$cmdproc->msg(@_)},
+				   sub {$cmdproc->errmsg(@_)},
+				   sub {$cmdproc->section(@_)});
 }
 
 sub display_lists ($)

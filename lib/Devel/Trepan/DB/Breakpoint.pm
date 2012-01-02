@@ -18,7 +18,6 @@ struct DBBreak => {
 };
 
 package DBBreak;
-use feature 'switch';
 sub inspect($)
 {
     my $self = shift;
@@ -35,10 +34,12 @@ sub inspect($)
 sub icon_char($)
 {
     my $self = shift;
-    given ($self->type) {
-	when ('tbrkpt') { return 'T'; }
-	when ('brkpt')  { return 'B'; }
-	when ('action') { return 'A'; }
+    if ('tbrkpt' eq $self->type) {
+	return 'T';
+    } elsif ('brkpt' eq $self->type) { 
+	return 'B';
+    } elsif ('action' eq $self->type) { 
+	return 'A';
     }
 }
 
@@ -68,10 +69,10 @@ sub line_events {
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
     my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
-    $filename //= $DB::filename;
+    $filename = $DB::filename unless defined $filename;
     my $change_dbline = $filename ne $DB::filename;
-    $type //= 'brkpt';
-    $enabled //= 1;
+    $type = 'brkpt' unless defined $type;
+    $enabled = 1 unless defined $enabled;
     $fn_or_lineno ||= $DB::lineno;
     $cond ||= '1';
 
@@ -114,10 +115,13 @@ sub set_break {
 	filename  => $filename,
 	line_num  => $lineno
 	);
-    my $ary_ref = $DB::dbline{$lineno} //= [];
+    
+    my $ary_ref;
+    $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
+    $ary_ref = $DB::dbline{$lineno};
     push @$ary_ref, $brkpt;
     *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-    return $brkpt
+    return $brkpt;
 }
 
 # Set a temporary breakpoint

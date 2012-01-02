@@ -1,5 +1,4 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use feature ":5.10";  # Includes "state" feature.
 use warnings; use strict; 
 use Exporter;
 
@@ -106,7 +105,8 @@ sub next_token($$)
 sub filename_list(;$$)
 {
     my ($pattern, $add_suffix) = @_;
-    $pattern //= ''; $add_suffix //= 0;
+    $pattern = '' unless defined $pattern; 
+    $add_suffix = 0 unless defined $add_suffix;
     # $pattern = glob($pattern) if substr($pattern, 0, 1) = '~';
     my @files = (<$pattern*>);
     if ($add_suffix) {
@@ -126,17 +126,18 @@ sub filename_list(;$$)
 }
 
 # Custom completion routines
+my @signal_complete_completions=();
 sub signal_complete($) {
     my ($prefix) = @_;
-    state @completions;
-    unless(@completions) {
-	@completions = keys %SIG;
-	my $last_sig = scalar @completions;
-	push @completions, map({lc $_} @completions);
+    unless(@signal_complete_completions) {
+	@signal_complete_completions = keys %SIG;
+	my $last_sig = scalar @signal_complete_completions;
+	push(@signal_complete_completions, 
+	     map({lc $_} @signal_complete_completions));
 	my @nums = (-$last_sig .. $last_sig);
-	push @completions, @nums;
+	push @signal_complete_completions, @nums;
     }
-    complete_token(\@completions, $prefix);
+    complete_token(\@signal_complete_completions, $prefix);
 }
 
 

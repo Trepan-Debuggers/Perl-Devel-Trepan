@@ -15,7 +15,8 @@ eval.pl [1-10]
 -- (eval.pl:5)
 eval $var;
 --
-$DB::D[0] = $VAR1 = 1;
+--
+$DB::D[0] = 1
 eval.pl [1-10]
   1    	$var = '
   2    	$x = 2;
@@ -28,7 +29,8 @@ eval.pl [1-10]
   9    	    print "ho\n";
  10    	    5;
 ++
-$DB::D[1] = $VAR1 = 1;
+++
+$DB::D[1] = 1
 -- ( (eval remapped 2)
 -- ( (eval remapped 3)
 $x = 2;

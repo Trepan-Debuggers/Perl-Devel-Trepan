@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#  Copyright (C) 2011 Rocky Bernstein <rockycpan.org>
+#  Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -36,17 +36,18 @@ my $builder = Module::Build->new(
     },
     build_requires => {
         # 'String::Diff'        => 0,
-	# 'ExtUtils::PkgConfig' => 0, # Some String:Diff's flip out without this
     },
     requires => {
-	'perl'                              => '5.010',               
+	'perl'                              => '5.0080',               
 	'Array::Columnize'                  => '0.3.5',
 	'Data::Dumper::Perltidy'            => 0,
+	'Getopt::Long'                      => 0,
         'Digest::SHA'                       => 0,
+        'Eval::WithLexicals'                => 0,
         'PadWalker'                         => 0,
-        'rlib'                              => '0.02',
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
+        'rlib'                              => '0.02',
         'version'                           => 0,
     },
     sign                => ($ENV{PERL_MB_NOSIGN} ? 0 : 1),

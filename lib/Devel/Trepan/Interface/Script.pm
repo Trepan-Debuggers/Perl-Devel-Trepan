@@ -29,7 +29,7 @@ use constant DEFAULT_OPTS => {
 sub new
 {
     my ($class, $script_name, $out, $opts) = @_;
-    $opts //={};
+    $opts = {} unless defined $opts;
 
     $opts = hash_merge($opts, DEFAULT_OPTS);
 
@@ -72,7 +72,7 @@ sub confirm($$$)
 sub errmsg($$;$)
 {
     my ($self, $msg, $prefix) = @_;
-    $prefix //= "*** ";
+    $prefix = '*** ' unless defined $prefix;
     #  self.verbose shows lines so we don't have to duplicate info
     #  here. Perhaps there should be a 'terse' mode to never show
     #  position info.
@@ -111,7 +111,7 @@ sub has_gnu_readline($) { 0; }
 sub read_command($;$)
 {
     my ($self, $prompt)=@_;
-    $prompt //= '';
+    $prompt = '' unless defined $prompt;
     $self->{input_lineno} += 1;
     my $line = $self->readline();
     if ($self->{opts}{verbose}) {
@@ -132,7 +132,7 @@ sub read_command($;$)
 sub readline($;$)
 {
     my ($self, $prompt) = @_;
-    $prompt //='';
+    $prompt = '' unless defined $prompt;
     my $line = $self->{input}->getline;
     chomp $line;
     return $line;

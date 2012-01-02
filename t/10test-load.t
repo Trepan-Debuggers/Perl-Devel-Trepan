@@ -2,16 +2,20 @@
 use strict;
 use warnings;
 use rlib '../lib';
-
 use Test::More;
 note( "Testing Devel::CmdProcessor::Load" );
 
 BEGIN {
+use_ok( 'Devel::Trepan::Interface::User' );
+use_ok( 'Devel::Trepan::IO::StringArray' );
 use_ok( 'Devel::Trepan::CmdProcessor::Load' );
+use_ok( ' Devel::Trepan::CmdProcessor' );
 }
 
-require Devel::Trepan::CmdProcessor;
-my $cmdproc = Devel::Trepan::CmdProcessor->new;
+my $inp       = Devel::Trepan::IO::StringArrayInput->new;
+my $out       = Devel::Trepan::IO::StringArrayOutput->new;
+my $user_intf = Devel::Trepan::Interface::User->new($inp, $out);
+my $cmdproc = Devel::Trepan::CmdProcessor->new([$user_intf]);
 my $count = scalar(keys %{$cmdproc->{commands}});
 cmp_ok($count, '>', 0, 'commands populated');
 
@@ -52,9 +56,13 @@ is(scalar @c, 0);
 @c = complete_it("set ");
 cmp_ok(scalar @c, '>', 2, 'set commands populated');
 
-# FIXME: After we get string array I/O working and hooked
-# up ...
-# $cmdproc->run_cmd('foo');  # Invalid - not an Array
-# $cmdproc->run_cmd([]);     # Invalid - empty Array
-# $cmdproc->run_cmd(['help', '*']);
+is(0, scalar @{$out->{output}});
+$cmdproc->run_cmd(['help', '*']);
+cmp_ok(scalar @{$out->{output}}, '>', 0);
+$out->{output} = [];
+$cmdproc->run_cmd([]);     # Invalid - empty Array
+is($out->{output}[0] =~ /^\*\*/, 1);
+$out->{output} = [];
+$cmdproc->run_cmd('foo');  # Invalid - not an Array
+is($out->{output}[0] =~ /^\*\*/, 1);
 done_testing();

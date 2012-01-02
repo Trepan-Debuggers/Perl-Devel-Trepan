@@ -1,6 +1,5 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
-use feature 'switch';
 use rlib '../../../..';
 
 use Devel::Trepan::DB::LineCache;
@@ -55,24 +54,23 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my ($filename, $line_number);
-    given (scalar @$args) {
-	when (1) {
-	    $filename     = $self->{proc}->filename;
-	    $line_number  = $self->{proc}->line;
-	} when(2) {
-	    $line_number = $self->{proc}->get_int_noerr($args->[1]);
-	    if (defined $line_number) {
-		$filename = $self->{proc}->filename;
-	    } else {
-		$filename = $args->[1];
-		$line_number = 1;
-	    }
-	} when (3) {
-	    ($line_number, $filename) =  ($args->[2], $args->[1]);
-	} default {
-	    $self->errmsg("edit needs at most 2 args.");
-	    return;
+    my $count = scalar @$args;
+    if (1 == $count) {
+	$filename     = $self->{proc}->filename;
+	$line_number  = $self->{proc}->line;
+    } elsif (2 == $count) {
+	$line_number = $self->{proc}->get_int_noerr($args->[1]);
+	if (defined $line_number) {
+	    $filename = $self->{proc}->filename;
+	} else {
+	    $filename = $args->[1];
+	    $line_number = 1;
 	}
+    } elsif (3 == $count) {
+	($line_number, $filename) =  ($args->[2], $args->[1]);
+    } else {
+	$self->errmsg("edit needs at most 2 args.");
+	return;
     }
     my $editor = $ENV{'EDITOR'} || '/bin/ex';
     if ( -r $filename ) {

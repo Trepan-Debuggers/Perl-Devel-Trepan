@@ -1,3 +1,176 @@
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, Build.PL, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm,
+	t/10test-cmd-complete.t: Move Disassemble to a separate add-on
+	package. Other administrivia.
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-options.t, t/20test-trepanpl-opts.t: Avoid STO's smokers.
+	He hasn't been responsive in queries.
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, t/20test-sig.t: Reinstate signal stop test in Perl 5.8
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* : Start to merge with perl-5.8 branch
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-sig.t, t/data/sig.cmd, t/data/sig.right,
+	t/data/sig2.cmd, t/data/sig2.right: Add sig pass test
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-sig.t, t/data/sig.cmd: Test stopping on a signal
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/sig2.cmd, t/data/sig2.right: Test stopping on a single.
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* t/Helper.pm: Sync with master
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-sig.t, t/Helper.pm: Wasn't passing error return in
+	run_debugger
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/signal.pl, lib/Devel/Trepan/Core.pm,
+	t/Helper.pm: Sync with master
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 21781fba655c4b6d91307b8cef3e1488be2e530a Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sat Dec 31 23:30:22 2011 -0500
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 063fefc63d20c8d11b923fefc28ff63e4ec9b08e Merge: 8358a9b
+	c22c762 Author: Rocky Bernstein <rocky@cpan.org> Date:   Sat Dec 31
+	23:23:11 2011 -0500
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/signal.pl, lib/Devel/Trepan/Core.pm,
+	t/20test-sig.t, t/Helper.pm, t/data/sig.cmd, t/data/sig.right: Add
+	first signal handling integration test of handle with pass through.
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* example/signal.pl, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Breakpoint.pm,
+	lib/Devel/Trepan/SigHandler.pm: Sighandler.pm: Remove git conflict
+	line.  Frame.pm: Handle signal handler stop a little better.  rest:
+	Compatiblity with 5.8 code.
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* : I hate conflicted merges
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm, t/data/eval.cmd,
+	t/data/eval.right: Add eval test case that had previously failed
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/eval.cmd, t/data/eval.right: Add eval test case that had
+	previously failed
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm: Use Perl 5.8 way of
+	setting $opt hash. All tests now work! YAY!
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm: Address bug in setting breakpoint
+	and listing it. (20test-list4.t).
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: 
+	eval_with_return: restoring saved global variables properly. Reduce
+	test failures.
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Eval.pm: eval_with_return: restoring saved
+	global variables properly.
+
+2011-12-31  rvm <you@example.com>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, t/10test-cmd-complete.t,
+	t/10test-db-brkpt.t, t/10test-watchmgr.t, t/Helper.pm: Unit tests
+	start working. Some of the integration tests work
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* : I hate conflicted merges
+
+2011-12-31  rvm <you@example.com>
+
+	* Build.PL, bin/trepan.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Edit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Enable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm, lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Up.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Hook.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm,
+	lib/Devel/Trepan/CmdProcessor/Validate.pm,
+	lib/Devel/Trepan/Complete.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, lib/Devel/Trepan/DB/Display.pm,
+	lib/Devel/Trepan/DB/Eval.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/IO.pm, lib/Devel/Trepan/IO/StringArray.pm,
+	lib/Devel/Trepan/Interface/Script.pm,
+	lib/Devel/Trepan/Interface/Server.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm,
+	lib/Devel/Trepan/SigHandler.pm, lib/Devel/Trepan/Util.pm,
+	t/10test-db-brkpt.t, t/10test-util.t: Start to make it work on perl
+	5.8
+
+2011-12-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Remove a
+	small bug and a expected warning
+
+2011-12-28  Rocky Bernstein <rocky@cpan.org>
+
+	* t/Helper.pm: Helper.pm: Explain why funny return code test
+
+2011-12-28  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/SigHandler.pm, t/Helper.pm: Helper.pm:
+	Tidy up output when an integration test fails
+
 2011-12-26  Rocky Bernstein <rocky@cpan.org>
 
 	* bin/trepan.pl, lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Add

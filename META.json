@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.112621",
    "license" : [
       "open_source"
    ],
@@ -24,12 +24,11 @@
             "Array::Columnize" : "v0.3.5",
             "Data::Dumper::Perltidy" : 0,
             "Digest::SHA" : 0,
-            "Eval::WithLexicals" : 0,
             "Getopt::Long" : 0,
             "PadWalker" : 0,
             "Syntax::Highlight::Perl::Improved" : 0,
             "Test::More" : 0,
-            "perl" : "5.0088",
+            "perl" : "5.008008",
             "rlib" : "0.02",
             "version" : 0
          }
@@ -50,7 +49,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "v0.1.7"
+         "version" : "v0.1.8"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -558,7 +557,7 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "v0.1.7"
+         "version" : "v0.1.8"
       },
       "Devel::Trepan::SigHandler" : {
          "file" : "lib/Devel/Trepan/SigHandler.pm",
@@ -591,5 +590,5 @@
          "http://opensource.org/licenses/gpl-license.php"
       ]
    },
-   "version" : "v0.1.7"
+   "version" : "v0.1.8"
 }

@@ -38,12 +38,11 @@ my $builder = Module::Build->new(
         # 'String::Diff'        => 0,
     },
     requires => {
-	'perl'                              => '5.0088',
+	'perl'                              => '5.008008',
 	'Array::Columnize'                  => '0.3.5',
 	'Data::Dumper::Perltidy'            => 0,
 	'Getopt::Long'                      => 0,
         'Digest::SHA'                       => 0,
-        'Eval::WithLexicals'                => 0,
         'PadWalker'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,

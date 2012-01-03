@@ -1,3 +1,72 @@
+2012-01-03  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, Changes, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/Options.pm,
+	t/20test-my.t, t/20test-trace.t, t/data/trace1.right: Release 0.1.8
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, META.json, META.yml: Forgot to mention using
+	Eval::WithLexicals
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Interface/Server.pm, lib/Devel/Trepan/Options.pm,
+	lib/Devel/Trepan/SigHandler.pm, t/20test-list3.t: Get ready for
+	release 0.1.7
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit ec4d94b9dc79b0f54d55f4f82684d3671da8c3d6 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Jan 2 14:16:21 2012 -0500
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, Build.PL, MANIFEST, META.json, META.yml,
+	bin/trepan.pl, example/my.pl, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Our.pm, lib/Devel/Trepan/CmdProcessor/Command/Watch.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm, t/20test-trepanpl-opts.t,
+	t/data/eval.right, t/data/eval2.right, t/data/my.cmd,
+	t/data/my.right, t/data/trace1.right: Adding code to evaluate in
+	frames other than the top-most one via Eval::WithLexicals. It's
+	flaky, but probably better than doing nothing.
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm,
+	t/20test-trepanpl-opts.t, t/Helper.pm: Tests fail when not
+	previously installed because rlib from Client.pm seems to flip out
+	if trepan.pl isn't in the path.  I don't understand why, but it's
+	easy enough to add the right trepan.pl in the path, and probably
+	what I want to do anyway in the tests.
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-sig.t: This time, for sure!
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Linecache update_cache: guard
+	abs_path with test on filename for cygwin
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: ':' => ' :' so we don't confuse
+	Microsoft OS's
+
+2012-01-01  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, MANIFEST, META.json, META.yml: Get ready for
+	0.1.5 release.
+
 2012-01-01  Rocky Bernstein <rocky@cpan.org>
 
 	* .gitignore, Build.PL, MANIFEST,
@@ -117,6 +186,11 @@
 	lib/Devel/Trepan/DB/Breakpoint.pm, t/10test-cmd-complete.t,
 	t/10test-db-brkpt.t, t/10test-watchmgr.t, t/Helper.pm: Unit tests
 	start working. Some of the integration tests work
+
+2011-12-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm: Some more 5.8
+	compatibility tolerance
 
 2011-12-31  Rocky Bernstein <rocky@cpan.org>
 

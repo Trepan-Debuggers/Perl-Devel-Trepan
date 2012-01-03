@@ -33,5 +33,3 @@ printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
 The GCD of 3 and 5 is 1
--- (_Utils.pm:67)
-END { $_in_global_destruction = 1 }

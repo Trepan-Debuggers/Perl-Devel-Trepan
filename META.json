@@ -25,7 +25,7 @@
             "Data::Dumper::Perltidy" : 0,
             "Digest::SHA" : 0,
             "Eval::WithLexicals" : 0,
-            "Getopt::Long" : 0,
+            "Getopt::Long" : "2.36",
             "PadWalker" : 0,
             "Syntax::Highlight::Perl::Improved" : 0,
             "Test::More" : 0,
@@ -50,7 +50,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "v0.1.7"
+         "version" : "v0.1.8"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -591,5 +591,5 @@
          "http://opensource.org/licenses/gpl-license.php"
       ]
    },
-   "version" : "v0.1.7"
+   "version" : "v0.1.8"
 }

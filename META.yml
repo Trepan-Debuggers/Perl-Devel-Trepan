@@ -428,12 +428,7 @@ requires:
   Array::Columnize: v0.3.5
   Data::Dumper::Perltidy: 0
   Digest::SHA: 0
-<<<<<<< HEAD
-  Eval::WithLexicals: 0
   Getopt::Long: 2.36
-=======
-  Getopt::Long: 0
->>>>>>> d872d7cfadc9da75fcafe6b1d3bf056589265a83
   PadWalker: 0
   Syntax::Highlight::Perl::Improved: 0
   Test::More: 0

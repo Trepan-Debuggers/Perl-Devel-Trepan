@@ -36,7 +36,7 @@ sub run($$)
 	my @ret = $proc->{dbgr}->return_value();
 	$proc->msg(Dumper(@ret));
     } elsif ('scalar' eq $ret_type) {
-	my $ret = $proc->{dbgr}->return_value();
+	my $ret = $proc->{dbgr}->return_value() || 'undef';
 	$proc->msg("Return value for $DB::_[0] is: $ret");
     }
 }

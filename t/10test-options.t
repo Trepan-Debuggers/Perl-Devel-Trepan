@@ -5,8 +5,15 @@ use English qw( -no_match_vars );
 
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Options" );
+
+if( $Test::More::VERSION >= 1.0 ) {
+    plan skip_all => "STO's smokers cause weird problems";
+} else {
+    plan 'no_plan';
+}
+
 
 BEGIN {
     use_ok( 'Devel::Trepan::Options' );
@@ -17,10 +24,12 @@ import Devel::Trepan::Options;
 note 'Test whence_file';
 for my $not_found_program 
     (qw(./bogus/program ../bogus/program /bogus/program)) {
-    is(whence_file($not_found_program), $not_found_program,
-       "when program ${not_found_program} is not found, it is unchanged");
+	is(whence_file($not_found_program), $not_found_program,
+	   "when program ${not_found_program} is not found, it is unchanged");
 }
-isnt(whence_file('perl'), 'perl',
+
+my $perl = ($OSNAME eq 'MSWin32') ? 'perl.exe' : 'perl';
+isnt(whence_file($perl), $perl,
     "We should be able to find perl in your path");
 is(whence_file($EXECUTABLE_NAME), $EXECUTABLE_NAME,
    "Perl binary ${EXECUTABLE_NAME} is generally absolute and should be unchanged");

@@ -1,5 +1,4 @@
 #!/usr/bin/env perl 
-use feature ":5.10";  
 use vars qw($TREPAN_CMDPROC);
 use rlib '..';
 
@@ -7,7 +6,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.1.2';
+use version; $VERSION = '0.1.7';
 use Exporter;
 
 use Devel::Trepan::Core;

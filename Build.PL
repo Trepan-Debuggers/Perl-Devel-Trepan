@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#  Copyright (C) 2011 Rocky Bernstein <rockycpan.org>
+#  Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 use strict;
 use warnings;
 use Module::Build;
-use ExtUtils::PkgConfig;
 use Config;
 
 my $builder = Module::Build->new( 
@@ -33,28 +32,25 @@ my $builder = Module::Build->new(
     release_status      => 'stable',
     configure_requires  => { 
 	'Module::Build' => '0.32',
-	'ExtUtils::PkgConfig' => 0,
 			      
     },
     build_requires => {
-        'String::Diff'                      => 0,
+        # 'String::Diff'        => 0,
     },
     requires => {
-	'perl'                              => '5.010',               
+	'perl'                              => '5.0088',
 	'Array::Columnize'                  => '0.3.5',
-	'ExtUtils::PkgConfig'               => '1.03',
 	'Data::Dumper::Perltidy'            => 0,
-        'Digest::SHA1'                      => 2.13,
+	'Getopt::Long'                      => 0,
+        'Digest::SHA'                       => 0,
+        'Eval::WithLexicals'                => 0,
         'PadWalker'                         => 0,
-        'Psh'                               => '1.8.0',
-        'rlib'                              => '0.02',
         'Syntax::Highlight::Perl::Improved' => 0,
         'Test::More'                        => 0,
+        'rlib'                              => '0.02',
         'version'                           => 0,
     },
     sign                => ($ENV{PERL_MB_NOSIGN} ? 0 : 1),
     );
 
-#distclean : unlink lib/perliso9660.pm, lib/perlmmc.pm lib/perlcdio.pm
-# c files?
 $builder->create_build_script();

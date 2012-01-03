@@ -159,7 +159,7 @@ sub lookup($$;$)
 sub short_help($$$;$) 
 {
     my ($self, $subcmd_cb, $subcmd_name, $label) = @_;
-    $label //= 0;
+    $label = 0 unless defined $label;
     my $entry = $self->lookup($subcmd_name);
     if ($entry) {
 	my $prefix = '';

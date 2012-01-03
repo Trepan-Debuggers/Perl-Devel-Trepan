@@ -14,33 +14,35 @@ use File::Basename;
 use File::Spec;
 use Devel::Trepan::DB::LineCache;
 
-my $EVENT2ICON = {
+our $EVENT2ICON = {
     'brkpt'          => 'xx',
-    'tbrkpt'         => 'x1',
     'call'           => '->',
     'debugger-call'  => ':o',
     'end'            => '-|',
-    'line'           => '--',
     'interrupt'      => 'oo',
-    'signal'         => '!!',
+    'line'           => '--',
+    'post-mortem'    => 'XX',
     'return'         => '<-',
+    'signal'         => '!!',
+    'tbrkpt'         => 'x1',
     'trace'          => '==',
-    'watch'          => 'wa',
     'unknown'        => '?!',
+    'watch'          => 'wa',
 };
 
 sub canonic_file($$;$)
 {
     my ($self, $filename, $resolve) = @_;
-    $resolve //= 1;
+    $resolve = 1 unless defined $resolve;
 
     # For now we want resolved filenames 
     if ($self->{settings}{basename}) {
-	return basename($filename);
+	my $is_eval = DB::LineCache::filename_is_eval($filename);
+	return $is_eval ? $filename : (basename($filename) || $filename);
     } elsif ($resolve) {
     	$filename = DB::LineCache::map_file($filename);
 	my $is_eval = DB::LineCache::filename_is_eval($filename);
-	return $is_eval ? $filename: abs_path($filename) || $filename;
+	return $is_eval ? $filename : (abs_path($filename) || $filename);
     } else {
 	return $filename;
     }
@@ -50,12 +52,11 @@ sub canonic_file($$;$)
 sub current_source_text(;$)
 {
     my ($self, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text;
-    $text = DB::LineCache::getline($filename, $line_number, 
-						  $opts); 
+    $text = DB::LineCache::getline($filename, $line_number, $opts); 
     return $text;
 }
   
@@ -103,10 +104,10 @@ sub resolve_file_with_dir($$)
 sub text_at($;$) 
 {
     my ($self, $opts) = @_;
-    $opts //= {
+    $opts = {
 	reload_on_change => $self->{settings}{reload},
 	output           => $self->{settings}{highlight},
-    };
+    } unless defined $opts;
 
     my $line_no = $self->line();
     my $text;
@@ -134,9 +135,9 @@ sub text_at($;$)
 sub format_location($;$$$)
 {
     my ($self, $event, $frame, $frame_index) = @_;
-    $event       //= $self->{event};
-    $frame       //= $self->{frame};
-    $frame_index //= $self->{frame_index};
+    $event       = $self->{event} unless defined $event;
+    $frame       = $self->{frame} unless defined $frame;
+    $frame_index = $self->{frame_index} unless defined $frame_index;
     my $text       = undef;
     my $ev         = '  ';
     if (defined($self->{event}) && 0 == $frame_index) {
@@ -153,7 +154,7 @@ sub format_location($;$$$)
 sub print_location($;$)
 {
     my ($self,$opts) = @_;
-    $opts //= {output => $self->{settings}{highlight}};
+    $opts = {output => $self->{settings}{highlight}} unless defined $opts;
     my $loc  = $self->format_location;
     $self->msg(${loc});
 
@@ -193,12 +194,18 @@ unless (caller()) {
     # Demo it.
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
-    sub foo() {
-	my @call_values = caller(0);
-	return @call_values;
+    sub create_frame() {
+    	my ($pkg, $file, $line, $fn) = caller(0);
+	return [
+	    {
+		 file      => $file,
+		 fn        => $fn,
+		 line      => $line,
+		 pkg       => $pkg,
+	    }];
     }
-    my @call_values = foo();
-    $proc->frame_setup(\@call_values, 0);
+    my $frame_ary = create_frame();
+    $proc->frame_setup($frame_ary);
     $proc->{event} = 'return';
     print $proc->format_location, "\n";
     print $proc->current_source_text({output=>'term'}), "\n";

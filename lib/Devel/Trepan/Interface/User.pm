@@ -10,9 +10,9 @@ use rlib '../../..';
 package Devel::Trepan::Interface::User;
 use vars qw(@EXPORT @ISA);
 
-use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge);
+use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge YN);
 use if !defined(@ISA), Devel::Trepan::IO::Input;
-use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
+use if !defined(@ISA), Devel::Trepan::Interface;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 use strict; 
@@ -68,8 +68,10 @@ sub remove_history($;$)
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
-    $which //= $self->{input}{readline}->where_history() if 
-	$self->{input}{readline}->can("where_history");
+    if ($self->{input}{readline}->can("where_history")) {
+	my $where_history = $self->{input}{readline}->where_history();
+	$which = $where_history unless defined $which;
+    }
     $self->{input}{readline}->remove_history($which) if
 	$self->{input}{readline}->can("remove_history");
 }
@@ -97,7 +99,7 @@ sub confirm($$$) {
 	($response = lc(unpack("A*", $response))) =~ s/^\s+//;
 	# We don't catch "Yes, I'm sure" or "NO!", but I leave that 
 	# as an exercise for the reader.
-	last if grep(/^${response}$/, @YN);
+	last if grep(/^${response}$/, @Devel::Trepan::Util::YN);
 	$self->msg( "Please answer 'yes' or 'no'. Try again.");
     }
     $self->remove_history;
@@ -117,7 +119,8 @@ sub read_history($)
 	my $dirname = $ENV{'HOME'} || $ENV{'HOMEPATH'} || glob('~');
 	$self->{histfile} = File::Spec->catfile($dirname, $opts{file_history});
     }
-    $self->{histsize} //= ($ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize});
+    my $histsize = $ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize};
+    $self->{histsize} = $histsize unless defined $self->{histsize};
     if ( -f $self->{histfile} ) {
 	$self->{input}{readline}->StifleHistory($self->{histsize}) if
 	    $self->{input}{readline}->can("StifleHistory");
@@ -167,7 +170,7 @@ sub want_gnu_readline($)
 
 sub read_command($;$) {
     my($self, $prompt)  = @_;
-    $prompt //= '(trepanpl) ';
+    $prompt = '(trepanpl) ' unless defined $prompt;
     $self->readline($prompt);
 }
 

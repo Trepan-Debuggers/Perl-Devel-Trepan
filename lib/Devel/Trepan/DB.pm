@@ -7,7 +7,6 @@
 use rlib '../..';
 
 package DB;
-use feature 'switch';
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
@@ -180,6 +179,7 @@ sub DB {
 						'$',
 						@saved);
 	    my $old_val = $wp->old_value;
+	    no warnings 'once';
 	    next if !defined($old_value) and !defined($new_val);
 	    my $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {
@@ -274,10 +274,10 @@ sub DB {
 		    $c->output($mess);
 		}
 
-		given ($after_eval) {
-		    when (1) {$event = 'after_eval'; }
-		    when (2) {$event = 'after_nest'; }
-		    default { ; }
+		if (1 == $after_eval ) {
+		    $event = 'after_eval';
+		} elsif (2 == $after_eval) {
+		    $event = 'after_nest'
 		}
 
 		# call client event loop; must not block
@@ -289,26 +289,22 @@ sub DB {
 
 		    local $nest = $eval_opts->{nest};
 		    my $return_type = $eval_opts->{return_type};
+		    $return_type = '' unless defined $return_type;
 
-		    given ($return_type) {
-			when ('$') {
-			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, 
-						      $return_type, @saved);
-			}
-			when ('@') {
+		    if ('$' eq $return_type) {
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
-			}
-			when ('%') {
+		    } elsif ('@' eq $return_type) {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    } elsif ('%' eq $return_type) {
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		    } else {
+			$DB::eval_result = 
 			    &DB::eval_with_return($usrctxt, $eval_str, 
 						  $return_type, @saved);
-			} 
-			default {
-			    $eval_result = 
-				&DB::eval_with_return($usrctxt, $eval_str, 
-						      $return_type, @saved);
-			}
 		    }
 
 		    if ($nest) {
@@ -400,10 +396,67 @@ sub save {
 }
 
 sub catch {
-  for (@clients) { $_->awaken; }
-  $event = 'interrupt';
-  $DB::signal = 1;
-  $ready = 1;
+    # for (@clients) { $_->awaken; }
+    @DB::_ = @_;
+    $DB::caller = [caller];
+    ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
+     $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
+     $DB::hinthash
+    ) = @{$DB::caller};
+    $event = 'post-mortem';
+    $running = 0;
+    for my $c (@clients) {
+	# Now sit in an event loop until something sets $running
+	my $after_eval = 0;
+	do {
+	    # Show display expresions
+	    my $display_aref = $c->display_lists;
+	    for my $disp (@$display_aref) {
+		next unless $disp && $disp->enabled;
+		# FIXME: allow more than just scalar contexts.
+		my $eval_result =  
+		    &DB::eval_with_return($usrctxt, $disp->arg, 
+					  $disp->return_type, @saved);
+		my $mess = sprintf("%d: $eval_result", $disp->number);
+		$c->output($mess);
+	    }
+
+	    if (1 == $after_eval ) {
+		$event = 'after_eval';
+	    } elsif (2 == $after_eval) {
+		$event = 'after_nest'
+	    }
+	    
+	    # call client event loop; must not block
+	    $c->idle($event, 0);
+	    $after_eval = 0;
+	    if ($running == 2 && defined($eval_str)) { 
+		# client wants something eval-ed
+		# FIXME: turn into subroutine.
+		
+		my $return_type = $eval_opts->{return_type};
+		
+		if ('$' eq $return_type) {
+		    $eval_result = 
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		} elsif ('@' eq $return_type) {
+		    &DB::eval_with_return($usrctxt, $eval_str, 
+					  $return_type, @saved);
+		} elsif ('%' eq $return_type) {
+		    &DB::eval_with_return($usrctxt, $eval_str, 
+					  $return_type, @saved);
+		} else {
+		    $eval_result = 
+			&DB::eval_with_return($usrctxt, $eval_str, 
+					      $return_type, @saved);
+		}
+		
+		$after_eval = 1;
+		$running = 0;
+	    }
+	} until $running;
+    }
 }
 
 ####
@@ -485,8 +538,8 @@ sub finish($;$$) {
 
     my $index = $#stack-$count;
     $index = 0 if $index < 0;
-    $stack[$index] = RETURN_EVENT;
-    # $DB::single = RETURN_EVENT;
+    $stack[$index] |= RETURN_EVENT;
+    $DB::single = RETURN_EVENT;
     $DB::running = 1;
 }
 
@@ -600,18 +653,12 @@ sub ready {
 
 # stubs
     
-sub init {}
 sub stop {}
 sub idle {}
 sub cleanup {}
 sub output {}
 sub warning {}
 sub showfile {}
-
-#
-# client init
-#
-for (@clients) { $_->init }
 
 $SIG{'INT'} = \&DB::catch;
 

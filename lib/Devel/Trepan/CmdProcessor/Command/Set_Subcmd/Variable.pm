@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use feature 'switch';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Variable;
@@ -29,11 +28,15 @@ our $MIN_ABBREV = length('var');
 sub set_var($$$) 
 {
     my ($var_name, $ref, $value) = @_;
-    given (substr($var_name, 1, 1)) {
-	when ('$') { ${$ref->{$var_name}}  = $value; }
-	when ('@') { @{$ref->{$var_name}}  = @{$value}; }
-	when ('%') { %{$ref->{$var_name}}  = %{$value}; }
-	default { ${$ref->{$var_name}}  = $value; }
+    my $type = substr($var_name, 1, 1);
+    if ('$' eq $type) {
+	${$ref->{$var_name}}  = $value;
+    } elsif ('@' eq $type) { 
+	@{$ref->{$var_name}}  = @{$value};
+    } elsif ('%' eq $type) {
+	%{$ref->{$var_name}}  = %{$value}; 
+    } else {
+	${$ref->{$var_name}}  = $value; 
     }
 }
 

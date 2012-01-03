@@ -1,15 +1,17 @@
 Artistic
 bin/trepan.pl
-Build.PL
+Build.PL			Proto Build creator
 ChangeLog
 Changes
 example/eval.pl
+example/except-bug1.pl
 example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
 example/nexting.pl
 example/our.pl
+example/signal.pl
 example/TCPPack.pm
 example/test-module.pm
 example/test-require.pl
@@ -31,7 +33,6 @@ lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
 lib/Devel/Trepan/CmdProcessor/Command/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
-lib/Devel/Trepan/CmdProcessor/Command/Disassemble.pm
 lib/Devel/Trepan/CmdProcessor/Command/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
 lib/Devel/Trepan/CmdProcessor/Command/Edit.pm
@@ -39,6 +40,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Enable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
 lib/Devel/Trepan/CmdProcessor/Command/Frame.pm
+lib/Devel/Trepan/CmdProcessor/Command/Handle.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt
 lib/Devel/Trepan/CmdProcessor/Command/Help/examples.txt
@@ -50,9 +52,11 @@ lib/Devel/Trepan/CmdProcessor/Command/Info.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
@@ -118,6 +122,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Up.pm
 lib/Devel/Trepan/CmdProcessor/Command/Watch.pm
 lib/Devel/Trepan/CmdProcessor/Default.pm
+lib/Devel/Trepan/CmdProcessor/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Help.pm
 lib/Devel/Trepan/CmdProcessor/Hook.pm
@@ -157,16 +162,16 @@ lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/Psh.pm
+lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm
 Makefile.PL
 MANIFEST			This list of files
-MANIFEST.SKIP
 META.json
 META.yml
-README
-README.md
-t/10test-cmd-complete.t
+README				README in perlpod format for CPAN
+README.md			README in Markdown format for github
+t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
 t/10test-complete.t
 t/10test-condition.t
@@ -181,9 +186,11 @@ t/10test-options.t
 t/10test-position.t
 t/10test-proc-hook.t
 t/10test-proc-load.t
+t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
-t/20test-autolist.t
+t/10test-watchmgr.t
+t/20test-autolist.t		Note: t/20*.t tests are integration tests
 t/20test-break.t
 t/20test-cont.t
 t/20test-debug.t
@@ -197,6 +204,7 @@ t/20test-list4.t
 t/20test-my.t
 t/20test-next.t
 t/20test-seq1.t
+t/20test-sig.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
@@ -205,6 +213,8 @@ t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
 t/data/break.right
+t/data/break2.cmd
+t/data/break2.right
 t/data/cont.cmd
 t/data/cont.right
 t/data/debug.cmd
@@ -233,6 +243,10 @@ t/data/next.cmd
 t/data/next.right
 t/data/seq1.cmd
 t/data/seq1.right
+t/data/sig.cmd
+t/data/sig.right
+t/data/sig2.cmd
+t/data/sig2.right
 t/data/step.cmd
 t/data/step.right
 t/data/trace1.cmd
@@ -243,6 +257,4 @@ t/data/watch1.cmd
 t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
-t/Helper.pm
-t/Makefile
-
+t/Helper.pm			Helper routine for integration tests

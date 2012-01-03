@@ -6,7 +6,6 @@
 use strict; use warnings;
 use Exporter;
 
-use feature 'switch';
 use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
@@ -41,12 +40,12 @@ sub get_an_int($$$)
         }
         return undef;
     }
-    if ($opts->{min_value} and $ret_value < $opts->{min_value}) {
+    if (exists($opts->{min_value}) and $ret_value < $opts->{min_value}) {
 	my $msg = sprintf("Expecting integer value to be at least %d; got %d.",
 			  $opts->{min_value}, $ret_value);
         $self->errmsg($msg);
         return undef;
-    } elsif ($opts->{max_value} and $ret_value > $opts->{max_value}) {
+    } elsif (exists($opts->{max_value}) and $ret_value > $opts->{max_value}) {
 	my $msg = sprintf("Expecting integer value to be at most %d; got %d.",
 			  $opts->{max_value}, $ret_value);
         $self->errmsg($msg);
@@ -118,7 +117,7 @@ use Devel::Trepan::Util qw(hash_merge);
 sub get_int_list($$;$)
 {
     my ($self, $args, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     map {$self->get_an_int($_, $opts)} @{$args}; # .compact
 }
     
@@ -263,7 +262,7 @@ sub get_int_noerr($$)
 sub get_onoff($$;$$) 
 {
     my ($self, $arg, $default, $print_error) = @_;
-    $print_error //= 1;
+    $print_error = 1 unless defined $print_error;
     unless (defined $arg) {
         unless (defined $default) {
 	    if ($print_error) {
@@ -307,7 +306,7 @@ sub parse_position($$;$)
     my @args = @$args;
     my $size = scalar @args;
     my $gobble_count = 0;
-    $validate_line_num //= 0;
+    $validate_line_num = 0 unless defined $validate_line_num;
 
     if (0 == $size) {
 	no warnings 'once';
@@ -386,7 +385,7 @@ unless (caller) {
     
     for my $val (qw(1 1E bad 1+1 -5)) {
 	my $result = get_int_noerr('bogus', $val);
-	$result //= '<undef>';
+	$result = '<undef>' unless defined $result;
 	print "get_int_noerr(${val}) = $result\n";
     }
     

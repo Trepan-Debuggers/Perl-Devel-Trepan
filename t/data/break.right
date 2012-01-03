@@ -3,7 +3,15 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 Breakpoint 1 set in gcd.pl at line 18
 Breakpoint 2 set in gcd.pl at line 9
 Breakpoint 3 set in gcd.pl at line 11
+Breakpoint 4 set in gcd.pl at line 3
+Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.
 Deleted breakpoint 1
 Deleted breakpoint 2
+XXXX matched debugger cache file:
+	gcd.pl
+Possible breakpoint line numbers:
+  2, 3, 9, 11, 13, 14, 15, 18, 20, 21
+*** Line 10 of XXX not known to be a trace line.
+*** Subroutine gcd1 not found.
 x1 (gcd.pl:9)
     my ($a, $b) = @_;

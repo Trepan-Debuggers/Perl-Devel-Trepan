@@ -12,7 +12,7 @@ use rlib '../../..';
 # computer.
 package Devel::Trepan::Interface::Client;
 our (@ISA);
-use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
+use if !defined(@ISA), Devel::Trepan::Interface;
 use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
 use if !defined(@ISA), Devel::Trepan::Interface::User;
 use if !defined(@ISA), Devel::Trepan::IO::Input;

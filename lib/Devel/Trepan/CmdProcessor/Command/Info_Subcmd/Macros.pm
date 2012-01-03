@@ -12,7 +12,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
-our $CMD = "show macros";
+our $CMD = "info macros";
 our $HELP         = <<"EOH";
 ${CMD} 
 ${CMD} *
@@ -21,7 +21,7 @@ ${CMD} MACRO1 [MACRO2 ..]
 In the first form a list of the existing macro names are shown
 in column format.
 
-In the second form, all macro names and their definitions are show.
+In the second form, all macro names and their definitions are shown.
 
 In the last form the only definitions of the given macro names is shown.
 show macro [NAME1 NAME2 ...] 

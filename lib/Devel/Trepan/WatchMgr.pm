@@ -30,7 +30,7 @@ package Devel::Trepan::WatchMgr;
 
 sub new($$) 
 {
-    my ($class,$dbgr) = @_;
+    my ($class, $dbgr) = @_;
     my $self = {};
     $self->{dbgr} = $dbgr;
     bless $self, $class;
@@ -97,10 +97,13 @@ sub delete($$)
 sub delete_by_object($$)
 {
     my ($self, $delete_object) = @_;
-    for my $candidate ($self->list) {
+    my @list = $self->list;
+    my $i = 0;
+    for my $candidate (@list) {
 	next unless defined $candidate;
 	if ($candidate eq $delete_object) {
-	    $candidate = undef;
+	    splice @list, $i, 1;
+	    $self->{list} = \@list;
 	    return $delete_object;
 	}
     }
@@ -169,6 +172,7 @@ sub reset($)
 
 unless (caller) {
 
+    eval <<'EOE';
     sub wp_status($$)
     { 
 	my ($watchpoints, $i) = @_;
@@ -177,10 +181,9 @@ unless (caller) {
 	print $watchpoints->inspect();
 	print "--- ${i} ---\n";
     }
+EOE
 
-# require Devel::Trepan::Core;
-# my $dbgr = Devel::Trepan::Core->new;
-my $watchpoints = Devel::Trepan::WatchMgr->new('bogus');
+    my $watchpoints = Devel::Trepan::WatchMgr->new('bogus');
 wp_status($watchpoints, 0);
 
 my $watchpoint1 = $watchpoints->add('1+2');
@@ -194,25 +197,9 @@ wp_status($watchpoints, 3);
 $watchpoints->add('3*4+5');
 wp_status($watchpoints, 4);
 
+$watchpoints->delete(2);
+wp_status($watchpoints, 5);
 
-
-  # p watchpoints.delete(2)
-  # p watchpoints[2]
-  # wp_status(watchpoints, 3)
-
-  # # Two of the same breakpoints but delete 1 and see that the
-  # # other still stays
-  # offset = frame.pc_offset
-  # b2 = Trepan::Breakpoint.new(iseq, offset)
-  # watchpoints << b2
-  # wp_status(watchpoints, 4)
-  # b3 = Trepan::Breakpoint.new(iseq, offset)
-  # watchpoints << b3
-  # wp_status(watchpoints, 5)
-  # watchpoints.delete_by_object(b2)
-  # wp_status(watchpoints, 6)
-  # watchpoints.delete_by_object(b3)
-  # wp_status(watchpoints, 7)
 }
 
 1;

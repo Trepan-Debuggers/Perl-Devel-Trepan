@@ -13,7 +13,7 @@ use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.1.2';
+    $VERSION      = '0.1.7';
 }
 use constant VERSION => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
@@ -30,22 +30,23 @@ sub default_term() {
 my $home = $ENV{'HOME'} || glob("~");
 my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
-    initial_dir  => undef, # If --cd option was given, we save it here.
-    initfile     => $initfile,
-    batchfile    => undef,
-    testing      => undef,
     basename     => 0,
-    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
-    cmdfiles     => [],
+    batchfile    => undef,
     client       => 0,     # Set 1 if we want to connect to an out-of
                            # process debugger "server".
-    highlight    => default_term(),
-    # Default values used only when 'server' or 'client'
-    # (out-of-process debugging)
-    port         => 1954,
+    cmddir       => [],    # Additional directories of debugger commands
+    cmdfiles     => [],    # Files containing debugger commands to 'source'
+    highlight    => default_term(),    
+                           # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost', 
-    traceprint   => 0,       # set -x tracing? 
+    initfile     => $initfile,
+    initial_dir  => undef, # If --cd option was given, we save it here.
+    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
+    port         => 1954,
+    post_mortem  => 0,       # Go into debugger on die? 
     readline     => 1,       # Try to use GNU Readline?
+    testing      => undef,
+    traceprint   => 0,       # set -x tracing? 
 
 };
 
@@ -63,24 +64,26 @@ sub process_options($)
     my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
-	 'help'         => \$help,
-	 'man'          => \$man,
-	 'port:n'       => \$opts->{port},
-	 'highlight'    => \$opts->{highlight},
-	 'no-highlight' => sub { $opts->{highlight} = 0},
-	 'host:s'       => \$opts->{host},
 	 'basename'     => \$opts->{basename},
 	 'batch:s'      => \$opts->{batchfile},
+	 'cd:s'         => \$opts->{initial_dir},
 	 'client'       => \$opts->{client},
+	 'cmddir=s@'    => \$opts->{cmddir},
+	 'command=s@' => \$opts->{cmdfiles},
+	 'help'         => \$help,
+	 'highlight'    => \$opts->{highlight},
+	 'host:s'       => \$opts->{host},
+	 'man'          => \$man,
+	 'no-highlight' => sub { $opts->{highlight} = 0},
+	 'no-readline' => sub { $opts->{readline} = 0},
+	 'nx'           => \$opts->{nx},
+	 'port:n'       => \$opts->{port},
+	 'post-mortem'  => \$opts->{post_mortem},
+	 'readline'     => \$opts->{readline},
 	 'server'       => \$opts->{server},
 	 'testing:s'    => \$opts->{testing},
-	 'c|command=s@' => \$opts->{cmdfiles},
-	 'cd:s'         => \$opts->{initial_dir},
-	 'nx'           => \$opts->{nx},
-	 'readline'     => \$opts->{readline},
-	 'no-readline' => sub { $opts->{readline} = 0},
-	 'x|trace'      => \$opts->{traceprint},
 	 'version'      => \$show_version,
+	 'x|trace'      => \$opts->{traceprint},
 	);
     
     pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__), 
@@ -90,7 +93,8 @@ sub process_options($)
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
 	defined($opts->{initial_dir});
-    my $batch_filename = $opts->{testing} // $opts->{batchfile};
+    my $batch_filename = $opts->{testing};
+    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
     if ($batch_filename) {
 	if (scalar(@{$opts->{cmdfiles}}) != 0) {
 	    printf(STDERR "--batch option disables command files: %s\n", 
@@ -135,22 +139,24 @@ unless (caller) {
     print Dumper($opts), "\n";
     my $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--version);
-	my $opts = process_options(\@argv);
-	exit 0;
+    	my @argv = qw(--version);
+    	my $opts = process_options(\@argv);
+    	exit 0;
     } else {
-	waitpid($pid, 0);
-	print "exit code: ", $?>>8, "\n";
+    	waitpid($pid, 0);
+    	print "exit code: ", $?>>8, "\n";
     }
     $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--cd /tmp);
+	my @argv = qw(--cd /tmp --cmddir /tmp);
 	my $opts = process_options(\@argv);
+	print Dumper($opts), "\n";
 	exit 0;
     } else {
 	waitpid($pid, 0);
 	print "exit code: ", $?>>8, "\n";
     }
+    exit;
     $pid = fork();
     if ($pid == 0) {
 	my @argv = qw(--cd /bogus);
@@ -190,7 +196,8 @@ trepan.pl - Perl "Trepanning" Debugger
       --basename           Show basename only on source file listings. 
                            (Needed in regression tests)
       
-      -c| --command FILE   Run debugger command file FILE
+      -c| --command FILE   Run or 'source' debugger command file FILE
+      --cmddir DIR         Read DIR for additional debugger commands
       --batch FILE         Like --command, but quit after reading FILE.
                            This option has precidence over --command and
                            will also set --mx
@@ -201,11 +208,12 @@ trepan.pl - Perl "Trepanning" Debugger
                            rus the Perl program to be debugged runs. 
                            The client runs outside of this proces.
                           
-      --port N             TCP/IP port to use on remote connection
-                           The default is 1954
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1
 
+      --port N             TCP/IP port to use on remote connection
+                           The default is 1954
+      --post-mortem        Enter debugger on die
       --readline  | --no-readline
                            Try or don't try to use Term::Readline
       -x|--trace           Simulate line tracing (think POSIX shell set -x)
@@ -215,7 +223,7 @@ trepan.pl - Perl "Trepanning" Debugger
 
 =head1 DESCRIPTION
 
-B<trepanpl> is a gdb-like debugger. Much of the interface and code has
+B<trepan.pl> is a gdb-like debugger. Much of the interface and code has
 been adapted from the trepanning debuggers of Ruby.
 
 =cut

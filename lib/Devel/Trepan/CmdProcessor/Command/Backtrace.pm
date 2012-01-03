@@ -66,12 +66,13 @@ sub run($$)
     $self->{proc}->print_stack_trace(\@frames, $opts);
 }
 
-if (__FILE__ eq $0) {
+unless(caller) {
     require Devel::Trepan::DB;
     require Devel::Trepan::Core;
     my $db = Devel::Trepan::Core->new;
-    my $intf = Devel::Trepan::Interface::User->new;
+    my $intf = Devel::Trepan::Interface::User->new(undef, undef, {readline => 0});
     my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
+
     $proc->{stack_size} = 0;
     my $cmd = __PACKAGE__->new($proc);
     $cmd->run([$NAME]);

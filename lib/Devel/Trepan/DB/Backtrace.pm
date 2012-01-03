@@ -39,9 +39,10 @@ stack frame. Each has the following keys and values:
 # subroutine args.
 sub backtrace($;$$$) {
     my ($self, $skip, $count, $scan_for_DB_sub) = @_;
-    $skip //= 0;  $count //= 1e9;
+    $skip = 0 unless defined($skip);  
+    $count = 1e9 unless defined($count);
 
-    $scan_for_DB_sub //= 1;
+    $scan_for_DB_sub ||= 1;
     # print "scan: $scan_for_DB_sub\n";
 
     # These variables are used to capture output from caller();
@@ -49,14 +50,16 @@ sub backtrace($;$$$) {
 
     my $i=0;
     if ($scan_for_DB_sub) {
+	my $db_fn = ($event eq 'post-mortem') ? 'catch' : 'DB'; 
     	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
-	    if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
+	    if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
 		$i--;
 		last ;
 	    }
     	}
     }
 
+    # print "++count: $count, i $iline\n";
     $count += $i;
 
     my ( @a, $args_ary );
@@ -74,6 +77,8 @@ sub backtrace($;$$$) {
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
 	   ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
+	next if $pkg eq 'DB' && 'fn' eq 'sub';
+	# print "++file: $file, line $line $fn\n";
 	$i++;
         # Go through the arguments and save them for later.
         @a = ();
@@ -170,8 +175,8 @@ sub backtrace($;$$$) {
 	    $callstack[$i-1]->{args} = $callstack[$i]->{args};
 	    $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
 	}
-	# $callstack[$i]{args} = undef;
-	# $callstack[$i]{fn}   = undef;
+	$callstack[$i]{args} = undef;
+	$callstack[$i]{fn}   = undef;
     }
 
     @callstack;

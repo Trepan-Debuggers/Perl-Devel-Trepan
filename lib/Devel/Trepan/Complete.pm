@@ -1,6 +1,5 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-use strict;
-use warnings;
+use warnings; use strict; 
 use Exporter;
 
 
@@ -8,7 +7,7 @@ package Devel::Trepan::Complete;
 use vars qw(@ISA @EXPORT);
 @ISA = qw(Exporter);
 @EXPORT = qw(complete_token complete_token_with_next 
-             next_token
+             next_token signal_complete
              complete_token_filtered_with_next);
 
 # Return an Array of String found from Array of String
@@ -94,6 +93,54 @@ sub next_token($$)
     return ($next_blank_pos, substr($str, $next_nonblank_pos, $token_size));
 }
 
+# From Term::ReadLine::readline.pm
+
+##
+## For use in passing to completion_matches(), returns a list of
+## filenames that begin with the given pattern.  The user of this package
+## can set $rl_completion_function to 'rl_filename_list' to restore the
+## default of filename matching if they'd changed it earlier, either
+## directly or via &rl_basic_commands.
+##
+sub filename_list(;$$)
+{
+    my ($pattern, $add_suffix) = @_;
+    $pattern = '' unless defined $pattern; 
+    $add_suffix = 0 unless defined $add_suffix;
+    # $pattern = glob($pattern) if substr($pattern, 0, 1) = '~';
+    my @files = (<$pattern*>);
+    if ($add_suffix) {
+	foreach (@files) {
+	    if (-l $_) {
+		$_ .= '@';
+	    } elsif (-d _) {
+		$_ .= '/';
+	    } elsif (-x _) {
+		$_ .= '*';
+	    } elsif (-S _ || -p _) {
+		$_ .= '=';
+	    }
+	}
+    }
+    return @files;
+}
+
+# Custom completion routines
+my @signal_complete_completions=();
+sub signal_complete($) {
+    my ($prefix) = @_;
+    unless(@signal_complete_completions) {
+	@signal_complete_completions = keys %SIG;
+	my $last_sig = scalar @signal_complete_completions;
+	push(@signal_complete_completions, 
+	     map({lc $_} @signal_complete_completions));
+	my @nums = (-$last_sig .. $last_sig);
+	push @signal_complete_completions, @nums;
+    }
+    complete_token(\@signal_complete_completions, $prefix);
+}
+
+
 unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
     my @cmds = keys %{$hash_ref};
@@ -117,6 +164,14 @@ unless (caller) {
 	my @ary = next_token($x, $pos);
 	printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
     }
+    print "List of filenames:\n";
+    print join(', ', filename_list), "\n";
+    print "List of filenames beginning with C:\n";
+    print join(', ', filename_list('C')), "\n";
+
+    print join(', ', signal_complete('C')), "\n";
+    # FIXME: We don't handle ~ expansion right now.
+    #  print "List of filenames expanded from ~\n";
 }
 
 1;

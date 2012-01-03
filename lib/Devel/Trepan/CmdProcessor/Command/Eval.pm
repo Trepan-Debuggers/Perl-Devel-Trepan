@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -8,7 +8,7 @@ package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (defined @ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $);
+use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 use constant NEED_STACK  => 1;
@@ -49,7 +49,7 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-Normally, eval runs in a scalar context and so the result is a
+Normally, eval runs in a scalar context; therefore the result is a
 scalar. However you can force the type of the result by adding the
 apprpropriate sigil @, %, or \$.
 
@@ -87,22 +87,25 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $expr;
+    my $code_to_eval;
     my $cmd_name = $args->[0];
     if (1 == scalar @$args) {
-	$expr  = $proc->current_source_text();
+	$code_to_eval  = $proc->current_source_text();
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
-	    $expr = Devel::Trepan::Util::extract_expression($expr);
-	    $proc->msg("eval: ${expr}");
+	    $code_to_eval = 
+		Devel::Trepan::Util::extract_code_to_evalession($code_to_eval);
+	    $proc->msg("eval: ${code_to_eval}");
 	}
     } else {
-	$expr = $proc->{cmd_argstr};
+	$code_to_eval = $proc->{cmd_argstr};
     }
     {
-	my $opts->{return_type} = parse_eval_suffix($cmd_name);
+	my $opts = {return_type => parse_eval_suffix($cmd_name)};
 	no warnings 'once';
-	$proc->evaluate($expr, $opts);
+	# FIXME: 4 below iss a magic fixup constant, also found in
+	# DB::finish.  Remove it.
+	$proc->eval($code_to_eval, $opts, 4);
     }
 }
 

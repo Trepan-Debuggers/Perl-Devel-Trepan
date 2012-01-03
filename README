@@ -1,6 +1,8 @@
 NAME
     Devel::Trepan -- A new Perl debugger
 
+A modular, testable debugger in the style of the Ruby "Trepanning" debuggers.
+
 SYNOPSIS
 
 From a shell: 
@@ -9,12 +11,9 @@ From a shell:
 
 Or for those who prefer the traditional Perlish way:
 
-       bash$ perl -d:Trepan perl-program [perl-program-opts]
+        bash$ perl -d:Trepan perl-program [perl-program-opts]
 
-Calling the debugger from inside your Progam program using Joshua ben
-Jore's Enbugger (http://search.cpan.org/~jjore/Enbugger/) patched with
-the trepan extension
-(https://github.com/rocky/Perl-Devel-Trepan/blob/master/data/Enbugger-trepan.patch):
+Calling the debugger from inside your Perl program using Enbugger (2.012 or greater):
 
 	# This needs to be done once and could even be in some sort of conditional code
         require Enbugger; Enbugger->load_debugger( 'trepan' );
@@ -32,12 +31,9 @@ To install this Devel::Trepan, run the following commands:
 	make test
 	[sudo] make install
 
-AUTHOR
-    Rocky Bernstein <rocky@cpan.org>
-
 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 Rocky Bernstein
+Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
     This program is distributed WITHOUT ANY WARRANTY, including but not
     limited to the implied warranties of merchantability or fitness for a

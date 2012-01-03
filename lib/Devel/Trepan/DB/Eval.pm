@@ -3,7 +3,6 @@
 package DB;
 use warnings; use strict;
 use English qw( -no_match_vars );
-use feature 'switch';
 use vars qw($eval_result @eval_result %eval_result
             $eval_str $eval_opts $event $return_type );
 
@@ -83,49 +82,38 @@ sub eval_with_return {
 	local $osingle = $DB::single;
 	local $od      = $DEBUGGING;
 
-	given ($return_type) {
-	    when ('$') {
-		eval "$user_context \$DB::eval_result=$eval_str";
-		$eval_result = eval "$user_context $eval_str";
-	    }
-	    when ('@') {
-		eval "$user_context \@DB::eval_result=$eval_str\n";
-	    }
-	    when ('%') {
-		eval "$user_context \%DB::eval_result=$eval_str\n";
-	    } 
-	    default {
-		$eval_result = eval "$user_context $eval_str\n";
-	    }
+	if ('$' eq $return_type) {
+	    eval "$user_context \$DB::eval_result=$eval_str";
+	    $eval_result = eval "$user_context $eval_str";
+	} elsif ('@' eq $return_type) {
+	    eval "$user_context \@DB::eval_result=$eval_str\n";
+	} elsif ('%' eq $return_type) {
+	    eval "$user_context \%DB::eval_result=$eval_str\n";
+	}  else {
+	    $eval_result = eval "$user_context $eval_str\n";
 	}
 	
+        # Restore those old values.
+        $DB::trace  = $otrace;
+        $DB::single = $osingle;
+        $DEBUGGING  = $od;
+
 	my $EVAL_ERROR_SAVE = $EVAL_ERROR;
 	if ($EVAL_ERROR_SAVE) {
 	    _warnall($EVAL_ERROR_SAVE);
 	    $eval_str = '';
 	    return undef;
 	} else {
-	    given ($return_type) {
-		when ('$') {
-		    return $eval_result;
-		}
-		when ('$') {
-		    return @eval_result;
-		}
-		when ('%') {
-		    return %eval_result;
-		} 
-		default {
-		    return $eval_result;
-		}
+	    if ('$' eq $return_type) {
+		return $eval_result;
+	    } elsif ('@' eq $return_type) {
+		return @eval_result;
+	    } elsif ('%' eq $return_type) {
+		return %eval_result;
+	    }  else {
+		return $eval_result;
 	    }
 	}
-
-        # Restore those old values.
-        $DB::trace  = $otrace;
-        $DB::single = $osingle;
-        $DEBUGGING  = $od;
-
     }
 }
 1;

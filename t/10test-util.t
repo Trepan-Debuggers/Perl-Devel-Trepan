@@ -77,3 +77,35 @@ for my $pair (
 	       $pair->[0], parse_eval_suffix($pair->[0]), $pair->[1]));
 }
 
+
+for my $pair 
+    ([__FILE__, ''],
+     ['bogus', 1]) {
+	my ($name, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::invalid_filename($name);
+	is(!!$result, $expect, $result || "$name should exist");
+};
+
+for my $pair 
+    (['yes', 1],
+     ['no',  1],
+     ['Y',   1],
+     ['NO',  1],
+     ['nein', 1],
+     ['nien', ''],
+     ['huh?', '']) {
+	my ($resp, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::YN($resp);
+	is($result, $expect, $resp);
+}
+
+for my $pair 
+    ([1,      'Yes'],
+     [0,      'No'],
+     ['',     'No'],
+     ['Foo',  'Yes'],
+     [undef,  'No']) {
+	my ($resp, $expect) = @$pair;
+	my $result = Devel::Trepan::Util::bool2YN($resp);
+	is($result, $expect, 'bool2YN of ' . ($resp || 'undef'));
+}

@@ -35,6 +35,13 @@ HELP
 
 our $MIN_ABBREV  = length('br');
   
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    my @completions = $self->{proc}{brkpts}->ids;
+    Devel::Trepan::Complete::complete_token(\@completions, $prefix);
+}
+
 sub bpprint($$;$) 
 {
     my ($self, $bp, $verbose) = @_;

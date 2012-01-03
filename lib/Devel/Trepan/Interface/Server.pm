@@ -12,10 +12,10 @@ use English qw( -no_match_vars );
 our (@ISA);
 
 # Our local modules
-use if !defined(@ISA), Devel::Trepan::Interface; # qw(YES NO @YN);
+use if !defined(@ISA), Devel::Trepan::Interface;
 use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
 use if !defined(@ISA), Devel::Trepan::IO::Input;
-use Devel::Trepan::Util qw(hash_merge);
+use Devel::Trepan::Util qw(hash_merge YES NO);
 use if !defined(@ISA), Devel::Trepan::IO::TCPServer;
 use strict; 
 
@@ -59,7 +59,7 @@ sub close($)
 {
     my ($self) = @_;
     if ($self->{inout} && $self->{inout}->is_connected) {
-	$self->{inout}->write(QUIT + 'bye');
+	$self->{inout}->write(QUIT . 'bye');
 	$self->{inout}->close;
     }
 }
@@ -121,7 +121,7 @@ sub is_connected($)
 sub finalize($;$)
 {
     my ($self, $last_wishes) = @_;
-    $last_wishes //= 'QUIT';
+    $last_wishes = 'QUIT' unless defined $last_wishes;
     $self->{inout}->writeline($last_wishes) if $self->is_connected;
     $self->close;
 }
@@ -194,7 +194,7 @@ sub remove_history($;$)
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
-    $which //= $self->{input}{readline}->where_history();
+    $which = $self->{input}{readline}->where_history() unless defined $which;
     $self->{input}{readline}->remove_history($which);
 }
 

@@ -3,7 +3,7 @@
 #   Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
 #
 #
-=head1 NAME Linecache
+=head1 NAME DB::LineCache
 
 DB::LineCache - package to read and cache lines of a Perl program. 
 
@@ -19,13 +19,13 @@ The routines here may be is useful when a small random sets of lines
 are read from a single file, in particular in a debugger to show
 source lines.
 
-  use 'DB::LineCache'
-  lines = DB::LineCache::getlines('/tmp/myperl.pl')
+  use DB::LineCache;
+  $lines = DB::LineCache::getlines('/tmp/myperl.pl')
   # The following lines have same effect as the above.
   $: << '/tmp'
-  Dir.chdir('/tmp') {lines = DB::LineCache::getlines('myperl.pl')
+  Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
 
-  line = DB::LineCache::getline('/tmp/myperl.pl', 6)
+  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
   # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
 
   DB::LineCache::clear_file_cache
@@ -33,7 +33,7 @@ source lines.
 
 =cut
 
-use Digest::SHA1;
+use Digest::SHA;
 
 use version; $VERSION = '0.1.0';
 
@@ -49,7 +49,7 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
-use rlib '../../..';
+use rlib '../..';
 ## FIXME:: Make conditional
 use Devel::Trepan::DB::Colors;
 my $perl_formatter = Devel::Trepan::DB::Colors::setup();
@@ -137,7 +137,7 @@ sub cached_files() {
 sub checkcache(;$$)
 {
     my ($filename, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
 
     my $use_perl_d_file = $opts->{use_perl_d_file};
 
@@ -177,7 +177,7 @@ sub checkcache(;$$)
 sub cache_script($;$) 
 {
     my ($script, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     update_script_cache($script, $opts) unless 
 	(exists $script_cache{$script});
     $script;
@@ -198,11 +198,11 @@ sub cache($;$)
 sub cache_file($;$$) 
 {
     my ($filename, $reload_on_change, $opts) = @_;
-    $opts //={};
+    $opts = {} unless defined $opts;
     if (exists $file_cache{$filename}) {
 	checkcache($filename) if $reload_on_change;
     } else {
-	$opts->{use_perl_d_file} //= 1;
+	$opts->{use_perl_d_file} = 1 unless defined $opts->{use_perl_d_file};
 	update_cache($filename, $opts);
     }
     if (exists $file_cache{$filename}) {
@@ -235,27 +235,33 @@ sub is_empty($)
     $ref->{lines_href}{plain};
 }
 
+sub file_list()
+{
+    sort((cached_files(), keys(%file2file_remap)));
+}
+
 # Get line +line_number+ from file named +filename+. Return undef if
 # there was a problem. If a file named filename is not found, the
 # function will look for it in the $: array.
 # 
 # Examples:
 # 
-#  lines = LineCache::getline('/tmp/myfile.rb')
+#  $lines = LineCache::getline('/tmp/myfile.rb')
 #  # Same as above
 #  $: << '/tmp'
-#  lines = LineCache.getlines('myfile.rb')
+#  $lines = LineCache.getlines('myfile.rb')
 #
 sub getline($$;$)
 {
     my ($file_or_script, $line_number, $opts) = @_;
-    $opts //= {};
+    $opts = {} unless defined $opts;
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = map_file($file_or_script);
     ($filename, $line_number) = map_file_line($filename, $line_number);
     ## print "+++FILENAME $filename\n";
     my $lines = getlines($filename, $opts);
-    if (@$lines && $line_number > 0 && $line_number <= scalar @$lines) {
+    if (defined $lines && @$lines && $line_number > 0 && 
+	$line_number <= scalar @$lines) {
 	my $line = $lines->[$line_number-1];
 	chomp $line if defined $line;
         return $line;
@@ -271,7 +277,7 @@ sub getlines($;$);
 sub getlines($;$)
 {
     my ($filename, $opts) = @_;
-    $opts //= {use_perl_d_file => 1};
+    $opts = {use_perl_d_file => 1} unless defined $opts;
     my ($reload_on_change, $use_perl_d_file) = 
         ($opts->{reload_on_change}, $opts->{use_perl_d_file});
     checkcache($filename) if $reload_on_change;
@@ -348,7 +354,8 @@ sub remap_file_lines($$$$)
     my ($from_file, $to_file, $range_ref, $start) = @_;
     my @range = @$range_ref;
     $to_file = $from_file unless $to_file;
-    my $ary_ref = ${$file2file_remap_lines{$to_file}} //= [];
+    my $ary_ref = ${$file2file_remap_lines{$to_file}};
+    $ary_ref = [] unless defined $ary_ref;
     # FIXME: need to check for overwriting ranges: whether
     # they intersect or one encompasses another.
     push @$ary_ref, [$from_file, @range, $start];
@@ -362,7 +369,7 @@ sub DB::LineCache::sha1($)
     return undef unless exists $file_cache{$filename};
     my $sha1 = $file_cache{$filename}{sha1};
     return $sha1->hexdigest if exists $file_cache{$filename}{sha1};
-    $sha1 = Digest::SHA1->new;
+    $sha1 = Digest::SHA->new('sha1');
     my $line_ary = $file_cache{$filename}{lines_href}{plain};
     for my $line (@$line_ary) {
 	next unless defined $line;
@@ -402,18 +409,7 @@ sub trace_line_numbers($;$)
     my $fullname = cache($filename, $reload_on_change);
     return undef unless $fullname;
     my $trace_nums_ary = $file_cache{$filename}{trace_nums};
-    return @$trace_nums_ary if $trace_nums_ary;
-    my $lines_ary = $file_cache{$filename}{lines_href}{plain};
-    my @lines = @$lines_ary;
-    my @result = ();
-    for (my $i=1; $i <= $#lines; $i++) {
-	next unless defined $lines[$i];
-	no warnings 'numeric';
-	push @result, $i unless $lines[$i] == 0;
-	use warnings 'numeric'
-    }
-    $file_cache{$filename}{trace_nums} = \@result;
-    return @result;
+    return @$trace_nums_ary;
   }
     
 sub map_file($)
@@ -430,7 +426,7 @@ sub map_script($$)
     if (exists $script2file{$script}) {
 	$script2file{$script};
     } else  {
-	# my $sha1 = Digest::SHA1->new();
+	# my $sha1 = Digest::SHA->new('sha1');
 	# $sha1->add($string);
 	my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
 				       TMPDIR => 1);
@@ -516,16 +512,21 @@ sub update_cache($;$)
 {
     my ($filename, $opts) = @_;
     my $read_file = 0;
-    $opts //={};
-    my $use_perl_d_file = $opts->{use_perl_d_file} //= 1;
+    $opts = {} unless defined $opts;
+    my $use_perl_d_file = $opts->{use_perl_d_file};
+    $use_perl_d_file = 1 unless defined $use_perl_d_file;
 
     return undef unless $filename;
 
     delete $file_cache{$filename};
 
     my $is_eval = filename_is_eval($filename);
-    my $path = $is_eval ? $filename: abs_path($filename) || $filename;
+    my $path = $filename;
+    unless ($is_eval) {
+	$path = abs_path($filename) if -f $filename;
+    }
     my $lines_href;
+    my @trace_nums = ();
     if ($use_perl_d_file) {
 	my @list = ($filename);
 	if ($is_eval) {
@@ -552,6 +553,7 @@ sub update_cache($;$)
 	    	my @lines = @$raw_lines;
 	    	for (my $i=1; $i<=$#lines; $i++) {
 	    	    if (defined $raw_lines->[$i]) {
+			push @trace_nums, $i if ($raw_lines->[$i] != 0);
 	    		$incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
 	    	    } else {
 	    		$raw_lines->[$i] = $lines_check[$i-1] 
@@ -574,7 +576,8 @@ sub update_cache($;$)
 		stat       => $stat,
 		lines_href => $lines_href,
 		path       => $path,
-		incomplete => $incomplete
+		incomplete => $incomplete,
+		trace_nums => \@trace_nums,
 	    };
 	    $read_file = 1;
         }
@@ -609,7 +612,8 @@ sub update_cache($;$)
 		stat       => $stat,
 		lines_href => $lines_href,
 		path       => $path,
-		incomplete => 0
+		incomplete => 0,
+		trace_nums => \@trace_nums,
 	    };
     $file_cache{$filename} = $entry;
     $file2file_remap{$path} = $filename;

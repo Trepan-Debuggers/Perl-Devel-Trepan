@@ -1,14 +1,16 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
+use strict; use warnings;
+use English;
 use rlib '../lib';
+use Devel::Trepan::Condition;
 
-use Test::More 'no_plan';
-note( "Testing Condition" );
-
-BEGIN {
-use_ok( 'Devel::Trepan::Condition' );
+use Test::More;
+if ($OSNAME eq 'MSWin32') {
+    plan skip_all => "Strawberry Perl doesn't handle exec and conditions" 
+} else {
+    plan;
 }
+note( "Testing Condition" );
 
 note 'Test valid conditions';
 for my $expr ('$a=2', "join(', ', \@ARGV)", 'join(", ", \@ARGV)') {
@@ -18,3 +20,4 @@ note 'Test invalid conditions';
 for my $expr ('1+', "join(', ', \@ARGV", 'join(", , \@ARGV)') {
     is (is_valid_condition($expr), '', "\"$expr\" is not valid Perl");
 }
+done_testing;

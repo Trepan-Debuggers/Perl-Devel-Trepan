@@ -2,11 +2,12 @@
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
 
 # Simulate I/O using lists of strings.
+use rlib '../../..';
 
+use rlib '../../..';
 package Devel::Trepan::IO::StringArrayInput;
 use warnings; use strict;
 
-use rlib '../../..';
 use Devel::Trepan::IO;
 
 use vars qw(@ISA);
@@ -18,7 +19,7 @@ use vars qw(@ISA);
 sub new($$;$)
 {
     my ($class, $inp, $opts) = @_;
-    $opts //={};
+    $opts = {} unless defined $opts;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
     $self->{closed} = 0;
     bless $self, $class;
@@ -86,7 +87,8 @@ use vars qw(@ISA);
 sub new
 {
     my ($class, $out, $opts) = @_;
-    $out //=[]; $opts //= {};
+    $out = []  unless defined $out; 
+    $opts = {} unless defined $opts;
     my $self = Devel::Trepan::IO::OutputBase->new($out, $opts);
     $self->{closed} = 0;
     bless $self, $class;

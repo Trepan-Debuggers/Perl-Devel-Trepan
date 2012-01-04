@@ -1,5 +1,10 @@
 Revision history for Devel-Trepan
 
+0.1.8  - Jan 3 2012
+
+- Perl 5.8.8 tolerance - this time, for sure!
+- Eval::WithLexicals is optional. Darn you, RedHat!
+
 0.1.7  - Jan 2, 2012
 
 - Perl 5.8.8 tolerance.

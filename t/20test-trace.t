@@ -16,6 +16,13 @@ my $opts = {
 	    last if (0 == index($line, '-- (Temp.pm:'));
 	    push @result, $line;
 	}
+
+	# Eval::WithLexicals adds a couple of extra lines. Remove
+	# these for comparison so we can handle installations that
+	# don't have Eval::WithLexicals.
+	@result = splice(@result, 0, -2) if 
+	    $result[-1] eq 'END { $_in_global_destruction = 1 }';
+
 	$got_lines = join("\n", @result);
 	return ($got_lines, $correct_lines);
     },

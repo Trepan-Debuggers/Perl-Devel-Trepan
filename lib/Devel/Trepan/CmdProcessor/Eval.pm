@@ -1,20 +1,27 @@
-# -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org> 
+# -*- coding: utf-8 -*-                                                         
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>                           
 use warnings;
 use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 use PadWalker qw(peek_my peek_our);
-use Eval::WithLexicals;
 use strict;
+
+use vars qw($HAVE_EVAL_WITH_LEXICALS);                                          
+BEGIN {                                                                         
+    $HAVE_EVAL_WITH_LEXICALS = eval("use Eval::WithLexicals; 1") ? 1 : 0;     
+}  
 
 my $given_eval_warning = 0;
 
 sub eval($$$$$) {
     my ($self, $code_to_eval, $opts, $correction) = @_;
     no warnings 'once';
-    if (0 == $self->{frame_index}) {
+    if (0 == $self->{frame_index} || !$HAVE_EVAL_WITH_LEXICALS) {
+        unless (0 == $self->{frame_index}) {
+            $self->msg("Evaluation occurs in top-most frame not this one");
+        }
 	$DB::eval_str = $self->{dbgr}->evalcode($code_to_eval);
 	$DB::eval_opts = $opts;
 	$DB::result_opts = $opts;

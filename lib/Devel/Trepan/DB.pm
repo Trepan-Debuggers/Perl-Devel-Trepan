@@ -510,7 +510,12 @@ sub cont {
 	return 0 unless $brkpt;
     }
     for (my $i = 0; $i <= $#stack;) {
-	$stack[$i++] &= ~1;
+	if (defined $stack[$i]) {
+	    $stack[$i++] &= ~1 ;
+	} else {
+	    # If Enbugger is used $stack[$i] might not be defined
+ 	    $stack[$i++] = 0;
+	}
     }
     $DB::single = 0;
     return $DB::running = 1;

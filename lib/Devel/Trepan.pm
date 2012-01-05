@@ -1,4 +1,5 @@
 #!/usr/bin/env perl 
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 use vars qw($TREPAN_CMDPROC);
 use rlib '..';
 
@@ -6,7 +7,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.1.8';
+use version; $VERSION = '0.1.9';
 use Exporter;
 
 use Devel::Trepan::Core;

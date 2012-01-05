@@ -39,9 +39,9 @@ my $builder = Module::Build->new(
     },
     requires => {
 	'perl'                              => '5.008008',
-	'Array::Columnize'                  => '0.3.5',
+	'Array::Columnize'                  => '0.003005',
 	'Data::Dumper::Perltidy'            => 0,
-	'Getopt::Long'                      => 0,
+	'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,

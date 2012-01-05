@@ -45,7 +45,7 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
-        'Test::More'                        => 0,
+        'Test::More'                        => '0.81',
         'rlib'                              => '0.02',
         'version'                           => 0,
     },

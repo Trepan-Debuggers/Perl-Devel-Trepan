@@ -1,9 +1,9 @@
 -- (nexting.pl:7)
-my $x=1; $x=2; 
+my $x=1; my $y=2; 
 different is on.
 -- (nexting.pl:8)
-$x=3; $x = 4; $x=5;
+$x=$y; $y = 4; $x += $y;
 -- (nexting.pl:8)
-$x=3; $x = 4; $x=5;
+$x=$y; $y = 4; $x += $y;
 -- (nexting.pl:9)
-$x=6; $x = p(); $x=7;
+$x=6; $y = p(); my $z = p(); 

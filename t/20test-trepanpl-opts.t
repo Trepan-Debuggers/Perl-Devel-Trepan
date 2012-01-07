@@ -34,8 +34,7 @@ if ($pid) {
     is(1, $CHILD_ERROR >> 8);
     open($fh, '<', $tempfile);
     $output = <$fh>;    # read whole file
-    cmp_ok($output =~ /Usage:/, '>', 0, 
-	   "$trepanpl --help should have a 'usage line");
+    like($output, qr/Usage:/, "$trepanpl --help should have a 'usage line");
 } else {
     my $output = `$EXECUTABLE_NAME -- $trepanpl --help`;
     my $rc = $? >> 8;
@@ -50,8 +49,8 @@ if ($pid) {
     is($CHILD_ERROR >> 8, 10);
     open($fh, '<', $tempfile);
     $output = <$fh>;    # read whole file
-    cmp_ok($output =~ /, version /, '>', 0,
-	   "$trepanpl --version should be able to show the version number");
+    like($output, qr/, version /, 
+	 "$trepanpl --version should be able to show the version number");
 } else {
     my $output = `$EXECUTABLE_NAME -- $trepanpl --version`;
     my $rc = $? >> 8;

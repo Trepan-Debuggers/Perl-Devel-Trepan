@@ -12,7 +12,7 @@ use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
-            $stop
+            $stop @clients
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -21,7 +21,7 @@ use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
 
 # "private" globals
-my ($ready, $deep, @saved, @skippkg, @clients);
+my ($ready, $deep, @saved, @skippkg);
 
 my $ineval = {};
 
@@ -52,6 +52,7 @@ BEGIN {
     @DB::args = ();       # arguments of current subroutine or @ARGV array
     @DB::dbline = ();     # list of lines in currently loaded file
     %DB::dbline = ();     # actions in current file (keyed by line number)
+    @DB::clients = ();
     
     # other "public" globals  
     

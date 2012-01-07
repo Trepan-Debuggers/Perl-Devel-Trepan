@@ -11,11 +11,18 @@ BEGIN {
     use_ok( 'Devel::Trepan::DB::LineCache' );
 }
 
+note 'Test update_script_cache';
+my $lines = "now\nis\nthe\ntime";
+my $script_name = '(eval 234)';
+DB::LineCache::update_script_cache($script_name, {string => $lines});
+my $ary_ref = $DB::LineCache::script_cache{$script_name}{lines_href}{plain};
+is(join("\n", @$ary_ref), $lines);
+
 note 'Test getlines';
 
 my $file=__FILE__;
 # my $line_count = scalar(@{"main::_<$file"});
-my $lines = DB::LineCache::getlines(__FILE__);
+$lines = DB::LineCache::getlines(__FILE__);
 my $line_count = scalar @$lines;
 ok($line_count > __LINE__, "Compare getlines count to __LINE__");
 

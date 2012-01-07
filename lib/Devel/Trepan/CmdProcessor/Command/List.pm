@@ -227,7 +227,7 @@ sub run($$)
     # We now have range information. Do the listing.
     my $max_line = DB::LineCache::size($filename);
     $filename = DB::LineCache::map_file($filename);
-    unless ($max_line) {
+    unless (defined $max_line) {
 	$proc->errmsg("File \"$filename\" not found.");
 	return;
     }

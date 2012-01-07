@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use Exporter;
 use warnings;
@@ -40,7 +40,8 @@ sub canonic_file($$;$)
 	my $is_eval = DB::LineCache::filename_is_eval($filename);
 	return $is_eval ? $filename : (basename($filename) || $filename);
     } elsif ($resolve) {
-    	$filename = DB::LineCache::map_file($filename);
+    	my $mapped_filename = DB::LineCache::map_file($filename);
+	$filename = $mapped_filename if defined($mapped_filename);
 	my $is_eval = DB::LineCache::filename_is_eval($filename);
 	return $is_eval ? $filename : (abs_path($filename) || $filename);
     } else {
@@ -77,30 +78,6 @@ sub resolve_file_with_dir($$)
     return undef;
 }
   
-# # Get line +line_number+ from file named +filename+. Return "\n"
-# # there was a problem. Leading blanks are stripped off.
-# sub line_at(filename, line_number, 
-# 	    opts = {
-#                 :reload_on_change => @settings[:reload],
-#                 :output => @settings[:highlight]
-# 	    })
-#     # We use linecache first to give precidence to user-remapped
-#     # file names
-#     line = LineCache::getline(filename, line_number, opts)
-#     unless line
-#       # Try using search directories (set with command "directory")
-#       if filename[0..0] != File::SEPARATOR
-#         try_filename = resolve_file_with_dir(filename) 
-#         if try_filename && 
-#             line = LineCache::getline(try_filename, line_number, opts) 
-#           LineCache::remap_file(filename, try_filename)
-#         }
-#       }
-#     }
-#     return nil unless line
-#     return line.lstrip.chomp
-#   }
-
 sub text_at($;$) 
 {
     my ($self, $opts) = @_;

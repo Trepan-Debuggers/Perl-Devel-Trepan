@@ -163,7 +163,6 @@ sub DB {
         $filename_ini = $filename = 'Dev:Pseudo';
         *dbline = $main::{ '_<' . $filename };
     }
-    $DB::event = undef;
     $DB::brkpt = undef;
 
     # Increment debugger nesting level.
@@ -319,7 +318,7 @@ sub DB {
 	    } until $running;
 	}
     }
-    $event = undef;
+    $DB::event = undef;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
@@ -397,7 +396,6 @@ sub save {
 }
 
 sub catch {
-    # for (@clients) { $_->awaken; }
     @DB::_ = @_;
     $DB::caller = [caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
@@ -634,9 +632,6 @@ sub loadfile {
 #
 # "pure virtual" methods
 #
-
-# client complete startup
-sub awaken {}
 
 sub skippkg {
   my $s = shift;

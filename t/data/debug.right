@@ -4,7 +4,7 @@ basename is on.
 highlight is off.
 set auto eval is on.
 $DB::D[0] = <undef>
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 $DB::in_debugger=0;
 -- (gcd.pl:9)
     my ($a, $b) = @_;
@@ -21,7 +21,7 @@ Leaving nested debug level 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 $DB::D[3] = <undef>
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 $DB::in_debugger=0;
 -- (gcd.pl:9)
     my ($a, $b) = @_;
@@ -29,7 +29,7 @@ $DB::in_debugger=0;
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[3] = 1
 $DB::D[4] = 1
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 -- (gcd.pl:9)
     my ($a, $b) = @_;
 -- (gcd.pl:11)

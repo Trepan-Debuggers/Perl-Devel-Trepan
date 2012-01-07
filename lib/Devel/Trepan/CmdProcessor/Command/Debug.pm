@@ -58,7 +58,10 @@ sub run($$)
     # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.
     my $full_expr = 
-	"\$DB::single = 1;\n\$^D |= DB::db_stop;\n\$DB::in_debugger=0;\n" . 
+	"\$DB::event=undef;\n"   .
+	"\$DB::single = 1;\n"    . 
+	"\$^D |= DB::db_stop;\n" . 
+	"\$DB::in_debugger=0;\n" . 
 	$expr;
     # FIXME: 4 below is a magic fixup constant.
     $proc->eval($full_expr, $opts, 4);

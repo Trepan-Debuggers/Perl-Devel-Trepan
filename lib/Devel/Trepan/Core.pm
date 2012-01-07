@@ -36,6 +36,9 @@ sub new {
 	caught_signal => 0
     };
     bless $self, $class;
+    $self->awaken();
+    $self->register();
+    $self->ready();
     return $self;
 }
 
@@ -122,6 +125,8 @@ sub awaken($;$) {
         }
     } else {
 	my $intf = undef;
+	$intf = $dbgr->{proc}{interfaces} if 
+	    defined($dbgr) && exists($dbgr->{proc});
 	if ($opts->{server}) {
 	    my $server_opts = {
 		host   => $opts->{host},
@@ -160,11 +165,7 @@ sub display_lists ($)
     return $self->{proc}{displays}{list};
 }
 
-# FIXME: should probably remove the next line and put the 
-# below inside new, and adjust DB.
+# FIXME: remove the next line and make this really OO.
 $dbgr = __PACKAGE__->new();
-$dbgr->awaken();
-$dbgr->register();
-$dbgr->ready();
 
 1;

@@ -173,8 +173,6 @@ sub source_location_info($)
     #  else
     my $filename = $self->filename();
     my $line_number = $self->line() || 0;
-    my $cop = 0;
-    $cop = 0 + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
 
     if (DB::LineCache::filename_is_eval($filename)) {
     	if ($DB::filename eq $filename) {
@@ -190,7 +188,9 @@ sub source_location_info($)
     	}
     }
     $canonic_filename = $self->canonic_file($filename, 0);
-    return sprintf "${canonic_filename}:${line_number}", $cop;
+    return "${canonic_filename}:${line_number}";
+    # my $cop = 0;
+    # $cop = 0 + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
     # return sprintf "${canonic_filename}:${line_number} 0x%x", $cop;
 } 
 

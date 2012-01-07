@@ -14,9 +14,18 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP   = <<"HELP";
+## FIXME: do automatically.
+our $CMD = "set variable";
 
-Set a 'my' or 'our' variable
+our $HELP   = <<"HELP";
+${CMD} VARIABLE_NAME VALUE
+
+Set a 'my' or 'our' variable. VALUE must be a constant. 
+
+Examples:
+
+$CMD \$foo 20
+$CMD \@ARY = (1,2,3)
 HELP
 our $SHORT_HELP   = "Set a 'my' or 'our' variable";
 

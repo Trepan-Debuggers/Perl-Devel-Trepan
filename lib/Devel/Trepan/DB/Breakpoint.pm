@@ -66,6 +66,44 @@ sub line_events {
   return %ret;
 }
 
+# Find a subroutine. Return ($filename, $fn_name, $start_line);
+# If not found, return (undef, undef, undef);
+sub find_subline($) {
+    my $fn_name = shift;
+    $fn_name =~ s/\'/::/;
+    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
+    $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
+    my $filename = $DB::filename;
+    if (exists $DB::sub{$fn_name}) {
+	my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
+	if ($from) {
+	    local *DB::dbline = "::_<$filename";
+	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
+	    return ($filename, $fn_name, $from);
+	}
+    }
+    return (undef, undef, undef);
+}
+
+# Find a subroutine line. 
+# FIXME: reorganize things to really set a breakpoint at a subroutine.
+# not just the line number we that we might find subroutine on.
+sub _find_subline {
+    my $name = shift;
+    $name =~ s/\'/::/;
+    $name = "${DB::package}\:\:" . $name if $name !~ /::/;
+    $name = "main" . $name if substr($name,0,2) eq "::";
+    if (exists $DB::sub{$name}) {
+	my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
+	if ($from) {
+	    local *DB::dbline = "::_<$fname";
+	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
+	    return $from;
+	}
+    }
+    return undef;
+}
+
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
     my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
@@ -86,11 +124,19 @@ sub set_break {
 
     my $lineno = $fn_or_lineno;
     if ($fn_or_lineno =~ /\D/) {
-	$lineno = _find_subline($fn_or_lineno) ;
+	my $junk;
+	($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
 	unless ($lineno) {
 	    $s->warning("Subroutine $fn_or_lineno not found.\n");
 	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
 	    return undef;
+	}
+	$change_dbline = $filename ne $DB::filename;
+	if ( $change_dbline ) {
+	    # Switch debugger's magic structures.
+	    my $filekey = '_<' . $filename;
+	    *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+	    ## $max      = $#dbline;
 	}
     }
     if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
@@ -149,44 +195,6 @@ sub delete_bp($$) {
 	}
 	delete $DB::dbline{$i} if $count == 0;
     }
-}
-
-# Find a subroutine. Return ($filename, $fn_name, $start_line);
-# If not found, return (undef, undef, undef);
-sub find_subline {
-    my $fn_name = shift;
-    $fn_name =~ s/\'/::/;
-    $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
-    $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
-    my $filename = $DB::filename;
-    if (exists $DB::sub{$fn_name}) {
-	my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
-	if ($from) {
-	    local *DB::dbline = "::_<$filename";
-	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
-	    return ($filename, $fn_name, $from);
-	}
-    }
-    return (undef, undef, undef);
-}
-
-# Find a subroutine line. 
-# FIXME: reorganize things to really set a breakpoint at a subroutine.
-# not just the line number we that we might find subroutine on.
-sub _find_subline {
-    my $name = shift;
-    $name =~ s/\'/::/;
-    $name = "${DB::package}\:\:" . $name if $name !~ /::/;
-    $name = "main" . $name if substr($name,0,2) eq "::";
-    if (exists $DB::sub{$name}) {
-	my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
-	if ($from) {
-	    local *DB::dbline = "::_<$fname";
-	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
-	    return $from;
-	}
-    }
-    return undef;
 }
 
 sub clr_breaks {

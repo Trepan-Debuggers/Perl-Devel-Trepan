@@ -154,12 +154,13 @@ sub print_stack_entry()
 
     # Get the file name.
     my $file = $self->canonic_file($frame->{file});
+    $file = '??' unless defined $file;
 
     # Put in a filename header if short is off.
     $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
     
     my $not_last_frame = $i != ($self->{stack_size}-1);
-    my $s;
+    my $s = '';
     my $args =
 	defined $frame->{args}
     ? "(@{ $frame->{args} })"
@@ -172,23 +173,31 @@ sub print_stack_entry()
 	    if length($args) > $opts->{maxwidth};
 	
 	# Get the actual sub's name, and shorten to $maxwidth's requirement.
-	$s = $frame->{fn};
-	$s = substr($s, 0, $opts->{maxwidth}-3) . '...' 
-	    if length($s) > $opts->{maxwidth};
+	if (exists($frame->{fn})) {
+	    $s = $frame->{fn};
+	    $s = substr($s, 0, $opts->{maxwidth}-3) . '...' 
+		if length($s) > $opts->{maxwidth};
+	}
     }
     
     # Short report uses trimmed file and sub names.
-    my $wa = $frame->{wantarray};
+    my $wa;
+    if (exists($frame->{wantarray})) {
+	$wa = "$frame->{wantarray} = ";
+    } else {
+	$not_last_frame = 0;
+	$wa = '' ;
+    }
+    my $lineno = $frame->{line} || '??';
     if ($opts->{short}) {
 	my $fn = $s; # @_ >= 4 ? $_[3] : $s;
-	$self->msg("$wa=$fn$args from $file:$frame->{line}");
+	$self->msg("$wa$fn$args from $file:$lineno");
     } else {
 	# Non-short report includes full names.
 	# Lose the DB::DB hook call if frame is 0.
-	my $call_str = $not_last_frame ? 
-	    "$frame->{wantarray} = $s$args in " : '';
+	my $call_str = $not_last_frame ? "$wa$s$args in " : '';
 	my $prefix_call = "$prefix$call_str";
-	my $file_line   = $file . " at line $frame->{line}";
+	my $file_line   = $file . " at line $lineno";
 	
 	if (length($prefix_call) + length($file_line) <= $opts->{maxwidth}) {
 	    $self->msg($prefix_call . $file_line);

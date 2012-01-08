@@ -33,6 +33,7 @@ our $EVENT2ICON = {
 sub canonic_file($$;$)
 {
     my ($self, $filename, $resolve) = @_;
+    return undef unless defined $filename;
     $resolve = 1 unless defined $resolve;
 
     # For now we want resolved filenames 

@@ -458,6 +458,7 @@ sub map_file_line($$)
 sub filename_is_eval($)
 {
     my $filename = shift;
+    return 0 unless defined $filename;
     return ($filename =~ /^\(eval \d+\)/);
 }
 

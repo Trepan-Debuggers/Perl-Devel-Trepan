@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 # Interface when communicating with the user.
 
 use warnings; no warnings 'redefine';
@@ -20,11 +20,11 @@ use strict;
 
 use constant DEFAULT_USER_OPTS => {
 
-    readline   =>                       # Try to use GNU Readline?
-	$Devel::Trepan::IO::Input::HAVE_GNU_READLINE, 
+    readline   =>                       # Try to use Term::ReadLine?
+	$Devel::Trepan::IO::Input::HAVE_TERM_READLINE, 
     
     # The below are only used if we want and have readline support.
-    # See method Trepan::GNU_readline? below.
+    # See method Trepan::term_readline below.
     histsize => 256,                     # Use gdb's default setting
     file_history   => '.trepanpl_hist',  # where history file lives
                                          # Note a directory will 
@@ -45,7 +45,7 @@ sub new
 	$self->{input} = Devel::Trepan::IO::Input->new($inp, 
 						       {readline => $opts->{readline}})
     }
-    if ($self->{input}{gnu_readline}) {
+    if ($self->{input}{term_readline}) {
 	if ($self->{opts}{complete}) {
 	    my $attribs = $inp->{readline}->Attribs;
 	    $attribs->{attempted_completion_function} = $self->{opts}{complete};
@@ -132,7 +132,8 @@ sub read_history($)
 sub save_history($)
 {
     my $self = shift;
-    if ($self->{histfile} && $self->{opts}{history_save} && $self->want_gnu_readline &&
+    if ($self->{histfile} && $self->{opts}{history_save} && 
+	$self->want_term_readline &&
 	$self->{input}{readline}) {
 	$self->{input}{readline}->StifleHistory($self->{histsize}) if
 	    $self->{input}{readline}->can("StifleHistory");
@@ -144,7 +145,7 @@ sub save_history($)
 # sub DESTROY($) 
 # {
 #     my $self = shift;
-#     if ($self->want_gnu_readline) {
+#     if ($self->want_term_readline) {
 #     	$self->save_history;
 #     }
 #     Devel::Trepan::Interface::DESTROY($self);
@@ -159,13 +160,13 @@ sub is_interactive($)
 sub has_completion($)
 {
     my $self = shift;
-    $self->{input}{gnu_readline};
+    $self->{input}{term_readline};
 }
 
-sub want_gnu_readline($)
+sub want_term_readline($)
 {
     my $self = shift;
-    defined($self->{opts}{readline}) && $self->{input}{gnu_readline};
+    defined($self->{opts}{readline}) && $self->{input}{term_readline};
 }
 
 sub read_command($;$) {
@@ -177,7 +178,7 @@ sub read_command($;$) {
 sub readline($;$) {
     my($self, $prompt)  = @_;
     $self->{output}->flush;
-    if ($self->want_gnu_readline) {
+    if ($self->want_term_readline) {
 	$self->{input}->readline($prompt);
     } else { 
 	$self->{output}->write($prompt) if defined($prompt) && $prompt;

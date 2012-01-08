@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,7 +11,18 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = 'Show how you want the evaluation results shown';
+## FIXME: do automatically.
+our $CMD  = 'show evaldisplay';
+our $HELP = <<"EOH";
+$CMD
+
+Shows whether Data::Dumper ('dumper') or Data::Dumper::Perltidy ('tidy') 
+is used to format evaluation results.
+
+See also 'set evaldisplay', 'eval', and 'set autoeval'.
+EOH
+
+our $SHORT_HELP = 'Show how the evaluation results shown';
 our $MIN_ABBREV = length('evaldi');
 
 sub run($$)

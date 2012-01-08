@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -10,7 +10,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
-our $CMD = "set confirm";
+our $CMD = 'set evaldisplay';
 our $HELP   = <<"HELP";
 ${CMD} {tidy|dumper}
 
@@ -18,6 +18,8 @@ Set how you want the evaluation results show.
 
 The 'tidy' option sets to use Data::Dumper::Perltidy. 'dumper' uses 
 Data::Dumper.
+
+See also 'show evaldisplay', 'eval', and 'set autoeval'.
 HELP
 
 our $SHORT_HELP = 'Set how you want the evaluation results shown';

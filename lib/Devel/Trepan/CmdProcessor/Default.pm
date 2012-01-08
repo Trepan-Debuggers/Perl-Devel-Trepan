@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -32,7 +32,7 @@ use constant DEFAULT_SETTINGS => {
     '$cdir:$cwd',            # that are not fully qualified.
     
     evaldisplay  => 'tidy',  # use Data::Dumper (dumper) or
-	                     # Data::Dumper::Perltidy::Dumper (tidy) ?
+	                     # Data::Dumper::Perltidy::dumper (tidy) ?
     hidestack     => -1,     # Fixnum. How many hidden outer
                              # debugger stack frames to hide?
                              # -1 means compute value. 0

@@ -127,7 +127,7 @@ sub awaken($;$) {
 	my $intf = undef;
 	if (defined($dbgr) && exists($dbgr->{proc})) {
 	    $intf = $dbgr->{proc}{interfaces};
-	    $intf->[-1]{input}{gnu_readline} = $opts->{readline} if 
+	    $intf->[-1]{input}{term_readline} = $opts->{readline} if 
 		exists($opts->{readline});
 	}
 	if ($opts->{server}) {

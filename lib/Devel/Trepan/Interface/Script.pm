@@ -104,7 +104,7 @@ sub msg($$)
 
 sub is_interactive() { 0; }
 sub has_completion() { 0; }
-sub has_gnu_readline($) { 0; }
+sub has_term_readline($) { 0; }
 
 # Script interface to read a command. `prompt' is a parameter for 
 # compatibilty and is ignored.

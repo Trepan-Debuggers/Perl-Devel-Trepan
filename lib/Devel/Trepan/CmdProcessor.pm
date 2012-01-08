@@ -216,8 +216,8 @@ sub process_after_eval($) {
     # Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
     # Having a non-empty @ARGV will cause Tidy to croak.
     local @ARGV=();
-    
-    my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
+
+    my $fn = ($self->{settings}{evaldisplay} eq 'tidy')
 	    ? \&Data::Dumper::Perltidy::Dumper
 	    : \&Data::Dumper::Dumper;
     my $return_type = $DB::eval_opts->{return_type};

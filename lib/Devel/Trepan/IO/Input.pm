@@ -25,7 +25,7 @@ BEGIN {
         if (!defined($HAVE_GNU_READLINE)) {
             my $term = Term::ReadLine->new('testing');
             if ($term->ReadLine eq 'Term::ReadLine::Perl') {
-                $HAVE_GNU_READLINE = 'Perl';
+                $HAVE_GNU_READLINE = $Term::ReadLine::Perl::term ? 0 : 'Perl';
             } elsif ($term->ReadLine eq 'Term::ReadLine::Gnu') {
                 $HAVE_GNU_READLINE = 'Gnu';
             } else {

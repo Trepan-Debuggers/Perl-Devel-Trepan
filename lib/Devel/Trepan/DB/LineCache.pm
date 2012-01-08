@@ -86,7 +86,10 @@ sub remove_script_temps()
     }
 }
 
-END { remove_script_temps };
+END { 
+    $DB::ready = 0;
+    remove_script_temps 
+};
 
   
 # Clear the file cache entirely.

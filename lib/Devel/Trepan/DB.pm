@@ -12,7 +12,7 @@ use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
-            $stop @clients
+            $stop @clients $ready
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -21,7 +21,7 @@ use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
 
 # "private" globals
-my ($ready, $deep, @saved, @skippkg);
+my ($deep, @saved, @skippkg);
 
 my $ineval = {};
 
@@ -665,7 +665,9 @@ $SIG{'INT'} = \&DB::catch;
 
 # disable this if stepping through END blocks is desired
 # (looks scary and deconstructivist with Swat)
-END { $ready = 0 }
+END { 
+    $ready = 0;
+}
 
 1;
 __END__

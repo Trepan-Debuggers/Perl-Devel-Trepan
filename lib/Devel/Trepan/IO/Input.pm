@@ -86,6 +86,7 @@ sub is_interactive($)  {
 # case, it should have been handled prior to this call.
 sub readline($;$) {
     my ($self, $prompt) = @_;
+    $prompt = '' unless defined($prompt);
     my $line;
     if (defined $self->{readline}) {
 	$line = $self->{readline}->readline($prompt);

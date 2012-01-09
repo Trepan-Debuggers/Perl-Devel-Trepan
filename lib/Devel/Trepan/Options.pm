@@ -200,13 +200,13 @@ trepan.pl - Perl "Trepanning" Debugger
       --cmddir DIR         Read DIR for additional debugger commands
       --batch FILE         Like --command, but quit after reading FILE.
                            This option has precidence over --command and
-                           will also set --mx
+                           will also set --nx
       --cd DIR             Change current directory to DIR
       --nx                 Don't run user startup file (e.g. .treplrc)
 
       --client | --server  Set for out-of-process debugging. The server 
                            rus the Perl program to be debugged runs. 
-                           The client runs outside of this proces.
+                           The client runs outside of this process.
                           
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1

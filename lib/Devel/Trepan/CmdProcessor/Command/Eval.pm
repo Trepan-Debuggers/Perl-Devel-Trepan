@@ -34,7 +34,7 @@ next to the value.
 
 If no string is given, we run the string from the current source code
 about to be run. If the command ends ? (via an alias) and no string is
-given we will the following translations occur:
+given we will the perform the translations:
 
    {if|elsif|unless} (expr) [{]  => expr
    {until|while} (expr) [{]      => expr
@@ -49,22 +49,27 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-Normally, eval runs in a scalar context; therefore the result is a
-scalar. However you can force the type of the result by adding the
-apprpropriate sigil @, %, or \$.
+Normally ${NAME} assumes you are typing a statement, not an expresion;
+the result is a scalar value. However you can force the type of the result
+by adding the appropriate sigil @, %, or \$.
 
 Examples:
 
-${NAME} 1+2  # 3
+${NAME} 1+2 # 3
 ${NAME}\$ 3   # Same as above, but the return type is explicit
-${NAME} \$v
+\$ 3       # Probably same as above if \$ alias is around
+${NAME} \$^X  # Possibly /usr/bin/perl
 ${NAME}      # Run current source-code line
 ${NAME}?     # but strips off leading 'if', 'while', ..
           # from command 
 ${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
              # an array converted to a scalar.
+@ \@ARG       # Same as above if \@ alias is around
+use English  # Note this is a statement, not an expression
+use English; # Same as above
+${NAME}\$ use English # Error because this is not a valid expression 
 
-See also 'set autoeval'. The command helps one predict future execution.
+See also 'set autoeval'. The command can help one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 

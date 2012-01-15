@@ -21,7 +21,8 @@ ${CMD} \{$param\}
 Set how you want the evaluation results shown.
 
 The 'tidy' option sets to use Data::Dumper::Perltidy. 'dumper' uses 
-Data::Dumper. 'dprint' uses Data::Printer.
+Data::Dumper. When the Data::Printer module is installed, 
+'dprint' specifies using that.
 
 See also 'show evaldisplay', 'eval', and 'set autoeval'.
 HELP

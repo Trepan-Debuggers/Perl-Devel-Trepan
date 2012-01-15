@@ -39,7 +39,7 @@ unless (defined @ISA) {
 }
 use strict;
 
-use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
+use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
 @ISA = qw(Exporter);
 
@@ -451,12 +451,9 @@ sub run_command($$)
     # Eval anything that's not a command or has been
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
-	my $opts = {nest => 0, return_type => '$'};
-	if ($current_command =~ /^\s*([%\$\@])/) {
-	    $opts->{return_type} = $1;
-	} else {
-	    $opts->{return_type} = ';';
-	}
+	my $return_type = parse_eval_sigil($current_command);
+	$return_type = '$' unless $return_type;
+	my $opts = {nest => 0, return_type => $return_type};
 
 	# FIXME: 2 below is a magic fixup constant, also found in
 	# DB::finish.  Remove it.

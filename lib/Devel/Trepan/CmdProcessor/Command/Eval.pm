@@ -99,16 +99,20 @@ sub run($$)
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
 	    $code_to_eval = 
-		Devel::Trepan::Util::extract_code_to_evalession($code_to_eval);
+		Devel::Trepan::Util::extract_expression($code_to_eval);
 	    $proc->msg("eval: ${code_to_eval}");
+	    my @args = split /\s+/, $code_to_eval;
+	    $cmd_name = $args[0];
 	}
     } else {
 	$code_to_eval = $proc->{cmd_argstr};
     }
     {
-	my $opts = {return_type => parse_eval_suffix($cmd_name)};
+	my $return_type = parse_eval_suffix($cmd_name);
+	$return_type = parse_eval_sigil($cmd_name) unless $return_type;
+	my $opts = {return_type => $return_type};
 	no warnings 'once';
-	# FIXME: 4 below iss a magic fixup constant, also found in
+	# FIXME: 4 below is a magic fixup constant, also found in
 	# DB::finish.  Remove it.
 	$proc->eval($code_to_eval, $opts, 4);
     }

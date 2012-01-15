@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 package Devel::Trepan::Util;
 use vars qw(@EXPORT @ISA @YN);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression
-                 parse_eval_suffix YES NO YES_OR_NO @YN bool2YN);
+                 parse_eval_suffix parse_eval_sigil
+                 YES NO YES_OR_NO @YN bool2YN);
 @ISA = qw(Exporter);
 
 use constant YES => qw(y yes oui si yep ja);
@@ -103,6 +104,12 @@ sub parse_eval_suffix($)
     my $cmd = shift;
     my $suffix = substr($cmd, -1);
     return ( index('%@$', $suffix) != -1) ? $suffix : '';
+}
+
+sub parse_eval_sigil($)
+{
+    my $cmd = shift;
+    return ($cmd =~ /^\s*([%\$\@])/) ? $1 : ';';
 }
 
 # Demo code

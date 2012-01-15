@@ -217,15 +217,30 @@ sub process_after_eval($) {
     # Having a non-empty @ARGV will cause Tidy to croak.
     local @ARGV=();
 
-    my $fn = ($self->{settings}{evaldisplay} eq 'tidy')
-	    ? \&Data::Dumper::Perltidy::Dumper
-	    : \&Data::Dumper::Dumper;
+    my $fn;
+    my $print_properties = {};
+    my $evdisp = $self->{settings}{evaldisplay};
+    if ('tidy' eq $evdisp) {
+	$fn = \&Data::Dumper::Perltidy::Dumper;
+    } elsif ('dprint' eq $evdisp) {
+	$print_properties = {
+	    colored => $self->{settings}{highlight},
+	};
+	$fn = \&dprint;
+    } else {
+	$fn = \&Data::Dumper::Dumper;
+    }
     my $return_type = $DB::eval_opts->{return_type};
     $return_type = '' unless defined $return_type;
     if ('$' eq $return_type) {
 	    if (defined $DB::eval_result) {
 		$DB::D[$last_eval_value++] = $DB::eval_result;
-		$val_str = $fn->($DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = 
+			$fn->(\$DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $fn->($DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$DB::eval_result = '<undef>' ;
@@ -243,7 +258,11 @@ sub process_after_eval($) {
     } elsif ('%' eq $return_type) {
 	    if (%DB::eval_result) {
 		$DB::D[$last_eval_value++] = \%DB::eval_result;
-		$val_str = $fn->(%DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = $fn->(\%DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $fn->(%DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$val_str = '<undef>'
@@ -251,8 +270,13 @@ sub process_after_eval($) {
 	    $self->msg("$prefix\n\%{$val_str}");
     }  else {
 	    if (defined $DB::eval_result) {
-		$DB::D[$last_eval_value++] = $fn->($DB::eval_result);
-		$val_str = $fn->($DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = $DB::D[$last_eval_value++] = 
+			$fn->(\$DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $DB::D[$last_eval_value++] = 
+			$fn->($DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$val_str = '<undef>'
@@ -425,6 +449,8 @@ sub run_command($$)
 	my $opts = {nest => 0, return_type => '$'};
 	if ($current_command =~ /^\s*([%\$\@])/) {
 	    $opts->{return_type} = $1;
+	} else {
+	    $opts->{return_type} = ';';
 	}
 
 	# FIXME: 2 below is a magic fixup constant, also found in

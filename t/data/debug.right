@@ -3,6 +3,7 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 basename is on.
 highlight is off.
 set auto eval is on.
+Eval result display style is tidy.
 $DB::D[0] = <undef>
 -- ( (eval remapped 5)
 $DB::in_debugger=0;

@@ -8,13 +8,18 @@ use Pod::Find qw(pod_where);
 use File::Spec;
 use rlib '../..';
 
-use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
-@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
+use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION
+            $HAVE_DATA_PRINT $HAVE_PERLTIDY);
+@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME 
+              $HAVE_DATA_PRINT $HAVE_PERLTIDY
+              $VERSION);
+our @ISA;
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
     $VERSION      = '0.1.9';
 }
+
 use constant VERSION => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
 

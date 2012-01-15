@@ -83,14 +83,15 @@ sub eval_with_return {
 	local $od      = $DEBUGGING;
 
 	if ('$' eq $return_type) {
-	    eval "$user_context \$DB::eval_result=$eval_str";
-	    $eval_result = eval "$user_context $eval_str";
+	    eval "$user_context \$DB::eval_result=$eval_str\n";
 	} elsif ('@' eq $return_type) {
 	    eval "$user_context \@DB::eval_result=$eval_str\n";
 	} elsif ('%' eq $return_type) {
 	    eval "$user_context \%DB::eval_result=$eval_str\n";
-	}  else {
-	    $eval_result = eval "$user_context $eval_str\n";
+	} elsif ('%' eq $return_type) {
+	    $eval_result = eval "$user_context $eval_str";
+	} else {
+	    $eval_result = eval "$user_context $eval_str";
 	}
 	
         # Restore those old values.

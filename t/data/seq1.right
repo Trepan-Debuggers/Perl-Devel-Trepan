@@ -15,9 +15,9 @@ xx (gcd.pl:14)
 <- (gcd.pl:15) main::gcd
     return gcd($b-$a, $a);
 Return array value for main::gcd is:
-$VAR1 = 1;
+1
 
 Return array value set to:
-$VAR1 = 10;
+10
 
 The GCD of 3 and 5 is 10

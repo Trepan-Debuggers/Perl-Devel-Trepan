@@ -17,7 +17,7 @@ $DB::D[1] = 1
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[2] = $VAR1 = 1;
+$DB::D[2] = 1
 Leaving nested debug level 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
@@ -40,7 +40,7 @@ $DB::D[5] = 2
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[6] = $VAR1 = 2;
+$DB::D[6] = 2
 Leaving nested debug level 2
 -- (gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
@@ -48,7 +48,7 @@ Leaving nested debug level 2
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[7] = $VAR1 = 1;
+$DB::D[7] = 1
 Leaving nested debug level 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 

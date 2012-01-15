@@ -6,9 +6,9 @@ x1 (gcd.pl:9)
 <- (gcd.pl:21) main::gcd
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 Return array value for main::gcd is:
-$VAR1 = 1;
+1
 
 Return array value set to:
-$VAR1 = 10;
+10
 
 The GCD of 3 and 5 is 10

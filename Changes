@@ -1,5 +1,11 @@
 Revision history for Devel-Trepan
 
+0.1.9  - Jan 16 2012
+- Allow Data::Print to be used for printing eval output
+- Use sigils in eval? and eval; was previously done only in autoeval
+- "info program" may show COP position. 
+- Miscelleneous bug fixes and documentation corrections and improvements.
+
 0.1.8  - Jan 3 2012
 
 - Perl 5.8.8 tolerance - this time, for sure!

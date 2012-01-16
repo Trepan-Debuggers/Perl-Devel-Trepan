@@ -425,13 +425,13 @@ provides:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
 requires:
-  Array::Columnize: v0.3.5
+  Array::Columnize: 0.003005
   Data::Dumper::Perltidy: 0
   Digest::SHA: 0
   Getopt::Long: 2.36
   PadWalker: 0
   Syntax::Highlight::Perl::Improved: 0
-  Test::More: 0
+  Test::More: 0.81
   perl: 5.008008
   rlib: 0.02
   version: 0

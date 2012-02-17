@@ -67,6 +67,7 @@ sub add_history($$)
 sub remove_history($;$)
 {
     my ($self, $which) = @_;
+    $which = -1 unless defined($which);
     return unless ($self->{input}{readline});
     if ($self->{input}{readline}->can("where_history")) {
 	my $where_history = $self->{input}{readline}->where_history();

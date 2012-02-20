@@ -12,7 +12,7 @@ use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
-            $stop @clients $ready
+            $stop @clients $ready $tid
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -43,15 +43,16 @@ BEGIN {
 
     # these are hardcoded in perl source (some are magical)
     
-    $DB::sub = '';        # name of current subroutine
-    $DB::single = 0;      # single-step flags. See constants at the 
+    $DB::sub     = '';    # name of current subroutine
+    $DB::single  = 0;     # single-step flags. See constants at the 
                           # top of DB/Sub.pm
-    $DB::signal = 0;      # signal flag (will cause a stop at the next line)
-    $DB::stop = 0;        # value of last breakpoint condition evaluation
+    $DB::signal  = 0;     # signal flag (will cause a stop at the next line)
+    $DB::stop    = 0;     # value of last breakpoint condition evaluation
+    $DB::tid     = undef; # Thread id
 
-    @DB::args = ();       # arguments of current subroutine or @ARGV array
-    @DB::dbline = ();     # list of lines in currently loaded file
-    %DB::dbline = ();     # actions in current file (keyed by line number)
+    @DB::args    = ();    # arguments of current subroutine or @ARGV array
+    @DB::dbline  = ();    # list of lines in currently loaded file
+    %DB::dbline  = ();    # actions in current file (keyed by line number)
     @DB::clients = ();
     
     # other "public" globals  
@@ -128,7 +129,6 @@ sub DB {
     # lock the debugger and get the thread id for the prompt
     lock($DBGR);
 
-    my $tid;
     if ($ENV{PERL5DB_THREADED}) {
 	$tid = eval { "[".threads->tid."]" };
     }

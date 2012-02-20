@@ -70,6 +70,7 @@ sub new($;$$$) {
     $self->{DB_single}      = $DB::single;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
+    $self->{next_level}     = 30000;  # Virtually infinite;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
 
     # Initial watch point expr value used when a new watch point is set.
@@ -301,11 +302,22 @@ sub process_after_eval($) {
     @DB::eval_result = undef;
 }
 
+sub skip_if_next($$) 
+{
+    my ($self, $event) = @_;
+    return 0 if ('line' ne $event);
+    return 0 if eval { no warnings; $DB::tid ne $self->{last_tid} };
+    # print  "+++event $event ", $self->{stack_size}, " ", 
+    #        $self->{next_level}, "\n";
+    return 1 if $self->{stack_size} > $self->{next_level};
+}
+
 # This is the main entry point.
 sub process_commands($$$;$)
 {
     my ($self, $frame, $event, $arg) = @_;
     $event = 'unknown' unless defined($event);
+    my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
 	process_after_eval($self);
 	if ($event eq 'after_nest') {
@@ -334,45 +346,52 @@ sub process_commands($$$;$)
 	    $arg->old_value($arg->current_val);
 	}
 
-	$self->{unconditional_prehooks}->run;
-	if (index($self->{event}, 'brkpt') < 0) {
-	    if ($self->is_stepping_skip()) {
-		# || $self->{stack_size} <= $self->{hide_level};
-		$self->{dbgr}->step;
-		return;
+	$next_skip = skip_if_next($self, $event);
+	unless ($next_skip) { 
+	    $self->{unconditional_prehooks}->run;
+	    if (index($self->{event}, 'brkpt') < 0) {
+		if ($self->is_stepping_skip()) {
+		    # || $self->{stack_size} <= $self->{hide_level};
+		    $self->{dbgr}->step;
+		    return;
+		}
+		if ($self->{settings}{traceprint}) {
+		    $self->{dbgr}->step;
+		    return;
+		}
 	    }
-	    if ($self->{settings}{traceprint}) {
-		$self->{dbgr}->step;
-		return;
-	    }
+	
+	    $self->{prompt} = compute_prompt($self);
+	    $self->print_location unless $self->{settings}{traceprint};
+	    ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
+	    
+	    $self->{cmdloop_prehooks}->run;
 	}
-	
-	$self->{prompt} = compute_prompt($self);
-	$self->print_location unless $self->{settings}{traceprint};
-	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
-	
-	$self->{cmdloop_prehooks}->run;
     }
-    $self->{leave_cmd_loop} = 0;
-    while (!$self->{leave_cmd_loop}) {
-	# begin
-	$self->process_command_and_quit;
-	# rescue systemexit
-	#  @dbgr.stop
-	#  raise
-	#rescue exception => exc
-	# if we are inside the script interface $self->errmsg may fail.
-	# begin
-	#  $self->errmsg("internal debugger error: #{exc.inspect}")
-	# rescue ioerror
-	#  $stderr.puts "internal debugger error: #{exc.inspect}"
-	# }
-	# exception_dump(exc, @settings[:debugexcept], $!.backtrace)
-	# }
+    unless ($next_skip) {
+	$self->{leave_cmd_loop} = 0;
+	while (!$self->{leave_cmd_loop}) {
+	    # begin
+	    $self->process_command_and_quit;
+	    # rescue systemexit
+	    #  @dbgr.stop
+	    #  raise
+	    #rescue exception => exc
+	    # if we are inside the script interface $self->errmsg may fail.
+	    # begin
+	    #  $self->errmsg("internal debugger error: #{exc.inspect}")
+	    # rescue ioerror
+	    #  $stderr.puts "internal debugger error: #{exc.inspect}"
+	    # }
+	    # exception_dump(exc, @settings[:debugexcept], $!.backtrace)
+	    # }
+	}
     }
     $self->{cmdloop_posthooks}->run;
-    $DB::single = $self->{DB_single};
-    $DB::running = $self->{DB_running};
+    $self->{last_tid} = $DB::tid;
+    $DB::single       = $self->{DB_single};
+    $DB::running      = $self->{DB_running};
+
 }
 
 # run current_command, a string. @last_command is set after the

@@ -102,7 +102,10 @@ sub next($$)
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
-    $self->{DB_single}  = NEXT_STEPPING_EVENT;
+    # NEXT_STEPPING_EVENT is sometimes broken.
+    # $self->{DB_single}  = NEXT_STEPPING_EVENT;
+    $self->{next_level} = $self->{stack_size};
+    $self->{DB_single}  = SINGLE_STEPPING_EVENT;
     $self->{DB_running} = 1;
 }
 
@@ -112,6 +115,7 @@ sub step($$)
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
     $self->{DB_single}  = SINGLE_STEPPING_EVENT;
+    $self->{next_level} = 30000; # Virtually infinite
     $self->{DB_running} = 1;
 }
 

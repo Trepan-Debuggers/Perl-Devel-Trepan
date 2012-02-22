@@ -16,9 +16,9 @@
 
 package Devel::Trepan::CmdProcessor::Command::Handle;
 use English qw( -no_match_vars );
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'running';
 use constant NEED_STACK => 0;

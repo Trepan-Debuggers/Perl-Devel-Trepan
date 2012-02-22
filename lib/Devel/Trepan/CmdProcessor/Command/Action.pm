@@ -6,10 +6,10 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Action;
 use English qw( -no_match_vars );
 
-use if !defined @ISA, Devel::Trepan::Condition ;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::Condition ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant ALIASES    => qw(a);
 use constant CATEGORY   => 'breakpoints';

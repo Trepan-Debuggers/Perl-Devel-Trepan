@@ -10,14 +10,14 @@ use Devel::Trepan::Interface::Script;
 use Devel::Trepan::IO::NullOutput;
 
 # Must be outside of package!
-use if !defined @ISA, Devel::Trepan::Complete ;
+use if !@ISA, Devel::Trepan::Complete ;
 
 package Devel::Trepan::CmdProcessor::Command::Source;
 use Cwd 'abs_path';
 use Getopt::Long qw(GetOptionsFromArray);
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Read and run debugger commands from a file';

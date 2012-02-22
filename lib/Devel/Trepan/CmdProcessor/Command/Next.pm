@@ -8,9 +8,9 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Next;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant ALIASES    => qw(n next+ next- n+ n-);
     use constant CATEGORY   => 'running';

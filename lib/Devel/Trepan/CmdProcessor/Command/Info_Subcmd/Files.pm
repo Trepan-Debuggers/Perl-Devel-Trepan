@@ -20,7 +20,7 @@ our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 ## FIXME: do automatically.
 our $CMD = "info files";
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
     use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
 EOE

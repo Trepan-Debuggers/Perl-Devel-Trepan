@@ -5,9 +5,9 @@ use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Debug;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY   => 'data';
     use constant SHORT_HELP => 'debug into a Perl expression';

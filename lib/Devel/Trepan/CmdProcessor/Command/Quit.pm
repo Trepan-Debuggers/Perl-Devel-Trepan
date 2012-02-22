@@ -4,9 +4,9 @@ use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Quit;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
 use constant ALIASES    => ('quit!', 'q', 'q!');
 use constant CATEGORY   => 'support';

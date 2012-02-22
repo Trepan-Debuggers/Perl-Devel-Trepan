@@ -6,8 +6,8 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Macro;
 use English qw( -no_match_vars );
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-unless (defined(@ISA)) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Define a macro';

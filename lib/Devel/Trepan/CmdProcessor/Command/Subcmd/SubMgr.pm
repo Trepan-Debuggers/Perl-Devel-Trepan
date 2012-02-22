@@ -10,7 +10,7 @@ package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
 
 use File::Basename;
 use File::Spec;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 
 use strict;
 use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES);

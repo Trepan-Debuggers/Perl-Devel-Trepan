@@ -9,9 +9,9 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Continue;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant ALIASES    => qw(c cont);
     use constant CATEGORY   => 'running';

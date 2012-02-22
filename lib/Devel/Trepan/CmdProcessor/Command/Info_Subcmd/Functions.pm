@@ -15,7 +15,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 ## FIXME: do automatically.
 our $CMD = "info functions";
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
     use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
 EOE

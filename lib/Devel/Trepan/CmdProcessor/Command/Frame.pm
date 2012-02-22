@@ -4,9 +4,9 @@ use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Frame;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Set frame for use in commands';

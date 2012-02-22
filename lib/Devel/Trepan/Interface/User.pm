@@ -10,9 +10,9 @@ use rlib '../../..';
 package Devel::Trepan::Interface::User;
 use vars qw(@EXPORT @ISA);
 
-use if !defined(@ISA), Devel::Trepan::Util; # qw(hash_merge YN);
-use if !defined(@ISA), Devel::Trepan::IO::Input;
-use if !defined(@ISA), Devel::Trepan::Interface;
+use if !@ISA, Devel::Trepan::Util; # qw(hash_merge YN);
+use if !@ISA, Devel::Trepan::IO::Input;
+use if !@ISA, Devel::Trepan::Interface;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 use strict; 

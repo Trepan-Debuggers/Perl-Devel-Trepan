@@ -6,7 +6,7 @@ use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 
-use if !defined @ISA, Devel::Trepan::Options;
+use if !@ISA, Devel::Trepan::Options;
 use vars qw(@EXPORT $HAVE_DATA_PRINT $HAVE_PERLTIDY @DISPLAY_TYPES);
 @EXPORT = qw(default_eval_display  $HAVE_DATA_PRINT $HAVE_PERLTIDY
             @DISPLAY_TYPES);

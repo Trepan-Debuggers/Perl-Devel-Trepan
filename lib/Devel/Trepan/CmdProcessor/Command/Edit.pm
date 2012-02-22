@@ -6,8 +6,8 @@ use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::DB::Sub;
 
 package Devel::Trepan::CmdProcessor::Command::Edit;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-unless (defined @ISA) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (@ISA) {
     eval <<"EOE";
 use constant ALIASES    => ('e');
 use constant CATEGORY   => 'files';

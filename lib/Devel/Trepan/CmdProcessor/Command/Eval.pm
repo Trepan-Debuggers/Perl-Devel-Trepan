@@ -5,8 +5,8 @@ use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Eval;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
-unless (defined @ISA) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
+unless (@ISA) {
     eval <<'EOE';
 use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $ p);
 use constant CATEGORY   => 'data';

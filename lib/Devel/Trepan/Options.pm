@@ -6,7 +6,7 @@ use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Usage;
 use Pod::Find qw(pod_where);
 use File::Spec;
-use rlib '../..';
+use rlib;
 
 use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION
             $HAVE_DATA_PRINT $HAVE_PERLTIDY);

@@ -9,8 +9,8 @@ package Devel::Trepan::CmdProcessor::Command::List;
 use English qw( -no_match_vars );
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
-unless (defined(@ISA)) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+unless (@ISA) {
     eval <<'EOE';
     use constant ALIASES    => qw(l list> l>);
     use constant CATEGORY   => 'files';
@@ -227,7 +227,7 @@ sub run($$)
     # We now have range information. Do the listing.
     my $max_line = DB::LineCache::size($filename);
     $filename = DB::LineCache::map_file($filename);
-    unless ($max_line) {
+    unless (defined $max_line) {
 	$proc->errmsg("File \"$filename\" not found.");
 	return;
     }

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 
 use rlib '../..';
 
@@ -14,9 +14,14 @@ use warnings; no warnings 'redefine';
 use vars qw(@EXPORT @ISA $eval_result);
 
 # Showing eval results can be done using either data dump package.
-use if !defined @ISA, Data::Dumper; require Data::Dumper::Perltidy;
+use if !@ISA, Data::Dumper; 
 
-unless (defined @ISA) {
+# Eval does uses its own variables.
+# FIXME: have a way to customize Data:Dumper, PerlTidy etc.
+$Data::Dumper::Terse = 1; 
+require Data::Dumper::Perltidy;
+
+unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
@@ -34,7 +39,7 @@ unless (defined @ISA) {
 }
 use strict;
 
-use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
+use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
 @ISA = qw(Exporter);
 
@@ -48,7 +53,9 @@ sub new($;$$$) {
     if (defined $interfaces) {
 	$intf = $interfaces->[0];
     } else {
-	$intf = Devel::Trepan::Interface::User->new;
+	$intf = Devel::Trepan::Interface::User->new(undef, undef, 
+						    {readline => 
+						    $settings->{readline}});
 	$interfaces = [$intf];
     }
     my $self = Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
@@ -63,6 +70,7 @@ sub new($;$$$) {
     $self->{DB_single}      = $DB::single;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
+    $self->{next_level}     = 30000;  # Virtually infinite;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
 
     # Initial watch point expr value used when a new watch point is set.
@@ -214,23 +222,38 @@ sub process_after_eval($) {
     # Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
     # Having a non-empty @ARGV will cause Tidy to croak.
     local @ARGV=();
-    
-    my $fn = ($self->{settings}{evaldisplay} eq 'tidy') 
-	    ? \&Data::Dumper::Perltidy::Dumper
-	    : \&Data::Dumper::Dumper;
+
+    my $fn;
+    my $print_properties = {};
+    my $evdisp = $self->{settings}{evaldisplay};
+    if ('tidy' eq $evdisp) {
+	$fn = \&Data::Dumper::Perltidy::Dumper;
+    } elsif ('dprint' eq $evdisp) {
+	$print_properties = {
+	    colored => $self->{settings}{highlight},
+	};
+	$fn = \&dprint;
+    } else {
+	$fn = \&Data::Dumper::Dumper;
+    }
     my $return_type = $DB::eval_opts->{return_type};
     $return_type = '' unless defined $return_type;
     if ('$' eq $return_type) {
 	    if (defined $DB::eval_result) {
 		$DB::D[$last_eval_value++] = $DB::eval_result;
-		$val_str = $fn->($DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = 
+			$fn->(\$DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $fn->($DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$DB::eval_result = '<undef>' ;
 	    }
 	    $self->msg("$prefix $DB::eval_result");
     } elsif ('@' eq $return_type) {
-	    if (defined @DB::eval_result) {
+	    if (@DB::eval_result) {
 		$val_str = $fn->(\@DB::eval_result);
 		chomp $val_str;
 		@{$DB::D[$last_eval_value++]} = @DB::eval_result;
@@ -241,7 +264,11 @@ sub process_after_eval($) {
     } elsif ('%' eq $return_type) {
 	    if (%DB::eval_result) {
 		$DB::D[$last_eval_value++] = \%DB::eval_result;
-		$val_str = $fn->(%DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = $fn->(\%DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $fn->(%DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$val_str = '<undef>'
@@ -249,8 +276,13 @@ sub process_after_eval($) {
 	    $self->msg("$prefix\n\%{$val_str}");
     }  else {
 	    if (defined $DB::eval_result) {
-		$DB::D[$last_eval_value++] = $fn->($DB::eval_result);
-		$val_str = $fn->($DB::eval_result);
+		if ('dprint' eq $evdisp) {
+		    $val_str = $DB::D[$last_eval_value++] = 
+			$fn->(\$DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $DB::D[$last_eval_value++] = 
+			$fn->($DB::eval_result);
+		}
 		chomp $val_str;
 	    } else {
 		$val_str = '<undef>'
@@ -270,11 +302,22 @@ sub process_after_eval($) {
     @DB::eval_result = undef;
 }
 
+sub skip_if_next($$) 
+{
+    my ($self, $event) = @_;
+    return 0 if ('line' ne $event);
+    return 0 if eval { no warnings; $DB::tid ne $self->{last_tid} };
+    # print  "+++event $event ", $self->{stack_size}, " ", 
+    #        $self->{next_level}, "\n";
+    return 1 if $self->{stack_size} > $self->{next_level};
+}
+
 # This is the main entry point.
 sub process_commands($$$;$)
 {
     my ($self, $frame, $event, $arg) = @_;
     $event = 'unknown' unless defined($event);
+    my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
 	process_after_eval($self);
 	if ($event eq 'after_nest') {
@@ -303,45 +346,52 @@ sub process_commands($$$;$)
 	    $arg->old_value($arg->current_val);
 	}
 
-	$self->{unconditional_prehooks}->run;
-	if (index($self->{event}, 'brkpt') < 0) {
-	    if ($self->is_stepping_skip()) {
-		# || $self->{stack_size} <= $self->{hide_level};
-		$self->{dbgr}->step;
-		return;
+	$next_skip = skip_if_next($self, $event);
+	unless ($next_skip) { 
+	    $self->{unconditional_prehooks}->run;
+	    if (index($self->{event}, 'brkpt') < 0) {
+		if ($self->is_stepping_skip()) {
+		    # || $self->{stack_size} <= $self->{hide_level};
+		    $self->{dbgr}->step;
+		    return;
+		}
+		if ($self->{settings}{traceprint}) {
+		    $self->{dbgr}->step;
+		    return;
+		}
 	    }
-	    if ($self->{settings}{traceprint}) {
-		$self->{dbgr}->step;
-		return;
-	    }
+	
+	    $self->{prompt} = compute_prompt($self);
+	    $self->print_location unless $self->{settings}{traceprint};
+	    ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
+	    
+	    $self->{cmdloop_prehooks}->run;
 	}
-	
-	$self->{prompt} = compute_prompt($self);
-	$self->print_location unless $self->{settings}{traceprint};
-	## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
-	
-	$self->{cmdloop_prehooks}->run;
     }
-    $self->{leave_cmd_loop} = 0;
-    while (!$self->{leave_cmd_loop}) {
-	# begin
-	$self->process_command_and_quit;
-	# rescue systemexit
-	#  @dbgr.stop
-	#  raise
-	#rescue exception => exc
-	# if we are inside the script interface $self->errmsg may fail.
-	# begin
-	#  $self->errmsg("internal debugger error: #{exc.inspect}")
-	# rescue ioerror
-	#  $stderr.puts "internal debugger error: #{exc.inspect}"
-	# }
-	# exception_dump(exc, @settings[:debugexcept], $!.backtrace)
-	# }
+    unless ($next_skip) {
+	$self->{leave_cmd_loop} = 0;
+	while (!$self->{leave_cmd_loop}) {
+	    # begin
+	    $self->process_command_and_quit;
+	    # rescue systemexit
+	    #  @dbgr.stop
+	    #  raise
+	    #rescue exception => exc
+	    # if we are inside the script interface $self->errmsg may fail.
+	    # begin
+	    #  $self->errmsg("internal debugger error: #{exc.inspect}")
+	    # rescue ioerror
+	    #  $stderr.puts "internal debugger error: #{exc.inspect}"
+	    # }
+	    # exception_dump(exc, @settings[:debugexcept], $!.backtrace)
+	    # }
+	}
     }
     $self->{cmdloop_posthooks}->run;
-    $DB::single = $self->{DB_single};
-    $DB::running = $self->{DB_running};
+    $self->{last_tid} = $DB::tid;
+    $DB::single       = $self->{DB_single};
+    $DB::running      = $self->{DB_running};
+
 }
 
 # run current_command, a string. @last_command is set after the
@@ -420,10 +470,9 @@ sub run_command($$)
     # Eval anything that's not a command or has been
     # requested to be eval'd
     if ($self->{settings}{autoeval} || $eval_command) {
-	my $opts = {nest => 0, return_type => '$'};
-	if ($current_command =~ /^\s*([%\$\@])/) {
-	    $opts->{return_type} = $1;
-	}
+	my $return_type = parse_eval_sigil($current_command);
+	$return_type = '$' unless $return_type;
+	my $opts = {nest => 0, return_type => $return_type};
 
 	# FIXME: 2 below is a magic fixup constant, also found in
 	# DB::finish.  Remove it.

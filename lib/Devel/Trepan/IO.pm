@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 # classes to support communication to and from the debugger.  This
 # communcation might be to/from another process or another computer.
 # And reading may be from a debugger command script.
@@ -48,7 +48,7 @@ sub close($) {
     $self->{eof} = 1;
 }
 
-sub want_gnu_readline() {
+sub want_term_readline() {
     0;
 }
 

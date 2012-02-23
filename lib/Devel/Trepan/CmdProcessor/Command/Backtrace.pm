@@ -4,9 +4,9 @@ use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Backtrace;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant ALIASES    => qw(bt where T);
 use constant CATEGORY   => 'stack';

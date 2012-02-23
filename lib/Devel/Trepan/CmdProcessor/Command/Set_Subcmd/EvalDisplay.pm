@@ -1,23 +1,30 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
+use strict;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set::EvalDisplay;
 
+use Devel::Trepan::CmdProcessor::Default;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+our @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
-our $CMD = "set confirm";
+our $CMD = 'set evaldisplay';
+my @DISPLAY_TYPES = @Devel::Trepan::CmdProcessor::DISPLAY_TYPES;
+my $param = join('|', @DISPLAY_TYPES);
 our $HELP   = <<"HELP";
-${CMD} {tidy|dumper}
+${CMD} \{$param\}
 
-Set how you want the evaluation results show.
+Set how you want the evaluation results shown.
 
 The 'tidy' option sets to use Data::Dumper::Perltidy. 'dumper' uses 
-Data::Dumper.
+Data::Dumper. When the Data::Printer module is installed, 
+'dprint' specifies using that.
+
+See also 'show evaldisplay', 'eval', and 'set autoeval'.
 HELP
 
 our $SHORT_HELP = 'Set how you want the evaluation results shown';
@@ -27,7 +34,7 @@ use constant MIN_ARGS => 1;
 sub complete($$) 
 {
     my ($self, $prefix) = @_;
-    Devel::Trepan::Complete::complete_token(['dumper', 'tidy'], $prefix);
+    Devel::Trepan::Complete::complete_token(\@DISPLAY_TYPES, $prefix);
 }
 
 sub run($$)
@@ -35,10 +42,12 @@ sub run($$)
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $evaltype = $args->[2];
-    if ('tidy' eq $evaltype || $evaltype eq 'dumper') {
+    my @result = grep($_ eq $evaltype, @DISPLAY_TYPES);
+    if (1 == scalar @result) {
 	$proc->{settings}{evaldisplay} = $evaltype;
     } else {
-	$proc->errmsg("Expecting either 'tidy' or 'dumper', got ${evaltype}");
+	my $or_list = join(', or ', map{"'$_'"} @DISPLAY_TYPES); 
+	$proc->errmsg("Expecting either $or_list; got ${evaltype}");
 	return;
     }
     $proc->{commands}{show}->run(['show', 'evaldisplay']);

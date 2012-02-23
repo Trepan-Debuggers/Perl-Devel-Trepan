@@ -1,14 +1,15 @@
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 set auto eval is on.
+Eval result display style is tidy.
 $DB::D[0] = 3
 $DB::D[1] =
-@{$VAR1 = [ '3', '5' ];}
+@{[ '3', '5' ]}
 $DB::D[2] =
-@{$VAR1 = [ '3', '5' ];}
+@{[ '3', '5' ]}
 $DB::D[3] = 2
 $DB::D[4] = 0
-$DB::D[5] = $VAR1 = 7;
+$DB::D[5] = 7
 x1 (gcd.pl:9)
     my ($a, $b) = @_;
 -- (gcd.pl:11)
@@ -16,4 +17,4 @@ x1 (gcd.pl:9)
 $DB::D[6] = 3
 $DB::D[7] = 5
 $DB::D[8] =
-@{$VAR1 = [ '3', '5' ];}
+@{[ '3', '5' ]}

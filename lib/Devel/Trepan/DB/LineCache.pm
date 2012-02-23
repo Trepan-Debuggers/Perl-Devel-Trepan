@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # 
-#   Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+#   Copyright (C) 2011, 2012 Rocky Bernstein <rockb@cpan.org>
 #
 #
 =head1 NAME DB::LineCache
@@ -35,11 +35,13 @@ source lines.
 
 use Digest::SHA;
 
-use version; $VERSION = '0.1.0';
+use version; $VERSION = '0.1.1';
 
 # A package to read and cache lines of a Perl program. 
 package DB::LineCache;
 use English qw( -no_match_vars );
+use vars qw(%file_cache %script_cache);
+
 use strict; use warnings;
 no warnings 'once';
 no warnings 'redefine';
@@ -59,8 +61,6 @@ my $perl_formatter = Devel::Trepan::DB::Colors::setup();
 # The file cache. The key is a name as would be given by Perl for
 # __FILE__. The value is a LineCacheInfo object.
 
-my %file_cache;
-my %script_cache;
 
 # Maps a string filename (a String) to a key in %file_cache (a
 # String).
@@ -86,7 +86,10 @@ sub remove_script_temps()
     }
 }
 
-END { remove_script_temps };
+END { 
+    $DB::ready = 0;
+    remove_script_temps 
+};
 
   
 # Clear the file cache entirely.
@@ -258,7 +261,6 @@ sub getline($$;$)
     my $reload_on_change = $opts->{reload_on_change};
     my $filename = map_file($file_or_script);
     ($filename, $line_number) = map_file_line($filename, $line_number);
-    ## print "+++FILENAME $filename\n";
     my $lines = getlines($filename, $opts);
     if (defined $lines && @$lines && $line_number > 0 && 
 	$line_number <= scalar @$lines) {
@@ -459,6 +461,7 @@ sub map_file_line($$)
 sub filename_is_eval($)
 {
     my $filename = shift;
+    return 0 unless defined $filename;
     return ($filename =~ /^\(eval \d+\)/);
 }
 
@@ -470,7 +473,10 @@ sub update_script_cache($$)
     return 0 unless filename_is_eval($script);
     my $string = $opts->{string};
     my $lines_href = {};
-    unless (defined($string)) {
+    if (defined($string)) {
+	my @lines = split(/\n/, $string);
+	$lines_href->{plain} = \@lines;
+    } else {
 	if ($script eq $DB::filename) {
 	    # Should be the same as the else case, 
 	    # but just in case...
@@ -527,6 +533,7 @@ sub update_cache($;$)
     }
     my $lines_href;
     my @trace_nums = ();
+    my $stat;
     if ($use_perl_d_file) {
 	my @list = ($filename);
 	if ($is_eval) {
@@ -535,7 +542,6 @@ sub update_cache($;$)
 	}
 	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
 	for my $name (@list) {
-	    my $stat;
 	    no strict; # Avoid string as ARRAY ref error message
 	    if (scalar @{"main::_<$name"}) {
 		$stat = File::stat::stat($path);
@@ -582,15 +588,15 @@ sub update_cache($;$)
 	    $read_file = 1;
         }
     }
-      
-    my $stat = undef;
+
+    # File based reading is done here.
     if (-f $path ) {
-	$stat = File::stat::stat($path);
+	$stat = File::stat::stat($path) unless defined $stat;
     } elsif (!$read_file) {
 	if (basename($filename) eq $filename) {
 	    # try looking through the search path.
 	    for my $dirname (@INC) {
-		$path = File::Spec::catfile->($dirname, $filename);
+		$path = File::Spec->catfile($dirname, $filename);
 		if ( -f $path) {
 		    $stat = File::stat::stat($path);
 		    last;
@@ -631,8 +637,22 @@ unless (caller) {
     no strict;
     print scalar(@{"main::_<$file"}), "\n";
     use strict;
+
+    my $script_name = '(eval 234)';
+    update_script_cache($script_name, {string => "now\nis\nthe\ntime"});
+    print join(', ', keys %DB::LineCache::script_cache), "\n";
+    my $lines = $DB::LineCache::script_cache{$script_name}{lines_href}{plain};
+    print join("\n", @{$lines}), "\n";
+    $lines = DB::LineCache::getlines($script_name);
+    printf "%s has %d lines\n",  $script_name,  scalar @$lines;
+    printf("Line 1 of $script_name is:\n%s\n", 
+	  DB::LineCache::getline($script_name, 1));
+    my $max_line = DB::LineCache::size($script_name);
+    printf("%s has %d lines via DB::LineCache::size\n",  
+	   $script_name,  scalar @$lines);
+    exit;
     
-    my $lines = DB::LineCache::getlines(__FILE__);
+    $lines = DB::LineCache::getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
     my $full_file = abs_path(__FILE__);
     $lines = DB::LineCache::getlines(__FILE__);
@@ -674,21 +694,6 @@ unless (caller) {
     $DB::filename = '(eval 4)';
     my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
     print "mapped eval is $filename\n";
-    
-    # print("#{__FILE__} is %scached." % 
-    #      yes_no(LineCache::cached?(__FILE__)))
-    # print "Full path: #{DB::LineCache::path(__FILE__)}"
-    # LineCache::checkcache # Check all files in the cache
-    # LineCache::clear_file_cache 
-    # print("#{__FILE__} is now %scached." % 
-    #      yes_no(LineCache::cached?(__FILE__)))
-    # digest = SCRIPT_LINES__.select{|k,v| k =~ /digest.rb$/}
-    # print digest.first[0] if digest
-    # line = LineCache::getline(__FILE__, 7)
-    # print "The 7th line is\n#{line}" 
-    # LineCache::remap_file_lines(__FILE__, 'test2', (10..20), 6)
-    # print LineCache::getline('test2', 10)
-    # print "Remapped 10th line of test2 is\n#{line}" 
 }
 
 1;

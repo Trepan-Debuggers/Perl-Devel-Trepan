@@ -34,10 +34,17 @@ To install this Devel::Trepan, run the following commands:
 	make test
 	[sudo] make install
 
+or:
+
+        $ perl -MCPAN -e shell
+	...
+	cpan[1]> install Devel::Trepan
+
+
 LICENSE AND COPYRIGHT
 ---------------------
 
-Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

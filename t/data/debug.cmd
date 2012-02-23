@@ -2,6 +2,7 @@
 set basename on
 set highlight off
 set autoeval on
+set evaldisplay tidy
 # A should be undefined here.
 $a
 # First recursive debug

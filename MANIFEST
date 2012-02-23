@@ -184,6 +184,7 @@ t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t
 t/10test-position.t
+t/10test-proc-default.t
 t/10test-proc-hook.t
 t/10test-proc-load.t
 t/10test-sighandler.t

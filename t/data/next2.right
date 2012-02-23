@@ -1,0 +1,7 @@
+-- (next2.pl:5)
+init();
+-- (next2.pl:6)
+my $y=3;
+Eval result display style is tidy.
+$DB::D[0] = 'trepan.pl'
+$DB::D[1] = '1.0'

@@ -15,7 +15,6 @@ eval.pl [1-10]
 -- (eval.pl:5)
 eval $var;
 --
---
 $DB::D[0] = 1
 eval.pl [1-10]
   1    	$var = '
@@ -28,7 +27,6 @@ eval.pl [1-10]
   8    	    my @args = @_;
   9    	    print "ho\n";
  10    	    5;
-++
 ++
 $DB::D[1] = 1
 -- ( (eval remapped 2)

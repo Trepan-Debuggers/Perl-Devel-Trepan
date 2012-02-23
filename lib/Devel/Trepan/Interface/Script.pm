@@ -11,8 +11,8 @@ use rlib '../../..';
 
 package Devel::Trepan::Interface::Script;
 our (@ISA);
-use if !defined(@ISA), Devel::Trepan::Interface;
-use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
+use if !@ISA, Devel::Trepan::Interface;
+use if !@ISA, Devel::Trepan::Interface::ComCodes;
 use Devel::Trepan::IO::Input;
 use Devel::Trepan::IO::StringArray;
 use Devel::Trepan::Util qw(hash_merge);
@@ -104,7 +104,7 @@ sub msg($$)
 
 sub is_interactive() { 0; }
 sub has_completion() { 0; }
-sub has_gnu_readline($) { 0; }
+sub has_term_readline($) { 0; }
 
 # Script interface to read a command. `prompt' is a parameter for 
 # compatibilty and is ignored.

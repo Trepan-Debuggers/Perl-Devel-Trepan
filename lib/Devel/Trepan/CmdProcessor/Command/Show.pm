@@ -5,10 +5,10 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Show;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY => 'status';
 use constant SHORT_HELP => 'Show parts of the debugger environment';

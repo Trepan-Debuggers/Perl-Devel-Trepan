@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 
 # Debugger user/command-oriented input possibly attached to IO-style
 # input or GNU Readline.
@@ -14,27 +14,28 @@ use rlib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;
 
-use vars qw(@EXPORT @ISA $HAVE_GNU_READLINE);
+use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
 @ISA = qw(Devel::Trepan::IO::InputBase Exporter);
-@EXPORT = qw($HAVE_GNU_READLINE);
+@EXPORT = qw($HAVE_TERM_READLINE);
 
 BEGIN {
     $ENV{'PERL_RL'} ||= 'perl';
-    $HAVE_GNU_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0;
-    sub GLOBAL_have_gnu_readline {
-        if (!defined($HAVE_GNU_READLINE)) {
+    $HAVE_TERM_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0;
+
+    sub GLOBAL_have_term_readline {
+        if (!defined($HAVE_TERM_READLINE)) {
             my $term = Term::ReadLine->new('testing');
             if ($term->ReadLine eq 'Term::ReadLine::Perl') {
-                $HAVE_GNU_READLINE = 'Perl';
+                $HAVE_TERM_READLINE = $Term::ReadLine::Perl::term ? 0 : 'Perl';
             } elsif ($term->ReadLine eq 'Term::ReadLine::Gnu') {
-                $HAVE_GNU_READLINE = 'Gnu';
+                $HAVE_TERM_READLINE = 'Gnu';
             } else {
-                $HAVE_GNU_READLINE = 0;
+                $HAVE_TERM_READLINE = 0;
             }
             # Don't know how to close $term
             $term = undef;
         }
-	return $HAVE_GNU_READLINE;
+	return $HAVE_TERM_READLINE;
     }
 }
 
@@ -43,21 +44,21 @@ sub new($;$$) {
     my ($class, $inp, $opts) = @_;
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
-    if ($opts->{readline} && GLOBAL_have_gnu_readline()) {
+    if ($opts->{readline} && GLOBAL_have_term_readline()) {
 	my $rc = 0;
 	$rc = eval {
 	    $self->{readline} = Term::ReadLine->new('trepan.pl');
 	    1 ;
 	};
 	if ($rc) {
-	    $self->{gnu_readline} = 1;
+	    $self->{term_readline} = 1;
 	} else {
 	    $self->{readline} = undef;
-	    $self->{gnu_readline} = 0;
+	    $self->{term_readline} = 0;
 	}
     } else {
 	$self->{readline} = undef;
-	$self->{gnu_readline} = 0;
+	$self->{term_readline} = 0;
     }
     bless ($self, $class);
     return $self;
@@ -66,13 +67,13 @@ sub new($;$$) {
 sub have_term_readline($) 
 {
     my $self = shift;
-    $self->{gnu_readline} && (exists($ENV{'TERM'}) && $ENV{'TERM'} ne 'dumb');
+    $self->{term_readline} && (exists($ENV{'TERM'}) && $ENV{'TERM'} ne 'dumb');
 }
 
-sub want_gnu_readline($) 
+sub want_term_readline($) 
 {
     my $self = shift;
-    $self->{gnu_readline};
+    $self->{term_readline};
 }
 
 sub is_interactive($)  {
@@ -85,6 +86,7 @@ sub is_interactive($)  {
 # case, it should have been handled prior to this call.
 sub readline($;$) {
     my ($self, $prompt) = @_;
+    $prompt = '' unless defined($prompt);
     my $line;
     if (defined $self->{readline}) {
 	$line = $self->{readline}->readline($prompt);
@@ -102,7 +104,7 @@ unless (caller) {
     require Data::Dumper; import Data::Dumper; 
     print Dumper($in), "\n";
     printf "Is interactive: %s\n", ($in->is_interactive ? "yes" : "no");
-    printf "Have GNU Readline: %s\n", ($HAVE_GNU_READLINE ? "yes" : "no");
+    printf "Have Term::ReadLine: %s\n", ($HAVE_TERM_READLINE ? "yes" : "no");
     if (scalar(@ARGV) > 0) {
 	print "Enter some text: ";
 	my $line = $in->readline;
@@ -113,8 +115,8 @@ unless (caller) {
 	}
     }
     my $inp = __PACKAGE__->new(undef, {readline => 0});
-    printf "Input open has GNU Readline: %s\n", ($inp->want_gnu_readline ? "yes" : "no");
+    printf "Input open has Term::ReadLine: %s\n", ($inp->want_term_readline ? "yes" : "no");
     $inp = __PACKAGE__->new(undef, {readline => 1});
-    printf "Input open now has GNU Readline: %s\n", ($inp->want_gnu_readline ? "yes" : "no");
+    printf "Input open now has Term::ReadLine: %s\n", ($inp->want_term_readline ? "yes" : "no");
 }
 1;

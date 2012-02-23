@@ -12,7 +12,7 @@ use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
-            $stop
+            $stop @clients $ready $tid
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -21,7 +21,7 @@ use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
 
 # "private" globals
-my ($ready, $deep, @saved, @skippkg, @clients);
+my ($deep, @saved, @skippkg);
 
 my $ineval = {};
 
@@ -43,15 +43,17 @@ BEGIN {
 
     # these are hardcoded in perl source (some are magical)
     
-    $DB::sub = '';        # name of current subroutine
-    $DB::single = 0;      # single-step flags. See constants at the 
+    $DB::sub     = '';    # name of current subroutine
+    $DB::single  = 0;     # single-step flags. See constants at the 
                           # top of DB/Sub.pm
-    $DB::signal = 0;      # signal flag (will cause a stop at the next line)
-    $DB::stop = 0;        # value of last breakpoint condition evaluation
+    $DB::signal  = 0;     # signal flag (will cause a stop at the next line)
+    $DB::stop    = 0;     # value of last breakpoint condition evaluation
+    $DB::tid     = undef; # Thread id
 
-    @DB::args = ();       # arguments of current subroutine or @ARGV array
-    @DB::dbline = ();     # list of lines in currently loaded file
-    %DB::dbline = ();     # actions in current file (keyed by line number)
+    @DB::args    = ();    # arguments of current subroutine or @ARGV array
+    @DB::dbline  = ();    # list of lines in currently loaded file
+    %DB::dbline  = ();    # actions in current file (keyed by line number)
+    @DB::clients = ();
     
     # other "public" globals  
     
@@ -127,7 +129,6 @@ sub DB {
     # lock the debugger and get the thread id for the prompt
     lock($DBGR);
 
-    my $tid;
     if ($ENV{PERL5DB_THREADED}) {
 	$tid = eval { "[".threads->tid."]" };
     }
@@ -162,7 +163,6 @@ sub DB {
         $filename_ini = $filename = 'Dev:Pseudo';
         *dbline = $main::{ '_<' . $filename };
     }
-    $DB::event = undef;
     $DB::brkpt = undef;
 
     # Increment debugger nesting level.
@@ -318,7 +318,7 @@ sub DB {
 	    } until $running;
 	}
     }
-    $event = undef;
+    $DB::event = undef;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
      $INPUT_RECORD_SEPARATOR, 
@@ -396,7 +396,6 @@ sub save {
 }
 
 sub catch {
-    # for (@clients) { $_->awaken; }
     @DB::_ = @_;
     $DB::caller = [caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
@@ -510,7 +509,12 @@ sub cont {
 	return 0 unless $brkpt;
     }
     for (my $i = 0; $i <= $#stack;) {
-	$stack[$i++] &= ~1;
+	if (defined $stack[$i]) {
+	    $stack[$i++] &= ~1 ;
+	} else {
+	    # If Enbugger is used $stack[$i] might not be defined
+ 	    $stack[$i++] = 0;
+	}
     }
     $DB::single = 0;
     return $DB::running = 1;
@@ -629,9 +633,6 @@ sub loadfile {
 # "pure virtual" methods
 #
 
-# client complete startup
-sub awaken {}
-
 sub skippkg {
   my $s = shift;
   push @skippkg, @_ if @_;
@@ -664,7 +665,9 @@ $SIG{'INT'} = \&DB::catch;
 
 # disable this if stepping through END blocks is desired
 # (looks scary and deconstructivist with Swat)
-END { $ready = 0 }
+END { 
+    $ready = 0;
+}
 
 1;
 __END__

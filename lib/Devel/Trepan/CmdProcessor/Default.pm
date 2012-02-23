@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -6,15 +6,38 @@ use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 
-use if !defined @ISA, Devel::Trepan::Options;
+use if !@ISA, Devel::Trepan::Options;
+use vars qw(@EXPORT $HAVE_DATA_PRINT $HAVE_PERLTIDY @DISPLAY_TYPES);
+@EXPORT = qw(default_eval_display  $HAVE_DATA_PRINT $HAVE_PERLTIDY
+            @DISPLAY_TYPES);
+
 use strict;
+
 our @ISA;
 
-# print "Default term is ", default_term, "\n";
+BEGIN {
+    $HAVE_DATA_PRINT = eval("use Data::Printer alias => 'dprint'; 1") ? 1 : 0;
+    $HAVE_PERLTIDY   = 1 ; # eval("use Data::Dumper::Perltidy; 1") ? 1 : 0;
+    @DISPLAY_TYPES = ('dumper');
+    push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
+    push @DISPLAY_TYPES, 'tidy'   if $HAVE_PERLTIDY;
+}
+
+# Return what to use for evaluation display
+sub default_eval_display() {
+    if ($HAVE_DATA_PRINT) {
+	return 'dprint';
+    } elsif ($HAVE_PERLTIDY) {
+	return 'tidy';
+    } else {
+       return 'dumper';
+    }
+}
+
 
 use constant DEFAULT_SETTINGS => {
     abbrev        => 1,      # Allow abbreviations of debugger commands?
-    autoeval      => 1,      # Ruby eval non-debugger commands
+    autoeval      => 1,      # Perl eval non-debugger commands
     autoirb       => 0,      # Go into IRB in debugger command loop
     autolist      => 0,      # Run 'list' 
     
@@ -31,8 +54,9 @@ use constant DEFAULT_SETTINGS => {
     directory     =>         # last-resort path-search for files
     '$cdir:$cwd',            # that are not fully qualified.
     
-    evaldisplay  => 'tidy',  # use Data::Dumper (dumper) or
-	                     # Data::Dumper::Perltidy::Dumper (tidy) ?
+    evaldisplay  => default_eval_display(),
+                             # use Data::Dumper (dumper) or
+	                     # Data::Dumper::Perltidy::dumper (tidy) ?
     hidestack     => -1,     # Fixnum. How many hidden outer
                              # debugger stack frames to hide?
                              # -1 means compute value. 0
@@ -61,11 +85,12 @@ use constant DEFAULT_SETTINGS => {
 ##                                 # User command directory
 };
 
-if (__FILE__ eq $0) {
+unless (caller) {
     # Show it:
-    require Data::Dumper;
-    import Data::Dumper;
+    require Data::Dumper::Perltidy;
     print Dumper(DEFAULT_SETTINGS), "\n";
+    print '-' x 20, "\n";
+    print join(', ', @DISPLAY_TYPES), "\n";
 }
 
 1;

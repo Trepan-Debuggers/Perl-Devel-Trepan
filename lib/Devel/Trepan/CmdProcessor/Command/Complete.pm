@@ -6,9 +6,9 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Complete;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY   => 'support';
     use constant SHORT_HELP => 'List the completions for the rest of the line as a command';

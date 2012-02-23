@@ -7,11 +7,11 @@ use rlib '../../../..';
 use Devel::Trepan::Complete; 
 package Devel::Trepan::CmdProcessor::Command::Kill;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
 use vars qw(@ISA);
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<'EOE';
 use constant ALIASES  => ('kill!');
 use constant CATEGORY => 'running';

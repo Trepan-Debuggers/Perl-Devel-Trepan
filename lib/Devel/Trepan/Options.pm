@@ -6,15 +6,20 @@ use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Usage;
 use Pod::Find qw(pod_where);
 use File::Spec;
-use rlib '../..';
+use rlib;
 
-use vars qw(@EXPORT @ISA $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
-@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
+use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION
+            $HAVE_DATA_PRINT $HAVE_PERLTIDY);
+@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME 
+              $HAVE_DATA_PRINT $HAVE_PERLTIDY
+              $VERSION);
+our @ISA;
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
     $VERSION      = '0.1.9';
 }
+
 use constant VERSION => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
 
@@ -200,13 +205,13 @@ trepan.pl - Perl "Trepanning" Debugger
       --cmddir DIR         Read DIR for additional debugger commands
       --batch FILE         Like --command, but quit after reading FILE.
                            This option has precidence over --command and
-                           will also set --mx
+                           will also set --nx
       --cd DIR             Change current directory to DIR
       --nx                 Don't run user startup file (e.g. .treplrc)
 
       --client | --server  Set for out-of-process debugging. The server 
                            rus the Perl program to be debugged runs. 
-                           The client runs outside of this proces.
+                           The client runs outside of this process.
                           
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1

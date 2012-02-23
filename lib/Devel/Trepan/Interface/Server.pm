@@ -12,11 +12,11 @@ use English qw( -no_match_vars );
 our (@ISA);
 
 # Our local modules
-use if !defined(@ISA), Devel::Trepan::Interface;
-use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
-use if !defined(@ISA), Devel::Trepan::IO::Input;
+use if !@ISA, Devel::Trepan::Interface;
+use if !@ISA, Devel::Trepan::Interface::ComCodes;
+use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge YES NO);
-use if !defined(@ISA), Devel::Trepan::IO::TCPServer;
+use if !@ISA, Devel::Trepan::IO::TCPServer;
 use strict; 
 
 @ISA = qw(Devel::Trepan::Interface Exporter);

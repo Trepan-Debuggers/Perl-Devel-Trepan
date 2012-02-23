@@ -56,7 +56,7 @@ is(scalar @c, 0);
 @c = complete_it("set ");
 cmp_ok(scalar @c, '>', 2, 'set commands populated');
 
-is(0, scalar @{$out->{output}});
+is(0, scalar @{$out->{output}}, join("\n", @{$out->{output}}));
 $cmdproc->run_cmd(['help', '*']);
 cmp_ok(scalar @{$out->{output}}, '>', 0);
 $out->{output} = [];

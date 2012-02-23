@@ -20,7 +20,8 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    # my $frame = $proc->{frame};
+    my $frame = $proc->{frame};
+    my $line = $frame->{line};
     my $m;
     if (defined($DB::ini_dollar0) && $DB::ini_dollar0) {
 	$m = sprintf "Program: %s.", $DB::ini_dollar0;
@@ -28,6 +29,10 @@ sub run($$)
     }
     $m = sprintf "Program stop event: %s.", $proc->{event};
     $proc->msg($m);
+    if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
+	$m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
+	$proc->msg($m);
+    }
     if ('return' eq $proc->{event}) {
 	$proc->{commands}{info}->run(['info', 'return']);
     } elsif ('raise' eq  $proc->{event}) {

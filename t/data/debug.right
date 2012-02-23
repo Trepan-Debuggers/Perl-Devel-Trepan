@@ -3,8 +3,9 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 basename is on.
 highlight is off.
 set auto eval is on.
+Eval result display style is tidy.
 $DB::D[0] = <undef>
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 $DB::in_debugger=0;
 -- (gcd.pl:9)
     my ($a, $b) = @_;
@@ -16,12 +17,12 @@ $DB::D[1] = 1
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[2] = $VAR1 = 1;
+$DB::D[2] = 1
 Leaving nested debug level 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 $DB::D[3] = <undef>
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 $DB::in_debugger=0;
 -- (gcd.pl:9)
     my ($a, $b) = @_;
@@ -29,7 +30,7 @@ $DB::in_debugger=0;
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[3] = 1
 $DB::D[4] = 1
--- ( (eval remapped 4)
+-- ( (eval remapped 5)
 -- (gcd.pl:9)
     my ($a, $b) = @_;
 -- (gcd.pl:11)
@@ -39,7 +40,7 @@ $DB::D[5] = 2
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[6] = $VAR1 = 2;
+$DB::D[6] = 2
 Leaving nested debug level 2
 -- (gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
@@ -47,7 +48,7 @@ Leaving nested debug level 2
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-$DB::D[7] = $VAR1 = 1;
+$DB::D[7] = 1
 Leaving nested debug level 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 

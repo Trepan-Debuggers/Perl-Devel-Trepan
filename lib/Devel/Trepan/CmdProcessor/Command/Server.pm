@@ -11,9 +11,9 @@ use Devel::Trepan::Interface::Server;
 package Devel::Trepan::CmdProcessor::Command::Server;
 use Cwd 'abs_path';
 use Getopt::Long qw(GetOptionsFromArray);
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Allow remote connections';

@@ -5,9 +5,9 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY => 'support';
     use constant SHORT_HELP => 'Modify parts of the debugger environment';
@@ -18,7 +18,7 @@ unless (defined(@ISA)) {
 EOE
 }
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 use strict;
 use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);

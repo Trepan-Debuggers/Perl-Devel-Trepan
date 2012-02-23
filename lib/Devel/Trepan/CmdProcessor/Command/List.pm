@@ -9,8 +9,8 @@ package Devel::Trepan::CmdProcessor::Command::List;
 use English qw( -no_match_vars );
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
-unless (defined(@ISA)) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+unless (@ISA) {
     eval <<'EOE';
     use constant ALIASES    => qw(l list> l>);
     use constant CATEGORY   => 'files';

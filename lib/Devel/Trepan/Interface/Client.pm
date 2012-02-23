@@ -12,12 +12,12 @@ use rlib '../../..';
 # computer.
 package Devel::Trepan::Interface::Client;
 our (@ISA);
-use if !defined(@ISA), Devel::Trepan::Interface;
-use if !defined(@ISA), Devel::Trepan::Interface::ComCodes;
-use if !defined(@ISA), Devel::Trepan::Interface::User;
-use if !defined(@ISA), Devel::Trepan::IO::Input;
+use if !@ISA, Devel::Trepan::Interface;
+use if !@ISA, Devel::Trepan::Interface::ComCodes;
+use if !@ISA, Devel::Trepan::Interface::User;
+use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
-use if !defined(@ISA), Devel::Trepan::IO::TCPClient;
+use if !@ISA, Devel::Trepan::IO::TCPClient;
 use strict; 
 
 @ISA = qw(Devel::Trepan::Interface Exporter);

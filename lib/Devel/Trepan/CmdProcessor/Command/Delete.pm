@@ -6,9 +6,9 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Delete;
 use English qw( -no_match_vars );
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'breakpoints';
 use constant SHORT_HELP => 'Delete some breakpoints';

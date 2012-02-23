@@ -9,12 +9,12 @@ use rlib '../../../..';
 #
 # NOTE: The enable command  subclasses this, so beware when changing! 
 package Devel::Trepan::CmdProcessor::Command::Disable;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
 
 use vars qw(@ISA);
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'breakpoints';
 use constant SHORT_HELP => 'Disable some breakpoints';

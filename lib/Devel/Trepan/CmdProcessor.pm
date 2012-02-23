@@ -14,14 +14,14 @@ use warnings; no warnings 'redefine';
 use vars qw(@EXPORT @ISA $eval_result);
 
 # Showing eval results can be done using either data dump package.
-use if !defined @ISA, Data::Dumper; 
+use if !@ISA, Data::Dumper; 
 
 # Eval does uses its own variables.
 # FIXME: have a way to customize Data:Dumper, PerlTidy etc.
 $Data::Dumper::Terse = 1; 
 require Data::Dumper::Perltidy;
 
-unless (defined @ISA) {
+unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
@@ -253,7 +253,7 @@ sub process_after_eval($) {
 	    }
 	    $self->msg("$prefix $DB::eval_result");
     } elsif ('@' eq $return_type) {
-	    if (defined @DB::eval_result) {
+	    if (@DB::eval_result) {
 		$val_str = $fn->(\@DB::eval_result);
 		chomp $val_str;
 		@{$DB::D[$last_eval_value++]} = @DB::eval_result;

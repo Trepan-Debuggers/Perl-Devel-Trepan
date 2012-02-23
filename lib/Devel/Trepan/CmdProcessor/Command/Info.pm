@@ -5,9 +5,9 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info;
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command;
-unless (defined(@ISA)) {
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+unless (@ISA) {
     eval <<'EOE';
 use constant SHORT_HELP => 'Information about debugged program and its environment'; 
 use constant CATEGORY => 'status';

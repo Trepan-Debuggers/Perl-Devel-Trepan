@@ -6,7 +6,7 @@ use Data::Dumper;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
 use vars qw(@ISA @SUBCMD_VARS);
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
     use constant MAX_ARGS => undef;
 EOE

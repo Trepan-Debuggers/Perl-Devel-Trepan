@@ -6,11 +6,11 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Display;
 use English qw( -no_match_vars );
 
-use if !defined @ISA, Devel::Trepan::DB::Display ;
-use if !defined @ISA, Devel::Trepan::Condition ;
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::DB::Display ;
+use if !@ISA, Devel::Trepan::Condition ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
-unless (defined @ISA) {
+unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'data';
 use constant NEED_STACK => 0;

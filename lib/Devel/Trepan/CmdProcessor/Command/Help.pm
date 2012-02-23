@@ -6,11 +6,11 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Help;
 use warnings; no warnings 'redefine';
 
-use if !defined @ISA, Devel::Trepan::CmdProcessor::Command ;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
 
 use vars qw(@ISA);
-unless (defined(@ISA)) {
+unless (@ISA) {
     eval <<'EOE';
 use constant ALIASES    => ('?');
 use constant CATEGORY   => 'support';

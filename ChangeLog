@@ -1,3 +1,8 @@
+2012-01-16  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, META.json, META.yml, t/20test-autolist.t: Get
+	ready for 0.1.9 release
+
 2012-01-15  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/CmdProcessor.pm,

@@ -39,8 +39,9 @@ given we will the perform the translations:
    {if|elsif|unless} (expr) [{]  => expr
    {until|while} (expr) [{]      => expr
    return expr [;]               => expr
-   my (expr) = val ;             => expr = val 
-   my var = val ;                => var = val 
+   {my|local|our} (expr1, expr2) = (v1,v2);
+                                 => (expr1, expr2) = (v1,v2)
+   {my|local|our} var = expr ;   => expr
    given expr                    => expr
    sub fn(params)                => (params)
    var = expr                    => expr
@@ -119,16 +120,18 @@ sub run($$)
 }
 
 unless (caller) {
-  # require_relative '../mock'
-  # dbgr, cmd = MockDebugger::setup
-  # my $arg_str = '1 + 2';
-  # $proc->{cmd_argstr} = $arg_str;
-  # print "eval ${arg_str} is: ${cmd.run([cmd.name, arg_str])}\n";
-  # $arg_str = 'return "foo"';
-  # # sub cmd.proc.current_source_text
-  # # {
-  # #   'return "foo"';
-  # # }
-  # # $proc->{cmd_argstr} = $arg_str;
-  # # print "eval? ${arg_str} is: ", $cmd->run([$cmd->name + '?'])";
+    require Devel::Trepan::CmdProcessor::Mock;
+    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    my $arg_str = '1 + 2';
+    $proc->{cmd_argstr} = $arg_str;
+    # print "eval ${arg_str} is: $cmd->run([$NAME, $arg_str])}\n";
+    $arg_str = 'return "foo"';
+    # # sub cmd.proc.current_source_text
+    # # {
+    # #   'return "foo"';
+    # # }
+    # $proc->{cmd_argstr} = $arg_str;
+    # print "eval? ${arg_str} is: ", $cmd->run([$NAME . '?'])";
 }
+
+1;

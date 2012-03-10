@@ -62,7 +62,19 @@ sub uniq_abbrev($$)
 }
 
 # extract the "expression" part of a line of source code.
-# 
+# Specifically
+#   if (expression) -> expression
+#   elsif (expression) -> expression
+#   else (expression) -> expression
+#   until (expression) -> expression
+#   while (expression) -> expression
+#   return (expression) -> expression
+#   my (...) = (expression) -> (...) = (expression)
+#   my ... = expression -> expression
+#   ditto for "our" and "local", e.g.
+#   local (...) = (expression) -> (...) = (expression
+#   local ... = expression -> expression
+#   $... = expression -> expression
 sub extract_expression($)
 {
     my $text = shift;
@@ -76,15 +88,19 @@ sub extract_expression($)
         # EXPRESSION in: return EXPRESSION
         $text =~ s/^\s*return\s+//;
         $text =~ s/;\s*$//;
-    } elsif ($text =~ /^\s*my\s*(.+(\((?:.+)\s*\)\s*=.*);.*$)/) {
+    } elsif ($text =~ /^\s*(?:my|our|local)\s*(.+(\((?:.+)\s*\)\s*=.*);.*$)/) {
         # my (...) = ...;
-	$text =~ s/^\s*my\s*(\((?:.+)\)\s*=.*)[^;]*;.*$/$1/;
+	# Note: This has to appear before the below assignment
+	$text =~ s/^\s*(?:my|our|local)\s*(\((?:.+)\)\s*=.*)[^;]*;.*$/$1/;
+    } elsif ($text =~ /^\s*(?:my|our|local)\s+(?:.+)\s*=\s*(.+);.*$/) {
+        # my ... = ...;
+	$text = $1;
     # } elsif ($text =~ /^\s*case\s+/) {
     #     # EXPRESSION in: case EXPESSION
     #     $text =~ s/^\s*case\s*//;
     # } elsif ($text =~ /^\s*sub\s*.*\(.+\)/) {
     #     $text =~ s/^\s*sub\s*.*\((.*)\)/\(\1\)/;
-    } elsif ($text =~ /^\s*[A-Za-z_][A-Za-z0-9_\[\]]*\s*=[^=>]/) {
+    } elsif ($text =~ /^\s*\$[A-Za-z_][A-Za-z0-9_\[\]]*\s*=[^=>]/) {
         # RHS of an assignment statement.
         $text =~ s/^\s*[A-Za-z_][A-Za-z0-9_\[\]]*\s*=//;
     }

@@ -49,19 +49,20 @@ for my $pair
 }
 
 note 'Test extract expression';
-for my $pair (
-    ['if (condition("if"))', 'condition("if")'], 
-    ['if (condition("if")) {', 'condition("if")'], 
-    ['if(condition("if")){', 'condition("if")'], 
-    ['until (until_termination)', 'until_termination'],
-    ['until (until_termination){', 'until_termination'],
-    ['return return_value', 'return_value'],
-    ['return return_value;', 'return_value'],
-    ['nothing to be done', 'nothing to be done'], 
-    ['my ($a,$b) = (5,6);', '($a,$b) = (5,6)'],
+for my $triple (
+    ['if (condition("if"))', 'condition("if")', 'if'], 
+    ['if (condition("if")) {', 'condition("if")', 'if (...) {'], 
+    ['if(condition("if")){', 'condition("if")', 'if (...){'], 
+    ['until (until_termination)', 'until_termination', 'until(...)'],
+    ['until (until_termination){', 'until_termination', 'until(...){'],
+    ['return return_value', 'return_value', 'return'],
+    ['return return_value;', 'return_value', 'return ...;'],
+    ['nothing to be done', 'nothing to be done', 'no change'], 
+    ['my ($a,$b) = (5,6);', '($a,$b) = (5,6)', 'my vars assign'],
+    ['my $scalar = "Scalar value";', '"Scalar value"', 'my scalar assign'],
     ) {
-    my ($stmt, $expect) = @$pair;
-    is(extract_expression($stmt), $expect);
+    my ($stmt, $expect, $msg) = @$triple;
+    is(extract_expression($stmt), $expect, $msg);
 }
 
 note 'Test parse_eval_suffix';

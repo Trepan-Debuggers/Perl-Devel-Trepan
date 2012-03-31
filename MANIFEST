@@ -161,7 +161,6 @@ lib/Devel/Trepan/IO/TCPPack.pm
 lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
-lib/Devel/Trepan/Psh.pm
 lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm

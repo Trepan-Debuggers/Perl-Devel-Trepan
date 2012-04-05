@@ -1,3 +1,4 @@
+The GCD of 3 and 5 is 10
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 x1 (gcd.pl:9)
@@ -11,4 +12,3 @@ Return array value for main::gcd is:
 Return array value set to:
 10
 
-The GCD of 3 and 5 is 10

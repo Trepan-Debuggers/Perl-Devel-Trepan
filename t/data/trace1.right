@@ -1,3 +1,4 @@
+The GCD of 3 and 5 is 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 -- (gcd.pl:20)
@@ -32,4 +33,3 @@ printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
     return undef if $a <= 0;
 -- (gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
-The GCD of 3 and 5 is 1

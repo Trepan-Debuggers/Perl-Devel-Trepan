@@ -1,7 +1,7 @@
+The GCD of 3 and 5 is 1
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 -- (gcd.pl:20)
 my ($a, $b) = @ARGV[0,1];
 -- (gcd.pl:21)
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
-The GCD of 3 and 5 is 1

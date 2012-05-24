@@ -41,7 +41,7 @@ sub run_debugger($$;$$)
     print $cmd, "\n"  if $debug;
     my $output = `$cmd`;
     print "$output\n" if $debug;
-    my $rc = $? >> 8;
+    my $rc = $CHILD_ERROR >> 8;
     if ($opts->{do_test}) {
 	Test::More::is($rc, 0, 'Debugger command executed successfully');
     }

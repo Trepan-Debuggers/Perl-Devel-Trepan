@@ -1,5 +1,15 @@
 Revision history for Devel-Trepan
 
+0.2.0  - May 24 2012
+- Nexting should be more accurate albeit slower 
+  We can't rely on $DB:single -- sigh
+- Remove defined(@array) which is deprecated in Perl 5.16
+- Allow alias replacement to be a blank-delimited string
+- eval? treats 'local' and 'our' like eval? for 'my', e.g. 
+    local ($a,b) =  ($v1,$v2)
+  displays ($v1,v2) without setting. If you want to set, use 'eval'
+
+
 0.1.9  - Jan 16 2012
 - Allow Data::Print to be used for printing eval output
 - Use sigils in eval? and eval; was previously done only in autoeval

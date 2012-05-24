@@ -9,15 +9,16 @@ my $trepanpl = File::Spec->catfile($dirname, qw(.. bin trepan.pl));
 use Test::More;
 note( "trepan.pl command options" );
 
-# rlib seems to flip out if it can't find trepan.pl
-my $bin_dir = File::Spec->catfile($dirname, '..', 'bin');
-$ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH} if -d $bin_dir;
-
-if( $Test::More::VERSION >= 1.0 ) {
-    plan skip_all => "STO's smokers cause weird problems";
+if( $Test::More::VERSION > 0.98 ) {
+    plan skip_all => "Test::More::VERSION > 0.98 causes weird problems";
+    exit 0;
 } else {
     plan 'no_plan';
 }
+
+# rlib seems to flip out if it can't find trepan.pl
+my $bin_dir = File::Spec->catfile($dirname, '..', 'bin');
+$ENV{PATH} = $bin_dir . $Config{path_sep} . $ENV{PATH} if -d $bin_dir;
 
 is(-r $trepanpl, 1, "Should be able to read trepan.pl program $trepanpl");
 

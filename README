@@ -1,39 +1,40 @@
 NAME
     Devel::Trepan -- A new Perl debugger
 
-A modular, testable debugger in the style of the Ruby "Trepanning" debuggers.
+SUMMARY
+    A modular, testable gdb-like debugger in the style of the Ruby
+    trepanning debuggers.
 
-SYNOPSIS
+    It supports syntax highlighting via Syntax::Highlight::Perl::Improved, a
+    command completion (and history) via GNU ReadLine via
+    Term::ReadLine::Perl or Term::ReadLine::Gnu, and interactive shell
+    support via Psh or Devel::REPL.
 
-From a shell: 
+DESCRIPTION
+    From a shell:
 
         bash$ trepan.pl [trepan-opts] perl-program [perl-program-opts]
 
-Or for those who prefer the traditional Perlish way:
+    Or for those who prefer the traditional Perlish way:
 
         bash$ perl -d:Trepan perl-program [perl-program-opts]
 
-Calling the debugger from inside your Perl program using Enbugger (2.012 or greater):
+    Calling the debugger from inside your Perl program using Joshua ben
+    Jore's Enbugger:
 
-	# This needs to be done once and could even be in some sort of conditional code
-        require Enbugger; Enbugger->load_debugger( 'trepan' );
+            # This needs to be done once and could even be in some sort of 
+            # conditional code
+            require Enbugger; Enbugger->load_debugger( 'trepan' );
 
-	# work, work, work...
-	# Oops! there was an error! Enable the debugger now!
-        Enbugger->stop;  # or Enbugger->stop if ... 
+            # work, work, work...
+            # Oops! there was an error! Enable the debugger now!
+            Enbugger->stop;  # or Enbugger->stop if ... 
 
-INSTALLATION
+AUTHORS
+    Rocky Bernstein
 
-To install this Devel::Trepan, run the following commands:
-
-	perl Build.PL
-	make
-	make test
-	[sudo] make install
-
-LICENSE AND COPYRIGHT
-
-Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+COPYRIGHT
+    Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 
     This program is distributed WITHOUT ANY WARRANTY, including but not
     limited to the implied warranties of merchantability or fitness for a

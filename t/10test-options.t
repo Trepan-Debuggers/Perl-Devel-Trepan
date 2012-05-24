@@ -9,7 +9,7 @@ use Test::More;
 note( "Testing Devel::Trepan::Options" );
 
 if( $Test::More::VERSION >= 1.0 ) {
-    plan skip_all => "STO's smokers cause weird problems";
+    plan skip_all => "Test::More::VERSION >= 1.0 causes weird problems";
 } else {
     plan 'no_plan';
 }

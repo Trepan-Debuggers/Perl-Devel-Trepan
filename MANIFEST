@@ -9,6 +9,7 @@ example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
+example/next2.pl
 example/nexting.pl
 example/our.pl
 example/signal.pl
@@ -170,6 +171,7 @@ META.json
 META.yml
 README				README in perlpod format for CPAN
 README.md			README in Markdown format for github
+t/00test-pod.t
 t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
 t/10test-complete.t
@@ -177,6 +179,7 @@ t/10test-condition.t
 t/10test-db-brkpt.t
 t/10test-intf-script.t
 t/10test-intf-user.t
+t/10test-io-output.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.t
 t/10test-linecache.t
@@ -190,7 +193,8 @@ t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
 t/10test-watchmgr.t
-t/20test-autolist.t		Note: t/20*.t tests are integration tests
+t/20test-alias.t		Note: t/20*.t tests are integration tests
+t/20test-autolist.t
 t/20test-break.t
 t/20test-cont.t
 t/20test-debug.t
@@ -203,12 +207,15 @@ t/20test-list3.t
 t/20test-list4.t
 t/20test-my.t
 t/20test-next.t
+t/20test-next2.t
 t/20test-seq1.t
 t/20test-sig.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
 t/20test-watch1.t
+t/data/alias.cmd
+t/data/alias.right
 t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
@@ -241,6 +248,8 @@ t/data/my.cmd
 t/data/my.right
 t/data/next.cmd
 t/data/next.right
+t/data/next2.cmd
+t/data/next2.right
 t/data/seq1.cmd
 t/data/seq1.right
 t/data/sig.cmd

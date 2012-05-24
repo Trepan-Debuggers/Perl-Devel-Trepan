@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use warnings; use strict; use English;
 use File::Basename; use File::Spec;
-use Test::More 'no_plan';
+use Test::More;
 use Config;
 
 if (($OSNAME eq 'netbsd' or $OSNAME eq 'freebsd' or $OSNAME eq 'darwin')
@@ -11,7 +11,7 @@ if (($OSNAME eq 'netbsd' or $OSNAME eq 'freebsd' or $OSNAME eq 'darwin')
     plan skip_all => 
 	"NetBSD and FreeBSD multi with PERL_PRESERVE_IVUV probably has a bug";
 } else {
-    plan;
+    plan 'no_plan';
 }
 
 use rlib '.';

@@ -23,6 +23,11 @@ my $opts = {
 	@result = splice(@result, 0, -2) if 
 	    $result[-1] eq 'END { $_in_global_destruction = 1 }';
 
+	# Some of SREZIC's smokers add a couple of lines in
+	# remapping _Utils.pm:95
+	@result = splice(@result, 0, -2) if $result[-2] =~ /remap/;
+
+
 	$got_lines = join("\n", @result);
 	return ($got_lines, $correct_lines);
     },

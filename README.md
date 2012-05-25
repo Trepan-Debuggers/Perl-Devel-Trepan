@@ -8,11 +8,11 @@ SYNOPSIS
 
 From a shell: 
 
-        bash$ trepan.pl [trepan-opts] perl-program [perl-program-opts]
+        $ trepan.pl [trepan-opts] perl-program [perl-program-opts]
 
 Or for those who prefer the traditional Perlish way:
 
-        bash$ perl -d:Trepan perl-program [perl-program-opts]
+        $ perl -d:Trepan perl-program [perl-program-opts]
 
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's [Enbugger](http://search.cpan.org/~jjore/Enbugger/):

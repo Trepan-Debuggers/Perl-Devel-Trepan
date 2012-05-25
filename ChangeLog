@@ -1,3 +1,12 @@
+2012-05-24  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore: More ignored files
+
+2012-05-24  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, META.json, META.yml, t/Helper.pm: Get ready
+	for 0.2.0 release.
+
 2012-05-23  Rocky Bernstein <rocky@cpan.org>
 
 	* META.json, META.yml, lib/Devel/Trepan/Options.pm,

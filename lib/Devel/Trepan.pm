@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.2.0';
+use version; $VERSION = '0.2.1';
 use Exporter;
 
 use Devel::Trepan::Core;
@@ -47,11 +47,11 @@ L<Devel::REPL>.
 
 From a shell: 
 
-    bash$ trepan.pl [trepan-opts] perl-program [perl-program-opts]
+    $ trepan.pl [trepan-opts] perl-program [perl-program-opts]
 
 Or for those who prefer the traditional Perlish way:
 
-    bash$ perl -d:Trepan perl-program [perl-program-opts]
+    $ perl -d:Trepan perl-program [perl-program-opts]
 
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's L<Enbugger>:
@@ -80,7 +80,7 @@ particular purpose.
 The program is free software. You may distribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation (either version 2 or any later version) and
-the Perl Artistic License as published by O’Reilly Media, Inc. Please
+the Perl Artistic License as published by O'Reilly Media, Inc. Please
 open the files named gpl-2.0.txt and Artistic for a copy of these
 licenses.
 

@@ -2,13 +2,13 @@ NAME
     Devel::Trepan -- A new Perl debugger
 
 SUMMARY
-    A modular, testable gdb-like debugger in the style of the Ruby
+    A modular, testable, gdb-like debugger in the family of the Ruby
     trepanning debuggers.
 
-    It supports syntax highlighting via Syntax::Highlight::Perl::Improved, a
-    command completion (and history) via GNU ReadLine via
-    Term::ReadLine::Perl or Term::ReadLine::Gnu, and interactive shell
-    support via Psh or Devel::REPL.
+    It has extensive online-help, supports syntax highlighting via
+    Syntax::Highlight::Perl::Improved, command completion and history via
+    GNU ReadLine via Term::ReadLine::Perl or Term::ReadLine::Gnu, and
+    interactive shell support via Psh or Devel::REPL.
 
 DESCRIPTION
     From a shell:

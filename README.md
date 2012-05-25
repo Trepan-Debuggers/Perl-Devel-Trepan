@@ -1,7 +1,13 @@
 Devel::Trepan -- A new Perl debugger
 ====================================
 
-A modular, testable debugger in the style of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki).
+A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki).
+
+It has extensive online-help, supports syntax highlighting via
+Syntax::Highlight::Perl::Improved, command completion and
+history via GNU ReadLine via L<Term::ReadLine::Perl> or
+Term::ReadLine::Gnu, and interactive shell support via Psh or
+Devel::REPL.
 
 SYNOPSIS
 --------

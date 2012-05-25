@@ -1,5 +1,9 @@
 Revision history for Devel-Trepan
 
+0.2.1  - May 25 2012
+
+- Address some CPANTS failures. Some doc tweaks.
+
 0.2.0  - May 24 2012
 - Nexting should be more accurate albeit slower 
   We can't rely on $DB:single -- sigh

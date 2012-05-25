@@ -1,5 +1,16 @@
 2012-05-24  Rocky Bernstein <rocky@cpan.org>
 
+	* ChangeLog, README, README.md, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm, t/20test-trace.t: Try to address some
+	of the CPANTs failures. Some small doc changes
+
+2012-05-24  Rocky Bernstein <rocky@cpan.org>
+
+	* t/00test-pod.t: Looks like Test::Pod 1.44 first allows the "http"
+	scheme in href's (L<>).
+
+2012-05-24  Rocky Bernstein <rocky@cpan.org>
+
 	* .gitignore: More ignored files
 
 2012-05-24  Rocky Bernstein <rocky@cpan.org>

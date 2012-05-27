@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings;  
 # FIXME: Can't use strict;
 use rlib '../..';
@@ -18,12 +18,11 @@ use vars qw(@ISA $dbgr);
 
 sub add_startup_files($$) {
     my ($cmdproc, $startup_file) = @_;
-    if (-f $startup_file) {
-	if (-r $startup_file)  {
-	    push @{$cmdproc->{cmd_queue}}, "source $startup_file";
-	} else {
-	    print STDERR "Command file '$startup_file' is not readable.\n";
-	}
+    my $errmsg = Devel::Trepan::Util::invalid_filename($startup_file);
+    if ($errmsg) {
+	print STDERR "${errmsg}.\n";
+    }  else {
+	push @{$cmdproc->{cmd_queue}}, "source $startup_file";
     }
 }
 

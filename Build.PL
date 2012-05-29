@@ -38,7 +38,7 @@ my $builder = Module::Build->new(
         # 'String::Diff'        => 0,
     },
     test_requires => {
-        'Test::More'                        => '0.81',
+        'Test::Simple'                      => '0.81',
     },
     requires => {
 	'perl'                              => '5.008008',

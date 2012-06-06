@@ -37,6 +37,9 @@ my $builder = Module::Build->new(
     build_requires => {
         # 'String::Diff'        => 0,
     },
+    test_requires => {
+        'Test::Simple'                      => '0.81',
+    },
     requires => {
 	'perl'                              => '5.008008',
 	'Array::Columnize'                  => '0.003005',
@@ -45,7 +48,6 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
-        'Test::More'                        => '0.81',
         'rlib'                              => '0.02',
         'version'                           => 0,
     },

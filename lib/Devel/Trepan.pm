@@ -64,6 +64,13 @@ Jore's L<Enbugger>:
  	# Oops! there was an error! Enable the debugger now!
         Enbugger->stop;  # or Enbugger->stop if ... 
 
+Or if you just want POSIX-shell-like C<set -x> line tracing:
+
+        $ trepan.pl -x perl-program [perl-program-opts]
+
+Inside the debugger tracing is turned on using the command C<set trace print>.
+There is extensive help from the `help command`.
+
 
 =head1 AUTHORS
 

@@ -104,9 +104,46 @@ sub _find_subline {
     return undef;
 }
 
+# Return a warning message if breakpoint position is invalid.
+# undef is returned if the breakpont is valid.
+sub break_invalid {
+    my ($s, $filename, $fn_or_lineno) = @_;
+    $filename = $DB::filename unless defined $filename;
+    my $change_dbline = $filename ne $DB::filename;
+    $fn_or_lineno ||= $DB::lineno;
+
+    # If we're not in that file, switch over to it.
+    if ( $change_dbline ) {
+	# Switch debugger's magic structures.
+	my $filekey = '_<' . $filename;
+	*DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+    }
+
+    my $lineno = $fn_or_lineno;
+    if ($fn_or_lineno =~ /\D/) {
+	my $junk;
+	($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
+	unless ($lineno) {
+	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+	    return "Subroutine $fn_or_lineno not found"
+	}
+	$change_dbline = $filename ne $DB::filename;
+	if ( $change_dbline ) {
+	    # Switch debugger's magic structures.
+	    my $filekey = '_<' . $filename;
+	    *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+	}
+    }
+    if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
+	*DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+	return "Line $lineno of $filename not known to be a trace line";
+    }
+    return undef;
+}
+
 # Set a breakpoint, temporary breakpoint, or action.
 sub set_break {
-    my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled) = @_;
+    my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled, $force) = @_;
     $filename = $DB::filename unless defined $filename;
     my $change_dbline = $filename ne $DB::filename;
     $type = 'brkpt' unless defined $type;
@@ -139,7 +176,8 @@ sub set_break {
 	    ## $max      = $#dbline;
 	}
     }
-    if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
+    if ((!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) &&
+	!$force) {
 	$s->warning("Line $lineno of $filename not known to be a trace line.\n");
 	
 	*DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
@@ -272,6 +310,10 @@ unless (caller) {
 	negate => 0
 	);
     print $brkpt->inspect, "\n";
+    # This line is a comment for below.
+    $DB::filename = __FILE__;
+    my $msg = break_invalid(undef, __FILE__, __LINE__ - 1);
+    print $msg, "\n";
 }
 
 1;

@@ -12,6 +12,7 @@ XXXX matched debugger cache file:
 Possible breakpoint line numbers:
   2, 3, 9, 11, 13, 14, 15, 18, 20, 21
 *** Line 10 of XXX not known to be a trace line.
+Use 'info file XXX brkpts' to see breakpoints I know about
 *** Subroutine gcd1 not found.
 x1 (gcd.pl:9)
     my ($a, $b) = @_;

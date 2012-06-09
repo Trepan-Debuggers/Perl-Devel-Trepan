@@ -15,6 +15,9 @@ my $opts = {
 		push @result, ($line, "\tgcd.pl");
 		$skip_next = 1;
 		next;
+	    } elsif ($line =~ /^Use 'info file/) {
+		$line = "Use 'info file XXX brkpts' to see breakpoints I know about";
+		push @result, $line;
 	    } elsif ($line =~ /Line 10 of/) {
 		push(@result, 
 		     '*** Line 10 of XXX not known to be a trace line.');

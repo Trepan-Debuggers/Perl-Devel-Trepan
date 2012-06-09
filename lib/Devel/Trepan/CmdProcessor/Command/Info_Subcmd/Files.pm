@@ -55,11 +55,11 @@ If no sub-options are given, \"$DEFAULT_FILE_ARGS\" are assumed.
 
 Examples:
 
-${CMD}    # Show \"${DEFAULT_FILE_ARGS}\" information about current file
-${CMD} .  # same as above
-${CMD} brkpts      # show the number of lines in the current file
-${CMD} brkpts size # same as above but also list breakpoint line numbers
-${CMD} *  # Give a list of files we know about
+${CMD}      # Show \"${DEFAULT_FILE_ARGS}\" information about current file
+${CMD} .    # same as above
+${CMD} . brkpts      # show the number of lines in the current file
+${CMD} . brkpts size # same as above but also list breakpoint line numbers
+${CMD} *    # Give a list of files we know about
 HELP
 
 our $SHORT_HELP = 'Show information about the current loaded file(s)';

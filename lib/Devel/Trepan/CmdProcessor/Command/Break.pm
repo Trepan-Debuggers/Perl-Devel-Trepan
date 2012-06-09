@@ -113,7 +113,18 @@ sub run($$) {
 			      " got ${args[0]}");
 	    }
 	}
-	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, $condition);
+	my $msg = $self->{dbgr}->break_invalid($filename, $line_or_fn);
+	my $force = 0;
+	if ($msg) {
+	    if ($msg =~ /not known to be a trace line/) {
+		$proc->errmsg($msg);
+		$proc->msg("Use 'info file $filename brkpts' to see breakpoints I know about");
+		$force = $self->{proc}->confirm('Set breakpoint anyway?', 0);
+		return unless $force;
+	    }
+	}
+	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, 
+				       $condition, undef, undef, undef, $force);
     }
     if (defined($bp)) {
 	    my $prefix = $bp->type eq 'tbrkpt' ? 

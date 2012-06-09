@@ -59,6 +59,8 @@ Jore's L<Enbugger>:
  	# This needs to be done once and could even be in some sort of 
         # conditional code
         require Enbugger; Enbugger->load_debugger( 'trepan' );
+        # Alternatively, to unconditinally load Enbugger and trepan:
+        use Enbugger 'trepan';
 
  	# work, work, work...
  	# Oops! there was an error! Enable the debugger now!
@@ -66,7 +68,7 @@ Jore's L<Enbugger>:
 
 Or if you just want POSIX-shell-like C<set -x> line tracing:
 
-        $ trepan.pl -x perl-program [perl-program-opts]
+        $ trepan.pl -x -- perl-program [perl-program-opts]
 
 Inside the debugger tracing is turned on using the command C<set trace print>.
 There is extensive help from the C<help> command.

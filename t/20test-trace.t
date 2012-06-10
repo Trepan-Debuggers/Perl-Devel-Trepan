@@ -2,7 +2,7 @@
 use warnings; use strict;
 use rlib '.';
 use Helper;
-use Test::More 'no_plan';
+use Test::More;
 
 my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', 'trace1.cmd');
 my $opts = {
@@ -40,3 +40,4 @@ Helper::run_debugger("$test_prog 3 5", 'trace1.cmd', undef, $opts);
 $opts->{no_cmdfile} = 0;
 $opts->{run_opts}   = " --no-highlight --nx --basename";
 Helper::run_debugger("$test_prog 3 5", 'trace2.cmd', undef, $opts);
+done_testing();

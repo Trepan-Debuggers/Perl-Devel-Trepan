@@ -1,9 +1,8 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
+use strict; use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::IO::Output" );
 
 BEGIN {
@@ -18,3 +17,4 @@ close(STDOUT);
 ## FIXME: figure out how to test this...
 # Should see the next line
 $out->writeline("Now is the time!");
+done_testing();

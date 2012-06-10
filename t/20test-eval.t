@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use warnings; use strict; use English;
-use Test::More 'no_plan';
+use Test::More;
 use rlib '.';
 use Helper;
 my $test_prog = File::Spec->catfile(dirname(__FILE__), 
@@ -38,3 +38,4 @@ my $opts = {
 };
 
 Helper::run_debugger("$test_prog", 'eval2.cmd', undef, $opts);
+done_testing();

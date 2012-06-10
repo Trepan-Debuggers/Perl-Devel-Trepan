@@ -3,7 +3,7 @@ use strict; use warnings; no warnings 'redefine';
 use rlib '../lib';
 use vars qw(@args); 
 
-use Test::More 'no_plan';
+use Test::More;
 
 BEGIN {
 note( "Testing Devel::Trepan::CmdProcessor::Hook" );
@@ -32,3 +32,4 @@ is (scalar @args, 2);
 is ($args[0], 'hook2');
 is ($args[1], 'hook1');
 
+done_testing();

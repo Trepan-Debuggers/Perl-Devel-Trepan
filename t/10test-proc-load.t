@@ -3,7 +3,7 @@ use strict; use warnings; no warnings 'redefine';
 use rlib '../lib';
 use vars qw($response); 
 
-use Test::More 'no_plan';
+use Test::More;
 
 BEGIN {
 note( "Testing Devel::Trepan::CmdProcessor::Load" );
@@ -24,5 +24,6 @@ is(join(',  ', $cmdproc->complete("help ser", 'help ser', 0, 1)),
    'server', "Completing 'help ser'");
 
 is(join(', ', $cmdproc->complete("help una", 'help una', 0, 1)),
-   'unalias', 'completing "una"')
+   'unalias', 'completing "una"');
 
+done_testing();

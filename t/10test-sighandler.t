@@ -5,7 +5,7 @@ use English qw( -no_match_vars );
 
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::SigHandler" );
 
 BEGIN {
@@ -52,3 +52,4 @@ sub myprint($) {
 }
 
 my $h = Devel::Trepan::SigMgr->new(\&mysighandler, \&myprint);
+done_testing();

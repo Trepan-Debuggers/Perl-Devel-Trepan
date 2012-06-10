@@ -2,7 +2,7 @@
 use strict; use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::DB::LineCache" );
 
 BEGIN {
@@ -59,3 +59,4 @@ open(FH, '<', $filename);
 undef $INPUT_RECORD_SEPARATOR;
 my $got_str = <FH>;
 is($got_str, $eval_str, "reading contents temp file $filename");
+done_testing();

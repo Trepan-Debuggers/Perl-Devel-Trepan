@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Util" );
 
 BEGIN {
@@ -110,3 +110,5 @@ for my $pair
 	my $result = Devel::Trepan::Util::bool2YN($resp);
 	is($result, $expect, 'bool2YN of ' . ($resp || 'undef'));
 }
+
+done_testing();

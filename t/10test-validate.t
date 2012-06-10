@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::CmdProcessor::Validate" );
 
 BEGIN {
@@ -34,3 +34,4 @@ for my $pair (['1',     1],  ['on',  undef],
 	"get_int_noerr of \"$arg\" should be $print_val");
 }
     
+done_testing();

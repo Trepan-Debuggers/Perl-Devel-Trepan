@@ -3,7 +3,7 @@ use strict; use warnings; no warnings 'redefine';
 use rlib '../lib';
 use vars qw($response); 
 
-use Test::More 'no_plan';
+use Test::More;
 
 BEGIN {
 note( "Testing Devel::Trepan::CmdProcessor::Default" );
@@ -16,3 +16,4 @@ $print_types ++ if $Devel::Trepan::CmdProcessor::HAVE_PERLTIDY;
 is($print_types, scalar @Devel::Trepan::CmdProcessor::DISPLAY_TYPES, 
    '@DISPLAY_TYPES should match count of HAVE_DATA_PRINT and HAVE_PERLTIDY');
 
+done_testing();

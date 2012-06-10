@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::WatchMgr" );
 
 BEGIN {
@@ -35,3 +35,4 @@ wp_status($watchpoints, 2, 3);
 
 $watchpoints->delete(2);
 wp_status($watchpoints, 1, 3);
+done_testing();

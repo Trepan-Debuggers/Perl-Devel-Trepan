@@ -9,11 +9,9 @@ my $trepanpl = File::Spec->catfile($dirname, qw(.. bin trepan.pl));
 use Test::More;
 note( "trepan.pl command options" );
 
-if( $Test::More::VERSION > 0.98 ) {
-    plan skip_all => "Test::More::VERSION > 0.98 causes weird problems";
+if( $Test::More::VERSION > 0.9802 ) {
+    plan skip_all => "Test::More::VERSION > 0.9802 causes weird problems";
     exit 0;
-} else {
-    plan 'no_plan';
 }
 
 # rlib seems to flip out if it can't find trepan.pl
@@ -60,3 +58,5 @@ if ($pid) {
     close $fh;
     exit $rc;
 }
+
+done_testing();

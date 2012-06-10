@@ -10,8 +10,6 @@ note( "Testing Devel::Trepan::Options" );
 
 if( $Test::More::VERSION >= 1.0 ) {
     plan skip_all => "Test::More::VERSION >= 1.0 causes weird problems";
-} else {
-    plan 'no_plan';
 }
 
 
@@ -56,3 +54,4 @@ if ($pid == 0) {
     is($?>>8, 0);
 }
 
+done_testing();

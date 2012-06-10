@@ -52,8 +52,8 @@ $prefix = 'info';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 1, "Should have only gotten one completion back");
-is($msgs[0], 'info', 'Completion of "info" should be "info"');
+is(scalar(@msgs), 1, "Should have only gotten one completion back for $prefix");
+is($msgs[0], $prefix, "Completion of '$prefix' should be $prefix'");
 
 # Completion of 'info ' should contain subcommands of 
 # 'info'

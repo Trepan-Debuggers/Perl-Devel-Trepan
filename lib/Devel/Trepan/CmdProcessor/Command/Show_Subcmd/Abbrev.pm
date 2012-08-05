@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,7 +11,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show whether to confirm potentially dangerous operations";
+our $HELP = "Show whether we allow abbreviated debugger command names";
 our $MIN_ABBREV = length('ab');
 
 unless (caller) {

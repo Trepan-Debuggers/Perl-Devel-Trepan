@@ -1,0 +1,4 @@
+-- (gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+$DB::D[0] = 0
+$DB::D[1] = "gcd.pl"

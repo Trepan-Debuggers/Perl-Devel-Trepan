@@ -93,6 +93,8 @@ sub awaken($;$) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
 
+    $0 = $opts->{dollar_0} if $opts->{dollar_0};
+
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
     my %cmdproc_opts = ();

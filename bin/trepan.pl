@@ -37,6 +37,7 @@ my $rc = $? >>8;
 print "$output\n" if $rc;
 exit $rc if $rc;
 
+$opts->{dollar_0} = $ARGV[0];
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # print Dumper($opts), "\n";
 

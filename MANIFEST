@@ -198,6 +198,7 @@ t/20test-autolist.t
 t/20test-break.t
 t/20test-cont.t
 t/20test-debug.t
+t/20test-dollar0.t
 t/20test-display.t
 t/20test-eval.t
 t/20test-fin.t
@@ -228,6 +229,8 @@ t/data/debug.cmd
 t/data/debug.right
 t/data/display.cmd
 t/data/display.right
+t/data/dollar0.cmd
+t/data/dollar0.right
 t/data/eval.cmd
 t/data/eval.right
 t/data/eval2.cmd

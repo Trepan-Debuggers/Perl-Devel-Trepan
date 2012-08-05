@@ -218,7 +218,6 @@ t/20test-trepanpl-opts.t
 t/20test-watch1.t
 t/data/__FILE__.cmd
 t/data/__FILE__.right
-t/data/alias.right
 t/data/alias.cmd
 t/data/alias.right
 t/data/autolist.cmd

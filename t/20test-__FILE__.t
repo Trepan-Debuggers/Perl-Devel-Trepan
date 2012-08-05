@@ -2,14 +2,15 @@
 use warnings; use strict;
 use rlib '.';
 use Helper;
+no warnings 'redefine';
 
 my $opts = {
     filter => sub{
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /'gcd.pl'/) {
-		$line =~ s/'gcd.pl'/"gcd.pl"/;
+	    if ($line =~ /['"].*gcd.pl["']/) {
+		$line =~ s/['"].*gcd.pl["']/"gcd.pl"/;
 	    }
 	    push @result, $line;
 	}
@@ -21,5 +22,5 @@ my $opts = {
 
 my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));
 use Test::More;
-Helper::run_debugger("$test_prog 3 5", 'dollar0.cmd', undef, $opts);
+Helper::run_debugger("$test_prog 3 5", '__FILE__.cmd', undef, $opts);
 done_testing();

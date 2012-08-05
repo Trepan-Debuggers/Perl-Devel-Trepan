@@ -202,6 +202,7 @@ t/20test-dollar0.t
 t/20test-display.t
 t/20test-eval.t
 t/20test-fin.t
+t/20test-__FILE__.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
@@ -215,6 +216,9 @@ t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
 t/20test-watch1.t
+t/data/__FILE__.cmd
+t/data/__FILE__.right
+t/data/alias.right
 t/data/alias.cmd
 t/data/alias.right
 t/data/autolist.cmd

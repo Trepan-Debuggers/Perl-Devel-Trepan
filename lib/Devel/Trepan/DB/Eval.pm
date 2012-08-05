@@ -88,8 +88,6 @@ sub eval_with_return {
 	    eval "$user_context \@DB::eval_result=$eval_str\n";
 	} elsif ('%' eq $return_type) {
 	    eval "$user_context \%DB::eval_result=$eval_str\n";
-	} elsif ('%' eq $return_type) {
-	    $eval_result = eval "$user_context $eval_str";
 	} else {
 	    $eval_result = eval "$user_context $eval_str";
 	}

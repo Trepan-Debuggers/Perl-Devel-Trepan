@@ -95,22 +95,30 @@ sub run($$)
     my $proc = $self->{proc};
     my $code_to_eval;
     my $cmd_name = $args->[0];
+    my $eval_lead_word;
+
     if (1 == scalar @$args) {
+	# No string passed to eval. Pick up string to eval from
+	# current source text.
 	$code_to_eval  = $proc->current_source_text();
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
 	    $code_to_eval = 
 		Devel::Trepan::Util::extract_expression($code_to_eval);
 	    $proc->msg("eval: ${code_to_eval}");
-	    my @args = split /\s+/, $code_to_eval;
-	    $cmd_name = $args[0];
+	    my @eval_args = split /\s+/, $code_to_eval;
+	    $eval_lead_word = $eval_args[0];
 	}
     } else {
+	# Use cmd_argstr to ensure we do not try tokenize what was typed.
+	# But for purposes of sigil checking below, tokenization of the
+	# leading word is okay.
 	$code_to_eval = $proc->{cmd_argstr};
+	$eval_lead_word = $args->[1];
     }
     {
 	my $return_type = parse_eval_suffix($cmd_name);
-	$return_type = parse_eval_sigil($cmd_name) unless $return_type;
+	$return_type = parse_eval_sigil($eval_lead_word) unless $return_type;
 	my $opts = {return_type => $return_type};
 	no warnings 'once';
 	# FIXME: 4 below is a magic fixup constant, also found in

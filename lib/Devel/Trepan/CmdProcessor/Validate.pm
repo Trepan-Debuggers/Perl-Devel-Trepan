@@ -40,12 +40,12 @@ sub get_an_int($$$)
         }
         return undef;
     }
-    if (exists($opts->{min_value}) and $ret_value < $opts->{min_value}) {
+    if (defined($opts->{min_value}) and $ret_value < $opts->{min_value}) {
 	my $msg = sprintf("Expecting integer value to be at least %d; got %d.",
 			  $opts->{min_value}, $ret_value);
         $self->errmsg($msg);
         return undef;
-    } elsif (exists($opts->{max_value}) and $ret_value > $opts->{max_value}) {
+    } elsif (defined($opts->{max_value}) and $ret_value > $opts->{max_value}) {
 	my $msg = sprintf("Expecting integer value to be at most %d; got %d.",
 			  $opts->{max_value}, $ret_value);
         $self->errmsg($msg);

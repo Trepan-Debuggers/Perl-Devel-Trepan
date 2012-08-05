@@ -33,5 +33,14 @@ for my $pair (['1',     1],  ['on',  undef],
     is(Devel::Trepan::CmdProcessor::get_int_noerr('bogus', $arg), $expected, 
 	"get_int_noerr of \"$arg\" should be $print_val");
 }
+
+require Devel::Trepan::CmdProcessor;
+my $cmdproc = Devel::Trepan::CmdProcessor->new;
+
+note 'Test get_an_int';
+is($cmdproc->get_an_int(72, 
+			{min_value => 10, 
+			 max_value => undef}), 72,
+    "No limit on max value");
     
 done_testing();

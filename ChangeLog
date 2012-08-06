@@ -1,3 +1,140 @@
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: Remove duplicate file in MANIFEST
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Eval.pm: Untabify DB::Eval.pm
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/20test-__FILE__.t,
+	t/20test-dollar0.t, t/data/__FILE__.cmd, t/data/__FILE__.right: Fix
+	up __FILE__ and __LINE__ when running eval.
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Colors.pm, t/20test-dollar0.t: cygwin
+	compatibility
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/data/next2.right: Was not picking up
+	leading sigil in eval command properly when no eval suffix was
+	given.
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.p
+	m, lib/Devel/Trepan/CmdProcessor/Validate.pm, t/10test-validate.t: 
+	Validate.pm: bug when unlimited (or undfined) max value. Make
+	minimum max-with value on "set max width" 10.
+
+2012-08-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm: Correct
+	help set/show help text of "abbrev" subcommand.
+
+2012-08-04  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, bin/trepan.pl, lib/Devel/Trepan/Core.pm,
+	t/20test-dollar0.t, t/data/dollar0.cmd, t/data/dollar0.right,
+	t/data/next2.right: Set $0 to be the program to be debugged.
+
+2012-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-options.t, t/20test-autolist.t, t/20test-list3.t,
+	t/20test-trepanpl-opts.t: Reduce "no plan" in tests.
+
+2012-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-cmd-complete.t, t/10test-complete.t,
+	t/10test-intf-script.t, t/10test-intf-user.t, t/10test-io-output.t,
+	t/10test-io-stringarray.t, t/10test-linecache.t,
+	t/10test-position.t, t/10test-proc-default.t, t/10test-proc-hook.t,
+	t/10test-proc-load.t, t/10test-sighandler.t, t/10test-util.t,
+	t/10test-validate.t, t/10test-watchmgr.t, t/20test-alias.t,
+	t/20test-break.t, t/20test-cont.t, t/20test-debug.t,
+	t/20test-display.t, t/20test-eval.t, t/20test-fin.t,
+	t/20test-list1.t, t/20test-list2.t, t/20test-list4.t,
+	t/20test-next.t, t/20test-next2.t, t/20test-seq1.t,
+	t/20test-step.t, t/20test-trace.t, t/20test-watch1.t: Use
+	done_testing() more
+
+2012-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-cmd-complete.t: One tiny slight improvement in test
+
+2012-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-cmd-complete.t: Add a couple of doc strings to
+	t/10-test-complete.t
+
+2012-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm: Smore smalll README/perlpod
+	changes
+
+2012-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, example/gcd-dbg.pl, lib/Devel/Trepan.pm: More mall
+	README/perlpod changes gcd-dbg.pl: make sure to use the local
+	Trepan.
+
+2012-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm: Small typographical changes
+
+2012-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, t/10test-db-brkpt.t,
+	t/20test-break.t, t/data/break.right: Break*: Allow setting a
+	breakpoint on a line even if it isn't recorded as a breakpoint.
+	README.md Trepan.pm: note that we have line tracing. Files.pm:
+	correct help text
+
+2012-06-06  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Another typo
+
+2012-06-06  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-06-06  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Fix a typo and extend the advertising.
+
+2012-05-28  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: Test::More -> Test::Simple
+
+2012-05-27  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: We only need Test::More in testing. It is not a run-time
+	dependency.
+
+2012-05-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm: DRY code. Reducing the duplication also
+	improves error reporting.
+
+2012-05-24  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, META.json, META.yml, README, README.md,
+	lib/Devel/Trepan.pm: Get ready for release 0.2.1
+
 2012-05-24  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, README, README.md, lib/Devel/Trepan.pm,

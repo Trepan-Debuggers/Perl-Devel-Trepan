@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -10,6 +10,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (@ISA) {
     eval <<"EOE";
+use constant ALIASES    => qw(d);
 use constant CATEGORY   => 'breakpoints';
 use constant SHORT_HELP => 'Delete some breakpoints';
 use constant MIN_ARGS  => 0;  # Need at least this many

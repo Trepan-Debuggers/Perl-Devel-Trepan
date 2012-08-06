@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -10,10 +10,9 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(u);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Move frame in the direction of most recent frame';
-use constant MIN_ARGS   => 0;     # Need at least this many
+use constant MIN_ARGS   => 0; # Need at least this many
 use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
 use constant NEED_STACK => 1;
 EOE

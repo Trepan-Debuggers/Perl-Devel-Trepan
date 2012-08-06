@@ -11,11 +11,8 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /.. \(eval \d+\).+ remapped .+:\d+\)/) {
-		$line =~ s/\(eval \d+\).+ remapped .+:(\d+)\)/(eval remapped $1)/;
-	    } elsif ($line =~ /.. \(.+\:\d+\)/) {
-		$line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
-	    }
+	    $line =~ s/\(eval \d+\).+ remapped .+:(\d+)\)/(eval remapped $1)/;
+	    $line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result);

@@ -9,11 +9,8 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /['"].*gcd.pl["']/) {
-		$line =~ s/['"].*gcd.pl["']/"gcd.pl"/;
-	    } elsif ($line =~ /['"]18["']/) {
-		$line =~ s/['"]18["']/18/;
-	    }
+	    $line =~ s/['"].*gcd.pl["']/"gcd.pl"/;
+	    $line =~ s/['"]18["']/18/;
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result) . "\n";

@@ -10,9 +10,7 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /.. \(.+\:\d+\)/) {
-		$line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
-	    }
+	    $line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
 	    last if (0 == index($line, '-- (Temp.pm:'));
 	    push @result, $line;
 	}

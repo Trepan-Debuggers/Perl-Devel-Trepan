@@ -8,9 +8,7 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /'gcd.pl'/) {
-		$line =~ s/'gcd.pl'/"gcd.pl"/;
-	    }
+	    $line =~ s/'gcd.pl'/"gcd.pl"/;
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result) . "\n";

@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
 use rlib '../../../..';
@@ -12,7 +12,7 @@ use strict;
 use vars qw(@ISA);
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => ('?');
+use constant ALIASES    => ('?', 'h');
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Print commands or give help for command(s)';
 use constant MIN_ARGS   => 0;  # Need at least this many

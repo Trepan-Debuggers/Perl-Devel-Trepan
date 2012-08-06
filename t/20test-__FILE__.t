@@ -11,6 +11,8 @@ my $opts = {
 	for my $line (split("\n", $got_lines)) {
 	    if ($line =~ /['"].*gcd.pl["']/) {
 		$line =~ s/['"].*gcd.pl["']/"gcd.pl"/;
+	    } elsif ($line =~ /['"]18["']/) {
+		$line =~ s/['"]18["']/18/;
 	    }
 	    push @result, $line;
 	}

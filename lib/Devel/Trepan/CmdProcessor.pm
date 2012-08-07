@@ -73,6 +73,7 @@ sub new($;$$$) {
     $self->{leave_cmd_loop} = undef;
     $self->{next_level}     = 30000;  # Virtually infinite;
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
+    $self->{terminated}     = 0;
 
     # Initial watch point expr value used when a new watch point is set.
     # Set in 'watch' command, and reset here after we get the value back.
@@ -144,12 +145,13 @@ sub ok_for_running ($$$$) {
         $self->errmsg($mess);
         return;
     }
-    # if (cmd.class.const_get(:NEED_RUNNING) && !...)
-    #   $self->errmsg "Command '%s' requires a running program." % name
-    #   return;
-    # }
 
-    if ($cmd->{need_stack} && !defined $self->{frame}) {
+    if ($cmd->NEED_STACK && $self->{terminated}) {
+	$self->errmsg("Command '$name' requires a running program.");
+	return;
+    }
+
+    if ($cmd->NEED_STACK && !defined $self->{frame}) {
         $self->errmsg("Command '$name' requires a running stack frame.");
         return;
     }
@@ -307,6 +309,7 @@ sub skip_if_next($$)
 {
     my ($self, $event) = @_;
     return 0 if ('line' ne $event);
+    return 0 if $self->{terminated};
     return 0 if eval { no warnings; $DB::tid ne $self->{last_tid} };
     # print  "+++event $event ", $self->{stack_size}, " ", 
     #        $self->{next_level}, "\n";
@@ -317,7 +320,14 @@ sub skip_if_next($$)
 sub process_commands($$$;$)
 {
     my ($self, $frame, $event, $arg) = @_;
-    $event = 'unknown' unless defined($event);
+
+    if ($event eq 'terminated') {
+	$self->{terminated} = 1;
+	$self->section("Debugged program terminated.  Use 'q' to quit or 'R' to restart.");
+    } elsif (!defined($event)) {
+	$event = 'unknown';
+    }
+    
     my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
         process_after_eval($self);
@@ -350,7 +360,8 @@ sub process_commands($$$;$)
         $next_skip = skip_if_next($self, $event);
         unless ($next_skip) { 
             $self->{unconditional_prehooks}->run;
-            if (index($self->{event}, 'brkpt') < 0) {
+            if (index($self->{event}, 'brkpt') < 0 && !$self->{terminated}) {
+		# Not a breakpoint and not terminated.
                 if ($self->is_stepping_skip()) {
                     # || $self->{stack_size} <= $self->{hide_level};
                     $self->{dbgr}->step;
@@ -363,7 +374,9 @@ sub process_commands($$$;$)
             }
         
             $self->{prompt} = compute_prompt($self);
-            $self->print_location unless $self->{settings}{traceprint};
+            $self->print_location unless $self->{settings}{traceprint} ||
+		$self->{terminated};
+
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
             
             $self->{cmdloop_prehooks}->run;

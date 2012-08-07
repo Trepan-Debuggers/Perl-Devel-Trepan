@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -11,8 +11,9 @@ unless (@ISA) {
 use constant ALIASES    => qw(bt where T);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Print backtrace of stack frames';
-use constant MIN_ARGS  => 0;   # Need at least this many
-use constant MAX_ARGS  => 1;   # Need at most this many - undef -> unlimited.
+use constant MIN_ARGS   => 0;   # Need at least this many
+use constant MAX_ARGS   => 1;   # Need at most this many - undef -> unlimited.
+use constant NEED_STACK => 1;
 EOE
 }
 

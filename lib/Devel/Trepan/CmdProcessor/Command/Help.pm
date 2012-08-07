@@ -61,12 +61,29 @@ use File::Spec;
 my $ROOT_DIR = dirname(__FILE__);
 my $HELP_DIR = File::Spec->catfile($ROOT_DIR, 'Help');
 
+sub command_names($)
+{
+    my ($self) = @_;
+    my $proc = $self->{proc};
+    my %cmd_hash = %{$proc->{commands}};
+    my @commands = keys %cmd_hash;
+    if ($proc->{terminated}) {
+	my @filtered_commands=();
+	for my $cmd (@commands) {
+	    push @filtered_commands, $cmd unless $cmd_hash{$cmd}->NEED_STACK;
+	}
+	return @filtered_commands;
+    } else {
+	return @commands;
+    }
+}
+
 sub complete($$)
 {
     my ($self, $prefix) = @_;
     my $proc = $self->{proc};
     my @candidates = (keys %{CATEGORIES()}, qw(* all), 
-		      keys %{$proc->{commands}});
+		      $self->command_names());
     my @matches = 
 	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     # my @aliases = 
@@ -208,8 +225,8 @@ sub run($$)
     if (scalar(@$args) > 1) {
 	my $real_name;
 	if ($cmd_name eq '*') {
-	    $self->section('All command names:');
-	    my @cmds = sort(keys(%{$proc->{commands}}));
+	    $self->section('All currently valid command names:');
+	    my @cmds = sort($self->command_names());
 	    $self->msg($self->columnize_commands(\@cmds));
 	    show_aliases($self) if scalar keys %{$proc->{aliases}};
 	    # $self->show_macros   unless scalar @$self->{proc}->macros;
@@ -249,8 +266,8 @@ sub run($$)
 	#     $self->msg("${cmd_name} is a macro which expands to:");
 	#     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
 	} else {
-	    my @matches = sort grep(/^${cmd_name}/, 
-				    keys %{$self->{proc}{commands}} );
+	    my @command_names = $self->command_names();
+	    my @matches = sort grep(/^${cmd_name}/, @command_names );
 	    if (!scalar @matches) {
 		$self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
 	    } else {
@@ -306,6 +323,9 @@ unless (caller) {
     $help_cmd->run([$NAME, 'running', '*']);
     print $sep;
     $help_cmd->run([$NAME, 'syntax']);
+    print $sep;
+    $proc->{terminated} = 1;
+    $help_cmd->run([$NAME, '*']);
     print $sep;
 #   $help_cmd->run %W(${$NAME} s.*)
 #   print $sep;

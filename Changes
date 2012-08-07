@@ -4,7 +4,9 @@ Revision history for Devel-Trepan
 
 - Set $0, __FILE__, and, __LINE__ to look like it would be inside the debugged
   program
-- Allow setting a breakpoint on a liine even if it isn't recorded as a place
+- Incompatible change: "d" is now "delete" like gdb, not "down". Add aliases
+  for "h" and remove "u" for "up". All of this is to follow gdb closer.
+- Allow setting a breakpoint on a line even if it isn't recorded as a place
   that is stoppable.
 - Fix various bugs
 

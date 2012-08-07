@@ -19,7 +19,8 @@ sub run_debugger($$;$$)
     $opts = {} unless defined $opts;
     $opts->{do_test} = 1 unless exists $opts->{do_test};
     Test::More::note( "running $test_invoke with $cmd_filename" );
-    my $run_opts = $opts->{run_opts} || "--basename --nx --no-highlight";
+    my $run_opts = $opts->{run_opts} || 
+	'--basename --nx --no-highlight --fall-off-end';
     my $dirname = dirname(__FILE__);
     my $full_cmd_filename = File::Spec->catfile($dirname, 'data', 
 						$cmd_filename);

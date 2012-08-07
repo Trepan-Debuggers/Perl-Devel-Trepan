@@ -24,10 +24,11 @@ our $EVENT2ICON = {
     'post-mortem'    => 'XX',
     'return'         => '<-',
     'signal'         => '!!',
+    'terminated'     => ':x',
     'tbrkpt'         => 'x1',
     'trace'          => '==',
     'unknown'        => '?!',
-    'watch'          => 'wa',
+    'watch'          => 'wa'
 };
 
 sub canonic_file($$;$)

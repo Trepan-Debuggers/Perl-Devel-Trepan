@@ -17,7 +17,7 @@ unless (@ISA) {
     use constant SHORT_HELP => 'Set a breakpoint';
     use constant MIN_ARGS  => 0;   # Need at least this many
     use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
-    use constant NEED_STACK => 1;
+    use constant NEED_STACK => 0;
 EOE
 }
 

@@ -47,6 +47,7 @@ sub idle($$$)
 {
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
+    $event = 'terminated' if $DB::package eq 'DB::fake';
     $proc->process_commands($DB::caller, $event, $args);
     $self->{caught_signal} = 0;
 }
@@ -94,6 +95,7 @@ sub awaken($;$) {
     }
 
     $0 = $opts->{dollar_0} if $opts->{dollar_0};
+    $DB::fall_off_on_end = 1  if $opts->{fall_off_end};
 
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 

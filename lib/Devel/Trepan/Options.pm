@@ -41,6 +41,7 @@ $DEFAULT_OPTIONS = {
                            # process debugger "server".
     cmddir       => [],    # Additional directories of debugger commands
     cmdfiles     => [],    # Files containing debugger commands to 'source'
+    fall_off_end => 0,     # Don't go into debugger on termination? 
     highlight    => default_term(),    
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost', 
@@ -74,7 +75,8 @@ sub process_options($)
 	 'cd:s'         => \$opts->{initial_dir},
 	 'client'       => \$opts->{client},
 	 'cmddir=s@'    => \$opts->{cmddir},
-	 'command=s@' => \$opts->{cmdfiles},
+	 'command=s@'   => \$opts->{cmdfiles},
+	 'fall-off-end' => \$opts->{fall_off_end},
 	 'help'         => \$help,
 	 'highlight'    => \$opts->{highlight},
 	 'host:s'       => \$opts->{host},

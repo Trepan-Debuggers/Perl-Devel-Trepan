@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -13,7 +13,7 @@ use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Remove an alias';
 use constant MIN_ARGS   => 0;     # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
-use constant NEED_STACK => 1;
+use constant NEED_STACK => 0;
 EOE
 }
 

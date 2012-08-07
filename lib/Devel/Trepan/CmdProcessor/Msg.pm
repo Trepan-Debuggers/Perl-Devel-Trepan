@@ -57,7 +57,7 @@ sub msg($$;$) {
 
 sub msg_need_running($$;$) {
     my($self, $prefix, $opts) = @_;
-[    $self->errmsg("$prefix not available when terminated");
+    $self->errmsg("$prefix not available when terminated");
 }
 
 sub msg_nocr($$;$) {

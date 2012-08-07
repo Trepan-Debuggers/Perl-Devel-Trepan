@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 use Exporter;
 use warnings;
 no warnings 'redefine';

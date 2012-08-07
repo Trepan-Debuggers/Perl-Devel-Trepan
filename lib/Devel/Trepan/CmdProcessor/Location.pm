@@ -24,8 +24,8 @@ our $EVENT2ICON = {
     'post-mortem'    => 'XX',
     'return'         => '<-',
     'signal'         => '!!',
-    'terminated'     => ':x',
     'tbrkpt'         => 'x1',
+    'terminated'     => ':x',
     'trace'          => '==',
     'unknown'        => '?!',
     'watch'          => 'wa'

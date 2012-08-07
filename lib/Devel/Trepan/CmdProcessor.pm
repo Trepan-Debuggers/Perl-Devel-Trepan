@@ -147,8 +147,8 @@ sub ok_for_running ($$$$) {
     }
 
     if ($cmd->NEED_STACK && $self->{terminated}) {
-	$self->errmsg("Command '$name' requires a running program.");
-	return;
+        $self->errmsg("Command '$name' requires a running program.");
+        return;
     }
 
     if ($cmd->NEED_STACK && !defined $self->{frame}) {
@@ -322,10 +322,10 @@ sub process_commands($$$;$)
     my ($self, $frame, $event, $arg) = @_;
 
     if ($event eq 'terminated') {
-	$self->{terminated} = 1;
-	$self->section("Debugged program terminated.  Use 'q' to quit or 'R' to restart.");
+        $self->{terminated} = 1;
+        $self->section("Debugged program terminated.  Use 'q' to quit or 'R' to restart.");
     } elsif (!defined($event)) {
-	$event = 'unknown';
+        $event = 'unknown';
     }
     
     my $next_skip = 0;
@@ -361,7 +361,7 @@ sub process_commands($$$;$)
         unless ($next_skip) { 
             $self->{unconditional_prehooks}->run;
             if (index($self->{event}, 'brkpt') < 0 && !$self->{terminated}) {
-		# Not a breakpoint and not terminated.
+                # Not a breakpoint and not terminated.
                 if ($self->is_stepping_skip()) {
                     # || $self->{stack_size} <= $self->{hide_level};
                     $self->{dbgr}->step;
@@ -375,7 +375,7 @@ sub process_commands($$$;$)
         
             $self->{prompt} = compute_prompt($self);
             $self->print_location unless $self->{settings}{traceprint} ||
-		$self->{terminated};
+                $self->{terminated};
 
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
             
@@ -463,11 +463,11 @@ sub run_command($$)
         my $run_cmd_name = $cmd_name;
 
         my %aliases = %{$self->{aliases}};
-	if (exists $aliases{$cmd_name}) {
-	  my @alias_expand = split(/\s+/, $aliases{$cmd_name});
-	  $run_cmd_name = shift @alias_expand;
-	  splice(@args, 1, 0, @alias_expand);
-	}
+        if (exists $aliases{$cmd_name}) {
+          my @alias_expand = split(/\s+/, $aliases{$cmd_name});
+          $run_cmd_name = shift @alias_expand;
+          splice(@args, 1, 0, @alias_expand);
+        }
 
         $run_cmd_name = uniq_abbrev([keys %commands], $run_cmd_name) if
             !$commands{$run_cmd_name} && $self->{settings}{abbrev};

@@ -483,6 +483,7 @@ sub update_script_cache($$)
 	    $lines_href->{plain} = \@DB::lines;
 	    $string = join("\n", @DB::lines);
 	} else {
+	    no strict;
 	    $lines_href->{plain} = \@{"_<$script"};
 	    $string = join("\n", @{"_<$script"});
 	}

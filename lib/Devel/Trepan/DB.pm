@@ -20,6 +20,7 @@ package DB::fake;
 
 sub at_exit {
     $DB::ready = 1;
+    # The below is there to have something to look at in "list" command.
     "Debugged program terminated.  Use 'q' to quit or 'R' to restart.";
 }
 

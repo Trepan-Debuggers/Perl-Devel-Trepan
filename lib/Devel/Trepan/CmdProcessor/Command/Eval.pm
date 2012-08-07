@@ -11,7 +11,7 @@ unless (@ISA) {
 use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
-use constant NEED_STACK  => 1;
+use constant NEED_STACK  => 0;
 use constant MIN_ARGS  => 0;  # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
 EOE
@@ -98,6 +98,10 @@ sub run($$)
     my $eval_lead_word;
 
     if (1 == scalar @$args) {
+	if ($proc->{terminated}) {
+	    $proc->msg_need_running("implicit eval source code");
+	    return;
+	}
 	# No string passed to eval. Pick up string to eval from
 	# current source text.
 	$code_to_eval  = $proc->current_source_text();

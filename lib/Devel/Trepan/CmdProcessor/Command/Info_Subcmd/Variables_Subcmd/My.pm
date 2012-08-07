@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 use Data::Dumper;
@@ -9,6 +9,7 @@ use vars qw(@ISA @SUBCMD_VARS);
 unless (@ISA) {
     eval <<'EOE';
     use constant MAX_ARGS => undef;
+    use constant NEED_STACK => 1;
 EOE
 }
 use strict;

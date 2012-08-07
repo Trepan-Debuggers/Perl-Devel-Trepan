@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -53,14 +53,23 @@ sub complete($$)
 sub run($$)
 {
     my ($self, $args) = @_;
+    my $proc = $self->{proc};
     my ($filename, $line_number);
     my $count = scalar @$args;
     if (1 == $count) {
+	if ($proc->{terminated}) {
+	    $proc->msg_need_running("implicit edit file and line");
+	    return;
+	}
 	$filename     = $self->{proc}->filename;
 	$line_number  = $self->{proc}->line;
     } elsif (2 == $count) {
 	$line_number = $self->{proc}->get_int_noerr($args->[1]);
 	if (defined $line_number) {
+	    if ($proc->{terminated}) {
+		$proc->msg_need_running("implicit edit file");
+		return;
+	    }
 	    $filename = $self->{proc}->filename;
 	} else {
 	    $filename = $args->[1];

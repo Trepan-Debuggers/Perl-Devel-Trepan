@@ -401,9 +401,11 @@ sub process_commands($$$;$)
             # }
         }
     }
-    $self->{cmdloop_posthooks}->run;
-    $self->{last_tid} = $DB::tid;
-    $DB::single       = $self->{DB_single};
+    unless ($self->{terminated}) {
+	$self->{cmdloop_posthooks}->run;
+	$self->{last_tid} = $DB::tid;
+	$DB::single       = $self->{DB_single};
+    }
     $DB::running      = $self->{DB_running};
 
 }

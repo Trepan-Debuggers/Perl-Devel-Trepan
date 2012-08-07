@@ -2,6 +2,6 @@
 init();
 -- (next2.pl:6)
 my $y=3;
-Eval result display style is tidy.
+Eval result display style is dumper.
 $DB::D[0] = next2.pl
 $DB::D[1] = 1.0

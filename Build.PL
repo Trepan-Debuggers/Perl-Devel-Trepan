@@ -38,12 +38,12 @@ my $builder = Module::Build->new(
         # 'String::Diff'        => 0,
     },
     test_requires => {
-        'Test::Simple'                      => '0.81',
+        'Test::More'                        => '0.81',
     },
     requires => {
 	'perl'                              => '5.008008',
 	'Array::Columnize'                  => '0.003005',
- 	'Data::Dumper::Perltidy'            => 0,
+ 	'Data::Dumper'                      => 0,
 	'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,

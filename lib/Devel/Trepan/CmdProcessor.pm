@@ -19,7 +19,7 @@ use if !@ISA, Data::Dumper;
 # Eval does uses its own variables.
 # FIXME: have a way to customize Data:Dumper, PerlTidy etc.
 $Data::Dumper::Terse = 1; 
-require Data::Dumper::Perltidy;
+require Data::Dumper;
 
 unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;

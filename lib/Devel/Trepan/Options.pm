@@ -215,6 +215,8 @@ trepan.pl - Perl "Trepanning" Debugger
                            rus the Perl program to be debugged runs. 
                            The client runs outside of this process.
                           
+      --fall-off-end       Don't stay in debugger when program terminates
+
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1
 

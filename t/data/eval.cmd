@@ -17,5 +17,3 @@ $b
 # See that @_ is set properly.
 @ @_
 quit!
-
-

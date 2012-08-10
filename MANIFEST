@@ -54,6 +54,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
@@ -242,6 +243,7 @@ t/data/fin.cmd
 t/data/fin.right
 t/data/fin2.cmd
 t/data/fin2.right
+t/data/line.cmd
 t/data/list1.cmd
 t/data/list1.right
 t/data/list2.cmd

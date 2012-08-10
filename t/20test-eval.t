@@ -34,7 +34,7 @@ my $opts = {
 	$got_lines = join("\n", @result);
 	return ($got_lines, $correct_lines);
     },
-    run_opts => " --no-highlight --basename -nx"
+    run_opts => " --no-highlight --basename -nx --fall-off-end"
 };
 
 Helper::run_debugger("$test_prog", 'eval2.cmd', undef, $opts);

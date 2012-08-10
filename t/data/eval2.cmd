@@ -1,3 +1,4 @@
+set evaldisplay dumper
 set auto eval on
 list
 s

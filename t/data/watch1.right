@@ -2,6 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 basename is on.
 highlight is off.
+Eval result display style is dumper.
 No breakpoints.
 No actions.
 No watch expressions defined.

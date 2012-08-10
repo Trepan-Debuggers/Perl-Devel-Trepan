@@ -1,4 +1,5 @@
 -- (gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+Eval result display style is dumper.
 $DB::D[0] = 0
 $DB::D[1] = "gcd.pl"

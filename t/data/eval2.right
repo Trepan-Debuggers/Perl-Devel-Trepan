@@ -2,6 +2,7 @@
 ++
 -- (eval.pl:1)
 $var = '
+Eval result display style is dumper.
 set auto eval is on.
 eval.pl [1-10]
   1  ->	$var = '

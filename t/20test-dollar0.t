@@ -14,7 +14,7 @@ my $opts = {
 	$got_lines = join("\n", @result) . "\n";
 	return ($got_lines, $correct_lines);
     },
-    run_opts => " --basename --no-highlight -nx"
+    run_opts => " --basename --no-highlight -nx --fall-off-end"
 };
 
 my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));

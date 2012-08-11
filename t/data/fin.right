@@ -1,8 +1,8 @@
--- (TCPPack.pm:9)
+-- TCPPack::(TCPPack.pm:9)
 our (@ISA, @EXPORT);
-x1 (TCPPack.pm:18)
+x1 TCPPack::(TCPPack.pm:18)
     my $msg = shift;
-<- (TCPPack.pm:37) TCPPack::pack_msg
+<- TCPPack::(TCPPack.pm:37) TCPPack::pack_msg
     ($buf, $msg) = unpack_msg(pack_msg($buf));
 Return value for TCPPack::pack_msg is: 0009Hi there!
 *** Can't run finish while inside a return. Step and try again.

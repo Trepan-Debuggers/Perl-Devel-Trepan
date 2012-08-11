@@ -145,6 +145,7 @@ END {
         $DB::single = 1;
         DB::fake::at_exit();
     }
+    $DB::ready = 0;
 } 
 
 ####

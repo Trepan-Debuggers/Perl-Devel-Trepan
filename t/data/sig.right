@@ -1,7 +1,7 @@
 Got signal HUP in debugged program handler
--- (signal.pl:9)
+-- main::(signal.pl:9)
 $SIG{'HUP'} = \&hup_handler;
-x1 (signal.pl:10)
+x1 main::(signal.pl:10)
 my $tempfile;
 Signal        Stop	Print	Stack	Pass	Description
 HUP           No  	Yes 	No   	Yes 	Hangup

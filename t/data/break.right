@@ -1,4 +1,4 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 Breakpoint 1 set in gcd.pl at line 18
 Breakpoint 2 set in gcd.pl at line 9
@@ -14,5 +14,5 @@ Possible breakpoint line numbers:
 *** Line 10 of XXX not known to be a trace line.
 Use 'info file XXX brkpts' to see breakpoints I know about
 *** Subroutine gcd1 not found.
-x1 (gcd.pl:9)
+x1 main::(gcd.pl:9)
     my ($a, $b) = @_;

@@ -1,4 +1,4 @@
--- (test-require.pl:3)
+-- main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.

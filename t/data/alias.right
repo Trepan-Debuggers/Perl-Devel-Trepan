@@ -1,4 +1,4 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
 *** You must alias to a command name, and 'foo' isn't one.
 New alias 'yy' for command string 'step' created.

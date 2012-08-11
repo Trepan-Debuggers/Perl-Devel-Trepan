@@ -24,23 +24,28 @@ sub run($$)
     my $proc      = $self->{proc};
     my $frame     = $proc->{frame};
     my $filename  = $proc->filename();
-    my $line;
-    my $end_line  = undef;
+    my ($line, $first_arg, $end_line);
 
     my $arg_count = scalar @args;
     if ($arg_count == 0) {
 	$line = $frame->{line};
     } else {
-	if ($args[0] =~ /\d+/) {
-	    $line = $args[0];
+	$first_arg = $args[0];
+	if ($first_arg =~ /\d+/) {
+	    $line = $first_arg;
 	} else {
-	    my @matches = $proc->{dbgr}->subs($args[0]);
+	    my @matches = $proc->{dbgr}->subs($first_arg);
+	    unless (scalar(@matches)) {
+		# Try with current package name
+		$first_arg = $proc->{frame}{pkg} . '::' . $first_arg;
+		@matches = $proc->{dbgr}->subs($first_arg);
+	    }
 	    if (scalar(@matches) == 1) {
 		$filename = $matches[0][0];
 		$line     = $matches[0][1];
 		$end_line = $matches[0][2];
 	    } else {
-		$proc->msg("Expecting a line number or fully qualified function; got ${args[0]}");
+		$proc->msg("Expecting a line number or function; got ${args[0]}");
 		return;
 	    }
 	}

@@ -1,11 +1,9 @@
 #!/usr/bin/env perl
 use warnings; use strict;
-use rlib '.';
-use Helper;
-my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));
-use Test::More;
+use rlib '.'; use Helper;
 
-my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', 'eval2.cmd');
+my $test_prog = prog_file('gcd.pl');
+
 my $opts = {
     filter => sub{
 	my ($got_lines, $correct_lines) = @_;
@@ -21,5 +19,5 @@ my $opts = {
     run_opts => " --no-highlight --basename -nx"
 };
 
-Helper::run_debugger("$test_prog 3 5", 'debug.cmd', undef, $opts);
+run_debugger("$test_prog 3 5", cmd_file(), undef, $opts);
 done_testing();

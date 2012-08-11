@@ -1,5 +1,5 @@
 use warnings; use strict;
-require Test::More;
+use Test::More;
 use File::Spec;
 use File::Basename;
 my $trepanpl = File::Spec->catfile(dirname(__FILE__), qw(.. bin trepan.pl));
@@ -9,7 +9,36 @@ package Helper;
 use File::Basename qw(dirname); use File::Spec;
 use English qw( -no_match_vars ) ;
 use Config;
+require Exporter;
+our (@ISA, @EXPORT);
+@ISA = qw(Exporter);
+@EXPORT = qw(cmd_file prog_file run_debugger);
 
+# Return the natural command file assocated with a test.
+# For file /a/b/t/20test-foo.t it is foo.cmd
+sub cmd_file()
+{
+    my ($pkg, $filename) = caller;
+    $filename =~ s/^.*20test-(.+)\.t$/$1/;
+    return $filename . '.cmd';
+}
+
+# Return the natural Perl program assocated with a test. If no name
+# is given we extract it from the test name. For example
+# For file /a/b/t/20test-foo.t it is /a/b/t/../example/foo.pl
+# If a program name is provided. We still slap on the directory in front
+# e.g. ../example/.
+sub prog_file(;$)
+{
+    my $prog;
+    if (scalar(@_)) {
+	$prog =  shift;
+    } else {
+	my ($pkg, $prog) = caller;
+	$prog .= '.pl'
+    }
+    return File::Spec->catfile(dirname(__FILE__), qw(.. example), $prog)
+}
 
 # Runs debugger in subshell. 0 is returned if everything went okay.
 # nonzero if something went wrong.

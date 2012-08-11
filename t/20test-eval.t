@@ -1,11 +1,10 @@
 #!/usr/bin/env perl
 use warnings; use strict; use English;
 use Test::More;
-use rlib '.';
-use Helper;
-my $test_prog = File::Spec->catfile(dirname(__FILE__), 
-				    qw(.. example gcd.pl));
-Helper::run_debugger("$test_prog 3 5", 'eval.cmd');
+use rlib '.'; use Helper;
+
+my $test_prog = prog_file('gcd.pl');
+run_debugger("$test_prog 3 5", cmd_file());
 $test_prog = File::Spec->catfile(dirname(__FILE__), 
 				    qw(.. example eval.pl));
 
@@ -37,5 +36,5 @@ my $opts = {
     run_opts => " --no-highlight --basename -nx --fall-off-end"
 };
 
-Helper::run_debugger("$test_prog", 'eval2.cmd', undef, $opts);
+run_debugger("$test_prog", 'eval2.cmd', undef, $opts);
 done_testing();

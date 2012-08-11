@@ -50,7 +50,7 @@ how-to-make-a-release\.txt
 \.tmp$
 \.#
 \.rej$
-\.try$
+\.tar.gz$
 
 # Avoid OS-specific files/dirs
 # Mac OSX metadata

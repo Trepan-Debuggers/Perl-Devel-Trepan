@@ -33,9 +33,9 @@ my $opts = {
     run_opts => " --trace --basename --no-highlight -nx --fall-off-end"
 };
 
-my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));
-Helper::run_debugger("$test_prog 3 5", 'trace1.cmd', undef, $opts);
+my $test_prog = prog_file('gcd.pl');
+run_debugger("$test_prog 3 5", 'trace1.cmd', undef, $opts);
 $opts->{no_cmdfile} = 0;
 $opts->{run_opts}   = " --no-highlight --nx --basename --fall-off-end";
-Helper::run_debugger("$test_prog 3 5", 'trace2.cmd', undef, $opts);
+run_debugger("$test_prog 3 5", 'trace2.cmd', undef, $opts);
 done_testing();

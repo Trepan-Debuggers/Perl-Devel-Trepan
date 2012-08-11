@@ -1,7 +1,6 @@
 #!/usr/bin/env perl
 use warnings; use strict;
-use rlib '.';
-use Helper;
+use rlib '.'; use Helper;
 
 my $opts = {
     filter => sub{
@@ -17,7 +16,6 @@ my $opts = {
     run_opts => " --basename --no-highlight -nx --fall-off-end"
 };
 
-my $test_prog = File::Spec->catfile(dirname(__FILE__), qw(.. example gcd.pl));
-use Test::More;
-Helper::run_debugger("$test_prog 3 5", 'dollar0.cmd', undef, $opts);
+my $test_prog = prog_file('gcd.pl');
+run_debugger("$test_prog 3 5", cmd_file(), undef, $opts);
 done_testing();

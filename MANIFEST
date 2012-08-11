@@ -204,6 +204,7 @@ t/20test-display.t
 t/20test-eval.t
 t/20test-fin.t
 t/20test-__FILE__.t
+t/20test-line.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
@@ -244,6 +245,7 @@ t/data/fin.right
 t/data/fin2.cmd
 t/data/fin2.right
 t/data/line.cmd
+t/data/line.right
 t/data/list1.cmd
 t/data/list1.right
 t/data/list2.cmd

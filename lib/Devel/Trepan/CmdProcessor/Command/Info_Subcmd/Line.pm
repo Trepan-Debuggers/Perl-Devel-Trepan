@@ -25,6 +25,7 @@ sub run($$)
     my $frame     = $proc->{frame};
     my $filename  = $proc->filename();
     my $line;
+    my $end_line  = undef;
 
     my $arg_count = scalar @args;
     if ($arg_count == 0) {
@@ -33,17 +34,33 @@ sub run($$)
 	if ($args[0] =~ /\d+/) {
 	    $line = $args[0];
 	} else {
-	    $proc->msg("Expecting a line number, got ${args[0]}");
-	    return;
+	    my @matches = $proc->{dbgr}->subs($args[0]);
+	    if (scalar(@matches) == 1) {
+		$filename = $matches[0][0];
+		$line     = $matches[0][1];
+		$end_line = $matches[0][2];
+	    } else {
+		$proc->msg("Expecting a line number or fully qualified function; got ${args[0]}");
+		return;
+	    }
 	}
     }
-    my $m = sprintf "Line %d, file %s", $line, $filename;
+    my $m;
+    my $canonic = $proc->canonic_file($filename);
+    if (defined $end_line) {
+	$m = sprintf("Function %s in file %s lines %d..%d", 
+		     $args[0], $canonic, $line, $end_line);
+    } else {
+	$m = sprintf "Line %d, file %s", $line, $canonic;
+    }
     $proc->msg($m);
+    local(*DB::dbline) = "::_<$filename";
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
 	$m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
 	$proc->msg($m);
     } else {
-	$proc->msg("Line not showing as associated with code\n");
+	$proc->msg("Line not showing as associated with code\n") 
+	    unless $end_line;
     }
 }
 

@@ -17,10 +17,10 @@ our @ISA;
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.2.2';
+    $VERSION      = '0.30_01';
 }
 
-use constant VERSION => $VERSION;
+use constant VERSION      => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
 
 @ISA    = qw(Exporter);

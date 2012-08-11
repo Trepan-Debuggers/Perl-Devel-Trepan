@@ -16,6 +16,9 @@ provides:
   DB::LineCache:
     file: lib/Devel/Trepan/DB/LineCache.pm
     version: 0
+  DB::fake:
+    file: lib/Devel/Trepan/DB.pm
+    version: 0
   DBBreak:
     file: lib/Devel/Trepan/DB/Breakpoint.pm
     version: 0
@@ -24,7 +27,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: v0.2.1
+    version: 0.30_01
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -108,6 +111,9 @@ provides:
     version: 0
   Devel::Trepan::CmdProcessor::Command::Info::Functions:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Line:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Info::Macros:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
@@ -405,7 +411,7 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: v0.2.1
+    version: v0.2.2
   Devel::Trepan::SigHandler:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
@@ -424,17 +430,22 @@ provides:
   WatchPoint:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
+recommends:
+  Data::Printer: 0
+  Eval::WithLexicals: 0
+  Term::ReadLine::Perl: 0
 requires:
   Array::Columnize: 0.003005
-  Data::Dumper::Perltidy: 0
+  Data::Dumper: 0
   Digest::SHA: 0
   Getopt::Long: 2.36
   PadWalker: 0
   Syntax::Highlight::Perl::Improved: 0
-  Test::More: 0.81
   perl: 5.008008
   rlib: 0.02
   version: 0
 resources:
+  bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
-version: v0.2.1
+  repository: http://github.com/rocky/Perl-Devel-Trepan
+version: 0.30_01

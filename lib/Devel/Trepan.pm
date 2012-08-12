@@ -47,7 +47,7 @@ Features:
 
 =item context-sensitive command completion
 
-=item remote execution
+=item out-of-process and remote debugging
 
 =item interactive shell support
 
@@ -56,6 +56,10 @@ Features:
 =item gdb syntax
 
 =item easy extensibility at several levels: aliases, commands, and plugins
+
+=item comes with extensive tests
+
+=item is not as ugly as perl5db
 
 =back
 

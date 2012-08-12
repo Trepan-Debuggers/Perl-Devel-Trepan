@@ -5,12 +5,13 @@ A modular, testable debugger in the family of the Ruby ["Trepanning"](https://gi
 
 Features: 
 * has extensive online-help, 
-* supports syntax highlighting via Syntax::Highlight::Perl::Improved, 
-* has command completion and history via GNU ReadLine via Term::ReadLine::Perl or
-Term::ReadLine::Gnu
-* interactive shell support via Psh or Devel::REPL.
-* supports out-of-host or out-of-process debugging (remote debugging over a socket)
-* is user extensible via a number of mechanisms
+* syntax highlighting of Perl code
+* context-sensitive command completion
+* out-of-process and remote debugging
+* interactive shell support
+* code disassembly
+* gdb syntax
+* easy extensibility at several levels
     * command aliases
     * a user-supplied command directory
     * Perl Plugin module such as [Trepan::Devel::Disassemble](https://github.com/rocky/Perl-Devel-Trepan-Disassemble)
@@ -52,18 +53,16 @@ There is extensive help from the `help` command.
 INSTALLATION
 ------------
 
-To install this Devel::Trepan, run the following commands:
+To install this Devel::Trepan from source code:
 
 	perl Build.PL
 	make
 	make test
 	[sudo] make install
 
-or:
+or to install from CPAN:
 
-        $ perl -MCPAN -e shell
-	...
-	cpan[1]> install Devel::Trepan
+        $ cpanm Devel::Trepan
 
 
 LICENSE AND COPYRIGHT

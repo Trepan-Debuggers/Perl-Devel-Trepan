@@ -351,6 +351,23 @@ sub remap_file($$)
     cache_file($to_file);
 }
 
+# When we run trepan.pl -e ... or perl -d:Trepan -e ...  we have data
+# in internal "line" array @DB::dbline but no external file. Here we will
+# create a temporary file and store the data in that.
+sub remap_dbline_to_file()
+{ 
+    my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
+				   TMPDIR => 1);
+    no strict;
+    my @lines = @DB::dbline;
+    shift @lines if $lines[0] eq "use Devel::Trepan;\n";
+    my $string = join('', @lines);
+    print $fh $string;
+    $fh->close();
+    remap_file('-e', $tempfile);
+    return $tempfile
+}
+
 sub remap_file_lines($$$$)
 {
     my ($from_file, $to_file, $range_ref, $start) = @_;

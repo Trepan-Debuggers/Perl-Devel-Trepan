@@ -4,6 +4,7 @@ use warnings;
 # FIXME: Can't use strict;
 use rlib '../..';
 use Devel::Trepan::DB;
+use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
 use Devel::Trepan::CmdProcessor;
 use Devel::Trepan::SigHandler;
 use Devel::Trepan::WatchMgr;
@@ -32,7 +33,8 @@ sub new {
     my $self = {
 	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
 	orig_sig => \%ORIG_SIG,
-	caught_signal => 0
+	caught_signal => 0,
+	need_e_remap  => 0
     };
     bless $self, $class;
     $self->awaken();
@@ -48,6 +50,11 @@ sub idle($$$)
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
     $event = 'terminated' if $DB::package eq 'DB::fake';
+    if ($self->{need_e_remap} && $DB::filename eq '-e') {
+	DB::LineCache::remap_dbline_to_file();
+	$self->{need_e_remap} = 0;
+    }
+
     $proc->process_commands($DB::caller, $event, $args);
     $self->{caught_signal} = 0;
 }
@@ -92,6 +99,11 @@ sub awaken($;$) {
     # Process options
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
+    }
+
+    if (scalar @{$opts->{exec_strs}}) {
+	$self->{exec_strs} = $opts->{exec_strs};
+	$self->{need_e_remap} = 1;
     }
 
     $0 = $opts->{dollar_0} if $opts->{dollar_0};

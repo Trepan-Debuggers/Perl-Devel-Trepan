@@ -128,6 +128,8 @@ Rocky Bernstein
 
 =item L<Devel::Trepan Debugger evaluation of Perl statements|http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-evaluation-of-perl-statements.html>
 
+=item L<Location, Location, Location|http://blogs.perl.org/users/rockyb/2012/08/location-location-location.html>
+
 =item L<Devel::Trepan github wiki|https://github.com/rocky/Perl-Devel-Trepan/wiki>
 
 =back 

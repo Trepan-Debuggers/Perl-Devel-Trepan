@@ -1,5 +1,6 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 set auto eval is on.
 Eval result display style is dumper.
 $DB::D[0] = 3

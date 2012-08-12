@@ -1,6 +1,7 @@
 The GCD of 3 and 5 is 10
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 --> #0 file `gcd.pl' at line 18
 x1 main::(gcd.pl:9)
     my ($a, $b) = @_;

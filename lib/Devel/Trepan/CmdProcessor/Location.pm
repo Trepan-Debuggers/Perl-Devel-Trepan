@@ -58,8 +58,13 @@ sub current_source_text(;$)
     $opts = {} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
-    my $text;
-    $text = DB::LineCache::getline($filename, $line_number, $opts); 
+    my $text = '';
+    my $max_lines = $opts->{max_lines} || 4;
+
+    ## for ( my $i = $line_number ; $i <= $max && $dbline[$i] == 0 ; ++$i )
+
+    $text .= (DB::LineCache::getline($filename, $line_number, $opts)) || ''; 
+
     return $text;
 }
   

@@ -46,7 +46,7 @@ is($another_line, $expected_line, "Test getline via remap_file");
 # printf "I said %s has %d lines!\n", __FILE__, DB::LineCache::size(__FILE__);
 
 my $sha1 = DB::LineCache::sha1(__FILE__);
-ok($sha1, "Got some sort of SHA1");
+like($sha1, qr/^[0-9a-f]+$/,  'Got some sort of SHA1');
 eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, 'should pick up eval filename')";
 is($EVAL_ERROR, '', 'eval error on __FILE__ test');
 is(DB::LineCache::filename_is_eval(__FILE__), '', 
@@ -59,4 +59,5 @@ open(FH, '<', $filename);
 undef $INPUT_RECORD_SEPARATOR;
 my $got_str = <FH>;
 is($got_str, $eval_str, "reading contents temp file $filename");
+
 done_testing();

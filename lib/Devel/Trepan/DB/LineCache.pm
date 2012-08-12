@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 # 
-#   Copyright (C) 2011, 2012 Rocky Bernstein <rockb@cpan.org>
+#   Copyright (C) 2011, 2012 Rocky Bernstein <rockyb@cpan.org>
 #
 #
 =head1 NAME DB::LineCache
@@ -401,17 +401,22 @@ sub DB::LineCache::stat($)
     $file_cache{$filename}{stat};
 }
 
-# Return an Array of breakpoints in filename.
-# The list will contain an entry for each distinct line event call
-# so it is possible (and possibly useful) for a line number appear more
-# than once.
+# Return an array of breakpoints in filename.
 sub trace_line_numbers($;$)
 {
     my ($filename, $reload_on_change) = @_;
     my $fullname = cache($filename, $reload_on_change);
     return undef unless $fullname;
-    my $trace_nums_ary = $file_cache{$filename}{trace_nums};
-    return @$trace_nums_ary;
+    return sort {$a <=> $b} keys %{$file_cache{$filename}{trace_nums}};
+  }
+    
+# Return 1 if $line_num is a trace line number of $file.
+sub is_trace_line($$;$)
+{
+    my ($filename, $line_num, $reload_on_change) = @_;
+    my $fullname = cache($filename, $reload_on_change);
+    return undef unless $fullname;
+    return !!$file_cache{$filename}{trace_nums}{$line_num};
   }
     
 sub map_file($)
@@ -533,7 +538,7 @@ sub update_cache($;$)
 	$path = abs_path($filename) if -f $filename;
     }
     my $lines_href;
-    my @trace_nums = ();
+    my $trace_nums;
     my $stat;
     if ($use_perl_d_file) {
 	my @list = ($filename);
@@ -560,7 +565,7 @@ sub update_cache($;$)
 	    	my @lines = @$raw_lines;
 	    	for (my $i=1; $i<=$#lines; $i++) {
 	    	    if (defined $raw_lines->[$i]) {
-			push @trace_nums, $i if ($raw_lines->[$i] != 0);
+			$trace_nums->{$i} = 1 if ($raw_lines->[$i] != 0);
 	    		$incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
 	    	    } else {
 	    		$raw_lines->[$i] = $lines_check[$i-1] 
@@ -584,7 +589,7 @@ sub update_cache($;$)
 		lines_href => $lines_href,
 		path       => $path,
 		incomplete => $incomplete,
-		trace_nums => \@trace_nums,
+		trace_nums => $trace_nums,
 	    };
 	    $read_file = 1;
         }
@@ -620,7 +625,7 @@ sub update_cache($;$)
 		lines_href => $lines_href,
 		path       => $path,
 		incomplete => 0,
-		trace_nums => \@trace_nums,
+		trace_nums => $trace_nums,
 	    };
     $file_cache{$filename} = $entry;
     $file2file_remap{$path} = $filename;
@@ -642,59 +647,62 @@ unless (caller) {
     my $script_name = '(eval 234)';
     update_script_cache($script_name, {string => "now\nis\nthe\ntime"});
     print join(', ', keys %DB::LineCache::script_cache), "\n";
-    my $lines = $DB::LineCache::script_cache{$script_name}{lines_href}{plain};
+    my $lines = $script_cache{$script_name}{lines_href}{plain};
     print join("\n", @{$lines}), "\n";
-    $lines = DB::LineCache::getlines($script_name);
+    $lines = getlines($script_name);
     printf "%s has %d lines\n",  $script_name,  scalar @$lines;
     printf("Line 1 of $script_name is:\n%s\n", 
-	  DB::LineCache::getline($script_name, 1));
-    my $max_line = DB::LineCache::size($script_name);
-    printf("%s has %d lines via DB::LineCache::size\n",  
+	  getline($script_name, 1));
+    my $max_line = size($script_name);
+    printf("%s has %d lines via size\n",  
 	   $script_name,  scalar @$lines);
-    exit;
-    
-    $lines = DB::LineCache::getlines(__FILE__);
+    do __FILE__;
+    my @line_nums = trace_line_numbers(__FILE__);
+
+    ### FIXME: add more of this stuff into unit test.
+    printf("Breakpoints for: %s:\n%s\n", 
+	   __FILE__, join(', ', @line_nums[0..30]));
+    $lines = getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
     my $full_file = abs_path(__FILE__);
-    $lines = DB::LineCache::getlines(__FILE__);
+    $lines = getlines(__FILE__);
     printf "%s still has %d lines\n",  __FILE__,  scalar @$lines;
-    $lines = DB::LineCache::getlines(__FILE__);
+    $lines = getlines(__FILE__);
     printf "%s also has %d lines\n",  $full_file,  scalar @$lines;
     my $line_number = __LINE__;
-    my $line = DB::LineCache::getline(__FILE__, $line_number);
+    my $line = getline(__FILE__, $line_number);
     printf "The %d line is:\n%s\n", $line_number, $line ;
-    DB::LineCache::remap_file('another_name', __FILE__);
-    print DB::LineCache::getline('another_name', __LINE__), "\n";
+    remap_file('another_name', __FILE__);
+    print getline('another_name', __LINE__), "\n";
+    printf "Files cached: %s\n", join(', ', cached_files);
+    update_cache(__FILE__);
+    printf "I said %s has %d lines!\n", __FILE__, size(__FILE__);
+    printf "SHA1 of %s is:\n%s\n", __FILE__, sha1(__FILE__);
     
-    printf "Files cached: %s\n", join(', ', DB::LineCache::cached_files);
-    DB::LineCache::update_cache(__FILE__);
-    ## DB::LineCache::checkcache(__FILE__);
-    printf "I said %s has %d lines!\n", __FILE__, DB::LineCache::size(__FILE__);
-    printf "SHA1 of %s is:\n%s\n", __FILE__, DB::LineCache::sha1(__FILE__);
-    # print "#{__FILE__} trace line numbers:\n" + 
-
-    my $stat = DB::LineCache::stat(__FILE__);
+    my $stat = stat(__FILE__);
     printf("stat info size: %d, ctime %s, mode %o\n", 
 	   $stat->size, $stat->ctime, $stat->mode);
 
-    my $lines_aref = DB::LineCache::getlines(__FILE__, {output=>'term'});
-    print join("\n", @$lines_aref), "\n" if defined $lines_aref;
+    my $lines_aref = getlines(__FILE__, {output=>'term'});
+    print join("\n", @$lines_aref[0..5,50..55]), "\n" if defined $lines_aref;
+    $DB::filename = '(eval 4)';
+    my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
+    print "mapped eval is $filename\n";
+    printf("%s is a trace line? %d\n", __FILE__, 
+	   is_trace_line(__FILE__, __LINE__-1));
+    printf("%s is a trace line? %d\n", __FILE__, 
+	   is_trace_line(__FILE__, __LINE__));
+    exit;
 
-    print("trace nums: ", join(', ',
-			       DB::LineCache::trace_line_numbers(__FILE__)),
-	  "\n");
-    $lines_aref = DB::LineCache::getlines(__FILE__, {output=>'term'});
+    $lines_aref = getlines(__FILE__, {output=>'term'});
     print("trace nums again: ", join(', ',
-			       DB::LineCache::trace_line_numbers(__FILE__)),
+			       trace_line_numbers(__FILE__)),
 	  "\n");
     eval "printf \"filename_is_eval: %s, %s\n\", __FILE__, 
           filename_is_eval(__FILE__);";
     $DB::filename = 'bogus';
     eval "update_script_cache(__FILE__, {}); 
           print '+++', is_cached_script(__FILE__), \"\\n\"";
-    $DB::filename = '(eval 4)';
-    my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
-    print "mapped eval is $filename\n";
 }
 
 1;

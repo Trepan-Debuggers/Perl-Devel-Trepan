@@ -197,7 +197,7 @@ trepan.pl - Perl "Trepanning" Debugger
 
 =head1 SYNOPSIS
 
-   trepan [options] [[--] perl-program [perl-program-options ...]]
+   trepan.pl [options] [[--] perl-program [perl-program-options ...]]
 
    Options:
       --help               brief help message

@@ -24,7 +24,7 @@ SYNOPSIS
 
 From a shell: 
 
-    $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
+    $ trepan.pl [trepan-opts] [[--] perl-program [perl-program-opts]]
 
 Or for those who prefer the traditional Perlish way:
 

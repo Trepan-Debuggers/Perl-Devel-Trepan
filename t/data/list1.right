@@ -16,13 +16,13 @@ test-require.pl [1-9]
 my $require_file = File::Spec->catfile($DIR, "test-module.pm");
 -- main::(test-require.pl:5)
 require $require_file;
--- Test::Module(test-module.pm:5)
+-- Test::Module::(test-module.pm:5)
 my $x = 1;
--- Test::Module(test-module.pm:6)
+-- Test::Module::(test-module.pm:6)
 my $y = 2;
 -- main::(test-require.pl:6)
 my $x = Test::Module::five();
--- Test::Module(test-module.pm:3)
+-- Test::Module::(test-module.pm:3)
     return 5;
 test-module.pm [1-6]
   1    	package Test::Module;

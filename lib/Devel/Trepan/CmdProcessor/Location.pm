@@ -158,9 +158,8 @@ sub format_location($;$$$)
     
     my $loc = $self->source_location_info;
     my $suffix = ($event eq 'return' && defined($DB::_[0])) ? " $DB::_[0]" : '';
-    my $pkg = $self->{frame}{pkg};
-    $pkg .= '::' unless $pkg =~ /::/;
-    "${ev} $pkg(${loc})$suffix"
+    my $pkg = $self->{frame}{pkg} || '??' ;
+    "${ev} ${pkg}::(${loc})$suffix";
 }
 
 sub print_location($;$)

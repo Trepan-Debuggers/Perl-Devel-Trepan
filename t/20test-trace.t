@@ -11,7 +11,7 @@ my $opts = {
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
 	    $line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
-	    last if (0 == index($line, '-- File::Temp(Temp.pm:'));
+	    last if (0 == index($line, '-- File::Temp::(Temp.pm:'));
 	    push @result, $line;
 	}
 

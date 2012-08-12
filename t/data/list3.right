@@ -2,7 +2,7 @@
 my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.
--- File::Basename(Basename.pm:284)
+-- File::Basename::(Basename.pm:284)
     my $path = shift;
 Basename.pm [280-289]
 280    	=cut

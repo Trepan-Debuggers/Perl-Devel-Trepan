@@ -1,11 +1,15 @@
 Revision history for Devel-Trepan
 
-0.2.2  - May 25 2012
+0.3.0  - 
 
-- Set $0, __FILE__, and, __LINE__ to look like it would be inside the debugged
-  program
 - Incompatible change: "d" is now "delete" like gdb, not "down". Add aliases
   for "h" and remove "u" for "up". All of this is to follow gdb closer.
+- Set $0, __FILE__, and, __LINE__ to look like it would be inside the debugged
+  program
+- Add -e option to trepan.pl same as Perl
+- Location now shows package name like recent perl5db
+- More than one line may be shown if the line we are on isn't a full statement
+- Add "info line"
 - Allow setting a breakpoint on a line even if it isn't recorded as a place
   that is stoppable.
 - Fix various bugs

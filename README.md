@@ -1,7 +1,7 @@
 Devel::Trepan -- A new Perl debugger
 ====================================
 
-A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki). The command set is modeled off of gdb, but other command sets are possible.
+A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki). The command set is modeled off of _gdb_, but other command sets are possible.
 
 Features: 
 * has extensive online-help, 
@@ -17,34 +17,34 @@ Features:
     * Perl Plugin module such as [Trepan::Devel::Disassemble](https://github.com/rocky/Perl-Devel-Trepan-Disassemble)
 * is more modular
 * comes with extensive tests
-* is not as ugly as perl5db
+* is not as ugly as _perl5db_
 
 SYNOPSIS
 --------
 
 From a shell: 
 
-        $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
+    $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
 
 Or for those who prefer the traditional Perlish way:
 
-        $ perl -d:Trepan perl-program [perl-program-opts]
+    $ perl -d:Trepan perl-program [perl-program-opts]
 
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's [Enbugger](http://search.cpan.org/~jjore/Enbugger/):
 
-	# This needs to be done once and could even be in some sort of conditional code
-        require Enbugger; Enbugger->load_debugger( 'trepan' );
-        # Alternatively, to unconditinally load Enbugger and trepan:
-        use Enbugger 'trepan';
+    # This needs to be done once and could even be in some sort of conditional code
+    require Enbugger; Enbugger->load_debugger( 'trepan' );
+    # Alternatively, to unconditinally load Enbugger and trepan:
+    use Enbugger 'trepan';
 
-	# work, work, work...
-	# Oops! there was an error! Enable the debugger now!
-        Enbugger->stop;  # or Enbugger->stop if ... 
+    # work, work, work...
+    # Oops! there was an error! Enable the debugger now!
+    Enbugger->stop;  # or Enbugger->stop if ... 
 
 Or if you just want POSIX-shell-like `set -x` line tracing:
 
-        $ trepan.pl -x -- perl-program [perl-program-opts]
+    $ trepan.pl -x -- perl-program [perl-program-opts]
 
 Inside the debugger tracing is turned on using the command `set trace print`.
 There is extensive help from the `help` command.
@@ -55,14 +55,14 @@ INSTALLATION
 
 To install this Devel::Trepan from source code:
 
-	perl Build.PL
-	make
-	make test
-	[sudo] make install
+    perl Build.PL
+    make
+    make test
+    [sudo] make install
 
 or to install from CPAN:
 
-        $ cpanm Devel::Trepan
+    $ cpanm Devel::Trepan
 
 
 LICENSE AND COPYRIGHT

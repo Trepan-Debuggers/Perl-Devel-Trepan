@@ -41,6 +41,7 @@ $DEFAULT_OPTIONS = {
                            # process debugger "server".
     cmddir       => [],    # Additional directories of debugger commands
     cmdfiles     => [],    # Files containing debugger commands to 'source'
+    exec_strs    => [],    # Perl strings to evaluate
     fall_off_end => 0,     # Don't go into debugger on termination? 
     highlight    => default_term(),    
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
@@ -76,6 +77,7 @@ sub process_options($)
 	 'client'       => \$opts->{client},
 	 'cmddir=s@'    => \$opts->{cmddir},
 	 'command=s@'   => \$opts->{cmdfiles},
+	 'e|exec=s@'    => \$opts->{exec_strs},
 	 'fall-off-end' => \$opts->{fall_off_end},
 	 'help'         => \$help,
 	 'highlight'    => \$opts->{highlight},
@@ -209,6 +211,8 @@ trepan.pl - Perl "Trepanning" Debugger
                            This option has precidence over --command and
                            will also set --nx
       --cd DIR             Change current directory to DIR
+      -e| --exec STRING    eval STRING. Multiple -e's can be given.
+                           Works like Perl's -e switch
       --nx                 Don't run user startup file (e.g. .treplrc)
 
       --client | --server  Set for out-of-process debugging. The server 

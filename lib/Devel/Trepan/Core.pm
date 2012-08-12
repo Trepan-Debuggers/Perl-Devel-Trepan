@@ -16,11 +16,11 @@ package Devel::Trepan::Core;
 use vars qw(@ISA $dbgr);
 @ISA = qw(DB);
 
-sub add_startup_files($$) {
-    my ($cmdproc, $startup_file) = @_;
+sub add_startup_files($$;$) {
+    my ($cmdproc, $startup_file, $nowarn) = @_;
     my $errmsg = Devel::Trepan::Util::invalid_filename($startup_file);
     if ($errmsg) {
-	print STDERR "${errmsg}.\n";
+	print STDERR "${errmsg}.\n" unless $nowarn;
     }  else {
 	push @{$cmdproc->{cmd_queue}}, "source $startup_file";
     }
@@ -154,7 +154,7 @@ sub awaken($;$) {
 	    add_startup_files($cmdproc, $startup_file);
 	}
 	if (!$opts->{nx} && exists $opts->{initfile}) {
-	    add_startup_files($cmdproc, $opts->{initfile});
+	    add_startup_files($cmdproc, $opts->{initfile}, 1);
 	}
     }
     $self->{sigmgr} = 

@@ -198,7 +198,7 @@ t/20test-alias.t		Note: t/20*.t tests are integration tests
 t/20test-autolist.t
 t/20test-break.t
 t/20test-cont.t
-t/20test-debug.t
+t/20test-nndebug.t
 t/20test-dollar0.t
 t/20test-display.t
 t/20test-eval.t
@@ -212,6 +212,7 @@ t/20test-list4.t
 t/20test-my.t
 t/20test-next.t
 t/20test-next2.t
+t/20test-opt-e.t
 t/20test-seq1.t
 t/20test-sig.t
 t/20test-step.t
@@ -260,6 +261,8 @@ t/data/next.cmd
 t/data/next.right
 t/data/next2.cmd
 t/data/next2.right
+t/data/opt-e.cmd
+t/data/opt-e.right
 t/data/seq1.cmd
 t/data/seq1.right
 t/data/sig.cmd

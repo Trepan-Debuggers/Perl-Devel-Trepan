@@ -1,8 +1,6 @@
 #!/usr/bin/env perl
 use warnings; use strict;
-use rlib '.';
-use Helper;
-use Test::More;
+use rlib '.'; use Helper;
 
 my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', 'trace1.cmd');
 my $opts = {

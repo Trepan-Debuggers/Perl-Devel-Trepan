@@ -34,6 +34,7 @@ sub new {
 	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
 	orig_sig => \%ORIG_SIG,
 	caught_signal => 0,
+	exec_strs     => [],
 	need_e_remap  => 0
     };
     bless $self, $class;

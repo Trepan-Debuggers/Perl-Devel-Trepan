@@ -402,8 +402,8 @@ sub DB::LineCache::sha1($)
 sub size($)
 {
     my $file_or_script = shift;
-    cache($file_or_script);
     $file_or_script = map_file($file_or_script);
+    cache($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
     my $lines_href = $file_cache{$file_or_script}{lines_href};
     return undef unless defined $lines_href;
@@ -645,6 +645,7 @@ sub update_cache($;$)
 		trace_nums => $trace_nums,
 	    };
     $file_cache{$filename} = $entry;
+    no warnings;
     $file2file_remap{$path} = $filename;
     return 1;
 }

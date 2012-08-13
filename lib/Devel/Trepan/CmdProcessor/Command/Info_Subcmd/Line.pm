@@ -61,8 +61,9 @@ sub run($$)
     $proc->msg($m);
     local(*DB::dbline) = "::_<$filename";
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
-	$m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
-	$proc->msg($m);
+	;
+	# $m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
+	# $proc->msg($m);
     } else {
 	$proc->msg("Line not showing as associated with code\n") 
 	    unless $end_line;

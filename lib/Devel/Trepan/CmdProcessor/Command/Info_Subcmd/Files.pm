@@ -164,6 +164,7 @@ sub run($$)
 	    	$proc->msg("Possible breakpoint line numbers:");
 	    	my @lines = DB::LineCache::trace_line_numbers($canonic_name);
 	    	my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
+		chomp $fmt_lines;
 	    	$proc->msg($fmt_lines);
 	    }
 	    $processed_arg = $seen{brkpts} = 1;

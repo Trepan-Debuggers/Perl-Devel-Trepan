@@ -102,7 +102,8 @@ sub awaken($;$) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
 
-    if (scalar @{$opts->{exec_strs}}) {
+    my $exec_strs_ary = $opts->{exec_strs};
+    if (defined $exec_strs_ary && scalar @{$exec_strs_ary}) {
 	$self->{exec_strs} = $opts->{exec_strs};
 	$self->{need_e_remap} = 1;
     }

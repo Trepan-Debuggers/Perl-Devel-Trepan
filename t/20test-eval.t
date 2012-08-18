@@ -5,17 +5,16 @@ use rlib '.'; use Helper;
 
 my $test_prog = prog_file('gcd.pl');
 run_debugger("$test_prog 3 5", cmd_file());
-$test_prog = File::Spec->catfile(dirname(__FILE__), 
-				    qw(.. example eval.pl));
+$test_prog = prog_file('eval.pl');
 
-my $full_cmdfile = File::Spec->catfile(dirname(__FILE__), 'data', 'eval2.cmd');
 my $opts = {
     filter => sub{
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    if ($line =~ /.. \(eval \d+\).+ remapped .+:\d+\)/) {
-		$line =~ s/\(eval \d+\).+ remapped .+:(\d+)\)/(eval remapped $1)/;
+	    if ($line =~ /remapped \(eval .+:\d+\)/) {
+		#use Enbugger; Enbugger->load_debugger('trepan'); Enbugger->stop;
+		$line =~ s/main::\(.* remapped \(eval \d+\)\[.+\]:(\d+)/main::(bogus.pl remapped (eval 1955)[eval.pl:10]:$1/;
 	    } elsif ($line =~ /.. \(.+\:\d+\)/) {
 		if ($OSNAME eq 'MSWin32') {
 		    $line =~ s/\((?:.+\\)?(.+\:\d+)\)/($1)/;

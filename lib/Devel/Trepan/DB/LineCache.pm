@@ -484,7 +484,7 @@ sub filename_is_eval($)
 {
     my $filename = shift;
     return 0 unless defined $filename;
-    return ($filename =~ /^\(eval \d+\)/);
+    return !!($filename =~ /^\(eval \d+\)|-e$/);
 }
 
 # UPDATE a cache entry.  If something is wrong, return undef. Return
@@ -710,14 +710,16 @@ unless (caller) {
 	   is_trace_line(__FILE__, __LINE__-1));
     printf("%s is a trace line? %d\n", __FILE__, 
 	   is_trace_line(__FILE__, __LINE__));
+    eval "printf \"filename_is_eval: %s, %d\n\", __FILE__, 
+          filename_is_eval(__FILE__);";
+    printf("filename_is_eval: %s, %d\n", __FILE__, filename_is_eval(__FILE__));
+    printf("filename_is_eval: %s, %d\n", '-e', filename_is_eval('-e'));
     exit;
 
     $lines_aref = getlines(__FILE__, {output=>'term'});
     print("trace nums again: ", join(', ',
 			       trace_line_numbers(__FILE__)),
 	  "\n");
-    eval "printf \"filename_is_eval: %s, %s\n\", __FILE__, 
-          filename_is_eval(__FILE__);";
     $DB::filename = 'bogus';
     eval "update_script_cache(__FILE__, {}); 
           print '+++', is_cached_script(__FILE__), \"\\n\"";

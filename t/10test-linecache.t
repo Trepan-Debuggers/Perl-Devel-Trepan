@@ -47,11 +47,17 @@ is($another_line, $expected_line, "Test getline via remap_file");
 
 my $sha1 = DB::LineCache::sha1(__FILE__);
 like($sha1, qr/^[0-9a-f]+$/,  'Got some sort of SHA1');
-eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, 'should pick up eval filename')";
-is($EVAL_ERROR, '', 'eval error on __FILE__ test');
-is(DB::LineCache::filename_is_eval(__FILE__), '', 
-   'should not be an eval filename');
 
+note 'DB::LineCache::filename_is_eval';
+eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, " . 
+    "'eval(...) should pick up eval filename')";
+is($EVAL_ERROR, '', 'no eval error on previous test');
+is(DB::LineCache::filename_is_eval(__FILE__), '', 
+   '__FILE__ should not be an eval filename');
+is(DB::LineCache::filename_is_eval('-e'), 1, 
+   '-e should be an eval filename');
+
+note 'DB::LineCache::map_script';
 $DB::filename = '(eval 1)';
 my $eval_str = "\$x=1;\n\$y=2;\n\$z=3;\n";
 my $filename = DB::LineCache::map_script($DB::filename, $eval_str);

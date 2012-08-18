@@ -50,6 +50,7 @@ my $builder = Module::Build->new(
     },
     recommends => {
 	'Term::ReadLine::Perl'              => 0,
+	'Term::ReadKey'                     => 0,
 	'Eval::WithLexicals'                => 0,
 	'Data::Printer'                     => 0,
     },

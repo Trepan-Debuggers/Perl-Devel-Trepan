@@ -182,26 +182,29 @@ sub source_location_info($)
     my $canonic_filename;
     #    'eval ' + safe_repr(@frame.eval_string.gsub("\n", ';').inspect, 20)
     #  else
-    my $filename = $self->filename();
+    my $filename = $self->{frame}{file};
     my $line_number = $self->line() || 0;
 
     if (DB::LineCache::filename_is_eval($filename)) {
     	if ($DB::filename eq $filename) {
 	    # Some lines in @DB::line might not be defined.
 	    # So we have to turn off strict here. 
-	    no warnings;
-	    my $string = join('', @DB::dbline);
-	    use warnings;
-    	    my $map_file = DB::LineCache::map_script($filename, $string);
-    	    $canonic_filename = $self->canonic_file($map_file, 0);
-    	    return " $filename:$line_number " . 
-    		"remapped ${canonic_filename}:$line_number";
+	    if ($filename ne '-e') {
+		no warnings;
+		my $string = join('', @DB::dbline);
+		use warnings;
+		$filename = DB::LineCache::map_script($filename, $string);
+	    }
+	    $canonic_filename = $self->canonic_file($self->filename(), 0);
+	    return "$filename:$line_number " . 
+		"remapped ${canonic_filename}:$line_number";
     	}
     }
-    $canonic_filename = $self->canonic_file($filename, 0);
-    return "${canonic_filename}:${line_number}";
+    $canonic_filename = $self->canonic_file($self->filename(), 0);
     # my $cop = 0;
     # $cop = 0 + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
+    # printf "COP is 0x%x\n", $cop;
+    return "${canonic_filename}:${line_number}";
     # return sprintf "${canonic_filename}:${line_number} 0x%x", $cop;
 } 
 

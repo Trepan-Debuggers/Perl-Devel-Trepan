@@ -11,6 +11,7 @@ Revision history for Devel-Trepan
 - Location now shows package name like recent perl5db
 - More than one line may be shown if the line we are on isn't a full statement
 - Add "info line"
+- Add gdb "show args"
 - Add "Set Display COP" to show COP address in location
 - Allow setting a breakpoint on a line even if it isn't recorded as a place
   that is stoppable.

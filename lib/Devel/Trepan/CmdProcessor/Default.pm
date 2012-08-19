@@ -17,7 +17,9 @@ our @ISA;
 
 BEGIN {
     $HAVE_DATA_PRINT = eval("use Data::Printer alias => 'dprint'; 1") ? 1 : 0;
-    $HAVE_PERLTIDY   = 1 ; # eval("use Data::Dumper::Perltidy; 1") ? 1 : 0;
+    $HAVE_PERLTIDY   = eval {
+	require Data::Dumper::Perltidy; 
+    } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
     push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
     push @DISPLAY_TYPES, 'tidy'   if $HAVE_PERLTIDY;

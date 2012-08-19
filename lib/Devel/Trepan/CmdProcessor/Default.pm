@@ -46,7 +46,7 @@ use constant DEFAULT_SETTINGS => {
     cmddir        => [],     # Additional directories to load commands
 	                     # from
     different     => 0,      # stop *only* when  different position? 
-    
+    displaycop    => 1,      # If set, show COP address in location
     debugdbgr     => 0,      # Debugging the debugger
     debugexcept   => 1,      # Internal debugging of command exceptions
     debugmacro    => 0,      # debugging macros

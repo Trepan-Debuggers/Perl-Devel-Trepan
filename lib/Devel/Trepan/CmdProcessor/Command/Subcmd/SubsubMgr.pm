@@ -217,7 +217,9 @@ sub help($$)
 	@help_text = (sprintf("List of subcommands for command '%s':", 
 			     $self->{cmd_str}));
 
-	push @help_text, $self->{parent}->columnize_commands(\@subcmds);
+	my $subcmds = $self->{parent}->columnize_commands(\@subcmds);
+	chomp $subcmds;
+	push @help_text, $subcmds;
 	return join("\n", @help_text);
     }
 

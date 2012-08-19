@@ -201,11 +201,13 @@ sub source_location_info($)
     	}
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);
-    # my $cop = 0;
-    # $cop = 0 + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
-    # printf "COP is 0x%x\n", $cop;
-    return "${canonic_filename}:${line_number}";
-    # return sprintf "${canonic_filename}:${line_number} 0x%x", $cop;
+    my $cop_addr = '';
+    if ($self->{settings}{displaycop}) {
+	my $cop = 
+	    + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
+	$cop_addr = sprintf " \@0x%x", $cop;
+    }
+    return "${canonic_filename}:${line_number}$cop_addr";
 } 
 
 unless (caller()) {

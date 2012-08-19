@@ -41,7 +41,7 @@ as a variable, such as in an assignment statement. For example:
 
   s /a/b/  # Note the space after the s
 
-is not a Perl subtitute command but a "step" command when 'auto eval'
+is not a Perl substitute command but a "step" command when 'auto eval'
 is on because by default, 's' is an alias for the debugger 'step'
 command. It is possible to remove that alias if this causes constant
 problem. Another possibility is to go into a real shell via the

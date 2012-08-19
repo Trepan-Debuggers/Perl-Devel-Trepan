@@ -78,17 +78,21 @@ my $perl_formatter = Devel::Trepan::DB::Colors::setup();
 my %file2file_remap;
 my %file2file_remap_lines;
 my %script2file;
+my @tempfiles;
 
-sub remove_script_temps() 
+sub remove_temps() 
 {
     for my $filename (values %script2file) {
+	unlink($filename) if -f $filename;
+    }
+    for my $filename (@tempfiles) {
 	unlink($filename) if -f $filename;
     }
 }
 
 END { 
     $DB::ready = 0;
-    remove_script_temps 
+    remove_temps 
 };
 
   
@@ -358,6 +362,7 @@ sub remap_dbline_to_file()
 { 
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
 				   TMPDIR => 1);
+    push @tempfiles, $tempfile;
     no strict;
     my @lines = @DB::dbline;
     shift @lines if $lines[0] eq "use Devel::Trepan;\n";

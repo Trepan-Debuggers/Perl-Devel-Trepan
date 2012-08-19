@@ -109,7 +109,8 @@ sub awaken($;$) {
     }
 
     $0 = $opts->{dollar_0} if $opts->{dollar_0};
-    $DB::fall_off_on_end = 1  if $opts->{fall_off_end};
+
+    $DB::fall_off_on_end = 1 if $opts->{fall_off_end} || $opts->{traceprint};
 
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
@@ -184,6 +185,10 @@ sub display_lists ($)
     my $self = shift;
     return $self->{proc}{displays}{list};
 }
+
+END { 
+    $DB::ready = 0;
+};
 
 # FIXME: remove the next line and make this really OO.
 $dbgr = __PACKAGE__->new();

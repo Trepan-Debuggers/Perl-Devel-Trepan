@@ -1,5 +1,5 @@
 # Use with example/my.pl
-set evaldisplay dumper
+set display eval dumper
 set autoeval on
 info var my $a
 s

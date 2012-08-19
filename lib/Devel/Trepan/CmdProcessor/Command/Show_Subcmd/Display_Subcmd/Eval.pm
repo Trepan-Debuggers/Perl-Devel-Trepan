@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../../..';
+use rlib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Show::EvalDisplay;
+package Devel::Trepan::CmdProcessor::Command::Show::Display::Eval;
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+use strict;
+use vars qw(@ISA @SUBCMD_VARS);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd);
 # Values inherited from parent
-use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
+use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 ## FIXME: do automatically.
-our $CMD  = 'show evaldisplay';
+our $CMD  = 'show display eval';
 our $HELP = <<"EOH";
 $CMD
 
 Shows whether Data::Dumper ('dumper') or Data::Dumper::Perltidy ('tidy') 
 is used to format evaluation results.
 
-See also 'set evaldisplay', 'eval', and 'set autoeval'.
+See also 'set display eval', 'eval', and 'set autoeval'.
 EOH
 
 our $SHORT_HELP = 'Show how the evaluation results shown';
@@ -29,7 +31,8 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $val = $proc->{settings}->{evaldisplay};
+    my $key  = $self->{subcmd_setting_key};
+    my $val  = $proc->{settings}{$key};
     my $msg = sprintf "Eval result display style is %s.", $val;
     $proc->msg($msg);
 }

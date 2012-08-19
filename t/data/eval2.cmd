@@ -1,6 +1,6 @@
 # 2nd part of test of eval debugger command
 # Use with example/eval.pl
-set evaldisplay dumper
+set display eval dumper
 set auto eval on
 list
 s

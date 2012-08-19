@@ -4,12 +4,14 @@ Revision history for Devel-Trepan
 
 - Incompatible change: "d" is now "delete" like gdb, not "down". Add aliases
   for "h" and remove "u" for "up". All of this is to follow gdb closer.
+- Incompatible change: "set/show evaldisplay" is now "set/show display eval"
 - Set $0, __FILE__, and, __LINE__ to look like it would be inside the debugged
   program
 - Add -e option to trepan.pl same as Perl
 - Location now shows package name like recent perl5db
 - More than one line may be shown if the line we are on isn't a full statement
 - Add "info line"
+- Add "Set Display COP" to show COP address in location
 - Allow setting a breakpoint on a line even if it isn't recorded as a place
   that is stoppable.
 - Fix various bugs

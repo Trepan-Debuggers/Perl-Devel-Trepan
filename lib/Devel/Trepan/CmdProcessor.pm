@@ -228,7 +228,7 @@ sub process_after_eval($) {
 
     my $fn;
     my $print_properties = {};
-    my $evdisp = $self->{settings}{evaldisplay};
+    my $evdisp = $self->{settings}{displayeval};
     if ('tidy' eq $evdisp) {
         $fn = \&Data::Dumper::Perltidy::Dumper;
     } elsif ('dprint' eq $evdisp) {

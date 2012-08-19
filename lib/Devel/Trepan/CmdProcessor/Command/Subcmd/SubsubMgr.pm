@@ -152,10 +152,10 @@ sub lookup($$;$)
     }
     my @candidates = ();
     while (my ($subcmd_name, $subcmd) = each %{$self->{subcmds}}) {
-        if ($compare->($subcmd_name) &&
-            length($subcmd_prefix) >= $subcmd->{min_abbrev}) {
+        if ($compare->($subcmd_name)) {
 	    push @candidates, $subcmd;
 	}
+
     }
     if (scalar @candidates == 1) {
         return $candidates[0];

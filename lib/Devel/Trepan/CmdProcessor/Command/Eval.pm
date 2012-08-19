@@ -112,6 +112,9 @@ sub run($$)
 	    $proc->msg("eval: ${code_to_eval}");
 	    my @eval_args = split /\s+/, $code_to_eval;
 	    $eval_lead_word = $eval_args[0];
+	} else {
+	    my @eval_args = split /\s+/, $code_to_eval;
+	    $eval_lead_word = $eval_args[0];
 	}
     } else {
 	# Use cmd_argstr to ensure we do not try tokenize what was typed.

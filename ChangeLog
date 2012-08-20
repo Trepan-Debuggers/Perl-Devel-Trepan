@@ -1,3 +1,343 @@
+2012-08-19  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-opt-e.t: Strawberry Perl might not handle -e correctly
+
+2012-08-19  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	t/20test-trace.t: Core.pm: arrange to silence debugging in
+	finalization code earlier. fall off end when tracing. LineCache.pm:
+	remove other temporariy files.
+
+2012-08-19  rocky <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Args.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm, t/20test-opt-e.t,
+	t/data/opt-e.right: Add gdb "show args".
+
+2012-08-19  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Initialize
+	$eval_lead_word with a plain "eval".
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm: Add possibility of COP
+	address in eval strings too.
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* Changes, MANIFEST, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Ev
+	al.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm, t/data/__FILE__.cmd,
+	t/data/alias.cmd, t/data/alias.right, t/data/debug.cmd,
+	t/data/dollar0.cmd, t/data/eval.cmd, t/data/eval2.cmd,
+	t/data/my.cmd, t/data/next2.cmd, t/data/sig2.cmd, t/data/watch1.cmd: 
+	Set/show evaldisplay -> set/show display eval
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP
+	.pm, lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/CO
+	P.pm, lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm: Add set/show display cop
+
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	t/data/line.right: Reinstate COP address. I didn't have courage of
+	my conviction in removing it previously.
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm: Guard against uninitalized exec_strs
+	option.
+
+2012-08-18  rocky <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t,
+	t/20test-debug.t, t/20test-eval.t, t/data/debug.right,
+	t/data/eval2.cmd, t/data/eval2.right: Add remap to location whne -e.
+	Build.PL: recommend Term::ReadKey
+
+2012-08-15  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: Another MANIFEST file mismatch. MANIFESTS should be
+	ditched.
+
+2012-08-15  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: stray character got in file.
+
+2012-08-15  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-08-15  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor/Load.pm: Load.pm: Add
+	ability to for a command to tell loader to skip loading. Require
+	Array::Columnize 1.01
+
+2012-08-15  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm: remove
+	additional \n now that was added now are using 1.1 of
+	Array::Columnize.
+
+2012-08-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm,
+	t/data/line.right: Remove COP address for now.
+
+2012-08-13  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, t/20test-opt-e.t, t/20test-trace.t, t/data/opt-e.cmd,
+	t/data/opt-e.right: Add trepan.pl -e test
+
+2012-08-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB/LineCache.pm: 
+	Restart.pm, Core.pm: get restart right when we supply -e.
+	LineCache.pm: was messing up remap translation.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Frame.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Remap -e filename to a temporary
+	file and populate that using with @DB::dbline.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Add last blog entry.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm, t/20test-trace.t,
+	t/data/list1.right, t/data/list3.right: In location, always use ::
+	suffix after package.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes: What's up.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan/Options.pm: Correct usage string.
+
+2012-08-12  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/Options.pm: Allow trepan.pm to
+	pass on to Perl's -e (--exec) strings.
+
+2012-08-12  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm, t/data/__FILE__.right,
+	t/data/alias.right, t/data/autolist.right, t/data/break.right,
+	t/data/cont.right, t/data/debug.right, t/data/display.right,
+	t/data/dollar0.right, t/data/eval.right, t/data/eval2.right,
+	t/data/fin2.right, t/data/line.right, t/data/list4.right,
+	t/data/my.right, t/data/next.right, t/data/next2.right,
+	t/data/seq1.right, t/data/trace1.right, t/data/trace2.right,
+	t/data/watch1.right, t/data/watch2.right: Following perl5db, print
+	more than one line if we think this statement flows over to the next
+	line.
+
+2012-08-12  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: 
+	LineCache.pm: add call to find out if a line is a trace line.
+
+2012-08-11  rocky <rocky@cpan.org>
+
+	* README.md: Remove tabs in code
+
+2012-08-11  rocky <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm: See above.
+
+2012-08-11  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Core.pm: Core.pm: don't give
+	a warning if startup file .treplrc doesn't exist. Trepan.pm: greatly
+	revise POD as seen on CPAN page. README.md: sync with POD.
+
+2012-08-11  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-cont.t, t/20test-debug.t, t/20test-fin.t,
+	t/20test-list4.t, t/20test-next.t, t/20test-seq1.t: DRY test code
+	more.
+
+2012-08-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm, lib/Devel/Trepan/DB.pm,
+	t/20test-trace.t, t/data/__FILE__.right, t/data/alias.right,
+	t/data/autolist.right, t/data/break.right, t/data/break2.right,
+	t/data/cont.right, t/data/debug.right, t/data/display.right,
+	t/data/dollar0.right, t/data/eval.right, t/data/eval2.right,
+	t/data/fin.right, t/data/fin2.right, t/data/line.right,
+	t/data/list1.right, t/data/list2.right, t/data/list3.right,
+	t/data/list4.right, t/data/my.right, t/data/next.right,
+	t/data/next2.right, t/data/seq1.right, t/data/sig.right,
+	t/data/sig2.right, t/data/step.right, t/data/trace1.right,
+	t/data/trace2.right, t/data/watch1.right, t/data/watch2.right: Add
+	package name to location line like perl5db does. Line.pm no longer
+	require package name in "info line" if it is the current package.
+
+2012-08-11  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, Build.PL, MANIFEST, MANIFEST.SKIP, META.json,
+	META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/Options.pm, t/20test-__FILE__.t, t/20test-alias.t,
+	t/20test-autolist.t, t/20test-break.t, t/20test-display.t,
+	t/20test-dollar0.t, t/20test-eval.t, t/20test-line.t,
+	t/20test-trace.t, t/Helper.pm, t/data/line.cmd, t/data/line.right: 
+	Build.PL: add recommended modules and change issues and repository.
+	Version follows
+	http://perldoc.perl.org/perlmodstyle.html#Version-numbering.
+	Line.pm: Add ranges for subroutines. DRY integration test code more.
+
+
+2012-08-10  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	t/data/eval.cmd, t/data/line.cmd: Start "info line". Still need to
+	add a test.
+
+2012-08-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-dollar0.t, t/20test-eval.t, t/data/__FILE__.cmd,
+	t/data/__FILE__.right, t/data/dollar0.cmd, t/data/dollar0.right,
+	t/data/eval2.cmd, t/data/eval2.right, t/data/my.cmd,
+	t/data/my.right, t/data/sig2.cmd, t/data/sig2.right,
+	t/data/watch1.cmd, t/data/watch1.right: Make evaldisplay explicit in
+	tests which run eval
+
+2012-08-10  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-__FILE__.t: Should have been part of last commit .
+
+2012-08-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Options.pm: Document --fall-off-end invocation
+	option.
+
+2012-08-07  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/Options.pm, t/data/debug.cmd, t/data/debug.right,
+	t/data/eval.cmd, t/data/eval.right, t/data/next2.cmd,
+	t/data/next2.right: Build.PL: Bump version number. Switch the
+	default eval print routine from Data::Dumper::Perltidy to
+	Data::Dumper. Data::Dumper has *no* dependencies; so it will work
+	more places. Also, there have been bugs in Data::Dumper::Perltidy
+	that have prevented Devel::Trepan from getting installed. See
+	https://rt.cpan.org/Ticket/Display.html?id=78806
+
+2012-08-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Interpreting eval() "filenames"
+	causes problems in DB::Linecache::update_script_cache when "strict".
+	Issue #8
+
+2012-08-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm: Allow unalias
+	command when terminated.
+
+2012-08-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Msg.pm: Stray character sneaked in
+
+2012-08-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Edit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Lexicals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Our.pm, lib/Devel/Trepan/CmdProcessor/Msg.pm,
+	lib/Devel/Trepan/DB.pm: Add more checks for termination to certain
+	commands that pick up implicit values from a running program.
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm: Untabify files.
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Finish.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/Options.pm, t/20test-trace.t, t/Helper.pm: Stay
+	inside debugger on normal termination. Use option --fall-off-end or
+	set $DB::fall_off_on_end=1 if this isn't what you want. Issue #9.
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-__FILE__.t, t/20test-debug.t, t/20test-dollar0.t,
+	t/20test-trace.t: Shorten code even though what was there is in some
+	sense a little more precise.
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help.pm: Forgot to add 'h'
+	as an alias for 'help'. Continuation of issue #7.
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Up.pm: "d" should be an alias
+	for "delete", not "down. Remove "u" as an alias for "up". In gdb "u"
+	is "unless".
+
+2012-08-06  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes: An Interim "what's up?"
+
+2012-08-05  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-__FILE__.t: cygwin compatability and Data::Printer
+	output. Again
+
 2012-08-05  Rocky Bernstein <rocky@cpan.org>
 
 	* MANIFEST: Remove duplicate file in MANIFEST

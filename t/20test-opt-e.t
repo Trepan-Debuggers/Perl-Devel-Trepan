@@ -1,7 +1,12 @@
 #!/usr/bin/env perl
 use warnings; use strict;
 use rlib '.'; use Helper; 
+use English;
 
+if ($OSNAME eq 'MSWin32') {
+    eval "use Test::More skip_all => 
+     'We can not handle -e properly on Strawberry Perl'";
+}
 my $opts = {
     filter => sub{
 	my ($got_lines, $correct_lines) = @_;
@@ -20,5 +25,6 @@ my $opts = {
     run_opts => ' --basename --no-highlight -nx'
 };
 
-run_debugger("-e 'no warnings \"once\";\$x=1; \$y=2'", cmd_file(), undef, $opts);
+run_debugger("-e 'no warnings \"once\";\$x=1; \$y=2'", cmd_file(),
+             undef, $opts);
 done_testing();

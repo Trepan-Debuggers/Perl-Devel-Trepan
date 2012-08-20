@@ -27,7 +27,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.30_01
+    version: 0.30
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -187,8 +187,14 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Set::Different:
     file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
     version: 0
-  Devel::Trepan::CmdProcessor::Command::Set::EvalDisplay:
-    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm
+  Devel::Trepan::CmdProcessor::Command::Set::Display:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Display::COP:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Display::Eval:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eval.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Set::Highlight:
     file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
@@ -238,6 +244,9 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Show::Aliases:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
     version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Args:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Args.pm
+    version: 0
   Devel::Trepan::CmdProcessor::Command::Show::Auto:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto.pm
     version: 0
@@ -256,8 +265,14 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Show::Different:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
     version: 0
-  Devel::Trepan::CmdProcessor::Command::Show::EvalDisplay:
-    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
+  Devel::Trepan::CmdProcessor::Command::Show::Display:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Display::COP:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/COP.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Display::Eval:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Eval.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Show::Highlight:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
@@ -411,7 +426,7 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: v0.2.2
+    version: 0.30
   Devel::Trepan::SigHandler:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
@@ -433,9 +448,10 @@ provides:
 recommends:
   Data::Printer: 0
   Eval::WithLexicals: 0
+  Term::ReadKey: 0
   Term::ReadLine::Perl: 0
 requires:
-  Array::Columnize: 0.003005
+  Array::Columnize: 1.01
   Data::Dumper: 0
   Digest::SHA: 0
   Getopt::Long: 2.36
@@ -448,4 +464,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.30_01
+version: 0.30

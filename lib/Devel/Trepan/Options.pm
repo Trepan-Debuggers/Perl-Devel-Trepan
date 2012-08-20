@@ -17,7 +17,7 @@ our @ISA;
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.30';
+    $VERSION      = '0.30_01';
 }
 
 use constant VERSION      => $VERSION;

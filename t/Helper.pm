@@ -96,17 +96,26 @@ sub run_debugger($$;$$)
         print GOT_FH $output;
         close GOT_FH;
         Test::More::diag("Compare $got_filename with $right_filename:");
-	my $output = `diff -u $right_filename $got_filename 2>&1`;
-	my $rc = $? >> 8;
-	# GNU diff returns 0 if files are equal, 1 if different and 2
-	# if something went wrong. We also should take care of the
-	# case where diff isn't installed. So although we expect a 1
-	# for GNU diff, we'll also take accept 0, but any other return
-	# code means some sort of failure.
-	$output = `diff $right_filename $got_filename 2>&1` 
-	     if ($rc > 1) || ($rc < 0) ;
-        Test::More::diag($output);
-	return 1;
+	# FIXME use a better diff test.
+	if ($OSNAME eq 'MSWin32') {
+	    # Windows doesn't do diff.
+	    print "Got:\n";
+	    print $output, "\n"; 
+	    print "Need:\n";
+	    print $right_string, "\n"
+	} else {
+	    my $output = `diff -u $right_filename $got_filename 2>&1`;
+	    my $rc = $? >> 8;
+	    # GNU diff returns 0 if files are equal, 1 if different and 2
+	    # if something went wrong. We also should take care of the
+	    # case where diff isn't installed. So although we expect a 1
+	    # for GNU diff, we'll also take accept 0, but any other return
+	    # code means some sort of failure.
+	    $output = `diff $right_filename $got_filename 2>&1` 
+		if ($rc > 1) || ($rc < 0) ;
+	    Test::More::diag($output);
+	    return 1;
+	}
     }
 }
 

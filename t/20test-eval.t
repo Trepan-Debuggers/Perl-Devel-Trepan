@@ -14,7 +14,7 @@ my @result = ();
 for my $line (split("\n", $got_lines)) {
     if ($line =~ /remapped \(eval .+:\d+\)/) {
 #use Enbugger; Enbugger->load_debugger('trepan'); Enbugger->stop;
-$line =~ s/main::\(.* remapped \(eval \d+\)\[.+\]:(\d+)/main::(bogus.pl remapped (eval 1955)[eval.pl:10]:$1/;
+$line =~ s/main::\(.* remapped \(eval \d+\).+\]:(\d+)/main::(bogus.pl remapped (eval 1955)[eval.pl:10]:$1/;
     } elsif ($line =~ /.. \(.+\:\d+\)/) {
 if ($OSNAME eq 'MSWin32') {
     $line =~ s/\((?:.+\\)?(.+\:\d+)\)/($1)/;

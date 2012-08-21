@@ -1,3 +1,36 @@
+2012-08-21  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Fix up
+	Trepan.pm pod =items. Get ready for release 0.31
+
+2012-08-20  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-debug.t, t/20test-eval.t, t/Helper.pm: Changes for funky
+	DOS filenames and which also does not have diff
+
+2012-08-20  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
+
+2012-08-20  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm: Bump version.
+
+2012-08-20  Rocky Bernstein (VCDImager Developer) <rocky@login.bo.opencsw.org>
+
+	* t/20test-eval.t: untabify test output?
+
+2012-08-19  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: See
+	above
+
+2012-08-19  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes: Get ready for 0.3.0 release
+
 2012-08-19  Rocky Bernstein <rocky@cpan.org>
 
 	* t/20test-opt-e.t: Strawberry Perl might not handle -e correctly
@@ -544,6 +577,11 @@
 	return value, not set $var. If you wanted to set $var, use "eval"
 	not "eval?".
 
+2012-02-23  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
+
 2012-02-22  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, README.md, t/data/next2.cmd, t/data/next2.right: 
@@ -796,6 +834,11 @@
 
 2012-01-03  Rocky Bernstein <rocky@cpan.org>
 
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
+
+2012-01-03  Rocky Bernstein <rocky@cpan.org>
+
 	* lib/Devel/Trepan.pm: We are in 0.1.9 now
 
 2012-01-03  Rocky Bernstein <rocky@cpan.org>
@@ -822,6 +865,11 @@
 	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/Options.pm,
 	t/20test-my.t, t/20test-trace.t, t/data/trace1.right: Release 0.1.8
 
+
+2012-01-02  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
 
 2012-01-02  Rocky Bernstein <rocky@cpan.org>
 
@@ -1496,6 +1544,11 @@
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
+
+2011-12-03  Rocky Bernstein <rocky@cpan.org>
+
 	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
@@ -1503,6 +1556,11 @@
 	* bin/trepan.pl, lib/Devel/Trepan/DB.pm: Remove `pwd` since that's
 	OS specific. Use exec { $args[0] } @args instead of exec @args since
 	that's safer.
+
+2011-12-03  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of
+	http://github.com/rocky/Perl-Devel-Trepan
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 
@@ -1540,8 +1598,17 @@
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 
+	I hate conflicted merges
+
+2011-12-03  Rocky Bernstein <rocky@cpan.org>
+
 	* bin/trepan.pl: Strawberry Perl has problems with exec, but not
 	system()
+
+2011-12-03  rocky <rocky@cpan.org>
+
+	* bin/trepan.pl: Strawberry perl has problems with exec, but
+	system() works
 
 2011-12-03  Rocky Bernstein <rocky@cpan.org>
 

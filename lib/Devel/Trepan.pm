@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.30_01';
+use version; $VERSION = '0.31';
 use Exporter;
 
 use Devel::Trepan::Core;
@@ -30,36 +30,56 @@ __END__
 
 =head1 NAME
 
-Devel::Trepan -- A new Perl debugger
+Devel::Trepan -- A new modular Perl debugger
 
 =head1 SUMMARY
 
 A modular, testable, gdb-like debugger in the family of the Ruby
 L<trepanning debuggers|http://github.com/rocky/rb-trepanning/wiki>.
 
-Features: 
+=head2 Features: 
 
 =over 4
 
-=item extensive online-help
+=item *
 
-=item syntax highlighting of Perl code
+extensive online-help
 
-=item context-sensitive command completion
+=item *
 
-=item out-of-process and remote debugging
+syntax highlighting of Perl code
 
-=item interactive shell support
+=item *
 
-=item code disassembly
+context-sensitive command completion
 
-=item gdb syntax
+=item *
 
-=item easy extensibility at several levels: aliases, commands, and plugins
+out-of-process and remote debugging
 
-=item comes with extensive tests
+=item *
 
-=item is not as ugly as perl5db
+interactive shell support
+
+=item *
+
+code disassembly
+
+=item *
+
+gdb syntax
+
+=item *
+
+easy extensibility at several levels: aliases, commands, and plugins
+
+=item *
+
+comes with extensive tests
+
+=item *
+
+is not as ugly as perl5db
 
 =back
 
@@ -83,6 +103,7 @@ Jore's L<Enbugger>:
     # This needs to be done once and could even be in some sort of 
     # conditional code
     require Enbugger; Enbugger->load_debugger( 'trepan' );
+
     # Alternatively, to unconditionally load Enbugger and trepan:
     use Enbugger 'trepan';
 
@@ -122,15 +143,25 @@ Rocky Bernstein
 
 =over 4
 
-=item L<On writing a new Perl Debugger (Part 1 - Why?)|http://blogs.perl.org/users/rockyb/2012/07/on-writing-a-new-perl-debugger-part-1---why.html>
+=item *
 
-=item L<Devel::Trepan Debugger command aliases and command completion|http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-command-aliases-and-command-completion.html>
+L<On writing a new Perl Debugger (Part 1 - Why?)|http://blogs.perl.org/users/rockyb/2012/07/on-writing-a-new-perl-debugger-part-1---why.html>
 
-=item L<Devel::Trepan Debugger evaluation of Perl statements|http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-evaluation-of-perl-statements.html>
+=item *
 
-=item L<Location, Location, Location|http://blogs.perl.org/users/rockyb/2012/08/location-location-location.html>
+L<Devel::Trepan Debugger command aliases and command completion|http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-command-aliases-and-command-completion.html>
 
-=item L<Devel::Trepan github wiki|https://github.com/rocky/Perl-Devel-Trepan/wiki>
+=item *
+
+L<Devel::Trepan Debugger evaluation of Perl statements|http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-evaluation-of-perl-statements.html>
+
+=item *
+
+L<Location, Location, Location|http://blogs.perl.org/users/rockyb/2012/08/location-location-location.html>
+
+=item *
+
+L<Devel::Trepan github wiki|https://github.com/rocky/Perl-Devel-Trepan/wiki>
 
 =back 
 
@@ -138,13 +169,14 @@ Rocky Bernstein
 
 =over 4
 
-=item L<Devel::Trepan::Shell>
+=item *
 
-Adds a debugger C<shell> command support via L<Devel::REPL>
+L<Devel::Trepan::Shell> adds a debugger C<shell> command support via L<Devel::REPL>
 
-=item L<Devel::Trepan::Disassemble>
+=item *
 
-Adds a debugger C<disassemble> command support via L<B::Concise>
+L<Devel::Trepan::Disassemble> adds a debugger C<disassemble> command
+support via L<B::Concise>
 
 =back 
 
@@ -152,32 +184,29 @@ Adds a debugger C<disassemble> command support via L<B::Concise>
 
 =over 4
 
-=item L<Enbugger>
+=item *
 
-Allows you to enter the debugger via a direct call in source code
+L<Enbugger> allows you to enter the debugger via a direct call in source code
 
-=item L<Eval::WithLexicals>
+=item *
 
-Allows you to inspect I<my> and I<our> variables up the call stack
+L<Eval::WithLexicals> allows you to inspect I<my> and I<our> variables up the call stack
 
-=item L<Data::Printer>
+=item *
 
-Allows one to Use I<Data::Printer> to format evaluation output
+L<Data::Printer> allows one to Use I<Data::Printer> to format evaluation output
 
-=item L<Data::Dumper::Perltidy>
+=item *
 
-Allows one to Use I<Data::Dumper::Perltidy> to format evaluation output
+L<Data::Dumper::Perltidy> allows one to Use I<Data::Dumper::Perltidy> to format evaluation output
 
-=item L<Term::ReadLine::Perl>
+=item *
 
-Allows editing on the command line and command completion. This Module
-is preferred over L<Term::ReadLine::Gnu>.
+L<Term::ReadLine::Perl> allows editing on the command line and command completion. This Module is preferred over L<Term::ReadLine::Gnu>.
 
-=item L<Term::ReadLine::Gnu>
+=item *
 
-Allows editing of the command line and command completion
-
-Allows one to Use I<Data::Dumper::Perltidy> to format evaluation output
+L<Term::ReadLine::Gnu> allows editing of the command line and command completion
 
 =back
 
@@ -185,16 +214,18 @@ Allows one to Use I<Data::Dumper::Perltidy> to format evaluation output
 
 =over 4
 
-=item L<perldebug>
+=item *
 
-Perl's built-in tried-and-true debugger that other debuggers will
-ultimately be compared with
+L<perldebug> is perl's built-in tried-and-true debugger that other
+debuggers will ultimately be compared with
 
-=item L<Devel::ebug>
+=item *
 
-=item L<DB>
+L<Devel::ebug>
 
-Somewhat abandoned debugger API interface. I've tried to use some
+=item *
+
+L<DB> is a somewhat abandoned debugger API interface. I've tried to use some
 parts of this along with C<perl5db>.
 
 =back

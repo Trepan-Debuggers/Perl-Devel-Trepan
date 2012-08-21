@@ -228,7 +228,10 @@ sub run($$)
             $self->section('All currently valid command names:');
             my @cmds = sort($self->command_names());
             $self->msg($self->columnize_commands(\@cmds));
-            show_aliases($self) if scalar keys %{$proc->{aliases}};
+	    if (scalar keys %{$proc->{aliases}}) {
+		$self->msg('');
+		show_aliases($self) 
+	    }
             # $self->show_macros   unless scalar @$self->{proc}->macros;
         } elsif ($cmd_name =~ /^aliases$/i) {
             show_aliases($self);

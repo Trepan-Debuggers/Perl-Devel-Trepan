@@ -86,21 +86,25 @@ sub new($$) {
 sub columnize_commands($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
-    Array::Columnize::columnize($commands, 
-				{displaywidth => $width, 
-				 colsep => '    ',
-				 ljust => 1, 
-				 lineprefix => '  '});
+    my $r = Array::Columnize::columnize($commands, 
+				       {displaywidth => $width, 
+					colsep => '    ',
+					ljust => 1, 
+					lineprefix => '  '});
+    chomp $r;
+    return $r;
 }
 
 sub columnize_numbers($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
-    Array::Columnize::columnize($commands, 
-				{displaywidth => $width, 
-				 colsep => ', ',
-				 ljust => 0, 
-				 lineprefix => '  '});
+    my $r = Array::Columnize::columnize($commands, 
+					{displaywidth => $width, 
+					 colsep => ', ',
+					 ljust => 0, 
+					 lineprefix => '  '});
+    chomp $r;
+    return $r;
 }
 
 # FIXME: probably there is a way to do the delegation to proc methods

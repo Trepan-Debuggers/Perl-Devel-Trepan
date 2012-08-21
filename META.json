@@ -58,7 +58,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.30"
+         "version" : "0.31"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -590,7 +590,7 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "0.30"
+         "version" : "0.31"
       },
       "Devel::Trepan::SigHandler" : {
          "file" : "lib/Devel/Trepan/SigHandler.pm",
@@ -629,5 +629,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.30"
+   "version" : "0.31"
 }

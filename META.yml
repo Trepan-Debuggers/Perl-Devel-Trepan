@@ -27,7 +27,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.30
+    version: 0.31
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -426,7 +426,7 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: 0.30
+    version: 0.31
   Devel::Trepan::SigHandler:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
@@ -464,4 +464,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.30
+version: 0.31

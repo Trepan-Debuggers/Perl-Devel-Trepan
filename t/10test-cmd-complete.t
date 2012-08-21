@@ -45,15 +45,16 @@ my $prefix = 'set a';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 2);
+is(scalar(@msgs), 2, "Should have 2 completions for '$prefix'");
 
 # Completion of 'info' should be 'info'
 $prefix = 'info';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 1);
-is($msgs[0], 'info');
+is(scalar(@msgs), 1, 
+   "Should have only gotten one completion back for '$prefix'");
+is($msgs[0], $prefix, "Completion of '$prefix' should be $prefix'");
 
 # Completion of 'info ' should contain subcommands of 
 # 'info'
@@ -63,14 +64,16 @@ $cmd->{proc}{cmd_argstr} = $prefix;
 $cmd->run([$cmd->name, $prefix]);
 ok(scalar(@msgs) > 1);
 
-# Completion of 'info f' is ['info files', 'info frame']
+# Completion of 'info f' is ['info files', 'info frame', 'info functions']
 $prefix = 'info f';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 3);
-is($msgs[0], 'files');
-is($msgs[1], 'frame');
-is($msgs[2], 'functions');
+my @expect = qw(files frame functions);
+is(scalar(@msgs), scalar @expect);
+for (my $i=0; $i < scalar @expect; $i++) {
+    is($msgs[$i], $expect[$i], 
+       "Expecting completion $i of '$prefix' to be ${expect[$i]}");
+}
 
 done_testing();

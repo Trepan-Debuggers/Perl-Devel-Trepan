@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Position" );
 
 BEGIN {
@@ -21,3 +21,4 @@ my $pos3 = TrepanPosition->new(pkg=>__PACKAGE__, filename=>__FILE__,
 note 'Test eq';
 is (!!$pos1->eq($pos2), 1);
 isnt ($pos1->eq($pos3), 1);
+done_testing();

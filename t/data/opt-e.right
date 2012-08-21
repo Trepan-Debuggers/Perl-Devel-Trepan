@@ -1,0 +1,5 @@
+-- (tempfile.pl:1)
+no warnings "once";$x=1; $y=2
+-- (tempfile.pl:1)
+no warnings "once";$x=1; $y=2
+Debugged program terminated.  Use 'q' to quit or 'R' to restart.

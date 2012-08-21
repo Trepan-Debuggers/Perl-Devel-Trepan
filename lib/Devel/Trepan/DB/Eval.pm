@@ -3,7 +3,7 @@
 package DB;
 use warnings; use strict;
 use English qw( -no_match_vars );
-use vars qw($eval_result @eval_result %eval_result
+use vars qw($eval_result @eval_result %eval_result $fix_file_and_line
             $eval_str $eval_opts $event $return_type );
 
 # This is the flag that says "a debugger is running, please call
@@ -17,10 +17,13 @@ BEGIN {
     # program we use these:
     $eval_str = '';             # The string to eval
     $eval_opts = {};            # Options controlling how we want the
-				# eval to take place
+                                # eval to take place
     $DB::eval_result = undef;   # Place for result if scalar;
     @DB::eval_result = ();      # place for result if array
     %DB::eval_result = ();      # place for result if hash.
+    $DB::fix_file_and_line = 1; # Should we fix __FILE__ and __LINE__ ? 
+                                # This value is reset after each eval.
+                                 
 }    
 
 #
@@ -40,21 +43,27 @@ sub eval {
     # Remember: this localizes @DB::res, not @main::res.
     local @res;
     {
-	# Try to keep the user code from messing  with us. Save these so that
-	# even if the eval'ed code changes them, we can put them back again.
-	# Needed because the user could refer directly to the debugger's
-	# package globals (and any 'my' variables in this containing scope)
-	# inside the eval(), and we want to try to stay safe.
-	local $otrace  = $DB::trace;
-	local $osingle = $DB::single;
-	local $od      = $DEBUGGING;
+        # Try to keep the user code from messing  with us. Save these so that
+        # even if the eval'ed code changes them, we can put them back again.
+        # Needed because the user could refer directly to the debugger's
+        # package globals (and any 'my' variables in this containing scope)
+        # inside the eval(), and we want to try to stay safe.
+        local $otrace  = $DB::trace;
+        local $osingle = $DB::single;
+        local $od      = $DEBUGGING;
 
-	@res = eval "$user_context $eval_str;\n&DB::save\n"; # '\n' for nice recursive debug
-	_warnall($@) if $@;
+        # Make sure __FILE__ and __LINE__ are set correctly
+        my $eval_setup = $user_context;
+        my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
+        $eval_setup .= $position_str if $DB::fix_file_and_line;
+
+        @res = eval "$eval_setup $eval_str;\n&DB::save\n"; # '\n' for nice recursive debug
+        _warnall($@) if $@;
 
         # Restore those old values.
         $DB::trace  = $otrace;
         $DB::single = $osingle;
+        $DB::fix_file_and_line = 1;
         $DEBUGGING  = $od;
     }
 }
@@ -73,48 +82,52 @@ sub eval_with_return {
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
 
     {
-	# Try to keep the user code from messing with us. Save these so that
-	# even if the eval'ed code changes them, we can put them back again.
-	# Needed because the user could refer directly to the debugger's
-	# package globals (and any 'my' variables in this containing scope)
-	# inside the eval(), and we want to try to stay safe.
-	local $otrace  = $DB::trace;
-	local $osingle = $DB::single;
-	local $od      = $DEBUGGING;
+        # Try to keep the user code from messing with us. Save these so that
+        # even if the eval'ed code changes them, we can put them back again.
+        # Needed because the user could refer directly to the debugger's
+        # package globals (and any 'my' variables in this containing scope)
+        # inside the eval(), and we want to try to stay safe.
+        local $otrace  = $DB::trace;
+        local $osingle = $DB::single;
+        local $od      = $DEBUGGING;
 
-	if ('$' eq $return_type) {
-	    eval "$user_context \$DB::eval_result=$eval_str\n";
-	} elsif ('@' eq $return_type) {
-	    eval "$user_context \@DB::eval_result=$eval_str\n";
-	} elsif ('%' eq $return_type) {
-	    eval "$user_context \%DB::eval_result=$eval_str\n";
-	} elsif ('%' eq $return_type) {
-	    $eval_result = eval "$user_context $eval_str";
-	} else {
-	    $eval_result = eval "$user_context $eval_str";
-	}
-	
+        # Make sure __FILE__ and __LINE__ are set correctly
+        my $eval_setup = $user_context;
+        my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
+        $eval_setup .= $position_str if $DB::fix_file_and_line;
+
+        if ('$' eq $return_type) {
+            eval "$eval_setup \$DB::eval_result=$eval_str\n";
+        } elsif ('@' eq $return_type) {
+            eval "$eval_setup \@DB::eval_result=$eval_str\n";
+        } elsif ('%' eq $return_type) {
+            eval "$eval_setup \%DB::eval_result=$eval_str\n";
+        } else {
+            $eval_result = eval "$eval_setup $eval_str";
+        }
+        
         # Restore those old values.
         $DB::trace  = $otrace;
         $DB::single = $osingle;
+        $DB::fix_file_and_line = 1;
         $DEBUGGING  = $od;
 
-	my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-	if ($EVAL_ERROR_SAVE) {
-	    _warnall($EVAL_ERROR_SAVE);
-	    $eval_str = '';
-	    return undef;
-	} else {
-	    if ('$' eq $return_type) {
-		return $eval_result;
-	    } elsif ('@' eq $return_type) {
-		return @eval_result;
-	    } elsif ('%' eq $return_type) {
-		return %eval_result;
-	    }  else {
-		return $eval_result;
-	    }
-	}
+        my $EVAL_ERROR_SAVE = $EVAL_ERROR;
+        if ($EVAL_ERROR_SAVE) {
+            _warnall($EVAL_ERROR_SAVE);
+            $eval_str = '';
+            return undef;
+        } else {
+            if ('$' eq $return_type) {
+                return $eval_result;
+            } elsif ('@' eq $return_type) {
+                return @eval_result;
+            } elsif ('%' eq $return_type) {
+                return %eval_result;
+            }  else {
+                return $eval_result;
+            }
+        }
     }
 }
 1;

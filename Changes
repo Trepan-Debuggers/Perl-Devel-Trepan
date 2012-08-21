@@ -1,12 +1,43 @@
 Revision history for Devel-Trepan
 
-0.1.9  - Jan 16 2012
+0.3.0  - Aug 19, 2012
+
+- Incompatible change: "d" is now "delete" like gdb, not "down". Add aliases
+  for "h" and remove "u" for "up". All of this is to follow gdb closer.
+- Incompatible change: "set/show evaldisplay" is now "set/show display eval"
+- Set $0, __FILE__, and, __LINE__ to look like it would be inside the debugged
+  program
+- Add -e option to trepan.pl same as Perl
+- Location now shows package name like recent perl5db
+- More than one line may be shown if the line we are on isn't a full statement
+- Add "info line"
+- Add gdb "show args"
+- Add "Set Display COP" to show COP address in location
+- Allow setting a breakpoint on a line even if it isn't recorded as a place
+  that is stoppable.
+- Fix various bugs
+
+0.2.1  - May 25, 2012
+
+- Address some CPANTS failures. Some doc tweaks.
+
+0.2.0  - May 24 2012
+- Nexting should be more accurate albeit slower 
+  We can't rely on $DB:single -- sigh
+- Remove defined(@array) which is deprecated in Perl 5.16
+- Allow alias replacement to be a blank-delimited string
+- eval? treats 'local' and 'our' like eval? for 'my', e.g. 
+    local ($a,b) =  ($v1,$v2)
+  displays ($v1,v2) without setting. If you want to set, use 'eval'
+
+
+0.1.9  - Jan 16, 2012
 - Allow Data::Print to be used for printing eval output
 - Use sigils in eval? and eval; was previously done only in autoeval
 - "info program" may show COP position. 
 - Miscelleneous bug fixes and documentation corrections and improvements.
 
-0.1.8  - Jan 3 2012
+0.1.8  - Jan 3, 2012
 
 - Perl 5.8.8 tolerance - this time, for sure!
 - Eval::WithLexicals is optional. Darn you, RedHat!

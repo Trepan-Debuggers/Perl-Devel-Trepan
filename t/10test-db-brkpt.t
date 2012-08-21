@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::DB::Breakpoint" );
 
 BEGIN {
@@ -47,6 +47,9 @@ my $brkpt = DB::set_break($self, __FILE__, __LINE__, '1', undef, 'brkpt');
 ok ($brkpt);
 ok ($brkpt);
 is($brkpt->type, 'brkpt');
-is($brkpt->type, 'brkpt');
 
+$DB::filename = __FILE__;
+my $msg = DB::break_invalid(undef, __FILE__, __LINE__ - 1);
+ok($msg);
 
+done_testing;

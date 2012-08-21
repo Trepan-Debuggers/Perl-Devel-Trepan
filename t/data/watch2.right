@@ -1,5 +1,6 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 basename is on.
 highlight is off.
 Watch expression 1 `$a' set
@@ -7,15 +8,15 @@ $DB::D[0] = <undef>
 Watchpoint 1: `$a' changed
 old value	<undef>
 new value	3
-wa (gcd.pl:21)
+wa main::(gcd.pl:21)
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 Watchpoint 1: `$a' changed
 old value	3
 new value	2
-wa (gcd.pl:11)
+wa main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 Watchpoint 1: `$a' changed
 old value	2
 new value	1
-wa (gcd.pl:11)
+wa main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);

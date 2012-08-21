@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
 use rlib '../../../..';
@@ -12,7 +12,7 @@ use strict;
 use vars qw(@ISA);
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => ('?');
+use constant ALIASES    => ('?', 'h');
 use constant CATEGORY   => 'support';
 use constant SHORT_HELP => 'Print commands or give help for command(s)';
 use constant MIN_ARGS   => 0;  # Need at least this many
@@ -61,17 +61,34 @@ use File::Spec;
 my $ROOT_DIR = dirname(__FILE__);
 my $HELP_DIR = File::Spec->catfile($ROOT_DIR, 'Help');
 
+sub command_names($)
+{
+    my ($self) = @_;
+    my $proc = $self->{proc};
+    my %cmd_hash = %{$proc->{commands}};
+    my @commands = keys %cmd_hash;
+    if ($proc->{terminated}) {
+        my @filtered_commands=();
+        for my $cmd (@commands) {
+            push @filtered_commands, $cmd unless $cmd_hash{$cmd}->NEED_STACK;
+        }
+        return @filtered_commands;
+    } else {
+        return @commands;
+    }
+}
+
 sub complete($$)
 {
     my ($self, $prefix) = @_;
     my $proc = $self->{proc};
     my @candidates = (keys %{CATEGORIES()}, qw(* all), 
-		      keys %{$proc->{commands}});
+                      $self->command_names());
     my @matches = 
-	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+        Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     # my @aliases = 
-    # 	Devel::Trepan::Complete::complete_token_filtered($proc->{aliases}, 
-    # 							 $prefix, \@matches);
+    #   Devel::Trepan::Complete::complete_token_filtered($proc->{aliases}, 
+    #                                                    $prefix, \@matches);
     # sort (@matches, @aliases);
     sort @matches;
 }
@@ -83,17 +100,17 @@ sub complete_token_with_next($$;$)
     my @result = ();
     my @matches = complete($self, $prefix);
     foreach my $cmd (@matches) {
-	my %commands = %{$proc->{commands}};
-	if (exists $commands{$cmd}) {
-	    push @result, [$cmd, $commands{$cmd}];
-	    # if ('syntax' eq $cmd) {
-	    # 	complete_method =  Syntax->new(syntax_files);
-	    # } else {
-	    # 	$proc->commands.member?(cmd) ? $proc->commands[cmd] : 0;
-	    # }
-	} else {
-	    push @result, [$cmd, ['*'] ];
-	}
+        my %commands = %{$proc->{commands}};
+        if (exists $commands{$cmd}) {
+            push @result, [$cmd, $commands{$cmd}];
+            # if ('syntax' eq $cmd) {
+            #   complete_method =  Syntax->new(syntax_files);
+            # } else {
+            #   $proc->commands.member?(cmd) ? $proc->commands[cmd] : 0;
+            # }
+        } else {
+            push @result, [$cmd, ['*'] ];
+        }
     }
     return @result;
 }
@@ -103,7 +120,7 @@ sub list_categories($) {
     my $self = shift;
     $self->section('Help classes:');
     for my $cat (sort(keys %{CATEGORIES()})) {
-	$self->msg(sprintf "%-13s -- %s", $cat, CATEGORIES->{$cat});
+        $self->msg(sprintf "%-13s -- %s", $cat, CATEGORIES->{$cat});
     }
     my $final_msg = '
 Type "help" followed by a class name for a list of help items in that class.
@@ -131,23 +148,23 @@ sub show_category($$$)
 {
     my ($self, $category, $args) = @_;
     if (scalar @$args == 1 && $args->[0] eq '*') {
-	$self->section("Commands in class $category:");
-	my @commands = ();
-	while (my ($key, $value) = each(%{$self->{proc}{commands}})) {
-	    push(@commands, $key) if $value->Category eq $category;
-	}
-	$self->msg($self->columnize_commands([sort @commands]));
-	return;
+        $self->section("Commands in class $category:");
+        my @commands = ();
+        while (my ($key, $value) = each(%{$self->{proc}{commands}})) {
+            push(@commands, $key) if $value->Category eq $category;
+        }
+        $self->msg($self->columnize_commands([sort @commands]));
+        return;
     }
     
     $self->section("Command class: ${category}");
     my %commands = %{$self->{proc}{commands}};
     for my $name (sort keys %commands) {
-    	next if $category ne $commands{$name}->Category;
-	my $short_help = defined $commands{$name}{short_help} ? 
-	    $commands{$name}{short_help} : $commands{$name}->short_help;
-    	my $msg = sprintf("%-13s -- %s", $name, $short_help);
-	$self->msg($msg);
+        next if $category ne $commands{$name}->Category;
+        my $short_help = defined $commands{$name}{short_help} ? 
+            $commands{$name}{short_help} : $commands{$name}->short_help;
+        my $msg = sprintf("%-13s -- %s", $name, $short_help);
+        $self->msg($msg);
     }
 }
   
@@ -156,7 +173,7 @@ sub syntax_files($)
     my $self = shift;
     return $self->{syntax_files} if $self->{syntax_files};
     my @result = map({ $_ = basename($_, '.txt') } 
-		     glob(File::Spec->catfile($HELP_DIR, "/*.txt")));
+                     glob(File::Spec->catfile($HELP_DIR, "/*.txt")));
     $self->{syntax_files} = @result;
     return @result;
 }
@@ -165,37 +182,37 @@ sub show_command_syntax($$)
 {
     my ($self, $args) = @_;
     if (scalar @$args == 2) {
-	$self->{syntax_summary_help} ||= {};
-	$self->section("List of syntax help");
-	for my $name (syntax_files($self)) {
-	    unless($self->{syntax_summary_help}{$name}) {
-		my $filename = File::Spec->catfile($HELP_DIR, "${name}.txt");
-		my @lines = $self->readlines($filename);
-		$self->{syntax_summary_help}{$name} = $lines[0];
-	    }
-	    my $msg = sprintf("  %-8s -- %s", $name, 
-			      $self->{syntax_summary_help}{$name});
-	    $self->msg($msg);
-	}
+        $self->{syntax_summary_help} ||= {};
+        $self->section("List of syntax help");
+        for my $name (syntax_files($self)) {
+            unless($self->{syntax_summary_help}{$name}) {
+                my $filename = File::Spec->catfile($HELP_DIR, "${name}.txt");
+                my @lines = $self->readlines($filename);
+                $self->{syntax_summary_help}{$name} = $lines[0];
+            }
+            my $msg = sprintf("  %-8s -- %s", $name, 
+                              $self->{syntax_summary_help}{$name});
+            $self->msg($msg);
+        }
     } else {
-	my @args = splice(@{$args}, 2);
-	for my $name (@args) {
-	    $self->{syntax_help} ||= {};
-	    unless ($self->{syntax_help}{name}) {
-		my $filename = 
-		    File::Spec->catfile($HELP_DIR, "${name}.txt");
-		my @lines = $self->readlines($filename);
-		shift @lines;
-		$self->{syntax_help}{$name} = join("\n", @lines);
-	    }
-	    
-	    if (exists $self->{syntax_help}{$name}) {
-		$self->section("Debugger syntax for a ${name}:");
-		$self->msg($self->{syntax_help}{$name});
-	    } else {
-		$self->errmsg("No syntax help for ${name}");
-	    }
-	}
+        my @args = splice(@{$args}, 2);
+        for my $name (@args) {
+            $self->{syntax_help} ||= {};
+            unless ($self->{syntax_help}{name}) {
+                my $filename = 
+                    File::Spec->catfile($HELP_DIR, "${name}.txt");
+                my @lines = $self->readlines($filename);
+                shift @lines;
+                $self->{syntax_help}{$name} = join("\n", @lines);
+            }
+            
+            if (exists $self->{syntax_help}{$name}) {
+                $self->section("Debugger syntax for a ${name}:");
+                $self->msg($self->{syntax_help}{$name});
+            } else {
+                $self->errmsg("No syntax help for ${name}");
+            }
+        }
     }
 }
 
@@ -206,68 +223,68 @@ sub run($$)
     my $proc = $self->{proc};
     my $cmd_name = $args->[1];
     if (scalar(@$args) > 1) {
-	my $real_name;
-	if ($cmd_name eq '*') {
-	    $self->section('All command names:');
-	    my @cmds = sort(keys(%{$proc->{commands}}));
-	    $self->msg($self->columnize_commands(\@cmds));
-	    show_aliases($self) if scalar keys %{$proc->{aliases}};
-	    # $self->show_macros   unless scalar @$self->{proc}->macros;
-	} elsif ($cmd_name =~ /^aliases$/i) {
-	    show_aliases($self);
-	# } elsif (cmd_name =~ /^macros$/i) {
-	#     $self->show_macros;
-	} elsif ($cmd_name =~ /^syntax$/i) {
-	    show_command_syntax($self, $args);
-	} elsif ($cmd_name =~ /^all$/i) {
-	    for my $category (sort keys %{CATEGORIES()}) {
-		show_category($self, $category, []);
-		$self->msg('');
-	    }
-        } elsif (CATEGORIES->{$cmd_name}) {
-	    splice(@$args,0,2);
-	    show_category($self, $cmd_name, $args);
-	} elsif ($proc->{commands}{$cmd_name}
-		 || $proc->{aliases}{$cmd_name}) {
-	    if ($proc->{commands}{$cmd_name}) {
-		$real_name = $cmd_name;
-	    } else {
-		$real_name = $proc->{aliases}{$cmd_name};
-	    }
-	    my $cmd_obj = $proc->{commands}{$real_name};
-	    my $help_text = 
-		$cmd_obj->can("help") ? $cmd_obj->help($args) 
-		: $cmd_obj->{help};
-	    if ($help_text) {
-		$self->msg($help_text) ;
-		if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
-		    my $aliases_str = join(', ', @{$cmd_obj->{aliases}});
-		    $self->msg("Aliases: $aliases_str");
-		}
-	     }
-        # } elsif ($self->{proc}{macros}{$cmd_name}) {
-	#     $self->msg("${cmd_name} is a macro which expands to:");
-	#     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
-	} else {
-	    my @matches = sort grep(/^${cmd_name}/, 
-				    keys %{$self->{proc}{commands}} );
-	    if (!scalar @matches) {
-		$self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
-	    } else {
-		$self->section("Command names matching /^${cmd_name}/:");
-		$self->msg($self->columnize_commands(sort \@matches));
+        my $real_name;
+        if ($cmd_name eq '*') {
+            $self->section('All currently valid command names:');
+            my @cmds = sort($self->command_names());
+            $self->msg($self->columnize_commands(\@cmds));
+            show_aliases($self) if scalar keys %{$proc->{aliases}};
+            # $self->show_macros   unless scalar @$self->{proc}->macros;
+        } elsif ($cmd_name =~ /^aliases$/i) {
+            show_aliases($self);
+        # } elsif (cmd_name =~ /^macros$/i) {
+        #     $self->show_macros;
+        } elsif ($cmd_name =~ /^syntax$/i) {
+            show_command_syntax($self, $args);
+        } elsif ($cmd_name =~ /^all$/i) {
+            for my $category (sort keys %{CATEGORIES()}) {
+                show_category($self, $category, []);
+                $self->msg('');
             }
-	}
+        } elsif (CATEGORIES->{$cmd_name}) {
+            splice(@$args,0,2);
+            show_category($self, $cmd_name, $args);
+        } elsif ($proc->{commands}{$cmd_name}
+                 || $proc->{aliases}{$cmd_name}) {
+            if ($proc->{commands}{$cmd_name}) {
+                $real_name = $cmd_name;
+            } else {
+                $real_name = $proc->{aliases}{$cmd_name};
+            }
+            my $cmd_obj = $proc->{commands}{$real_name};
+            my $help_text = 
+                $cmd_obj->can("help") ? $cmd_obj->help($args) 
+                : $cmd_obj->{help};
+            if ($help_text) {
+                $self->msg($help_text) ;
+                if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
+                    my $aliases_str = join(', ', @{$cmd_obj->{aliases}});
+                    $self->msg("Aliases: $aliases_str");
+                }
+             }
+        # } elsif ($self->{proc}{macros}{$cmd_name}) {
+        #     $self->msg("${cmd_name} is a macro which expands to:");
+        #     $self->msg("  ${@proc.macros[cmd_name]}", {:unlimited => true});
+        } else {
+            my @command_names = $self->command_names();
+            my @matches = sort grep(/^${cmd_name}/, @command_names );
+            if (!scalar @matches) {
+                $self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
+            } else {
+                $self->section("Command names matching /^${cmd_name}/:");
+                $self->msg($self->columnize_commands(sort \@matches));
+            }
+        }
     } else {
-	list_categories($self);
+        list_categories($self);
     }
 }
 
 sub readlines($$$) {
     my($self, $filename) = @_;
     unless (open(FH, $filename)) {
-	$self->errmsg("Can't open $filename: $!");
-	return ();
+        $self->errmsg("Can't open $filename: $!");
+        return ();
     }
     local $_;
     my @lines = ();
@@ -306,6 +323,9 @@ unless (caller) {
     $help_cmd->run([$NAME, 'running', '*']);
     print $sep;
     $help_cmd->run([$NAME, 'syntax']);
+    print $sep;
+    $proc->{terminated} = 1;
+    $help_cmd->run([$NAME, '*']);
     print $sep;
 #   $help_cmd->run %W(${$NAME} s.*)
 #   print $sep;

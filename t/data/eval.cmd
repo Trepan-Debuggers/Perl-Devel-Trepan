@@ -1,7 +1,7 @@
 # test of eval and bugs we once had.
 # use with example/gcd.pl 3 5
 set auto eval on
-set evaldisplay tidy
+set display eval dumper
 1 + 2
 @ARGV
 @ @ARGV
@@ -17,5 +17,3 @@ $b
 # See that @_ is set properly.
 @ @_
 quit!
-
-

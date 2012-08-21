@@ -1,54 +1,59 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 basename is on.
 highlight is off.
 set auto eval is on.
-Eval result display style is tidy.
+Eval result display style is dumper.
 $DB::D[0] = <undef>
--- ( (eval remapped 5)
+-- main::(bogus.pl remapped (eval 1955)[Eval.pm:5])
 $DB::in_debugger=0;
--- (gcd.pl:9)
+gcd(1,1)
+-- main::(gcd.pl:9)
     my ($a, $b) = @_;
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[0] = 1
 $DB::D[1] = 1
--- (gcd.pl:13)
+-- main::(gcd.pl:13)
     return undef if $a <= 0;
--- (gcd.pl:14)
+-- main::(gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
 $DB::D[2] = 1
 Leaving nested debug level 1
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 $DB::D[3] = <undef>
--- ( (eval remapped 5)
+-- main::(bogus.pl remapped (eval 1955)[Eval.pm:5])
 $DB::in_debugger=0;
--- (gcd.pl:9)
+gcd(1,1)
+-- main::(gcd.pl:9)
     my ($a, $b) = @_;
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[3] = 1
 $DB::D[4] = 1
--- ( (eval remapped 5)
--- (gcd.pl:9)
+-- main::(bogus.pl remapped (eval 1955)[Eval.pm:5])
+-- main::(gcd.pl:9)
     my ($a, $b) = @_;
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[5] = 2
--- (gcd.pl:13)
+-- main::(gcd.pl:13)
     return undef if $a <= 0;
--- (gcd.pl:14)
+-- main::(gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
 $DB::D[6] = 2
 Leaving nested debug level 2
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
--- (gcd.pl:13)
+-- main::(gcd.pl:13)
     return undef if $a <= 0;
--- (gcd.pl:14)
+-- main::(gcd.pl:14)
     return $a if ($a == 1) or ($b-$a == 0);
 $DB::D[7] = 1
 Leaving nested debug level 1
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;

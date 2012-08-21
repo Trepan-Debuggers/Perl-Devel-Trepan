@@ -8,7 +8,6 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (@ISA) {
     eval <<"EOE";
-use constant ALIASES    => qw(u);
 use constant CATEGORY   => 'stack';
 use constant SHORT_HELP => 'Move frame in the direction of the least recent frame';
 use constant NEED_STACK => 1;

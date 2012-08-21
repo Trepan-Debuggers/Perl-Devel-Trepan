@@ -1,10 +1,11 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
--- (gcd.pl:20)
+    @ARGV == 2;
+-- main::(gcd.pl:20)
 my ($a, $b) = @ARGV[0,1];
--- (gcd.pl:21)
+-- main::(gcd.pl:21)
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
--- (gcd.pl:9)
+-- main::(gcd.pl:9)
     my ($a, $b) = @_;
-x1 (gcd.pl:9)
+x1 main::(gcd.pl:9)
     my ($a, $b) = @_;

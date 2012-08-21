@@ -1,0 +1,6 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+Eval result display style is dumper.
+$DB::D[0] = "gcd.pl"
+$DB::D[1] = 18

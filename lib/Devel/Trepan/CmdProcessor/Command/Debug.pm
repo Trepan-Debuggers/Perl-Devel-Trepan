@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rockb@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -63,8 +63,14 @@ sub run($$)
 	"\$^D |= DB::db_stop;\n" . 
 	"\$DB::in_debugger=0;\n" . 
 	$expr;
+
+    # Don't fix up __FILE__ and __LINE__ in this eval. 
+    # We want to see our debug (eval) with the string above.
+    $DB::fix_file_and_line = 0;
+
     # FIXME: 4 below is a magic fixup constant.
     $proc->eval($full_expr, $opts, 4);
+    
 }
 
 unless (caller) {

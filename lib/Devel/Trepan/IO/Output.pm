@@ -26,7 +26,10 @@ use vars qw(@EXPORT @EXPORT_OK);
 sub new($;$$) {
     my($class, $output, $opts) = @_;
     $opts ||= {};
-    $output ||= *STDOUT;
+    unless ($output) {
+	open STDOUT_DUP, ">&", STDOUT;
+	$output = *STDOUT_DUP;
+    };
     my $self = {
 	flush_after_write => 0,
 	output            => $output,
@@ -72,7 +75,8 @@ sub writeline($$) {
 }
 
 if (__FILE__ eq $0) {
-    my $out = Devel::Trepan::IO::Output->new(*main::STDOUT);
+    my $out = Devel::Trepan::IO::Output->new();
+    CORE::close(STDOUT);
     $out->writeline("Now is the time!");
 }
 

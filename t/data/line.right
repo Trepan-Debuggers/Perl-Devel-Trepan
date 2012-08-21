@@ -1,0 +1,11 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+basename is on.
+Line 18, file gcd.pl
+COP address: 0x12345678.
+Line 19, file gcd.pl
+Line not showing as associated with code
+
+Expecting a line number or function; got a
+Function main::gcd in file gcd.pl lines 8..16

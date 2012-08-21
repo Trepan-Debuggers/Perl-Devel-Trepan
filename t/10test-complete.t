@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use rlib '../lib';
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Complete" );
 
 BEGIN {
@@ -61,3 +61,4 @@ for my $tuple (
     my @c = signal_complete('');
     cmp_ok(scalar @c, '>', '1', 'complete on empty string');
 }
+done_testing();

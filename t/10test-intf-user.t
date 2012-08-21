@@ -3,7 +3,7 @@ use strict; use warnings; no warnings 'redefine';
 use rlib '../lib';
 use vars qw($response); 
 
-use Test::More 'no_plan';
+use Test::More;
 note( "Testing Devel::Trepan::Interface::User" );
 
 BEGIN {
@@ -46,5 +46,4 @@ for my $tf (1, 0) {
 }
 
 # FIXME: more thorough testing of other routines in user.
-
-
+done_testing();

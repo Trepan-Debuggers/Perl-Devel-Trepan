@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 # require 'tmpdir'
 
 # Part of Trepan::CmdProcess that loads up debugger commands from
@@ -11,6 +11,7 @@ package Devel::Trepan::CmdProcessor;
 $Load_seen = 1;
 use warnings;
 use strict;
+no warnings 'redefine';
 
 use File::Spec;
 use File::Basename;
@@ -72,7 +73,10 @@ sub load_debugger_command($$)
 {
     my ($self, $command_file) = @_;
     return unless -r $command_file;
-    if (eval "require '$command_file'; 1") {
+    my $rc = eval "require '$command_file' || 1";
+    if ($rc eq 'Skip me!') {
+	;
+    } elsif ($rc) {
 	# Instantiate each Command class found by the above require(s).
 	my $name = basename($command_file, '.pm');
 	$self->setup_command($name);
@@ -333,17 +337,18 @@ unless (caller) {
     printf "complete('') => %s\n", join(',  ', $cmdproc->complete("", '', 0, 1));
     printf "complete('help se') => %s\n", join(',  ', $cmdproc->complete("help se", 'help se', 0, 1));
 
-sub complete_it($)
-{
-    my $str = shift;
-    my @c = $cmdproc->complete($str, $str, 0, length($str));
-    printf "complete('$str') => %s\n", join(', ', @c);
-    return @c;
-}
+    eval {
+	sub complete_it($$) {
+	    my ($cmdproc, $str) = @_;
+	    my @c = $cmdproc->complete($str, $str, 0, length($str));
+	    printf "complete('$str') => %s\n", join(', ', @c);
+	    return @c;
+			}
+	    };
 
-    my @c = complete_it("set ");
-    @c = complete_it("help set base");
-    @c = complete_it("set basename on ");
+    my @c = complete_it($cmdproc, "set ");
+    @c = complete_it($cmdproc, "help set base");
+    @c = complete_it($cmdproc, "set basename on ");
 }
 
 1;

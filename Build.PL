@@ -29,7 +29,16 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Devel/Trepan.pm',
     license             => 'gpl',
     needs_compiler      => 0,
-    release_status      => 'stable',
+    # release_status      => 'stable', # or 'testing'
+    release_status      => 'testing',  # or 'stable'
+
+    meta_merge => {
+	resources => {
+	    bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
+	    repository  => 'http://github.com/rocky/Perl-Devel-Trepan'
+	}
+    },    
+
     configure_requires  => { 
 	'Module::Build' => '0.32',
 			      
@@ -37,15 +46,24 @@ my $builder = Module::Build->new(
     build_requires => {
         # 'String::Diff'        => 0,
     },
+    test_requires => {
+        'Test::More'                        => '0.81',
+    },
+    recommends => {
+	'Term::ReadLine::Perl'              => 0,
+	'Term::ReadKey'                     => 0,
+	'Eval::WithLexicals'                => 0,
+	'Data::Printer'                     => 0,
+    },
+
     requires => {
 	'perl'                              => '5.008008',
-	'Array::Columnize'                  => '0.003005',
- 	'Data::Dumper::Perltidy'            => 0,
+	'Array::Columnize'                  => '1.01',
+ 	'Data::Dumper'                      => 0,
 	'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
-        'Test::More'                        => '0.81',
         'rlib'                              => '0.02',
         'version'                           => 0,
     },

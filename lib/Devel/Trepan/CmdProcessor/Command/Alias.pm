@@ -40,8 +40,7 @@ alias s   step   # "s" is now an alias for "step".
 See also 'unalias' and 'show ${NAME}'.
 HELP
 
-  
-# Run command. 
+# Run command.
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -50,15 +49,16 @@ sub run($$) {
     } elsif (scalar @$args == 2) {
 	$proc->{commands}->{show}->run(['show', ${NAME}, $args->[1]]);
     } else {
-	my ($junk, $al, $command) = @$args;
+	my ($junk, $al, $command, @rest) = @$args;
 	my $old_command = $proc->{aliases}{$al};
 	if (exists $proc->{commands}{$command}) {
-	    $proc->{aliases}{$al} = $command;
+	    my $cmd_str = join(' ', ($command, @rest));
+	    $proc->{aliases}{$al} = $cmd_str;
 	    if ($old_command) {
-		$self->msg("Alias '${al}' for command '${command}' replaced old " .
+		$self->msg("Alias '${al}' for command string '${cmd_str}' replaced old " .
 			   "alias for '${old_command}'.");
 	    } else {
-		$self->msg("New alias '${al}' for command '${command}' created.");
+		$self->msg("New alias '${al}' for command string '${cmd_str}' created.");
 	    }
 	} else {
 	    $self->errmsg("You must alias to a command name, and '${command}' isn't one.");
@@ -75,6 +75,7 @@ unless (caller) {
     $cmd->run([$NAME, 'yy', 'step']);
     $cmd->run([$NAME]);
     $cmd->run([$NAME, 'yy', 'next']);
+    $cmd->run([$NAME, 'evd', 'show', 'evaldisplay']);
 }
 
 1;

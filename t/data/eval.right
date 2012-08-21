@@ -1,20 +1,30 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 set auto eval is on.
-Eval result display style is tidy.
+Eval result display style is dumper.
 $DB::D[0] = 3
 $DB::D[1] =
-@{[ '3', '5' ]}
+@{[
+  '3',
+  '5'
+]}
 $DB::D[2] =
-@{[ '3', '5' ]}
+@{[
+  '3',
+  '5'
+]}
 $DB::D[3] = 2
 $DB::D[4] = 0
 $DB::D[5] = 7
-x1 (gcd.pl:9)
+x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[6] = 3
 $DB::D[7] = 5
 $DB::D[8] =
-@{[ '3', '5' ]}
+@{[
+  '3',
+  '5'
+]}

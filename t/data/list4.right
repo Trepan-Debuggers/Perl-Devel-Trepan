@@ -1,8 +1,9 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 basename is on.
 highlight is off.
-x1 (gcd.pl:9)
+x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 gcd.pl [5-14]
   5    	# GCD. We assume positive numbers
@@ -27,7 +28,7 @@ gcd.pl [5-14]
  12    	
  13    	    return undef if $a <= 0;
  14    	    return $a if ($a == 1) or ($b-$a == 0);
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 gcd.pl [7-16]
   7    	sub gcd($$) 

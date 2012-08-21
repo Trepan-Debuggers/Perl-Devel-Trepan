@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # I/O related command processor methods
 
 use warnings;
@@ -54,6 +54,11 @@ sub msg($$;$) {
 	defined $self->{interfaces}[-1];
 
   }
+
+sub msg_need_running($$;$) {
+    my($self, $prefix, $opts) = @_;
+    $self->errmsg("$prefix not available when terminated");
+}
 
 sub msg_nocr($$;$) {
     my($self, $message, $opts) = @_;

@@ -1,4 +1,4 @@
--- (test-require.pl:3)
+-- main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.
@@ -12,17 +12,17 @@ test-require.pl [1-9]
   7    	my $y = $x;
   8    	
   9    	
--- (test-require.pl:4)
+-- main::(test-require.pl:4)
 my $require_file = File::Spec->catfile($DIR, "test-module.pm");
--- (test-require.pl:5)
+-- main::(test-require.pl:5)
 require $require_file;
--- (test-module.pm:5)
+-- Test::Module::(test-module.pm:5)
 my $x = 1;
--- (test-module.pm:6)
+-- Test::Module::(test-module.pm:6)
 my $y = 2;
--- (test-require.pl:6)
+-- main::(test-require.pl:6)
 my $x = Test::Module::five();
--- (test-module.pm:3)
+-- Test::Module::(test-module.pm:3)
     return 5;
 test-module.pm [1-6]
   1    	package Test::Module;
@@ -33,7 +33,7 @@ test-module.pm [1-6]
   6    	my $y = 2;
 *** Bad line range [7...16]; file "test-module.pm" has only 6 lines
 --> #1 file `test-require.pl' at line 6
-   (test-require.pl:6)
+   main::(test-require.pl:6)
 my $x = Test::Module::five();
 test-require.pl [2-9]
   2    	use File::Spec;

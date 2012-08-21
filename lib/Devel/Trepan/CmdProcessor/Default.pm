@@ -17,7 +17,9 @@ our @ISA;
 
 BEGIN {
     $HAVE_DATA_PRINT = eval("use Data::Printer alias => 'dprint'; 1") ? 1 : 0;
-    $HAVE_PERLTIDY   = 1 ; # eval("use Data::Dumper::Perltidy; 1") ? 1 : 0;
+    $HAVE_PERLTIDY   = eval {
+	require Data::Dumper::Perltidy; 
+    } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
     push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
     push @DISPLAY_TYPES, 'tidy'   if $HAVE_PERLTIDY;
@@ -46,7 +48,7 @@ use constant DEFAULT_SETTINGS => {
     cmddir        => [],     # Additional directories to load commands
 	                     # from
     different     => 0,      # stop *only* when  different position? 
-    
+    displaycop    => 0,      # If set, show COP address in location
     debugdbgr     => 0,      # Debugging the debugger
     debugexcept   => 1,      # Internal debugging of command exceptions
     debugmacro    => 0,      # debugging macros
@@ -54,7 +56,7 @@ use constant DEFAULT_SETTINGS => {
     directory     =>         # last-resort path-search for files
     '$cdir:$cwd',            # that are not fully qualified.
     
-    evaldisplay  => default_eval_display(),
+    displayeval   => default_eval_display(),
                              # use Data::Dumper (dumper) or
 	                     # Data::Dumper::Perltidy::dumper (tidy) ?
     hidestack     => -1,     # Fixnum. How many hidden outer

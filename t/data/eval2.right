@@ -1,5 +1,11 @@
--- (eval.pl:1)
+--
+++
+-- main::(eval.pl:1)
 $var = '
+$x = 2;
+$y = 3;
+$z = 4';
+Eval result display style is dumper.
 set auto eval is on.
 eval.pl [1-10]
   1  ->	$var = '
@@ -12,9 +18,8 @@ eval.pl [1-10]
   8    	    my @args = @_;
   9    	    print "ho\n";
  10    	    5;
--- (eval.pl:5)
+-- main::(eval.pl:5)
 eval $var;
---
 $DB::D[0] = 1
 eval.pl [1-10]
   1    	$var = '
@@ -27,19 +32,31 @@ eval.pl [1-10]
   8    	    my @args = @_;
   9    	    print "ho\n";
  10    	    5;
-++
 $DB::D[1] = 1
--- ( (eval remapped 2)
--- ( (eval remapped 3)
+-- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:2)
+
 $x = 2;
--- ( (eval remapped 4)
 $y = 3;
--- (eval.pl:6)
+$z = 4
+-- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:3)
+$x = 2;
+$y = 3;
+$z = 4
+-- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:4)
+$y = 3;
+$z = 4
+-- main::(eval.pl:6)
 $eval_sub='
--- (eval.pl:12)
+    my @args = @_;
+    print "ho\n";
+-- main::(eval.pl:12)
 eval $eval_sub;
--- (eval.pl:13)
+-- main::(eval.pl:13)
 $y = five();
--- ( (eval remapped 3)
---> #0 @ = main::five() in file `(eval 1000)[eval.pl:12]' at line 3
+-- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:3)
+    my @args = @_;
+    print "ho\n";
+    5;
+--> #0 @ = main::five() in 
+	file `(eval 1000)[eval.pl:12]' at line 3
     #1 file `eval.pl' at line 13

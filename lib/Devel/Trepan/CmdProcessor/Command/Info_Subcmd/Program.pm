@@ -30,8 +30,8 @@ sub run($$)
     $m = sprintf "Program stop event: %s.", $proc->{event};
     $proc->msg($m);
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
-	$m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
-	$proc->msg($m);
+    	$m = sprintf "COP address: 0x%x.", $DB::dbline[$line];
+    	$proc->msg($m);
     }
     if ('return' eq $proc->{event}) {
 	$proc->{commands}{info}->run(['info', 'return']);

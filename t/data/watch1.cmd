@@ -1,6 +1,7 @@
 # Check that a watch expression changes from a given value to another
 set basename on
 set highlight off
+set display eval dumper
 # See that "info break" shows nothing.
 info break
 continue gcd

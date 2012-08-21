@@ -73,6 +73,7 @@ sub run($$)
     }
     no warnings 'once';
     $DB::single = 0;
+    $DB::fall_off_on_end = 1;
     $self->{proc}->{interfaces} = [];
     # No graceful way to stop threads...
     exit $exitrc;

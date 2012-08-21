@@ -1,13 +1,15 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 basename is on.
 highlight is off.
+Eval result display style is dumper.
 No breakpoints.
 No actions.
 No watch expressions defined.
-x1 (gcd.pl:9)
+x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 Watch expression 1 `$a' set
 $DB::D[0] = 5
@@ -17,7 +19,7 @@ Breakpoint 2 set in gcd.pl at line 14
 Watchpoint 1: `$a' changed
 old value	5
 new value	3
-wa (gcd.pl:13)
+wa main::(gcd.pl:13)
     return undef if $a <= 0;
 gcd.pl [9-18]
   9    	    my ($a, $b) = @_;

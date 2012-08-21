@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use rlib '../lib';
 use Enbugger 'trepan';
 # GCD. We assume positive numbers
 sub gcd($$);

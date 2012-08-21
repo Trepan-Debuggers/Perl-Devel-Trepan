@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings;  
 # FIXME: Can't use strict;
 use rlib '../..';
 use Devel::Trepan::DB;
+use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
 use Devel::Trepan::CmdProcessor;
 use Devel::Trepan::SigHandler;
 use Devel::Trepan::WatchMgr;
@@ -16,14 +17,13 @@ package Devel::Trepan::Core;
 use vars qw(@ISA $dbgr);
 @ISA = qw(DB);
 
-sub add_startup_files($$) {
-    my ($cmdproc, $startup_file) = @_;
-    if (-f $startup_file) {
-	if (-r $startup_file)  {
-	    push @{$cmdproc->{cmd_queue}}, "source $startup_file";
-	} else {
-	    print STDERR "Command file '$startup_file' is not readable.\n";
-	}
+sub add_startup_files($$;$) {
+    my ($cmdproc, $startup_file, $nowarn) = @_;
+    my $errmsg = Devel::Trepan::Util::invalid_filename($startup_file);
+    if ($errmsg) {
+	print STDERR "${errmsg}.\n" unless $nowarn;
+    }  else {
+	push @{$cmdproc->{cmd_queue}}, "source $startup_file";
     }
 }
 
@@ -33,7 +33,9 @@ sub new {
     my $self = {
 	watch  => Devel::Trepan::WatchMgr->new(), # List of watch expressions
 	orig_sig => \%ORIG_SIG,
-	caught_signal => 0
+	caught_signal => 0,
+	exec_strs     => [],
+	need_e_remap  => 0
     };
     bless $self, $class;
     $self->awaken();
@@ -48,6 +50,12 @@ sub idle($$$)
 {
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
+    $event = 'terminated' if $DB::package eq 'DB::fake';
+    if ($self->{need_e_remap} && $DB::filename eq '-e') {
+	DB::LineCache::remap_dbline_to_file();
+	$self->{need_e_remap} = 0;
+    }
+
     $proc->process_commands($DB::caller, $event, $args);
     $self->{caught_signal} = 0;
 }
@@ -93,6 +101,16 @@ sub awaken($;$) {
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
 	$opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
+
+    my $exec_strs_ary = $opts->{exec_strs};
+    if (defined $exec_strs_ary && scalar @{$exec_strs_ary}) {
+	$self->{exec_strs} = $opts->{exec_strs};
+	$self->{need_e_remap} = 1;
+    }
+
+    $0 = $opts->{dollar_0} if $opts->{dollar_0};
+
+    $DB::fall_off_on_end = 1 if $opts->{fall_off_end} || $opts->{traceprint};
 
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
@@ -151,7 +169,7 @@ sub awaken($;$) {
 	    add_startup_files($cmdproc, $startup_file);
 	}
 	if (!$opts->{nx} && exists $opts->{initfile}) {
-	    add_startup_files($cmdproc, $opts->{initfile});
+	    add_startup_files($cmdproc, $opts->{initfile}, 1);
 	}
     }
     $self->{sigmgr} = 
@@ -167,6 +185,10 @@ sub display_lists ($)
     my $self = shift;
     return $self->{proc}{displays}{list};
 }
+
+END { 
+    $DB::ready = 0;
+};
 
 # FIXME: remove the next line and make this really OO.
 $dbgr = __PACKAGE__->new();

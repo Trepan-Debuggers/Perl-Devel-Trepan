@@ -17,10 +17,10 @@ our @ISA;
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
-    $VERSION      = '0.1.9';
+    $VERSION      = '0.30_01';
 }
 
-use constant VERSION => $VERSION;
+use constant VERSION      => $VERSION;
 use constant PROGRAM_NAME => $PROGRAM_NAME;
 
 @ISA    = qw(Exporter);
@@ -41,6 +41,8 @@ $DEFAULT_OPTIONS = {
                            # process debugger "server".
     cmddir       => [],    # Additional directories of debugger commands
     cmdfiles     => [],    # Files containing debugger commands to 'source'
+    exec_strs    => [],    # Perl strings to evaluate
+    fall_off_end => 0,     # Don't go into debugger on termination? 
     highlight    => default_term(),    
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost', 
@@ -74,7 +76,9 @@ sub process_options($)
 	 'cd:s'         => \$opts->{initial_dir},
 	 'client'       => \$opts->{client},
 	 'cmddir=s@'    => \$opts->{cmddir},
-	 'command=s@' => \$opts->{cmdfiles},
+	 'command=s@'   => \$opts->{cmdfiles},
+	 'e|exec=s@'    => \$opts->{exec_strs},
+	 'fall-off-end' => \$opts->{fall_off_end},
 	 'help'         => \$help,
 	 'highlight'    => \$opts->{highlight},
 	 'host:s'       => \$opts->{host},
@@ -193,7 +197,7 @@ trepan.pl - Perl "Trepanning" Debugger
 
 =head1 SYNOPSIS
 
-   trepan [options] [[--] perl-program [perl-program-options ...]]
+   trepan.pl [options] [[--] perl-program [perl-program-options ...]]
 
    Options:
       --help               brief help message
@@ -207,12 +211,16 @@ trepan.pl - Perl "Trepanning" Debugger
                            This option has precidence over --command and
                            will also set --nx
       --cd DIR             Change current directory to DIR
+      -e| --exec STRING    eval STRING. Multiple -e's can be given.
+                           Works like Perl's -e switch
       --nx                 Don't run user startup file (e.g. .treplrc)
 
       --client | --server  Set for out-of-process debugging. The server 
                            rus the Perl program to be debugged runs. 
                            The client runs outside of this process.
                           
+      --fall-off-end       Don't stay in debugger when program terminates
+
       --host NAME          Set DNS name or IP address to communicate on.
                            The default is 127.0.0.1
 

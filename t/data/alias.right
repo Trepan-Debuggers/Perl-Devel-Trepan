@@ -1,0 +1,11 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+*** You must alias to a command name, and 'foo' isn't one.
+New alias 'yy' for command string 'step' created.
+New alias 'evd' for command string 'set display eval' created.
+Eval result display style is dumper.
+evd: set display eval
+*** Command 'set display eval' needs at least 1 argument(s); got 0.
+Eval result display style is dumper.
+Alias 'evd' for command string 'set display eval dumper' replaced old alias for 'set display eval'.

@@ -1,9 +1,10 @@
--- (gcd.pl:18)
+-- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
 basename is on.
 highlight is off.
 set auto list is on.
--- (gcd.pl:20)
+-- main::(gcd.pl:20)
 my ($a, $b) = @ARGV[0,1];
 gcd.pl [16-21]
  16    	}
@@ -12,7 +13,7 @@ gcd.pl [16-21]
  19    	    @ARGV == 2;
  20  ->	my ($a, $b) = @ARGV[0,1];
  21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
--- (gcd.pl:21)
+-- main::(gcd.pl:21)
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 gcd.pl [17-21]
  17    	
@@ -20,7 +21,7 @@ gcd.pl [17-21]
  19    	    @ARGV == 2;
  20    	my ($a, $b) = @ARGV[0,1];
  21  ->	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
--- (gcd.pl:9)
+-- main::(gcd.pl:9)
     my ($a, $b) = @_;
 gcd.pl [5-14]
   5    	# GCD. We assume positive numbers
@@ -34,7 +35,7 @@ gcd.pl [5-14]
  13    	    return undef if $a <= 0;
  14    	    return $a if ($a == 1) or ($b-$a == 0);
 set auto list is off.
--- (gcd.pl:11)
+-- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
--- (gcd.pl:13)
+-- main::(gcd.pl:13)
     return undef if $a <= 0;

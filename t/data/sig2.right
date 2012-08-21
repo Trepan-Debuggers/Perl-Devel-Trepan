@@ -1,16 +1,17 @@
--- (signal.pl:9)
+-- main::(signal.pl:9)
 $SIG{'HUP'} = \&hup_handler;
+Eval result display style is dumper.
 set auto eval is on.
-x1 (signal.pl:10)
+x1 main::(signal.pl:10)
 my $tempfile;
 Signal        Stop	Print	Stack	Pass	Description
 HUP           Yes 	Yes 	No   	No  	Hangup
 
 Program received signal HUP.
-!! (signal.pl:21)
+!! main::(signal.pl:21)
     sleep 1;
--- (signal.pl:21)
+-- main::(signal.pl:21)
     sleep 1;
--- (signal.pl:21)
+-- main::(signal.pl:21)
     sleep 1;
 $DB::D[0] = 1

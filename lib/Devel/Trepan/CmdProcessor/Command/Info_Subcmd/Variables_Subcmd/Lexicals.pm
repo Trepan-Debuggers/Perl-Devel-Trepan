@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -13,6 +13,8 @@ use Devel::Trepan::CmdProcessor::Command::Info_Subcmd::Variables_Subcmd::My;
 our $CMD = "info variables lexicals";
 my  @CMD = split(/ /, $CMD);
 use constant MAX_ARGS => undef;
+use constant NEED_STACK => 1;
+
 our $MIN_ABBREV = length('l');
 our $HELP   = <<"HELP";
 ${CMD}

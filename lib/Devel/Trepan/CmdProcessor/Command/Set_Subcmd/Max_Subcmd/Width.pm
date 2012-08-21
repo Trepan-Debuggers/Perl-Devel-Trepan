@@ -27,7 +27,7 @@ sub run($$)
     my $num_str = join(' ', @args);
     $self->run_set_int($num_str, 
 		       "The '$self->{cmd_str}' command requires a line width", 
-		       0);
+		       10, undef);
 }
 
 unless (caller) {

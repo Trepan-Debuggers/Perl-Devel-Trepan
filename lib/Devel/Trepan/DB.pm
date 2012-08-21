@@ -6,12 +6,31 @@
 
 use rlib '../..';
 
+=head1 C<DB::fake>
+
+Contains the C<at_exit> routine that the debugger uses to issue the
+C<Debugged program terminated ...> message after the program completes. See
+the C<END> block documentation for more details.
+
+=cut
+
+# rocky: I'm copying what perl5db does here, which I suppose has some
+# time-honored benefit. That doesn't mean though that I like it. FIXME!
+package DB::fake;
+
+sub at_exit {
+    $DB::ready = 1;
+    # The below is there to have something to look at in "list" command.
+    "Debugged program terminated.  Use 'q' to quit or 'R' to restart.";
+}
+
 package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
 use vars qw($usrctxt $running $caller
             $event @ret $ret $return_value @return_value
+            $fall_off_on_end
             $stop @clients $ready $tid
             $init_dollar0 $OS_STARTUP_DIR);
 
@@ -49,6 +68,7 @@ BEGIN {
     $DB::signal  = 0;     # signal flag (will cause a stop at the next line)
     $DB::stop    = 0;     # value of last breakpoint condition evaluation
     $DB::tid     = undef; # Thread id
+    $DB::fall_off_on_end = 0;
 
     @DB::args    = ();    # arguments of current subroutine or @ARGV array
     @DB::dbline  = ();    # list of lines in currently loaded file
@@ -119,6 +139,14 @@ BEGIN {
     # No extry/exit tracing.
     $frame = 0;
 }
+
+END {
+    unless ($DB::fall_off_on_end) {
+        $DB::single = 1;
+        DB::fake::at_exit();
+    }
+    $DB::ready = 0;
+} 
 
 ####
 # this is called by Perl for every statement
@@ -247,6 +275,7 @@ sub DB {
 	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
 	loadfile($DB::filename, $DB::lineno);
     }
+
     for my $action (@action) {
 	&DB::eval($usrctxt, $action->condition, @saved) if $action->enabled;
 	my $hits = $action->hits + 1;
@@ -662,12 +691,6 @@ sub warning {}
 sub showfile {}
 
 $SIG{'INT'} = \&DB::catch;
-
-# disable this if stepping through END blocks is desired
-# (looks scary and deconstructivist with Swat)
-END { 
-    $ready = 0;
-}
 
 1;
 __END__

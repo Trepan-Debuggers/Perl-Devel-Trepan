@@ -9,6 +9,7 @@ example/fns.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
+example/next2.pl
 example/nexting.pl
 example/our.pl
 example/signal.pl
@@ -53,6 +54,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
@@ -77,7 +79,9 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
-lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/List.pm
@@ -92,13 +96,16 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Abbrev.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Args.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Basename.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/COP.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
-lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Interactive.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max.pm
@@ -161,7 +168,6 @@ lib/Devel/Trepan/IO/TCPPack.pm
 lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Position.pm
-lib/Devel/Trepan/Psh.pm
 lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/WatchMgr.pm
@@ -171,6 +177,7 @@ META.json
 META.yml
 README				README in perlpod format for CPAN
 README.md			README in Markdown format for github
+t/00test-pod.t
 t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
 t/10test-complete.t
@@ -178,6 +185,7 @@ t/10test-condition.t
 t/10test-db-brkpt.t
 t/10test-intf-script.t
 t/10test-intf-user.t
+t/10test-io-output.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.t
 t/10test-linecache.t
@@ -191,25 +199,35 @@ t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
 t/10test-watchmgr.t
-t/20test-autolist.t		Note: t/20*.t tests are integration tests
+t/20test-alias.t		Note: t/20*.t tests are integration tests
+t/20test-autolist.t
 t/20test-break.t
 t/20test-cont.t
 t/20test-debug.t
+t/20test-dollar0.t
 t/20test-display.t
 t/20test-eval.t
 t/20test-fin.t
+t/20test-__FILE__.t
+t/20test-line.t
 t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
 t/20test-list4.t
 t/20test-my.t
 t/20test-next.t
+t/20test-next2.t
+t/20test-opt-e.t
 t/20test-seq1.t
 t/20test-sig.t
 t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
 t/20test-watch1.t
+t/data/__FILE__.cmd
+t/data/__FILE__.right
+t/data/alias.cmd
+t/data/alias.right
 t/data/autolist.cmd
 t/data/autolist.right
 t/data/break.cmd
@@ -222,6 +240,8 @@ t/data/debug.cmd
 t/data/debug.right
 t/data/display.cmd
 t/data/display.right
+t/data/dollar0.cmd
+t/data/dollar0.right
 t/data/eval.cmd
 t/data/eval.right
 t/data/eval2.cmd
@@ -230,6 +250,8 @@ t/data/fin.cmd
 t/data/fin.right
 t/data/fin2.cmd
 t/data/fin2.right
+t/data/line.cmd
+t/data/line.right
 t/data/list1.cmd
 t/data/list1.right
 t/data/list2.cmd
@@ -242,6 +264,10 @@ t/data/my.cmd
 t/data/my.right
 t/data/next.cmd
 t/data/next.right
+t/data/next2.cmd
+t/data/next2.right
+t/data/opt-e.cmd
+t/data/opt-e.right
 t/data/seq1.cmd
 t/data/seq1.right
 t/data/sig.cmd

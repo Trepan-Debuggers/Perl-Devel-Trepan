@@ -134,7 +134,7 @@ sub running_initialize($)
 # -  step count was given. 
 # - We want to make sure we stop on a different line
 # - We want to stop only when some condition is reached (step util ...). 
-sub is_stepping_skip()
+sub is_stepping_skip($)
 {
 
     my $self = shift;
@@ -198,5 +198,31 @@ sub is_stepping_skip()
 
     return $skip_val;
 }
+
+sub restart_args($$) {
+    my $self = shift;
+    my @flags = ();
+    # If warn was on before, turn it on again.
+    no warnings 'once';
+    push @flags, '-w' if $DB::ini_warn;
+
+    # Rebuild the -I flags that were on the initial
+    # command line.
+    for (@DB::ini_INC) {
+        push @flags, '-I', $_;
+    }
+
+    # Turn on taint if it was on before.
+    push @flags, '-T' if ${^TAINT};
+
+    # Arrange for setting the old INC:
+    # Save the current @init_INC in the environment.
+    DB::set_list( "PERLDB_INC", @DB::ini_INC );
+
+    ( $EXECUTABLE_NAME, @flags, '-d:Trepan', $DB::ini_dollar0, 
+      @{$self->{dbgr}{exec_strs}},
+      @DB::ini_ARGV );
+}
+
 
 scalar "Just one part of the larger Devel::Trepan::CmdProcessor";

@@ -152,10 +152,10 @@ sub lookup($$;$)
     }
     my @candidates = ();
     while (my ($subcmd_name, $subcmd) = each %{$self->{subcmds}}) {
-        if ($compare->($subcmd_name) &&
-            length($subcmd_prefix) >= $subcmd->{min_abbrev}) {
+        if ($compare->($subcmd_name)) {
 	    push @candidates, $subcmd;
 	}
+
     }
     if (scalar @candidates == 1) {
         return $candidates[0];
@@ -217,7 +217,9 @@ sub help($$)
 	@help_text = (sprintf("List of subcommands for command '%s':", 
 			     $self->{cmd_str}));
 
-	push @help_text, $self->{parent}->columnize_commands(\@subcmds);
+	my $subcmds = $self->{parent}->columnize_commands(\@subcmds);
+	chomp $subcmds;
+	push @help_text, $subcmds;
 	return join("\n", @help_text);
     }
 

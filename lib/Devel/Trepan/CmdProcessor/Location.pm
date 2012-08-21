@@ -25,9 +25,10 @@ our $EVENT2ICON = {
     'return'         => '<-',
     'signal'         => '!!',
     'tbrkpt'         => 'x1',
+    'terminated'     => ':x',
     'trace'          => '==',
     'unknown'        => '?!',
-    'watch'          => 'wa',
+    'watch'          => 'wa'
 };
 
 sub canonic_file($$;$)
@@ -50,15 +51,46 @@ sub canonic_file($$;$)
     }
 }
 
-# Return the text to the current source line.
+sub min($$) {
+    my ($a, $b) = @_;
+    return $a < $b ? $a : $b;
+}
+
+# Return the text to the current source line. We use trace line
+# information to try to retrieve all of the current source line up
+# to some limit of lines. The lines returned may be colorized. 
+# DB::LineCache actually does the retrieval.
 sub current_source_text(;$)
 {
     my ($self, $opts) = @_;
     $opts = {} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
-    my $text;
-    $text = DB::LineCache::getline($filename, $line_number, $opts); 
+    my $text        = (DB::LineCache::getline($filename, $line_number, $opts)) 
+	|| '';
+    chomp($text);
+    my $max_show_lines = $opts->{max_lines} || 4;
+    my $max_line = min($line_number + $max_show_lines - 1,
+		       DB::LineCache::size($filename));
+    my $raw_opts = {output => 'plain'};
+
+    # Accumulate lines if we think this line continues to the
+    # next. This code from newer perl5db is a bit heuristic, but
+    # overall it is probably helpful.
+    for ( my $i = $line_number + 1; 
+	  $i <= $max_line && !DB::LineCache::is_trace_line($filename, $i); 
+	  $i++ ) {
+	my $new_line = 
+	    (DB::LineCache::getline($filename, $i, $opts))   || '';
+	my $raw_text = DB::LineCache::getline($filename, $i) || '';
+	
+	# Drop out on null statements, block closers, and comments.
+	# This could however still be wrong if we have these inside a
+	# string.  Also we might erroneously list function prototypes
+	# and headers, but this is probably harmless.
+	last if $raw_text =~ /^\s*([\;\}\#\n]|$)/;
+	$text .= ("\n" . $new_line);
+    }
     return $text;
 }
   
@@ -126,7 +158,8 @@ sub format_location($;$$$)
     
     my $loc = $self->source_location_info;
     my $suffix = ($event eq 'return' && defined($DB::_[0])) ? " $DB::_[0]" : '';
-    "${ev} (${loc})$suffix"
+    my $pkg = $self->{frame}{pkg} || '??' ;
+    "${ev} ${pkg}::(${loc})$suffix";
 }
 
 sub print_location($;$)
@@ -149,27 +182,32 @@ sub source_location_info($)
     my $canonic_filename;
     #    'eval ' + safe_repr(@frame.eval_string.gsub("\n", ';').inspect, 20)
     #  else
-    my $filename = $self->filename();
+    my $filename = $self->{frame}{file};
     my $line_number = $self->line() || 0;
 
+    my $cop_addr = '';
+    if ($self->{settings}{displaycop}) {
+	my $cop = 
+	    + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
+	$cop_addr = sprintf " \@0x%x", $cop;
+    }
     if (DB::LineCache::filename_is_eval($filename)) {
     	if ($DB::filename eq $filename) {
 	    # Some lines in @DB::line might not be defined.
 	    # So we have to turn off strict here. 
-	    no warnings;
-	    my $string = join('', @DB::dbline);
-	    use warnings;
-    	    my $map_file = DB::LineCache::map_script($filename, $string);
-    	    $canonic_filename = $self->canonic_file($map_file, 0);
-    	    return " $filename:$line_number " . 
-    		"remapped ${canonic_filename}:$line_number";
+	    if ($filename ne '-e') {
+		no warnings;
+		my $string = join('', @DB::dbline);
+		use warnings;
+		$filename = DB::LineCache::map_script($filename, $string);
+	    }
+	    $canonic_filename = $self->canonic_file($self->filename(), 0);
+	    return "$filename:$line_number " . 
+		"remapped ${canonic_filename}:${line_number}$cop_addr";
     	}
     }
-    $canonic_filename = $self->canonic_file($filename, 0);
-    return "${canonic_filename}:${line_number}";
-    # my $cop = 0;
-    # $cop = 0 + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
-    # return sprintf "${canonic_filename}:${line_number} 0x%x", $cop;
+    $canonic_filename = $self->canonic_file($self->filename(), 0);
+    return "${canonic_filename}:${line_number}$cop_addr";
 } 
 
 unless (caller()) {
@@ -190,11 +228,20 @@ unless (caller()) {
     $proc->frame_setup($frame_ary);
     $proc->{event} = 'return';
     print $proc->format_location, "\n";
+    print $proc->current_source_text({output=>'plain'}), "\n";
     print $proc->current_source_text({output=>'term'}), "\n";
     # See if cached line is the same
     print $proc->current_source_text({output=>'term'}), "\n";
     # Try unhighlighted line.
     print $proc->current_source_text, "\n";
+
+    # Now try an eval
+    $DB::filename = '';
+    $frame_ary = eval "create_frame()";
+    $proc->frame_setup($frame_ary);
+    $proc->{event} = 'line';
+    print $proc->format_location, "\n";
+    print $proc->current_source_text({output=>'plain'}), "\n";
 }
 
 1;

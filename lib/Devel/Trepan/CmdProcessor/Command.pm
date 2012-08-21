@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 use Exporter;
 use warnings;
 no warnings 'redefine';
@@ -33,14 +34,14 @@ use vars @CMD_VARS;
              $NEED_STACK @CMD_VARS declared);
 
 
-$NEED_STACK = 0; # We'll say that commands which need a stack
-                 # to run have to declare that and those that
-                 # don't don't have to mention it.
-$NEED_RUNNING = 0; # We'll say that commands which need a a currently
-                   # running program. It's possible we have a stack even though
-                   # the program isn't running, e.g. there was an exception.
-                   # and we've faked the stack. (If this is not so, we can
-                   # don't need this and can simple use $NEED_STACK.
+use constant NEED_STACK => 0; # We'll say that commands which need a stack
+                              # to run have to declare that and those that
+                              # don't don't have to mention it.
+# use constant NEED_RUNNING = 0; # We'll say that commands which need a a currently
+#                    # running program. It's possible we have a stack even though
+#                    # the program isn't running, e.g. there was an exception.
+#                    # and we've faked the stack. (If this is not so, we can
+#                    # don't need this and can simple use $NEED_STACK.
 
 $HELP       = 'Each command should set help text text';
 use constant CATEGORY => 'Each command should set a category';

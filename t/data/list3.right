@@ -1,8 +1,8 @@
--- (test-require.pl:3)
+-- main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.
--- (Basename.pm:284)
+-- File::Basename::(Basename.pm:284)
     my $path = shift;
 Basename.pm [280-289]
 280    	=cut
@@ -60,7 +60,7 @@ Basename.pm [280-289]
 288    	    if( $type eq 'VMS' and $path =~ m{/} ) {
 289    	        # Parse as Unix
 --> #1 file `test-require.pl' at line 3
-   (test-require.pl:3)
+   main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 test-require.pl [1-9]
   1    	use File::Basename;

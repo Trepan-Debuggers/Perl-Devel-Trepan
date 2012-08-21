@@ -45,6 +45,7 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $bpnum = $proc->get_an_int($args->[1]);
+    return unless defined($bpnum);
     my $bp = $proc->{brkpts}->find($bpnum);
     unless ($bp) { 
 	$proc->errmsg("No breakpoint number $bpnum");

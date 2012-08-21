@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -49,6 +49,7 @@ HELP
 sub run($$)
 {
     my ($self, $args) = @_;
+    my $proc = $self->{proc};
     my @args = @$args;
     my $unconditional = 0;
     if (scalar(@args) > 1 && $args->[-1] eq 'unconditionally') {
@@ -57,7 +58,8 @@ sub run($$)
     } elsif (substr($args[0], -1) eq '!') {
         $unconditional = 1;
     }
-    unless ($unconditional || $self->{proc}->confirm('Really quit?', 0)) {
+    unless ($unconditional || $proc->{terminated} ||
+	    $proc->confirm('Really quit?', 0)) {
 	$self->msg('Quit not confirmed.');
 	return;
     }

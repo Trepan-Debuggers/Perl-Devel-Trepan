@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
 # largely rewritten from perl5db.
 
 use Class::Struct;
@@ -26,7 +26,7 @@ sub inspect($)
 	    $self->filename, $self->line_num,
 	    $self->type,
 	    $self->enabled, 
-	    $self->negate, 
+	    $self->negate || 0, 
 	    $self->hits, $self->condition
 	);
 };

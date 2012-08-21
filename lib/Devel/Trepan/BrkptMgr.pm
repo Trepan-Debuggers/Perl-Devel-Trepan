@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 use rlib '../..';
@@ -7,7 +7,7 @@ use Devel::Trepan::DB::Breakpoint;
 package Devel::Trepan::BrkptMgr;
 
 
-sub new($$) 
+sub new($$)
 {
     my ($class,$dbgr) = @_;
     my $self = {};
@@ -22,7 +22,7 @@ sub clear($)
     my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
-}    
+}
 
 sub inspect($) 
 {
@@ -33,15 +33,15 @@ sub inspect($)
 	$str .= $brkpt->inspect . "\n";
     }
     $str;
-}    
+}
 
-sub ids($) 
+sub ids($)
 {
     my $self = shift;
     map $_->id, @{$self->compact()};
 }
 
-sub list($) 
+sub list($)
 {
     my $self = shift;
     map defined($_) ? $_ : (),  @{$self->{list}}
@@ -59,6 +59,7 @@ sub DESTROY() {
 sub find($$)
 {
     my ($self, $index) = @_;
+    return undef unless $index =~ /^\d+$/;
     for my $bp (@{$self->{list}}) {
 	next unless $bp;
 	return $bp if $bp->id eq $index;
@@ -158,54 +159,55 @@ unless (caller) {
     }
 EOE
 
-require Devel::Trepan::Core;
-my $dbgr = Devel::Trepan::Core->new;
-my $brkpts = Devel::Trepan::BrkptMgr->new($dbgr);
-bp_status($brkpts, 0);
-my $brkpt1 = DBBreak->new(
-    type=>'brkpt', condition=>'1', id=>1, hits => 0, enabled => 1,
-    negate => 0, filename => __FILE__, line_num => __LINE__
-    );
+    require Devel::Trepan::Core;
+    my $dbgr = Devel::Trepan::Core->new;
+    my $brkpts = Devel::Trepan::BrkptMgr->new($dbgr);
+    bp_status($brkpts, 0);
+    my $brkpt1 = DBBreak->new(
+      type=>'brkpt', condition=>'1', id=>1, hits => 0, enabled => 1,
+      negate => 0, filename => __FILE__, line_num => __LINE__
+     );
 
-$brkpts->add($brkpt1);
-bp_status($brkpts, 1);
+    $brkpts->add($brkpt1);
+    bp_status($brkpts, 1);
 
-my $brkpt2 = DBBreak->new(
+    my $brkpt2 = DBBreak->new(
     type=>'brkpt', condition=>'x>5', id=>2, hits => 0, enabled => 0,
     Negate => 0, filename => __FILE__, line_num => __LINE__
     );
-$brkpts->add($brkpt2);
-bp_status($brkpts, 2);
+    $brkpts->add($brkpt2);
+    bp_status($brkpts, 2);
 
-$brkpts->delete_by_brkpt($brkpt1);
-bp_status($brkpts, 3);
+    $brkpts->delete_by_brkpt($brkpt1);
+    bp_status($brkpts, 3);
 
-my $brkpt3 = DBBreak->new(
-    type=>'brkpt', condition=>'y eq x', id=>3, hits => 0, enabled => 1,
-    negate => 1, filename => __FILE__, line_num => __LINE__
-    );
-$brkpts->add($brkpt3);
-bp_status($brkpts, 4);
+    my $brkpt3 = DBBreak->new(
+        type=>'brkpt', condition=>'y eq x', id=>3, hits => 0, enabled => 1,
+        negate => 1, filename => __FILE__, line_num => __LINE__
+        );
+    $brkpts->add($brkpt3);
+    bp_status($brkpts, 4);
+    print "id 3 found is", $brkpts->find(3), "\n";
+    print "id 4 is undef\n" unless defined $brkpts->find(4);
+    print "id 'a' is undef\n" unless defined $brkpts->find('a');
 
+    # p brkpts.delete(2)
+    # p brkpts[2]
+    # bp_status(brkpts, 3)
 
-
-  # p brkpts.delete(2)
-  # p brkpts[2]
-  # bp_status(brkpts, 3)
-
-  # # Two of the same breakpoints but delete 1 and see that the
-  # # other still stays
-  # offset = frame.pc_offset
-  # b2 = Trepan::Breakpoint.new(iseq, offset)
-  # brkpts << b2
-  # bp_status(brkpts, 4)
-  # b3 = Trepan::Breakpoint.new(iseq, offset)
-  # brkpts << b3
-  # bp_status(brkpts, 5)
-  # brkpts.delete_by_brkpt(b2)
-  # bp_status(brkpts, 6)
-  # brkpts.delete_by_brkpt(b3)
-  # bp_status(brkpts, 7)
+    # # Two of the same breakpoints but delete 1 and see that the
+    # # other still stays
+    # offset = frame.pc_offset
+    # b2 = Trepan::Breakpoint.new(iseq, offset)
+    # brkpts << b2
+    # bp_status(brkpts, 4)
+    # b3 = Trepan::Breakpoint.new(iseq, offset)
+    # brkpts << b3
+    # bp_status(brkpts, 5)
+    # brkpts.delete_by_brkpt(b2)
+    # bp_status(brkpts, 6)
+    # brkpts.delete_by_brkpt(b3)
+    # bp_status(brkpts, 7)
 }
 
 1;

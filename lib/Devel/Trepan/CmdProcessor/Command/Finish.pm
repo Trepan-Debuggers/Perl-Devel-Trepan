@@ -30,9 +30,8 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [LEVELS]
 
-Continue execution until the program is about to leaving the current
-function or switch context via yielding or ending a block which was
-yield to. Sometimes this is called 'step out'.
+Continue execution until the program is about to leave the current
+function. Sometimes this is called 'step out'.
 
 When LEVELS is specified, that many frame levels need to be
 popped. The default is 1.  Note that 'yield' and exceptions raised my

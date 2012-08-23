@@ -8,7 +8,7 @@ package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(eval? eval@ eval$ eval% eval@? eval%? @ % $ p);
+use constant ALIASES    => qw(eval? eval@ eval$ eval@? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 use constant NEED_STACK  => 0;
@@ -52,7 +52,7 @@ might have multiple variables on the left-hand side.
 
 Normally ${NAME} assumes you are typing a statement, not an expresion;
 the result is a scalar value. However you can force the type of the result
-by adding the appropriate sigil @, %, or \$.
+by adding the appropriate sigil @, or \$.
 
 Examples:
 

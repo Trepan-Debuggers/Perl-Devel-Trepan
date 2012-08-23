@@ -20,7 +20,6 @@ BEGIN {
                                 # eval to take place
     $DB::eval_result = undef;   # Place for result if scalar;
     @DB::eval_result = ();      # place for result if array
-    %DB::eval_result = ();      # place for result if hash.
     $DB::fix_file_and_line = 1; # Should we fix __FILE__ and __LINE__ ? 
                                 # This value is reset after each eval.
                                  
@@ -100,8 +99,6 @@ sub eval_with_return {
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
-        } elsif ('%' eq $return_type) {
-            eval "$eval_setup \%DB::eval_result=$eval_str\n";
         } else {
             $eval_result = eval "$eval_setup $eval_str";
         }
@@ -122,8 +119,6 @@ sub eval_with_return {
                 return $eval_result;
             } elsif ('@' eq $return_type) {
                 return @eval_result;
-            } elsif ('%' eq $return_type) {
-                return %eval_result;
             }  else {
                 return $eval_result;
             }

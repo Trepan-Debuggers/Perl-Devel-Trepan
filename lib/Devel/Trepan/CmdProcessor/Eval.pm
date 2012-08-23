@@ -28,7 +28,7 @@ sub eval($$$$$) {
 	$self->{DB_running} = 2;
 	$self->{leave_cmd_loop} = 1;
     } else {
-	# Have to uses Eval::WithLexicals which, unfortunately,
+	# Have to use Eval::WithLexicals which, unfortunately,
 	# loses on 'local' variables.
 
 	my $i = 0;

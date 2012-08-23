@@ -35,8 +35,7 @@ our $SHORT_HELP = 'Devel::Peek::Dump variable';
 sub run($$)
 {
     my ($self, $args) = @_;
-    my @ARGS = @{$args};
-    @ARGS = splice(@ARGS, scalar(@CMD));
+    my @ARGS = splice(@{$args}, scalar(@CMD));
 
     # FIXME: 4 below is a magic fixup constant, also found in
     # DB::finish.  Remove it.

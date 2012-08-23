@@ -19,17 +19,29 @@ stack frame. Each has the following keys and values:
     
 =over 4
 
-=item * C<wantarray> - C<.> (null), C<$> (scalar), or C<@> (array)
+=item * 
 
-=item * C<fn>   - subroutine name, or C<eval> information
+C<wantarray> - C<.> (null), C<$> (scalar), or C<@> (array)
 
-=item * C<args> - undef, or a reference to an array of arguments
+=item * 
 
-=item * C<file> - the file in which this item was defined (if any)
+C<fn>   - subroutine name, or C<eval> information
 
-=item * C<line> - the line on which it was defined
+=item * 
 
-=item * C<evaltext> - eval text if we are in an eval.
+C<args> - undef, or a reference to an array of arguments
+
+=item * 
+
+C<file> - the file in which this item was defined (if any)
+
+=item * 
+
+C<line> - the line on which it was defined
+
+=item * 
+
+C<evaltext> - eval text if we are in an eval.
 
 =back
 

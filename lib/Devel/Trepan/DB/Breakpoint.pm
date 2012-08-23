@@ -53,7 +53,7 @@ BEGIN {
     $max_bp = $max_action = 0;
 }
 
-
+# return info on lines with actions
 sub line_events {
   my $s = shift;
   my $fname = shift;

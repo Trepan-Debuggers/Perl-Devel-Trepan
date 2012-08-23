@@ -6,7 +6,7 @@ use rlib '../../../../../..';
 use Devel::Peek;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::Dump;
-our (@ISA, @SUBCMD_VARS);
+our @ISA;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
@@ -14,8 +14,8 @@ our $CMD = "info variables dump";
 my  @CMD = split(/ /, $CMD);
 unless (@ISA) {
     eval <<'EOE';
+    use constant MIN_ARGS   => 1;
     use constant MAX_ARGS   => 1;
-    use constant NEED_STACK => 1;
 EOE
 };
 use strict;
@@ -28,7 +28,7 @@ ${CMD} VAR
 Use Devel::Peek::Dump to give information about VAR
 HELP
 
-our $SHORT_HELP   = "Devel::Peek::Dump variable.";
+our $SHORT_HELP = 'Devel::Peek::Dump variable';
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
@@ -38,7 +38,6 @@ sub run($$)
     my @ARGS = @{$args};
     @ARGS = splice(@ARGS, scalar(@CMD));
 
-    no warnings 'once';
     # FIXME: 4 below is a magic fixup constant, also found in
     # DB::finish.  Remove it.
     my $code_to_eval = "Devel::Peek::Dump($ARGS[0])";

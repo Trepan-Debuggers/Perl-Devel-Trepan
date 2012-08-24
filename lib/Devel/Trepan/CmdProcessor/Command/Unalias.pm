@@ -48,6 +48,10 @@ sub run($$) {
     my @args = @$args; shift @args;
     for my $arg (@args) {
 	if (exists $proc->{aliases}{$arg}) {
+	    my $command_name = $proc->{aliases}{$arg};
+	    my $cmd_alias_ref = $proc->{commands}{$command_name}{aliases};
+	    my @new_aliases = grep(($arg ne $_), @$cmd_alias_ref);
+	    $proc->{commands}{$command_name}{aliases} = \@new_aliases;
 	    delete $proc->{aliases}{$arg};
 	    $proc->msg("Alias for ${arg} removed.");
 	} else {

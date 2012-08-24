@@ -73,7 +73,7 @@ sub load_debugger_command($$)
 {
     my ($self, $command_file) = @_;
     return unless -r $command_file;
-    my $rc = eval "require '$command_file' || 1";
+    my $rc = eval "require '$command_file' || 1" || 1;
     if ($rc eq 'Skip me!') {
 	;
     } elsif ($rc) {
@@ -160,7 +160,8 @@ sub setup_command($$)
 	}
 	$self->{commands}{$cmd_name} = $cmd_obj;
     } else {
-	$self->errmsg("Error instantiating $name")
+	$self->errmsg("Error instantiating $name");
+	$self->errmsg($@);
     }
   }
 

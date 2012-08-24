@@ -1,8 +1,7 @@
 Revision history for Devel-Trepan
 
-0.32  - 
+0.32  - Aug 24, 2012
 
-- Add Devel::Peek via "info variables dump" 
 - Fix bugs
 - Rerelease for CPANTS failures
 

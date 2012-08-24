@@ -47,16 +47,10 @@ $y = 3;
 $z = 4
 -- main::(eval.pl:6)
 $eval_sub='
-    my @args = @_;
-    print "ho\n";
--- main::(eval.pl:12)
 eval $eval_sub;
 -- main::(eval.pl:13)
 $y = five();
 -- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:3)
-    my @args = @_;
-    print "ho\n";
-    5;
 --> #0 @ = main::five() in 
 	file `(eval 1000)[eval.pl:12]' at line 3
     #1 file `eval.pl' at line 13

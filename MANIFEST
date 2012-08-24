@@ -60,6 +60,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Dump.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm
@@ -178,6 +179,7 @@ META.yml
 README				README in perlpod format for CPAN
 README.md			README in Markdown format for github
 t/00test-pod.t
+t/10test-brkptmgr.t
 t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
 t/10test-complete.t

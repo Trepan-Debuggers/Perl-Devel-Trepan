@@ -3,6 +3,7 @@
 package DB;
 use warnings; use strict;
 use English qw( -no_match_vars );
+use Capture::Tiny ':all';
 
 # FIXME: remove these
 use vars qw($eval_result @eval_result $fix_file_and_line);
@@ -61,6 +62,13 @@ sub eval_with_return {
         } elsif ('!' eq $return_type) {
             my @res = eval "$eval_setup $eval_str\n";
 	    _warnall($@) if $@;
+        } elsif ('!' eq $return_type) {
+            my @res = eval "$eval_setup $eval_str\n";
+	    _warnall($@) if $@;
+        } elsif ('2>' eq $return_type) {
+	    $eval_result = capture_merged {
+		eval "$eval_setup $eval_str\n";
+	    }
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
         }

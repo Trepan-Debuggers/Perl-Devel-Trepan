@@ -40,7 +40,8 @@ sub run($$)
     # FIXME: 4 below is a magic fixup constant, also found in
     # DB::finish.  Remove it.
     my $code_to_eval = "Devel::Peek::Dump($ARGS[0])";
-    my $opts = {return_type => '$'};
+    # my $opts = {return_type => '$'};
+    my $opts = {return_type => '2>'};
     $self->{proc}->eval($code_to_eval, $opts, 4);
 }
 

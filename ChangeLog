@@ -1,7 +1,92 @@
+2012-08-24  rocky <rocky@cpan.org>
+
+	* MANIFEST, META.json, META.yml: I said, get ready for release
+
+2012-08-24  rocky <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Get
+	ready for 0.32 release.
+
+2012-08-24  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm: unalias removes alias listing
+	in help for command. Issue #10.
+
+2012-08-23  rocky <rocky@cpan.org>
+
+	* t/20test-eval.t, t/data/eval.right, t/data/eval2.right: Try to
+	address CPANTS failures.
+
+2012-08-23  rocky <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Dump.pm, lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Disable
+	Devel::Peek:Dump until we can get I/O problem sorted out.
+
+2012-08-23  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, lib/Devel/Trepan/DB/Eval.pm: 
+	Eval.pm: DRY code. Attempt to clean up DB.pm in advance of a print
+	capture routine.
+
+2012-08-23  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Dump.pm, lib/Devel/Trepan/CmdProcessor/Eval.pm,
+	lib/Devel/Trepan/DB/Eval.pm: Remove this totally bogus hash context.
+	What happens when you say "my %x = ..."; was explained to me by
+	David Golden at an NY.pm meeting.
+
+2012-08-23  rocky <rocky@cpan.org>
+
+	* Changes,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Dump.pm: Tidy Dump.pm code
+
+2012-08-22  rocky <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Dump.pm: Add 'Devel::Peek::Dump output under the name "info var
+	dump". Issue #13. Thanks (again) to David Golden and NY.pm.
+
+2012-08-22  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Finish.pm: Fix help for
+	"finish" command. Thanks to NY.pm for making this mistake apparent.
+
+
+2012-08-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm: Tighten output a
+	little.
+
+2012-08-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/BrkptMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, t/10test-brkptmgr.t: Tolerate
+	errors in breakpoint data better. quit when terminated doesn't need
+	confirmation. Add breakpoint manager unit test.
+
 2012-08-21  Rocky Bernstein <rocky@cpan.org>
 
-	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Fix up
-	Trepan.pm pod =items. Get ready for release 0.31
+	* Build.PL, META.json, META.yml: Get ready for release - this time,
+	for sure!
+
+2012-08-21  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm: Fix up Trepan.pm pod =items. Get ready
+	for release 0.31
 
 2012-08-20  Rocky Bernstein <rocky@cpan.org>
 

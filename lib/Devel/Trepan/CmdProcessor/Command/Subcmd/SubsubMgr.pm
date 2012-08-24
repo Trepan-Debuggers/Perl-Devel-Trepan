@@ -104,7 +104,10 @@ sub load_debugger_subsubcommands($$)
 		push @{$self->{cmd_names}}, $item;
 		push @{$self->{cmd_basenames}}, $basename;
 	    }
-	    if (eval "require '$pm'; 1") {
+	    my $rc = eval "require '$pm' || 1";
+	    if ($rc eq 'Skip me!') {
+		;
+	    } elsif ($rc) {
 		$self->setup_subsubcommand($parent, $item, $basename);
 	    } else {
 		my $proc = $parent->{proc};
@@ -129,7 +132,7 @@ sub setup_subsubcommand($$$$)
 	$self->add($cmd_obj, $cmd_name);
     } else {
 	my $proc = $parent->{proc};
-	$proc->errmsg("Error instantiating $name");
+	$proc->errmsg("Error instantiating ${cmd_prefix}");
 	$proc->errmsg($@);
     }
 

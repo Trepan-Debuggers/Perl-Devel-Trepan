@@ -365,6 +365,57 @@ sub DB {
     ();
 }
   
+=head1 RESTART SUPPORT
+
+These routines are used to store (and restore) lists of items in environment 
+variables during a restart.
+
+=head2 set_list
+
+Set_list packages up items to be stored in a set of environment variables
+(VAR_n, containing the number of items, and VAR_0, VAR_1, etc., containing
+the values). Values outside the standard ASCII charset are stored by encoding
+then as hexadecimal values.
+
+=cut
+
+sub set_list {
+    my ( $stem, @list ) = @_;
+    my $val;
+
+    # VAR_n: how many we have. Scalar assignment gets the number of items.
+    $ENV{"${stem}_n"} = @list;
+
+    # Grab each item in the list, escape the backslashes, encode the non-ASCII
+    # as hex, and then save in the appropriate VAR_0, VAR_1, etc.
+    for $i ( 0 .. $#list ) {
+        $val = $list[$i];
+        $val =~ s/\\/\\\\/g;
+        $val =~ s/([\0-\37\177\200-\377])/"\\0x" . unpack('H2',$1)/eg;
+        $ENV{"${stem}_$i"} = $val;
+    } ## end for $i (0 .. $#list)
+} ## end sub set_list
+
+=head2 get_list
+
+Reverse the set_list operation: grab VAR_n to see how many we should be getting
+back, and then pull VAR_0, VAR_1. etc. back out.
+
+=cut 
+
+sub get_list {
+    my $stem = shift;
+    my @list;
+    my $n = delete $ENV{"${stem}_n"};
+    my $val;
+    for $i ( 0 .. $n - 1 ) {
+        $val = delete $ENV{"${stem}_$i"};
+        $val =~ s/\\((\\)|0x(..))/ $2 ? $2 : pack('H2', $3) /ge;
+        push @list, $val;
+    }
+    @list;
+} ## end sub get_list
+
 ###############################################################################
 #         no compile-time subroutine call allowed before this point           #
 ###############################################################################

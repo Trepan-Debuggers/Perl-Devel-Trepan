@@ -59,6 +59,7 @@ my $builder = Module::Build->new(
     requires => {
 	'perl'                              => '5.008008',
 	'Array::Columnize'                  => '1.01',
+	# 'Capture::Tiny'                     => 0,
  	'Data::Dumper'                      => 0,
 	'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,

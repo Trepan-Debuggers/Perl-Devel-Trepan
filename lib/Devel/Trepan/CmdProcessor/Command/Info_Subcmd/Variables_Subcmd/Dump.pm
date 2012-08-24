@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+
+# Until I work out how to get Devel::Peek::Dump io redirected
+return 'Skip me!';
+
 use warnings; no warnings 'redefine';
 
 use rlib '../../../../../..';
@@ -40,6 +44,7 @@ sub run($$)
     # FIXME: 4 below is a magic fixup constant, also found in
     # DB::finish.  Remove it.
     my $code_to_eval = "Devel::Peek::Dump($ARGS[0])";
+    # my $opts = {return_type => '2>'};
     my $opts = {return_type => '$'};
     $self->{proc}->eval($code_to_eval, $opts, 4);
 }

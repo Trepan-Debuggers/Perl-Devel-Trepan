@@ -121,7 +121,7 @@ sub setup_subcommand($$$$)
 	$self->{subcmds}->{$cmd_name} = $cmd_obj;
 	$self->add($cmd_obj, $cmd_name);
     } else {
-	$self->errmsg("Error instantiating $name");
+	$self->errmsg("Error instantiating ${parent_name}::$name");
 	$self->errmsg($@);
     }
 

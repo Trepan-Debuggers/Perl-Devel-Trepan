@@ -264,19 +264,8 @@ sub process_after_eval($) {
                 $val_str = '<undef>'
             }
             $self->msg("$prefix\n\@\{$val_str}");
-    } elsif ('%' eq $return_type) {
-            if (%DB::eval_result) {
-                $DB::D[$last_eval_value++] = \%DB::eval_result;
-                if ('dprint' eq $evdisp) {
-                    $val_str = $fn->(\%DB::eval_result, %$print_properties);
-                } else {
-                    $val_str = $fn->(%DB::eval_result);
-                }
-                chomp $val_str;
-            } else {
-                $val_str = '<undef>'
-            }
-            $self->msg("$prefix\n\%{$val_str}");
+    } elsif ('>' eq $return_type || '2>' eq $return_type ) {
+	$self->msg($DB::eval_result);
     }  else {
             if (defined $DB::eval_result) {
                 if ('dprint' eq $evdisp) {

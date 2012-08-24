@@ -40,7 +40,7 @@ sub eval_with_return {
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
 
     {
-	no warnings 'once';
+        no warnings 'once';
         # Try to keep the user code from messing with us. Save these so that
         # even if the eval'ed code changes them, we can put them back again.
         # Needed because the user could refer directly to the debugger's
@@ -61,14 +61,14 @@ sub eval_with_return {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
         } elsif ('!' eq $return_type) {
             my @res = eval "$eval_setup $eval_str\n";
-	    _warnall($@) if $@;
+            _warnall($@) if $@;
         } elsif ('!' eq $return_type) {
             my @res = eval "$eval_setup $eval_str\n";
-	    _warnall($@) if $@;
+            _warnall($@) if $@;
         } elsif ('2>' eq $return_type) {
-	    $eval_result = capture_merged {
-		eval "$eval_setup $eval_str\n";
-	    }
+            $eval_result = capture_merged {
+                eval "$eval_setup $eval_str\n";
+            }
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
         }

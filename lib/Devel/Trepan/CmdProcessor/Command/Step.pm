@@ -83,51 +83,51 @@ sub run($$) {
     my $proc = $self->{proc};
     my $opts = $proc->parse_next_step_suffix($args->[0]);
     # condition = nil
-    # if args.size == 1
-    #   # Form is: "step" which means "step 1"
-    #   step_count = 0
-    # else
-    #   replace_cmd = Keyword_to_related_cmd[args[1]]
-    #   if replace_cmd
-    #     cmd = @proc.commands[replace_cmd]
-    #     return cmd.run([replace_cmd] + args[2..-1])
-    #   elsif 'until' == args[1]
-    #     try_condition = args[2..-1].join(' ')
-    #     if valid_condition?(try_condition)
-    #       condition = try_condition
-    #       opts[:different_pos] = false
+    if (0 == $#$args) {
+	# Form is: "step" which means "step 1"
+	$proc->{step_count} = 0;
+    } else {
+	my $replace_cmd = $Keyword_to_related_cmd->{$args->[1]};
+	if (defined($replace_cmd)) {
+	    my $cmd = $proc->{commands}{$replace_cmd};
+	    return $cmd->run( ($replace_cmd, splice($args, 2)) );
+    #   } elsif ('until' eq $args->[1]) {
+    #     my $try_condition = join(@$args[2..-1], ' ');
+    #     if (valid_condition?(try_condition)) {
+    #       $condition = $try_condition;
+    #       $opts-{different_pos} = 0;
+    #       $proc->{step_count} = 0;
+    #     }
+    #   elsif('to' eq $args[1]) {
+    #     if args.size != 3;
+    #       $self->errmsg('Expecting a method name after "to"');
+    #       return;
+    #     elsif (!@proc.method?(args[2])) {
+    #       $self->errmsg("${args[2]} doesn't seem to be a method name");
+    #       return;
+    #     } else {
+    #       $opts->{to_method{ = $args->[2];
+    #       $opts->{different_pos} = 0;
     #       step_count = 0
-    #     end
-    #   elsif 'to' == args[1]
-    #     if args.size != 3
-    #       errmsg('Expecting a method name after "to"')
-    #       return
-    #     elsif !@proc.method?(args[2])
-    #       errmsg("${args[2]} doesn't seem to be a method name")
-    #       return
-    #     else
-    #       opts[:to_method] = args[2]
-    #       opts[:different_pos] = false
-    #       step_count = 0
-    #     end
-    #   elsif 'thread' == args[1]
-    #     condition = "Thread.current.object_id == ${Thread.current.object_id}"
-    #     opts[:different_pos] = false
-    #     step_count = 0
-    #   else
-    #     count_str = args[1]
-    #     int_opts = {
-    #       :msg_on_error => 
-    #       "The 'step' command argument must eval to an integer. Got: %s" % 
-    #       count_str,
-    #       :min_value => 1
-    #     }.merge(opts)
-    #     count = @proc.get_an_int(count_str, int_opts)
-    #     return unless count
-    #     # step 1 is core.step_count = 0 or "stop next event"
-    #     step_count = count - 1  
-    #   end
-    # end
+    #     }
+    #   } elsif ('thread' eq $args->[1]) {
+    #     $condition = "Thread.current.object_id == ${Thread.current.object_id}"
+    #     $opts[:different_pos] = 0;
+    #     $proc->{step_count] = 0;
+	} else {
+	    my $count_str = $args->[1];
+	    my $int_opts = {
+		msg_on_error => 
+		    "The 'step' command argument must eval to an integer. Got: ${count_str}",
+		    min_value => 1
+	    };
+	    #     }.merge(opts)
+	    my $count = $proc->get_an_int($count_str, $int_opts);
+	    return unless defined($count);
+	    # step 1 is $proc->{step_count} = 0 or "stop next event"
+	    $proc->{step_count} = $count - 1  ;
+	}
+    }
     $proc->step($opts)
 }
 

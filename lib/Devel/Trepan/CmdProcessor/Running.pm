@@ -138,7 +138,12 @@ sub is_stepping_skip($)
 {
 
     my $self = shift;
-    return 1 if $self->{step_count} < 0;
+    if ($self->{step_count} < 0) {
+	return 1;
+    } elsif ($self->{step_count} > 0) {
+	$self->{step_count} --;
+	return 1
+    }
 
     if ($self->{settings}{'debugskip'}) {
         $self->msg("diff: $self->{different_pos}, event : $self->{event}");

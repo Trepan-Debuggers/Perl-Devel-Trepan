@@ -36,4 +36,6 @@ run_debugger("$test_prog 3 5", 'trace1.cmd', undef, $opts);
 $opts->{no_cmdfile} = 0;
 $opts->{run_opts}   = " --no-highlight --nx --basename --fall-off-end";
 run_debugger("$test_prog 3 5", 'trace2.cmd', undef, $opts);
+
+run_debugger("$test_prog 3 5", 'trace3.cmd', undef, $opts);
 done_testing();

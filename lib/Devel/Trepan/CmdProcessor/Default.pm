@@ -41,7 +41,7 @@ use constant DEFAULT_SETTINGS => {
     abbrev        => 1,      # Allow abbreviations of debugger commands?
     autoeval      => 1,      # Perl eval non-debugger commands
     autoirb       => 0,      # Go into IRB in debugger command loop
-    autolist      => 0,      # Run 'list' 
+    autolist      => 0,      # Run 'list' before entering command loop? 
     
     basename      => 0,      # Show basename of filenames only
     confirm       => 1,      # Confirm potentially dangerous operations?
@@ -75,7 +75,7 @@ use constant DEFAULT_SETTINGS => {
                              # printed
     maxwidth      => ($ENV{'COLUMNS'} || 80),
     prompt        => 'trepanpl', # core part of prompt. Additional info like
-                             # debug nesting and 
+                             # debug nesting and thread added later
     reload        => 0,      # Reread source file if we determine
                              # it has changed?
     save_cmdfile  => 0,      # If set, debugger command file to be

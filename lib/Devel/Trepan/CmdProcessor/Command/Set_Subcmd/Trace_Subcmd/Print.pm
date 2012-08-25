@@ -31,6 +31,7 @@ sub run($$)
     $self->SUPER::run($args);
     my $proc = $self->{proc};
     if ( $proc->{settings}{traceprint} ) {
+	$proc->{skip_count} = -1;  # -1 is like infinite skipping.
 	$proc->{unconditional_prehooks}->insert_if_new(10, 
 						       $proc->{trace_hook}[0],
 						       $proc->{trace_hook}[1]

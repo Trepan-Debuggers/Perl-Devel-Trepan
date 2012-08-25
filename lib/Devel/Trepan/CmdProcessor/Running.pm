@@ -29,6 +29,7 @@ use constant RETURN_EVENT          => 32;
 
 sub continue($$) {
     my ($self, $args) = @_;
+    $self->{skip_count} = -1;
     if ($self->{settings}{traceprint}) {
 	$self->step();
 	return;
@@ -55,7 +56,7 @@ sub continue($$) {
 #     @next_level      = 32000; # I'm guessing the stack size can't ever
 # 			      # reach this
 #     @next_thread     = undef;
-#     @core.step_count = -1;    # No more event stepping
+#     @core.skip_count = -1;    # No more event stepping
 #     @leave_cmd_loop  = 1;  # Break out of the processor command loop.
 #     @settings[:autoirb] = 0;
 #     @cmdloop_prehooks.delete_by_name('autoirb');
@@ -95,6 +96,7 @@ sub finish($$) {
     $self->{leave_cmd_loop} = 1;
     $self->{dbgr}->finish($level_count);
     $self->{DB_running} = 1;
+    $self->{skip_count} = -1;
 }
 
 sub next($$) 
@@ -138,16 +140,16 @@ sub is_stepping_skip($)
 {
 
     my $self = shift;
-    if ($self->{step_count} < 0) {
+    if ($self->{skip_count} < 0) {
 	return 1;
-    } elsif ($self->{step_count} > 0) {
-	$self->{step_count} --;
+    } elsif ($self->{skip_count} > 0) {
+	$self->{skip_count} --;
 	return 1
     }
 
     if ($self->{settings}{'debugskip'}) {
         $self->msg("diff: $self->{different_pos}, event : $self->{event}");
-	$self->msg("step_count  : $self->{step_count}");
+	$self->msg("skip_count  : $self->{skip_count}");
     }
 
     my $frame = $self->{frame};

@@ -54,6 +54,10 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $opts = $proc->parse_next_step_suffix($args->[0]);
+    
+    # FIXME: parse and adjust step count
+    $proc->{skip_count} = 0;
+
     $proc->next($opts);
 }
 

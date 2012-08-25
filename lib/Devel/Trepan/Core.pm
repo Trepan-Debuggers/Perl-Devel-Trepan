@@ -172,6 +172,7 @@ sub awaken($;$) {
 	    add_startup_files($cmdproc, $opts->{initfile}, 1);
 	}
     }
+    $cmdproc->{skip_count} = -1 if $opts->{traceprint};
     $self->{sigmgr} = 
 	Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
 					$self->signal_handler(@_) },

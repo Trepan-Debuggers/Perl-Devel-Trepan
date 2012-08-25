@@ -282,6 +282,8 @@ t/data/trace1.cmd
 t/data/trace1.right
 t/data/trace2.cmd
 t/data/trace2.right
+t/data/trace3.cmd
+t/data/trace3.right
 t/data/watch1.cmd
 t/data/watch1.right
 t/data/watch2.cmd

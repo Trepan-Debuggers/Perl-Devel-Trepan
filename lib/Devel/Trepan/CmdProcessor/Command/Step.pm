@@ -85,7 +85,7 @@ sub run($$) {
     # condition = nil
     if (0 == $#$args) {
 	# Form is: "step" which means "step 1"
-	$proc->{step_count} = 0;
+	$proc->{skip_count} = 0;
     } else {
 	my $replace_cmd = $Keyword_to_related_cmd->{$args->[1]};
 	if (defined($replace_cmd)) {
@@ -96,7 +96,7 @@ sub run($$) {
     #     if (valid_condition?(try_condition)) {
     #       $condition = $try_condition;
     #       $opts-{different_pos} = 0;
-    #       $proc->{step_count} = 0;
+    #       $proc->{skip_count} = 0;
     #     }
     #   elsif('to' eq $args[1]) {
     #     if args.size != 3;
@@ -108,12 +108,12 @@ sub run($$) {
     #     } else {
     #       $opts->{to_method{ = $args->[2];
     #       $opts->{different_pos} = 0;
-    #       step_count = 0
+    #       skip_count = 0
     #     }
     #   } elsif ('thread' eq $args->[1]) {
     #     $condition = "Thread.current.object_id == ${Thread.current.object_id}"
     #     $opts[:different_pos] = 0;
-    #     $proc->{step_count] = 0;
+    #     $proc->{skip_count] = 0;
 	} else {
 	    my $count_str = $args->[1];
 	    my $int_opts = {
@@ -124,8 +124,8 @@ sub run($$) {
 	    #     }.merge(opts)
 	    my $count = $proc->get_an_int($count_str, $int_opts);
 	    return unless defined($count);
-	    # step 1 is $proc->{step_count} = 0 or "stop next event"
-	    $proc->{step_count} = $count - 1  ;
+	    # step 1 is $proc->{skip_count} = 0 or "stop next event"
+	    $proc->{skip_count} = $count - 1  ;
 	}
     }
     $proc->step($opts)

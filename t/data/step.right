@@ -1,9 +1,13 @@
--- main::(nexting.pl:7)
+-- main::(nexting.pl:8)
 my $x=1; my $y=2; 
 different is on.
--- main::(nexting.pl:8)
-$x=$y; $y = 4; $x += $y;
--- main::(nexting.pl:8)
+-- main::(nexting.pl:9)
 $x=$y; $y = 4; $x += $y;
 -- main::(nexting.pl:9)
+$x=$y; $y = 4; $x += $y;
+-- main::(nexting.pl:10)
 $x=6; $y = p(); my $z = p(); 
+-- main::(nexting.pl:13)
+$x = 8;
+-- main::(nexting.pl:15)
+$x += $z;

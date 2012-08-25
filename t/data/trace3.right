@@ -1,0 +1,40 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+set trace print is on.
+Breakpoint 1 set in gcd.pl at line 11
+-- main::(gcd.pl:20)
+my ($a, $b) = @ARGV[0,1];
+-- main::(gcd.pl:21)
+printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
+-- main::(gcd.pl:9)
+    my ($a, $b) = @_;
+xx main::(gcd.pl:11)
+    ($a, $b) = ($b, $a) if ($a > $b);
+-- main::(gcd.pl:13)
+    return undef if $a <= 0;
+-- main::(gcd.pl:14)
+    return $a if ($a == 1) or ($b-$a == 0);
+Breakpoint 1 disabled
+-- main::(gcd.pl:15)
+    return gcd($b-$a, $a);
+-- main::(gcd.pl:9)
+    my ($a, $b) = @_;
+-- main::(gcd.pl:11)
+    ($a, $b) = ($b, $a) if ($a > $b);
+-- main::(gcd.pl:13)
+    return undef if $a <= 0;
+-- main::(gcd.pl:14)
+    return $a if ($a == 1) or ($b-$a == 0);
+-- main::(gcd.pl:15)
+    return gcd($b-$a, $a);
+-- main::(gcd.pl:9)
+    my ($a, $b) = @_;
+-- main::(gcd.pl:11)
+    ($a, $b) = ($b, $a) if ($a > $b);
+-- main::(gcd.pl:13)
+    return undef if $a <= 0;
+-- main::(gcd.pl:14)
+    return $a if ($a == 1) or ($b-$a == 0);
+<- main::(gcd.pl:21) main::gcd
+printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);

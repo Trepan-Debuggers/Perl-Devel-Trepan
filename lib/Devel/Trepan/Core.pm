@@ -50,7 +50,7 @@ sub idle($$$)
 {
     my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
-    $event = 'terminated' if $DB::package eq 'DB::fake';
+    $event = 'terminated' if $DB::package eq 'Devel::Trepan::Terminated';
     if ($self->{need_e_remap} && $DB::filename eq '-e') {
 	DB::LineCache::remap_dbline_to_file();
 	$self->{need_e_remap} = 0;

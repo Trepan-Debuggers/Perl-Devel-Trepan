@@ -1,3 +1,9 @@
+2012-08-24  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm, t/20test-eval.t, t/data/eval.right: Get
+	ready for 0.33 release
+
 2012-08-24  rocky <rocky@cpan.org>
 
 	* MANIFEST, META.json, META.yml: I said, get ready for release

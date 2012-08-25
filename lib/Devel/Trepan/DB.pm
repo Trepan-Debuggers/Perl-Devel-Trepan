@@ -6,7 +6,7 @@
 
 use rlib '../..';
 
-=head1 C<DB::fake>
+=head1 C<Devel::Trepan::Terminated>
 
 Contains the C<at_exit> routine that the debugger uses to issue the
 C<Debugged program terminated ...> message after the program completes. See
@@ -16,7 +16,7 @@ the C<END> block documentation for more details.
 
 # rocky: I'm copying what perl5db does here, which I suppose has some
 # time-honored benefit. That doesn't mean though that I like it. FIXME!
-package DB::fake;
+package Devel::Trepan::Terminated;
 
 sub at_exit {
     $DB::ready = 1;
@@ -151,7 +151,7 @@ BEGIN {
 END {
     unless ($DB::fall_off_on_end) {
         $DB::single = 1;
-        DB::fake::at_exit();
+        Devel::Trepan::Terminated::at_exit();
     }
     $DB::ready = 0;
 } 

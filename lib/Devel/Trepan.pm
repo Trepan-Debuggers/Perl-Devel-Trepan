@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.33';
+use version; $VERSION = '0.33_01';
 use Exporter;
 
 use Devel::Trepan::Core;

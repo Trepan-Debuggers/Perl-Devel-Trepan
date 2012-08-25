@@ -265,7 +265,7 @@ sub process_after_eval($) {
             }
             $self->msg("$prefix\n\@\{$val_str}");
     } elsif ('>' eq $return_type || '2>' eq $return_type ) {
-	$self->msg($DB::eval_result);
+        $self->msg($DB::eval_result);
     }  else {
             if (defined $DB::eval_result) {
                 if ('dprint' eq $evdisp) {
@@ -349,30 +349,30 @@ sub process_commands($$$;$)
         $next_skip = skip_if_next($self, $event);
         unless ($next_skip) { 
 
-	    # prehooks include traceprint, list, and event saving.
+            # prehooks include traceprint, list, and event saving.
             $self->{unconditional_prehooks}->run;
 
             if (index($self->{event}, 'brkpt') < 0 && !$self->{terminated}) {
                 # Not a breakpoint and not terminated.
 
-		if ($event eq 'line') {
+                if ($event eq 'line') {
 
-		    # We may want to not stop because of "step n"; step different, or 
-		    # "next"
-		    # use Enbugger; Enbugger->stop if 2 == $self->{next_level};
-		    if ($self->is_stepping_skip()) {
-			# || $self->{stack_size} <= $self->{hide_level};
-			$self->{dbgr}->step;
-			return;
-		    }
-		    # trace print sets stepping even when though otherwise
-		    # we may be are continuing, nexting, finishing, or
-		    # returning.
-		    if ($self->{settings}{traceprint}) {
-			$self->{dbgr}->step;
-			return unless 0 == $self->{skip_count};
-		    }
-		}
+                    # We may want to not stop because of "step n"; step different, or 
+                    # "next"
+                    # use Enbugger; Enbugger->stop if 2 == $self->{next_level};
+                    if ($self->is_stepping_skip()) {
+                        # || $self->{stack_size} <= $self->{hide_level};
+                        $self->{dbgr}->step;
+                        return;
+                    }
+                    # trace print sets stepping even when though otherwise
+                    # we may be are continuing, nexting, finishing, or
+                    # returning.
+                    if ($self->{settings}{traceprint}) {
+                        $self->{dbgr}->step;
+                        return unless 0 == $self->{skip_count};
+                    }
+                }
             }
         
             $self->{prompt} = compute_prompt($self);
@@ -404,9 +404,9 @@ sub process_commands($$$;$)
         }
     }
     unless ($self->{terminated}) {
-	$self->{cmdloop_posthooks}->run;
-	$self->{last_tid} = $DB::tid;
-	$DB::single       = $self->{DB_single};
+        $self->{cmdloop_posthooks}->run;
+        $self->{last_tid} = $DB::tid;
+        $DB::single       = $self->{DB_single};
     }
     $DB::running      = $self->{DB_running};
 

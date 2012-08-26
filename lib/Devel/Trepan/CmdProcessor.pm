@@ -439,18 +439,28 @@ sub run_command($$)
             return if scalar(@args) == 0;
             my $macro_cmd_name = $args[0];
             last unless $self->{macros}{$macro_cmd_name};
-            pop @args;
+	    my $debugging = $self->{settings}{debugmacro};
+	    # if ($debugging) {
+	    # 	require Enbugger; Enbugger->stop();
+	    # }
+            shift @args;
             my $macro_expanded = 
                 $self->{macros}{$macro_cmd_name}[0]->(@args);
-#           $self->msg($macro_expanded) if $self->{settings}{debugmacro};
             if (ref $macro_expanded eq 'ARRAY' #  && 
 #               current_command.all? {|val| val.is_a?(String)}
                 ) {
                 my @new_commands = @{$macro_expanded};
-                push @cmd_queue, @new_commands;
-                $current_command = shift @cmd_queue;
-                @args = split(' ', $current_command);
+		$self->msg(join(' ', @new_commands)) if $debugging;
+		if (scalar @new_commands > 0) {
+		    push @cmd_queue, @new_commands;
+		    $current_command = shift @cmd_queue;
+		    @args = split(' ', $current_command);
+		} else {
+		    $current_command = '#';
+		    @args = ();
+		}
             } else {
+		$self->msg($macro_expanded) if $debugging;
                 $current_command = $macro_expanded;
                 @args = split(/\s+/, $current_command);
             # } else {

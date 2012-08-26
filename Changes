@@ -1,9 +1,12 @@
 Revision history for Devel-Trepan
 
-0.34  - 
+0.34  - Aug 26, 2012
 - Add step count. 
 - Avoid DB::fake for CPAN indexer
 - Fix issue 11
+- Add set debug {except, skip, macro}. 
+- Fix Bug in getting macro parameters
+- Rerelease for CPANTS failures
 
 0.33  - Aug 24, 2012
 - Rerelease for CPANTS failures

@@ -15,7 +15,7 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 our $HELP         = "Debug exceptions handled by debugger";
-our $MIN_ABBREV   = length('ma');
+our $MIN_ABBREV   = length('ex');
 use constant MAX_ARGS => 1;
  
 unless (caller) {

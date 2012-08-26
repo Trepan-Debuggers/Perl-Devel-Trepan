@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -20,7 +20,7 @@ our $HELP         = <<"HELP";
 Evaluate unrecognized debugger commands.
 
 Often inside the debugger, one would like to be able to run arbitrary
-Ruby commands without having to preface Python expressions with \"print\" or
+Perl commands without having to preface expressions with \"print\" or
 \"eval\". Showing \"auto eval\" on will cause unrecognized debugger
 commands to be evaluated as a Perl expression. 
 

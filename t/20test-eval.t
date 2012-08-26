@@ -12,7 +12,7 @@ my $opts = {
 	my $skip = 0;
         foreach (split("\n", $got_lines)) {
 	    s/^\s+'/  '/;
-	    s/^\]/  ]/;
+	    s/^\s*\]/  ]/;
             push @result, $_;
         }
         $got_lines = join("\n", @result);

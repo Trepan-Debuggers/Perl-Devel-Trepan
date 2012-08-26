@@ -1,3 +1,64 @@
+2012-08-26  rocky <rocky@cpan.org>
+
+	* Build.PL, Changes, MANIFEST, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Excep
+	t.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.
+	pm, lib/Devel/Trepan/Options.pm, t/20test-eval.t: Get ready for 0.34
+	release
+
+2012-08-26  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Excep
+	t.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Skip.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Exce
+	pt.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Macr
+	o.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Skip
+	.pm: Add set debug {except, skip, macro}. Fix Bug in getting macro
+	parameters
+
+2012-08-25  rocky <rocky@cpan.org>
+
+	* Build.PL, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor.pm, lib/Devel/Trepan/Options.pm: 
+	Administrivia
+
+2012-08-25  rocky <rocky@cpan.org>
+
+	* MANIFEST, example/nexting.pl, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Next.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print
+	.pm, lib/Devel/Trepan/CmdProcessor/Command/Step.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm, lib/Devel/Trepan/Core.pm,
+	t/20test-trace.t, t/data/step.cmd, t/data/step.right,
+	t/data/trace3.cmd, t/data/trace3.right: Fix "set trace print" so it
+	works with "step". Impliment count argument on "step".
+
+2012-08-24  rocky <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-08-24  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Step.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm: Allow "step over, into,
+	out"  and step counts.
+
+2012-08-24  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm: 
+	DB::fake -> Devel::Trepan::Terminated. CPAN already has DB::fake
+	registered elsewhere.
+
 2012-08-24  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, Changes, META.json, META.yml, lib/Devel/Trepan.pm,

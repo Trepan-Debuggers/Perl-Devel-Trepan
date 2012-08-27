@@ -27,6 +27,7 @@ unless (@ISA) {
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::User;
     require Devel::Trepan::CmdProcessor::Virtual;
+    require Devel::Trepan::CmdProcessor::Alias;
     require Devel::Trepan::CmdProcessor::Default;
     require Devel::Trepan::CmdProcessor::Msg;
     require Devel::Trepan::CmdProcessor::Help;

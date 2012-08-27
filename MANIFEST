@@ -23,6 +23,7 @@ lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm
 lib/Devel/Trepan/Client.pm
 lib/Devel/Trepan/CmdProcessor.pm
+lib/Devel/Trepan/CmdProcessor/Alias.pm
 lib/Devel/Trepan/CmdProcessor/Command.pm
 lib/Devel/Trepan/CmdProcessor/Command/Action.pm
 lib/Devel/Trepan/CmdProcessor/Command/Alias.pm

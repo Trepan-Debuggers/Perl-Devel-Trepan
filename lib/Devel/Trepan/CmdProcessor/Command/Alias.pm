@@ -53,8 +53,9 @@ sub run($$) {
 	my $old_command = $proc->{aliases}{$al};
 	if (exists $proc->{commands}{$command}) {
 	    my $cmd_str = join(' ', ($command, @rest));
-	    $proc->{aliases}{$al} = $cmd_str;
+	    $proc->add_alias($command, $al, $cmd_str);
 	    if ($old_command) {
+		$proc->remove_alias($old_command);
 		$self->msg("Alias '${al}' for command string '${cmd_str}' replaced old " .
 			   "alias for '${old_command}'.");
 	    } else {

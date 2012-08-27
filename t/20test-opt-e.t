@@ -2,10 +2,14 @@
 use warnings; use strict;
 use rlib '.'; use Helper; 
 use English;
+use Config;
 
 if ($OSNAME eq 'MSWin32') {
     eval "use Test::More skip_all => 
      'We can not handle -e properly on Strawberry Perl'";
+} elsif ( $Config{usesitecustomize} ) {
+    eval "use Test::More skip_all => 
+     'Site customization handles -e option differently'";
 }
 my $opts = {
     filter => sub{

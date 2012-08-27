@@ -44,10 +44,6 @@
          "file" : "lib/Devel/Trepan/DB/LineCache.pm",
          "version" : 0
       },
-      "DB::fake" : {
-         "file" : "lib/Devel/Trepan/DB.pm",
-         "version" : 0
-      },
       "DBBreak" : {
          "file" : "lib/Devel/Trepan/DB/Breakpoint.pm",
          "version" : 0
@@ -58,7 +54,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.33"
+         "version" : "0.34"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -272,6 +268,22 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm",
          "version" : 0
       },
+      "Devel::Trepan::CmdProcessor::Command::Set::Debug" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Set::Debug::Except" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Except.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Set::Debug::Macro" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Set::Debug::Skip" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Skip.pm",
+         "version" : 0
+      },
       "Devel::Trepan::CmdProcessor::Command::Set::Different" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm",
          "version" : 0
@@ -374,6 +386,22 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Show::Confirm" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Show::Debug" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Show::Debug::Except" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Except.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Show::Debug::Macro" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Macro.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Show::Debug::Skip" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Skip.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Show::Different" : {
@@ -594,7 +622,7 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : "0.33"
+         "version" : "0.34"
       },
       "Devel::Trepan::SigHandler" : {
          "file" : "lib/Devel/Trepan/SigHandler.pm",
@@ -602,6 +630,10 @@
       },
       "Devel::Trepan::SigMgr" : {
          "file" : "lib/Devel/Trepan/SigHandler.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::Terminated" : {
+         "file" : "lib/Devel/Trepan/DB.pm",
          "version" : 0
       },
       "Devel::Trepan::Util" : {
@@ -633,5 +665,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.33"
+   "version" : "0.34"
 }

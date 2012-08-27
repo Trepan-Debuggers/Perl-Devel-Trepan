@@ -39,6 +39,7 @@ sub new {
     };
     bless $self, $class;
     $self->awaken();
+    $self->skippkg('Devel::Trepan::Core');
     $self->register();
     $self->ready();
     return $self;

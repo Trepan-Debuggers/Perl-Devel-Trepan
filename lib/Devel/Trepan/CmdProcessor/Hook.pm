@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org> 
 use strict; use warnings;
 use rlib '../../..';
 
@@ -31,7 +31,7 @@ sub delete_by_name($)
     my ($self, $delete_name) = @_;
     my @new_list = ();
     for my $elt (@{$self->{list}}) {
-	push(@new_list, $elt) unless $elt->name eq $delete_name;
+        push(@new_list, $elt) unless $elt->name eq $delete_name;
     }
     $self->{list} = \@new_list;
 }
@@ -48,10 +48,10 @@ sub insert($$$$)
     my $insert_loc;
     my @list = $self->{list};
     for ($insert_loc=0; $insert_loc < $#list; $insert_loc++) {
-	my $entry = $self->{list}[$insert_loc];
-	if ($priority > $entry->priority) {
-	    last;
-	}
+        my $entry = $self->{list}[$insert_loc];
+        if ($priority > $entry->priority) {
+            last;
+        }
     }
     my $new_item = CmdProcessorHook->new(name => $name, priority=>$priority, fn => $hook);
     splice(@{$self->{list}}, $insert_loc, 0, $new_item);
@@ -62,10 +62,10 @@ sub insert_if_new($$$$)
     my ($self, $priority, $name, $hook) = @_;
     my $found = 0;
     for my $item (@{$self->{list}}) {
-	if ($item->name eq $name) {
-	    $found = 1;
-	    last;
-	}
+        if ($item->name eq $name) {
+            $found = 1;
+            last;
+        }
     }
     $self->insert($priority, $name, $hook) unless ($found);
 }
@@ -75,7 +75,7 @@ sub run($)
 {
     my $self = shift;
     for my $hook (@{$self->{list}}) {
-	$hook->fn->($hook->name, \@_);
+        $hook->fn->($hook->name, \@_);
     }
 }
 
@@ -103,27 +103,29 @@ sub hook_initialize($)
 
     my $list_cmd = $commands->{'list'};
     $self->{autolist_hook}  = ['autolist', 
-			       sub{ $list_cmd->run(['list']) if $list_cmd}];
+                               sub{ $list_cmd->run(['list']) if $list_cmd}];
     
     $self->{timer_hook}     = ['timer', 
-			       sub{
-				   my $now = Time::HiRes::time;
-				   $self->{time_last} = $now unless 
-				       defined $self->{time_last};
-				   my $mess = sprintf("%g seconds", $now - $self->{time_last});
-				   $self->msg($mess);
-				   $self->{time_last} = $now;
-			       }];
+                               sub{
+                                   my $now = Time::HiRes::time;
+                                   $self->{time_last} = $now unless 
+                                       defined $self->{time_last};
+                                   my $mess = sprintf("%g seconds", $now - $self->{time_last});
+                                   $self->msg($mess);
+                                   $self->{time_last} = $now;
+                               }];
     $self->{timer_posthook} = ['timer', 
-			       sub{
-				   $self->{time_last} = Time::HiRes::time}];
+                               sub{
+                                   $self->{time_last} = Time::HiRes::time}];
     $self->{trace_hook}     = ['trace', 
-			       sub{ $self->print_location}];
+                               sub{ 
+                                   $self->print_location unless 
+                                       $self->{terminated} } ];
     $self->{tracebuf_hook}  = ['tracebuffer', 
-			       sub{
-				   push(@{$self->{eventbuf}},
-					($self->{event}, $self->{frame}));
-			       }];
+                               sub{
+                                   push(@{$self->{eventbuf}},
+                                        ($self->{event}, $self->{frame}));
+                               }];
 }
 
 unless (caller) {
@@ -131,9 +133,9 @@ unless (caller) {
     my $hooks = Devel::Trepan::CmdProcessor::Hook->new();
     $hooks->run(5);
     my $hook1 = sub($$) { 
-	my ($name, $a) = @_;
-	my $args = join(', ', @$a);
-	print "${name} called with $args\n";
+        my ($name, $a) = @_;
+        my $args = join(', ', @$a);
+        print "${name} called with $args\n";
     };
     $hooks = Devel::Trepan::CmdProcessor::Hook->new();
     $hooks->insert(-1, 'hook1', $hook1);

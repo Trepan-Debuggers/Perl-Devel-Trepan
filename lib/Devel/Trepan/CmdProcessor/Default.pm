@@ -16,7 +16,7 @@ use strict;
 our @ISA;
 
 BEGIN {
-    $HAVE_DATA_PRINT = eval("use Data::Printer alias => 'dprint'; 1") ? 1 : 0;
+    $HAVE_DATA_PRINT = eval("use Data::Printer { colored => 1, alias => 'dprint',}; 1") ? 1 : 0;
     $HAVE_PERLTIDY   = eval {
 	require Data::Dumper::Perltidy; 
     } ? 1 : 0;

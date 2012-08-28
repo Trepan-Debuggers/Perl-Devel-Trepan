@@ -258,7 +258,7 @@ sub process_after_eval($) {
             $self->msg("$prefix $DB::eval_result");
     } elsif ('@' eq $return_type) {
             if (@DB::eval_result) {
-                $val_str = $fn->(\@DB::eval_result);
+                $val_str = $fn->(\@DB::eval_result, %$print_properties);
                 chomp $val_str;
                 @{$DB::D[$last_eval_value++]} = @DB::eval_result;
             } else {

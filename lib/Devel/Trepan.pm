@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.35';
+use version; $VERSION = '0.35_01';
 use Exporter;
 
 use Devel::Trepan::Core;
@@ -89,9 +89,19 @@ effect. See L</Plugins> and L</Recommended Modules> below.
 
 =head1 DESCRIPTION
 
+=head2 Invocation
+
 From a shell: 
 
     $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
+
+For out-of-process (and possibly out-of server) debugging:
+
+    $ trepan.pl --server [trepan-opts] -- perl-program [perl-program-opts]
+
+and then from another process or computer: 
+
+    $ trepan.pl --client [--host DNS-NAME-OR-IP]
 
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's L<Enbugger>:
@@ -250,7 +260,23 @@ Perl code.
 
 =head4 debug PERL-EXPRESSION
 
-To be completed...
+=head3 Making the program stop at certain points
+
+=head4 break
+
+=head4 tbreak
+
+=head4 condition
+
+=head4 delete
+
+=head4 enable
+
+=head4 disable
+
+=head4 action
+
+=head4 watch
 
 =head3 Examining the call stack
 

@@ -199,9 +199,9 @@ However when this command is aliased from a command ending in !, no
 questions are asked.
 
     kill  
+    kill TERM # Send "TERM" signal
     kill unconditionally
     kill KILL # same as above
-    kill TERM # Send "TERM" signal
     kill -9   # same as above
     kill  9   # same as above
     kill! 9   # above, but no questions asked

@@ -333,7 +333,7 @@ sub process_commands($$$;$)
         $self->frame_setup();
 
         if ($event eq 'watch') {
-            my $msg = sprintf("Watchpoint %s: `%s' changed", 
+            my $msg = sprintf("Watchpoint %s: %s changed", 
                               $arg->id, $arg->expr);
             $self->section($msg);
             my $old_value = defined($arg->old_value) ? $arg->old_value 

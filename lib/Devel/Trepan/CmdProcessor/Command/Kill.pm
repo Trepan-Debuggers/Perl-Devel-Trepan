@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -41,12 +41,13 @@ questions are asked.
 Examples:
 
   $NAME  
-  $NAME unconditionally
   $NAME KILL # same as above
   $NAME kill # same as above
   $NAME -9   # same as above
   $NAME  9   # same as above
-  $NAME! 9   # above, but no questions asked
+  $NAME! 9   # same as above, but no questions asked
+  $NAME unconditionally # same as above
+  $NAME TERM # Send "TERM" signal
 
 See also 'quit'.
 HELP

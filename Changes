@@ -1,5 +1,12 @@
 Revision history for Devel-Trepan
 
+0.35  - Aug 27, 2012
+- More CPANTS failures, Had broken tolerance in older Perls and 
+  perl compiled with usesiteconfig
+- Add more verbiage to Trepan.pm and revise help docs
+- Don't trace into Devel::Trepan::Terminated
+- Fix another alias reporting bug.
+
 0.34  - Aug 26, 2012
 - Add step count. 
 - Avoid DB::fake for CPAN indexer

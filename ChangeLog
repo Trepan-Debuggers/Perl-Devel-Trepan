@@ -1,3 +1,60 @@
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Get
+	ready for 0.35 release.
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Display.pm: Refer to eval in
+	"display" help.
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm: Make another pass at
+	docs.
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-opt-e.t: Config parameter "USESITECONFIG" changes perl -e
+	output
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm: Older perls can't
+	handle an array ref in a splice
+
+2012-08-27  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Hook.pm, lib/Devel/Trepan/Core.pm: 
+	Don't trace or traceprint into Devel::Trepan::Terminated
+
+2012-08-27  rocky <rocky@cpan.org>
+
+	* Build.PL, MANIFEST, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/Options.pm, t/data/alias.cmd, t/data/alias.right: 
+	Fix another bug updating alias list.
+
+2012-08-26  rocky <rocky@cpan.org>
+
+	* ChangeLog: Update ChangeLog
+
 2012-08-26  rocky <rocky@cpan.org>
 
 	* Build.PL, Changes, MANIFEST, lib/Devel/Trepan.pm,

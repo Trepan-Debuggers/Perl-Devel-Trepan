@@ -258,7 +258,7 @@ sub process_after_eval($) {
             $self->msg("$prefix $DB::eval_result");
     } elsif ('@' eq $return_type) {
             if (@DB::eval_result) {
-                $val_str = $fn->(\@DB::eval_result);
+                $val_str = $fn->(\@DB::eval_result, %$print_properties);
                 chomp $val_str;
                 @{$DB::D[$last_eval_value++]} = @DB::eval_result;
             } else {
@@ -333,7 +333,7 @@ sub process_commands($$$;$)
         $self->frame_setup();
 
         if ($event eq 'watch') {
-            my $msg = sprintf("Watchpoint %s: `%s' changed", 
+            my $msg = sprintf("Watchpoint %s: %s changed", 
                               $arg->id, $arg->expr);
             $self->section($msg);
             my $old_value = defined($arg->old_value) ? $arg->old_value 

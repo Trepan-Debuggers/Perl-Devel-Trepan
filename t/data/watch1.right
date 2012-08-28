@@ -11,12 +11,12 @@ x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
-Watch expression 1 `$a' set
+Watch expression 1: $a set
 $DB::D[0] = 5
 Num Type       Enb Expression
 1   watchpoint y   $a
 Breakpoint 2 set in gcd.pl at line 14
-Watchpoint 1: `$a' changed
+Watchpoint 1: $a changed
 old value	5
 new value	3
 wa main::(gcd.pl:13)

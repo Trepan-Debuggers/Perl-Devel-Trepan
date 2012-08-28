@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -34,7 +34,10 @@ Examples:
    ${NAME} \$a  # Display variable \$a each time we enter debugger
    ${NAME} join(', ', \@ARGV)  # show values of array \@ARGV
 
-See also "undisplay", "enable", and "disable".
+If what you want to do is evaluate a Perl expression or statement once
+rather than every time the program stops, see "eval".
+
+See also "undisplay", "enable", "disable".
 HELP
 
 # This method runs the command

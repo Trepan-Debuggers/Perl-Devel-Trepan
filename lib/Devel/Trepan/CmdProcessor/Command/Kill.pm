@@ -32,7 +32,7 @@ $NAME [signal-number|signal-name]
 Kill execution of program being debugged.
 
 Equivalent of kill('KILL', \$\$). This is an unmaskable
-signal\. When all else fails, e.g. in thread code, use this.
+signal\. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
 However when this command is aliased from a command ending in !, no 
@@ -47,6 +47,8 @@ Examples:
   $NAME -9   # same as above
   $NAME  9   # same as above
   $NAME! 9   # above, but no questions asked
+
+See also 'quit'.
 HELP
 
 sub complete($$) {

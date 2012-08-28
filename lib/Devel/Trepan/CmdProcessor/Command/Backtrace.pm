@@ -22,7 +22,7 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [count]
+${NAME} [COUNT]
 
 Print a stack trace, with the most recent frame at the top.  With a
 positive number, print at most many entries. 

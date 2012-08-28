@@ -28,13 +28,9 @@ ${NAME} [STRING]
 
 Run code in the context of the current frame.
 
-The value of the expression is stored into a global variable so it
-may be used again easily. The name of the global variable is printed
-next to the value.
-
-If no string is given, we run the string from the current source code
-about to be run. If the command ends ? (via an alias) and no string is
-given we will the perform the translations:
+If no string is given after the command "eval", we run the string from
+the current source code about to be run. If the command ends ? (via an
+alias) and no string is given we will the perform the translations:
 
    {if|elsif|unless} (expr) [{]  => expr
    {until|while} (expr) [{]      => expr
@@ -50,7 +46,10 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-Normally ${NAME} assumes you are typing a statement, not an expresion;
+The value of the expression is stored into global array \@DB:D so it
+may be used again easily. 
+
+Normally ${NAME} assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
 by adding the appropriate sigil @, or \$.
 
@@ -70,7 +69,7 @@ use English  # Note this is a statement, not an expression
 use English; # Same as above
 ${NAME}\$ use English # Error because this is not a valid expression 
 
-See also 'set autoeval'. The command can help one predict future execution.
+See also 'set auto eval'. The command can help one predict future execution.
 See 'set buffer trace' for showing what may have already been run.
 HELP
 

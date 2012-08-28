@@ -39,7 +39,7 @@ Examples:
   ${NAME} 0               # same as "quit"
   ${NAME}! 1              # unconditional quit setting exit code 1
 
-See also the commands "exit" and "kill".
+See also "kill".
 HELP
 
 # FIXME: Combine 'quit' and 'exit'. The only difference is whether

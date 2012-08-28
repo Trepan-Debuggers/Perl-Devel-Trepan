@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -23,9 +23,9 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [FRAME_NUMBER]
+${NAME} [FRAME-NUMBER]
 
-Change the current frame to frame FRAME_NUMBER if specified, or the
+Change the current frame to frame FRAME-NUMBER if specified, or the
 most-recent frame, 0, if no frame number specified.
 
 A negative number indicates the position from the other or
@@ -39,7 +39,7 @@ Examples:
    $NAME 1   # Move to frame 1. Same as: frame 0; up
    $NAME -1  # The least-recent frame
 
-See also 'up', 'down' 'where' and 'info thread'.
+See also 'up', 'down' and 'backtrace'
 HELP
 
 sub complete($$)

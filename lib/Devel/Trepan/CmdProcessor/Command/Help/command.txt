@@ -3,11 +3,6 @@ Overall Debugger Command Syntax
 If the first non-blank character of a line starts with #, 
 the command is ignored. 
 
-If a line starts with ! in column one, the line is eval'd. 
-
-If the command you want Perl to evaluage uses ! initially, add that
-after the first ! or start the line with a space.
-
 Commands are split at whereever ;; appears. This process disregards
 any quotes or other symbols that have meaning in Perl. The strings
 after the leading command string are put back on a command queue. 
@@ -48,10 +43,6 @@ program at the point it is stoppped. However this is done only if
 If "auto eval" is not set on, or if running the Perl statement
 produces an error, we display an error message that the entered string
 is "undefined".
-
-If you want irb-like command-processing, it's possible to go into an
-irb shell with the "irb" command. It is also possible to arrange going
-into an irb shell every time you enter the debugger.
 
 See also: 
   "help syntax examples"

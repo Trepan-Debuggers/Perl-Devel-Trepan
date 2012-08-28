@@ -28,6 +28,8 @@ our $HELP = <<"HELP";
 $NAME 
 
 Restart debugger and program via an exec call.
+
+See also 'show args' for the exact invocation that will be used.
 HELP
 
 # This method runs the command

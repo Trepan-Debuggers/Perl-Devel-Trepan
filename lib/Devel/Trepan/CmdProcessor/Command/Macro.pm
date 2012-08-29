@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -49,7 +49,9 @@ issues two commands 'finish' followed by 'step':
 If you wanted to parameterize the argument of the 'finish' command
 you could do that this way:
 
-  macro fin+ sub{ ['finish ' . shift, 'step']}
+  macro fin+ sub{ \\
+		  ['finish ' . (shift), 'step'] \\
+                }
 
 Invoking with 
   fin+ 3

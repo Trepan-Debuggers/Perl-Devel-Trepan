@@ -7,6 +7,10 @@ Commands are split at whereever ;; appears. This process disregards
 any quotes or other symbols that have meaning in Perl. The strings
 after the leading command string are put back on a command queue. 
 
+When reading a command if the string ends in \ (backslash), another
+line is read and this is concatenated to the previous result with a
+newline inserted between the prior string and the continuation string.
+
 Within a single command, tokens are then white-space split. Again,
 this process disregards quotes or symbols that have meaning in Perl.
 Some commands like 'eval', 'macro', and 'break' have access to the

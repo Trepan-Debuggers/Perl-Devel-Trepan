@@ -5,7 +5,9 @@ set auto list on
 step
 step
 step
-set auto list off
+# Try a command with a continuation character (\)
+set auto list \
+    off
 step
 step
 quit!

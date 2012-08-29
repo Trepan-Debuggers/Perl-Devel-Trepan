@@ -420,9 +420,6 @@ sub run_command($$)
     my ($self, $current_command) = @_;
     my $eval_command = undef;
     my $cmd_name = undef;
-    if (substr($current_command, 0, 1) eq '!') {
-        $eval_command = substr($current_command, 1);
-    }
     my @cmd_queue = @{$self->{cmd_queue}};
     unless ($eval_command) {
         my @commands = split(';;', $current_command);

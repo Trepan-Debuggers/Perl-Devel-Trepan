@@ -3,5 +3,7 @@ step
 step-
 step+
 next
-step 2
+# Try a command with a continuation (\)
+step \
+2
 quit!

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# This line is for testing purposes \
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 # Module for reading debugger scripts
 
@@ -113,7 +114,14 @@ sub read_command($;$)
     my ($self, $prompt)=@_;
     $prompt = '' unless defined $prompt;
     $self->{input_lineno} += 1;
-    my $line = $self->readline();
+    my $last = $self->readline();
+    my $line = '';
+    while ('\\' eq substr($last, -1)) { 
+	$line .= substr($last, 0, -1) . "\n";
+	$last = $self->readline();
+    }
+    $line .= $last;
+
     if ($self->{opts}{verbose}) {
 	my $location = sprintf("%s line %s",
 			       $self->{script_name}, 
@@ -153,7 +161,7 @@ unless (caller) {
     my $intf = __PACKAGE__->new(__FILE__);
     my $line = $intf->readline();
     print "Line read: ${line}\n";
-    $line = $intf->readline();
+    $line = $intf->read_command();
     print "Second Line read: ${line}\n";
 }
 

@@ -173,7 +173,15 @@ sub want_term_readline($)
 sub read_command($;$) {
     my($self, $prompt)  = @_;
     $prompt = '(trepanpl) ' unless defined $prompt;
-    $self->readline($prompt);
+    my $last = $self->readline($prompt);
+    my $line = '';
+    $prompt .= '>> '; # continuation
+    while ('\\' eq substr($last, -1)) { 
+	$line .= substr($last, 0, -1) . "\n";
+	$last = $self->readline($prompt);
+    }
+    $line .= $last;
+    return $line;
 }
 
 sub readline($;$) {
@@ -218,19 +226,28 @@ unless (caller) {
    if (scalar(@ARGV) > 0 && $intf->is_interactive) {
        my $line = $intf->readline("Type something: ");
        if ($intf->is_input_eof) {
-	   print "No input, got EOF\n";
+	   $intf->msg("No input, got EOF\n");
        } else {
-	   print "You typed: ${line}";
+	   $intf->msg("You typed: $line");
        }
-       printf "EOF is now: %d\n", $intf->{input}->is_eof;
+       $intf->msg(sprintf "input EOF is now: %d", $intf->{input}->is_eof);
        unless ($intf->{input}->is_eof) {
-	   my $line = $intf->confirm("Are you sure", 0);
-	   chomp($line);
-	   print "you typed: ${line}\n";
-	   printf "eof is now: %d\n",  $intf->{input}->is_eof;
-	   $line = $intf->confirm("Really sure", 0);
-	   print "you typed: ${line}\n";
-	   printf "eof is now: %d\n", $intf->{input}->is_eof;
+	   $intf->msg("Now we in read a command");
+	   my $line = $intf->read_command("Type a command something: ");
+	   if ($intf->is_input_eof) {
+	       $intf->msg("No input, got EOF");
+	   } else {
+	       $intf->msg("You typed: $line");
+	   }
+	   unless ($intf->is_input_eof) {
+	       $line = $intf->confirm("Are you sure", 0);
+	       chomp($line);
+	       $intf->msg("you typed: ${line}");
+	       $intf->msg(sprintf "eof is now: %d",  $intf->{input}->is_eof);
+	       $line = $intf->confirm("Really sure", 0);
+	       $intf->msg("you typed: $line");
+	       $intf->msg(sprintf "eof is now: %d", $intf->{input}->is_eof);
+	   }
        }
    }
    printf "User interface closed?: %d\n", $intf->is_closed;

@@ -18,6 +18,13 @@ use strict;
 use warnings;
 use Module::Build;
 use Config;
+use File::Basename;
+use File::Spec;
+
+my $dirname = dirname(__FILE__);
+do File::Spec->catfile(($dirname, qw(lib Devel Trepan.pm)));
+
+my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
 
 my $builder = Module::Build->new( 
     module_name         => 'Devel::Trepan',
@@ -29,8 +36,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Devel/Trepan.pm',
     license             => 'gpl',
     needs_compiler      => 0,
-    # release_status      => 'stable', # or 'testing'
-    release_status      => 'testing',  # or 'stable'
+    release_status      => $release_status,
 
     meta_merge => {
 	resources => {

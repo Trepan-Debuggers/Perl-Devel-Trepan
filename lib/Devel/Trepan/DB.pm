@@ -62,7 +62,7 @@ BEGIN {
     # other "public" globals  
 
     @ini_INC        = @INC; # Save the contents of @INC before they are
-			    # modified elsewhere.
+                            # modified elsewhere.
     @ini_ARGV       = @ARGV;
     $ini_dollar0    = $0;
     $OS_STARTUP_DIR = getcwd;
@@ -112,18 +112,18 @@ BEGIN {
     
     # ensure we can share our non-threaded variables or no-op
     if ($ENV{PERL5DB_THREADED}) {
-	require threads;
-	require threads::shared;
-	import threads::shared qw(share);
-	no strict; no warnings;
-	$DBGR;
-	share(\$DBGR);
-	lock($DBGR);
-	use strict; use warnings;
-	print "Thread support enabled\n";
+        require threads;
+        require threads::shared;
+        import threads::shared qw(share);
+        no strict; no warnings;
+        $DBGR;
+        share(\$DBGR);
+        lock($DBGR);
+        use strict; use warnings;
+        print "Thread support enabled\n";
     } else {
-	*lock  = sub(*) {};
-	*share = sub(*) {};
+        *lock  = sub(*) {};
+        *share = sub(*) {};
     }
 
     # Don't print return values on exiting a subroutine.
@@ -156,7 +156,7 @@ sub DB {
     lock($DBGR);
 
     if ($ENV{PERL5DB_THREADED}) {
-	$tid = eval { "[".threads->tid."]" };
+        $tid = eval { "[".threads->tid."]" };
     }
 
     return unless $ready && !$in_debugger;
@@ -199,160 +199,156 @@ sub DB {
     # Test watch expressions;
     my $watch_triggered = undef;
     for my $c (@clients) {
-	my $n = 0;
-	my @list= @{$c->{watch}->{list}};
-	for my $wp (@list) {
-	    next unless $wp->enabled;
-	    my $opts = {return_type => '$', 
-			namespace_package => $namespace_package,
-			fix_file_and_line => $DB::fix_file_and_line,
-			hide_position     => 0};
-	    my $new_val = &DB::eval_with_return($wp->expr, $opts, @saved);
-	    my $old_val = $wp->old_value;
-	    no warnings 'once';
-	    next if !defined($old_value) and !defined($new_val);
-	    my $not_same = !defined($old_val) || !defined($new_val);
+        my $n = 0;
+        my @list= @{$c->{watch}->{list}};
+        for my $wp (@list) {
+            next unless $wp->enabled;
+            my $opts = {return_type => '$', 
+                        namespace_package => $namespace_package,
+                        fix_file_and_line => 1,
+                        hide_position     => 0};
+            my $new_val = &DB::eval_with_return($wp->expr, $opts, @saved);
+            my $old_val = $wp->old_value;
+            no warnings 'once';
+            next if !defined($old_value) and !defined($new_val);
+            my $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
                 $wp->current_val($new_val);
                 $wp->hits($wp->hits+1);
                 $watch_triggered = $wp;
-		last;
-	    }
-	}
+                last;
+            }
+        }
     }
 
     # Accumulate action events.
     my @action = ();
     if (exists $DB::dbline{$DB::lineno} and 
-	my $brkpts = $DB::dbline{$DB::lineno}) {
-	for (my $i=0; $i < @$brkpts; $i++) {
-	    my $brkpt = $brkpts->[$i];
-	    next unless defined $brkpt;
-	    if ($brkpt->type eq 'action') {
-		push @action, $brkpt;
-		next ;
-	    }
-	    $stop = 0;
-	    if ($brkpt->condition eq '1') {
-		# A cheap and simple test for unconditional.
-		$stop = 1;
-	    } else  {
-		my $eval_str = sprintf("\$DB::stop = do { %s; }", 
-				       $brkpt->condition);
-		my $opts = {return_type => ';',  # ignore return
-			    namespace_package => $namespace_package,
-			    fix_file_and_line => $DB::fix_file_and_line,
-			    hide_position     => 0};
-		&DB::eval_with_return($eval_str, $opts, @saved);
-	    }
-	    if ($stop && $brkpt->enabled) {
-		$DB::signal |= 1;
-		$DB::brkpt = $brkpt;
-		$event = $brkpt->type;
-		if ($event eq 'tbrkpt') {
-		    # breakpoint is temporary and remove it.
-		    undef $brkpts->[$i];
-		} else {
-		    my $hits = $brkpt->hits + 1;
-		    $brkpt->hits($hits);
-		}
-		last;
-	    }
-	}
+        my $brkpts = $DB::dbline{$DB::lineno}) {
+        for (my $i=0; $i < @$brkpts; $i++) {
+            my $brkpt = $brkpts->[$i];
+            next unless defined $brkpt;
+            if ($brkpt->type eq 'action') {
+                push @action, $brkpt;
+                next ;
+            }
+            $stop = 0;
+            if ($brkpt->condition eq '1') {
+                # A cheap and simple test for unconditional.
+                $stop = 1;
+            } else  {
+                my $eval_str = sprintf("\$DB::stop = do { %s; }", 
+                                       $brkpt->condition);
+                my $opts = {return_type => ';',  # ignore return
+                            namespace_package => $namespace_package,
+                            fix_file_and_line => 1,
+                            hide_position     => 0};
+                &DB::eval_with_return($eval_str, $opts, @saved);
+            }
+            if ($stop && $brkpt->enabled) {
+                $DB::signal |= 1;
+                $DB::brkpt = $brkpt;
+                $event = $brkpt->type;
+                if ($event eq 'tbrkpt') {
+                    # breakpoint is temporary and remove it.
+                    undef $brkpts->[$i];
+                } else {
+                    my $hits = $brkpt->hits + 1;
+                    $brkpt->hits($hits);
+                }
+                last;
+            }
+        }
     }
     if ($watch_triggered) {
-	$event = 'watch';
+        $event = 'watch';
     } elsif ($DB::signal) {
-	$event ||= 'signal';
+        $event ||= 'signal';
     } elsif ($DB::single & RETURN_EVENT) {
-	$event ||= 'return';
+        $event ||= 'return';
     } elsif ($DB::trace ) {
-	$event ||= 'trace';
+        $event ||= 'trace';
     } elsif ($DB::single & (SINGLE_STEPPING_EVENT | NEXT_STEPPING_EVENT)) {
-	$event ||= 'line';
+        $event ||= 'line';
     } elsif ($DB::single & DEEP_RECURSION_EVENT) {
-	$event ||= 'recurse overflow';
+        $event ||= 'recurse overflow';
     } else {
-	$event = 'unknown';
+        $event = 'unknown';
     }
     
     if ($DB::single || $DB::trace || $DB::signal || $event eq 'watch') {
-	$DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
-	loadfile($DB::filename, $DB::lineno);
+        $DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
+        loadfile($DB::filename, $DB::lineno);
     }
 
     for my $action (@action) {
-	&DB::eval($namespace_package, $action->condition, @saved) 
-	    if $action->enabled;
-	my $hits = $action->hits + 1;
-	$action->hits($hits);
+        &DB::eval($namespace_package, $action->condition, @saved) 
+            if $action->enabled;
+        my $hits = $action->hits + 1;
+        $action->hits($hits);
     }
     if ($DB::single || $DB::signal || $watch_triggered) {
-	_warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
-	$DB::single = 0;
-	$DB::signal = 0;
-	$running = 0;
-	
-	for my $c (@clients) {
-	    # Now sit in an event loop until something sets $running
-	    my $after_eval = 0;
-	    do {
-		# Show display expresions
-		my $display_aref = $c->display_lists;
-		for my $disp (@$display_aref) {
-		    next unless $disp && $disp->enabled;
-		    my $opts = {return_type => $disp->return_type,
-				namespace_package => $namespace_package,
-				fix_file_and_line => $DB::fix_file_and_line,
-				hide_position     => 0};
-		    # FIXME: allow more than just scalar contexts.
-		    my $eval_result =  
-			&DB::eval_with_return($disp->arg, $opts, @saved);
-		    my $mess = sprintf("%d: $eval_result", $disp->number);
-		    $c->output($mess);
-		}
+        _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
+        $DB::single = 0;
+        $DB::signal = 0;
+        $running = 0;
+        
+        for my $c (@clients) {
+            # Now sit in an event loop until something sets $running
+            my $after_eval = 0;
+            do {
+                # Show display expresions
+                my $display_aref = $c->display_lists;
+                for my $disp (@$display_aref) {
+                    next unless $disp && $disp->enabled;
+                    my $opts = {return_type => $disp->return_type,
+                                namespace_package => $namespace_package,
+                                fix_file_and_line => 1,
+                                hide_position     => 0};
+                    # FIXME: allow more than just scalar contexts.
+                    my $eval_result =  
+                        &DB::eval_with_return($disp->arg, $opts, @saved);
+                    my $mess = sprintf("%d: $eval_result", $disp->number);
+                    $c->output($mess);
+                }
 
-		if (1 == $after_eval ) {
-		    $event = 'after_eval';
-		} elsif (2 == $after_eval) {
-		    $event = 'after_nest'
-		}
+                if (1 == $after_eval ) {
+                    $event = 'after_eval';
+                } elsif (2 == $after_eval) {
+                    $event = 'after_nest'
+                }
 
-		# call client event loop; must not block
-		$c->idle($event, $watch_triggered);
-		$after_eval = 0;
-		if ($running == 2 && defined($eval_str)) { 
-		    # client wants something eval-ed
-		    # FIXME: turn into subroutine.
+                # call client event loop; must not block
+                $c->idle($event, $watch_triggered);
+                $after_eval = 0;
+                if ($running == 2 && defined($eval_str)) { 
+                    # client wants something eval-ed
+                    # FIXME: turn into subroutine.
 
-		    local $nest = $eval_opts->{nest};
-		    my $return_type = $eval_opts->{return_type};
-		    $return_type = '' unless defined $return_type;
-		    my $opts = {
-			return_type       => $return_type,
-			namespace_package => $namespace_package,
-			fix_file_and_line => $DB::fix_file_and_line,
-			hide_position     => $eval_opts->{hide_position} || 0
-		    };
+                    local $nest = $eval_opts->{nest};
+                    my $return_type = $eval_opts->{return_type};
+                    $return_type = '' unless defined $return_type;
+                    my $opts = $eval_opts;
+                    $opts->{namespace_package} = $namespace_package;
 
-		    if ('@' eq $return_type) {
-			&DB::eval_with_return($eval_str, $opts, @saved);
-		    } else {
-			$eval_result = 
-			    &DB::eval_with_return($eval_str, $opts, @saved);
-		    }
+                    if ('@' eq $return_type) {
+                        &DB::eval_with_return($eval_str, $opts, @saved);
+                    } else {
+                        $eval_result = 
+                            &DB::eval_with_return($eval_str, $opts, @saved);
+                    }
 
-		    if ($nest) {
-			$DB::in_debugger = 1;
-			$after_eval = 2;
-		    } else {
-			$after_eval = 1;
-		    }
-		    $running = 0;
-		}
-	    } until $running;
-	}
+                    if ($nest) {
+                        $DB::in_debugger = 1;
+                        $after_eval = 2;
+                    } else {
+                        $after_eval = 1;
+                    }
+                    $running = 0;
+                }
+            } until $running;
+        }
     }
     $DB::event = undef;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
@@ -422,8 +418,8 @@ use strict;                # this can run only after DB() and sub() are defined
 sub save($) {
   @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
              $OUTPUT_FIELD_SEPARATOR, 
-	     $INPUT_RECORD_SEPARATOR, 
-	     $OUTPUT_RECORD_SEPARATOR, $WARNING );
+             $INPUT_RECORD_SEPARATOR, 
+             $OUTPUT_RECORD_SEPARATOR, $WARNING );
 
   $OUTPUT_FIELD_SEPARATOR  = ""; 
   $INPUT_RECORD_SEPARATOR  = "\n";
@@ -446,53 +442,51 @@ sub catch {
     $event = 'post-mortem';
     $running = 0;
     for my $c (@clients) {
-	# Now sit in an event loop until something sets $running
-	my $after_eval = 0;
-	do {
-	    # Show display expresions
-	    my $display_aref = $c->display_lists;
-	    for my $disp (@$display_aref) {
-		next unless $disp && $disp->enabled;
-		my $opts = {
-		    return_type       => $disp->return_type, 
-		    namespace_package => $namespace_package,
-		    fix_file_and_line => $DB::fix_file_and_line,
-		    hide_position     => 0};
-		my $eval_result = &DB::eval_with_return($disp->arg, $opts, 
-							@saved);
-		my $mess = sprintf("%d: $eval_result", $disp->number);
-		$c->output($mess);
-	    }
+        # Now sit in an event loop until something sets $running
+        my $after_eval = 0;
+        do {
+            # Show display expresions
+            my $display_aref = $c->display_lists;
+            for my $disp (@$display_aref) {
+                next unless $disp && $disp->enabled;
+                my $opts = {
+                    return_type       => $disp->return_type, 
+                    namespace_package => $namespace_package,
+                    fix_file_and_line => 1,
+                    hide_position     => 0};
+                my $eval_result = &DB::eval_with_return($disp->arg, $opts, 
+                                                        @saved);
+                my $mess = sprintf("%d: $eval_result", $disp->number);
+                $c->output($mess);
+            }
 
-	    if (1 == $after_eval ) {
-		$event = 'after_eval';
-	    } elsif (2 == $after_eval) {
-		$event = 'after_nest'
-	    }
-	    
-	    # call client event loop; must not block
-	    $c->idle($event, 0);
-	    $after_eval = 0;
-	    if ($running == 2 && defined($eval_str)) { 
-		# client wants something eval-ed
-		# FIXME: turn into subroutine.
-		
-		my $opts = {return_type       => $eval_opts->{return_type}, 
-			    namespace_package => $namespace_package,
-			    fix_file_and_line => $DB::fix_file_and_line,
-			    hide_position     => 0};
-		
-		if ('@' eq $opts->{return_type}) {
-		    &DB::eval_with_return($eval_str, $opts, @saved);
-		} else {
-		    $eval_result = 
-			&DB::eval_with_return($eval_str, $opts, @saved);
-		}
+            if (1 == $after_eval ) {
+                $event = 'after_eval';
+            } elsif (2 == $after_eval) {
+                $event = 'after_nest'
+            }
+            
+            # call client event loop; must not block
+            $c->idle($event, 0);
+            $after_eval = 0;
+            if ($running == 2 && defined($eval_str)) { 
+                # client wants something eval-ed
+                # FIXME: turn into subroutine.
+                
+                my $opts = $eval_opts;
+                $opts->{namespace_package} = $namespace_package;
 
-		$after_eval = 1;
-		$running = 0;
-	    }
-	} until $running;
+                if ('@' eq $opts->{return_type}) {
+                    &DB::eval_with_return($eval_str, $opts, @saved);
+                } else {
+                    $eval_result = 
+                        &DB::eval_with_return($eval_str, $opts, @saved);
+                }
+
+                $after_eval = 1;
+                $running = 0;
+            }
+        } until $running;
     }
 }
 
@@ -536,23 +530,23 @@ sub step {
 sub cont {
     my $s = shift;
     if (scalar @_ > 0) {
-	my ($file, $line);
-	if (2 == scalar @_) {
-	    print @_, "\n";
-	    ($file, $line) =  @_;
-	} else {
-	    ($file, $line) = ($DB::filename, $_[0]);
-	}
-	my $brkpt = $s->set_tbreak($file, $line);
-	return 0 unless $brkpt;
+        my ($file, $line);
+        if (2 == scalar @_) {
+            print @_, "\n";
+            ($file, $line) =  @_;
+        } else {
+            ($file, $line) = ($DB::filename, $_[0]);
+        }
+        my $brkpt = $s->set_tbreak($file, $line);
+        return 0 unless $brkpt;
     }
     for (my $i = 0; $i <= $#stack;) {
-	if (defined $stack[$i]) {
-	    $stack[$i++] &= ~1 ;
-	} else {
-	    # If Enbugger is used $stack[$i] might not be defined
- 	    $stack[$i++] = 0;
-	}
+        if (defined $stack[$i]) {
+            $stack[$i++] &= ~1 ;
+        } else {
+            # If Enbugger is used $stack[$i] might not be defined
+            $stack[$i++] = 0;
+        }
     }
     $DB::single = 0;
     return $DB::running = 1;
@@ -566,16 +560,16 @@ sub finish($;$$) {
     my $scan_for_DB_sub = scalar @_ >= 1 ?  shift : 1;
 
     if ($scan_for_DB_sub) {
-    	my $i = 0;
-    	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
-    	    if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
-    		# FIXME: This is hoaky. 4 is somehow how far off
-		# @stack is from caller. 
-    		$i -= 4;
-    		last;
-    	    }
-    	}
-    	$count += $i;
+        my $i = 0;
+        while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+            if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
+                # FIXME: This is hoaky. 4 is somehow how far off
+                # @stack is from caller. 
+                $i -= 4;
+                last;
+            }
+        }
+        $count += $i;
     }
 
     my $index = $#stack-$count;
@@ -588,11 +582,11 @@ sub finish($;$$) {
 sub return_value($) 
 {
     if ('undef' eq $DB::return_type) {
-	return undef;
+        return undef;
     } elsif ('array' eq $DB::return_type) {
-	return @DB::return_value;
+        return @DB::return_value;
     } else {
-	return $DB::return_value;
+        return $DB::return_value;
     }
 }
 
@@ -679,8 +673,8 @@ sub skippkg {
 sub evalcode {
     my ($client, $expr) = @_;
     if (defined $expr) {
-	$DB::running = 2;    # hand over to DB() to evaluate in its context
-	$ineval->{$client} = $expr;
+        $DB::running = 2;    # hand over to DB() to evaluate in its context
+        $ineval->{$client} = $expr;
     }
     return $ineval->{$client};
 }
@@ -966,7 +960,7 @@ debugging functionality.  As such, this interface is subject to
 
 =head1 AUTHOR
 
-Gurusamy Sarathy	gsar@activestate.com
+Gurusamy Sarathy        gsar@activestate.com
 
 This code heavily adapted from an early version of perl5db.pl attributable
 to Larry Wall and the Perl Porters.

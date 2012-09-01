@@ -5,7 +5,7 @@ use warnings; use strict;
 use English qw( -no_match_vars );
 
 # FIXME: remove these
-use vars qw($eval_result @eval_result $fix_file_and_line);
+use vars qw($eval_result @eval_result);
 
 # This is the flag that says "a debugger is running, please call
 # DB::DB and DB::sub". We will turn it on forcibly before we try to
@@ -18,9 +18,6 @@ BEGIN {
     # program we use these:
     $DB::eval_result = undef;   # Place for result if scalar;
     @DB::eval_result = ();      # place for result if array
-    $DB::fix_file_and_line = 1; # Should we fix __FILE__ and __LINE__ ? 
-                                # This value is reset after each eval.
-                                 
 }    
 
 # evaluate $eval_str in the context of $package_namespace (a package name).
@@ -39,7 +36,7 @@ sub eval_with_return {
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
 
     {
-	no warnings 'once';
+        no warnings 'once';
         # Try to keep the user code from messing with us. Save these so that
         # even if the eval'ed code changes them, we can put them back again.
         # Needed because the user could refer directly to the debugger's
@@ -52,41 +49,40 @@ sub eval_with_return {
         my $eval_setup = $opts->{namespace_package} || '';
         
         # Make sure __FILE__ and __LINE__ are set correctly
-	if( $opts->{fix_file_and_line}) {
-	    my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
-	    $eval_setup .= $position_str ;
-	}
+        if( $opts->{fix_file_and_line}) {
+            my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
+            $eval_setup .= $position_str ;
+        }
 
-	my $return_type = $opts->{return_type};
+        my $return_type = $opts->{return_type};
         if ('$' eq $return_type) {
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
         # } elsif ('>' eq $return_type) {
         #     ($eval_result, $stderr, @result) = capture {
-	# 	eval "$eval_setup $eval_str\n";
-	#     };
+        #       eval "$eval_setup $eval_str\n";
+        #     };
         # } elsif ('2>&1' eq $return_type) {
         #     $eval_result = capture_merged {
-	# 	eval "$eval_setup $eval_str\n";
+        #       eval "$eval_setup $eval_str\n";
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
-	};
+        };
         
         # Restore those old values.
         $DB::trace  = $otrace;
         $DB::single = $osingle;
-        $DB::fix_file_and_line = 1;
         $DEBUGGING  = $od;
 
         my $msg = $EVAL_ERROR;
         if ($msg) {
-	    chomp $msg;
-	    if ($opts->{hide_position}) {
-		$msg =~ s/ at .* line \d+[.,]//;
-		$msg =~ s/ line \d+,//;
-		$msg =~ s/ at EOF$/ at end of string/;
-	    }
+            chomp $msg;
+            if ($opts->{hide_position}) {
+                $msg =~ s/ at .* line \d+[.,]//;
+                $msg =~ s/ line \d+,//;
+                $msg =~ s/ at EOF$/ at end of string/;
+            }
             _warnall($msg);
             $eval_str = '';
             return undef;

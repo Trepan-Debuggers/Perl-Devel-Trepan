@@ -51,22 +51,21 @@ sub run($$)
     my $cmd_name = $args->[0];
     no warnings 'once';
     my $opts = {
-	return_type => parse_eval_suffix($cmd_name),
-	nest => $DB::level
+        return_type => parse_eval_suffix($cmd_name),
+        nest => $DB::level,
+        # Don't fix up __FILE__ and __LINE__ in this eval. 
+        # We want to see our debug (eval) with its string.
+        fix_file_and_line => 0
     };
 
     # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.
     my $full_expr = 
-	"\$DB::event=undef;\n"   .
-	"\$DB::single = 1;\n"    . 
-	"\$^D |= DB::db_stop;\n" . 
-	"\$DB::in_debugger=0;\n" . 
-	$expr;
-
-    # Don't fix up __FILE__ and __LINE__ in this eval. 
-    # We want to see our debug (eval) with the string above.
-    $DB::fix_file_and_line = 0;
+        "\$DB::event=undef;\n"   .
+        "\$DB::single = 1;\n"    . 
+        "\$^D |= DB::db_stop;\n" . 
+        "\$DB::in_debugger=0;\n" . 
+        $expr;
 
     # FIXME: 4 below is a magic fixup constant.
     $proc->eval($full_expr, $opts, 4);

@@ -436,10 +436,10 @@ sub run_command($$)
             return if scalar(@args) == 0;
             my $macro_cmd_name = $args[0];
             last unless $self->{macros}{$macro_cmd_name};
-	    my $debugging = $self->{settings}{debugmacro};
-	    # if ($debugging) {
-	    # 	require Enbugger; Enbugger->stop();
-	    # }
+            my $debugging = $self->{settings}{debugmacro};
+            # if ($debugging) {
+            #   require Enbugger; Enbugger->stop();
+            # }
             shift @args;
             my $macro_expanded = 
                 $self->{macros}{$macro_cmd_name}[0]->(@args);
@@ -447,17 +447,17 @@ sub run_command($$)
 #               current_command.all? {|val| val.is_a?(String)}
                 ) {
                 my @new_commands = @{$macro_expanded};
-		$self->msg(join(' ', @new_commands)) if $debugging;
-		if (scalar @new_commands > 0) {
-		    push @cmd_queue, @new_commands;
-		    $current_command = shift @cmd_queue;
-		    @args = split(' ', $current_command);
-		} else {
-		    $current_command = '#';
-		    @args = ();
-		}
+                $self->msg(join(' ', @new_commands)) if $debugging;
+                if (scalar @new_commands > 0) {
+                    push @cmd_queue, @new_commands;
+                    $current_command = shift @cmd_queue;
+                    @args = split(' ', $current_command);
+                } else {
+                    $current_command = '#';
+                    @args = ();
+                }
             } else {
-		$self->msg($macro_expanded) if $debugging;
+                $self->msg($macro_expanded) if $debugging;
                 $current_command = $macro_expanded;
                 @args = split(/\s+/, $current_command);
             # } else {
@@ -501,12 +501,15 @@ sub run_command($$)
     if ($self->{settings}{autoeval} || $eval_command) {
         my $return_type = parse_eval_sigil($current_command);
         $return_type = '$' unless $return_type;
-        my $opts = {nest => 0, hide_position => 1, return_type => $return_type};
+        my $opts = {nest              => 0, 
+                    hide_position     => 1, 
+                    fix_file_and_line => 1,
+                    return_type       => $return_type};
 
         # FIXME: 2 below is a magic fixup constant, also found in
         # DB::finish.  Remove it.
         if (0 == $self->{frame_index}) {
-	    chomp $current_command;
+            chomp $current_command;
             $self->eval($current_command, $opts, 2);
         } else {
             my $return_type = $DB::eval_opts->{return_type} = 

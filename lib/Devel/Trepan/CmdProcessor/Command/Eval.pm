@@ -77,14 +77,14 @@ sub complete($$)
 { 
     my ($self, $prefix) = @_;
     if (!$prefix) {
-	if (0 == index($self->{proc}{leading_str}, 'eval?')) {
-	    Devel::Trepan::Util::extract_expression(
-		$self->{proc}->current_source_text());
-	} else {
-	    $self->{proc}->current_source_text();
-	}
+        if (0 == index($self->{proc}{leading_str}, 'eval?')) {
+            Devel::Trepan::Util::extract_expression(
+                $self->{proc}->current_source_text());
+        } else {
+            $self->{proc}->current_source_text();
+        }
     } else {
-	$prefix;
+        $prefix;
     }
 }
 
@@ -98,41 +98,43 @@ sub run($$)
     my $hide_position = 1;
 
     if (1 == scalar @$args) {
-	if ($proc->{terminated}) {
-	    $proc->msg_need_running("implicit eval source code");
-	    return;
-	}
-	# No string passed to eval. Pick up string to eval from
-	# current source text.
-	$code_to_eval  = $proc->current_source_text();
-	$hide_position = 0;
-	if ('?' eq substr($cmd_name, -1)) {
-	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
-	    $code_to_eval = 
-		Devel::Trepan::Util::extract_expression($code_to_eval);
-	    $proc->msg("eval: ${code_to_eval}");
-	    my @eval_args = split /\s+/, $code_to_eval;
-	    $eval_lead_word = $eval_args[0];
-	} else {
-	    my @eval_args = split /\s+/, $code_to_eval;
-	    $eval_lead_word = $eval_args[0];
-	}
+        if ($proc->{terminated}) {
+            $proc->msg_need_running("implicit eval source code");
+            return;
+        }
+        # No string passed to eval. Pick up string to eval from
+        # current source text.
+        $code_to_eval  = $proc->current_source_text();
+        $hide_position = 0;
+        if ('?' eq substr($cmd_name, -1)) {
+            $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
+            $code_to_eval = 
+                Devel::Trepan::Util::extract_expression($code_to_eval);
+            $proc->msg("eval: ${code_to_eval}");
+            my @eval_args = split /\s+/, $code_to_eval;
+            $eval_lead_word = $eval_args[0];
+        } else {
+            my @eval_args = split /\s+/, $code_to_eval;
+            $eval_lead_word = $eval_args[0];
+        }
     } else {
-	# Use cmd_argstr to ensure we do not try tokenize what was typed.
-	# But for purposes of sigil checking below, tokenization of the
-	# leading word is okay.
-	$code_to_eval = $proc->{cmd_argstr};
-	$eval_lead_word = $args->[1];
+        # Use cmd_argstr to ensure we do not try tokenize what was typed.
+        # But for purposes of sigil checking below, tokenization of the
+        # leading word is okay.
+        $code_to_eval = $proc->{cmd_argstr};
+        $eval_lead_word = $args->[1];
     }
     {
-	my $return_type = parse_eval_suffix($cmd_name);
-	$return_type = parse_eval_sigil($eval_lead_word) unless $return_type;
-	my $opts = {return_type   => $return_type, 
-		    hide_position => $hide_position};
-	no warnings 'once';
-	# FIXME: 4 below is a magic fixup constant, also found in
-	# DB::finish.  Remove it.
-	$proc->eval($code_to_eval, $opts, 4);
+        my $return_type = parse_eval_suffix($cmd_name);
+        $return_type = parse_eval_sigil($eval_lead_word) unless $return_type;
+        my $opts = {return_type       => $return_type,
+                    hide_position     => $hide_position,
+                    fix_file_and_line => 1,
+        };
+        no warnings 'once';
+        # FIXME: 4 below is a magic fixup constant, also found in
+        # DB::finish.  Remove it.
+        $proc->eval($code_to_eval, $opts, 4);
     }
 }
 

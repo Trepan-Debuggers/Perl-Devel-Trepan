@@ -23,7 +23,7 @@ is(-r $trepanpl, 1, "Should be able to read trepan.pl program $trepanpl");
 # FIXME: in child save output to a temporary file. Then in the parent
 # do the tests.
 use File::Temp qw(tempfile);
-my ($fh, $tempfile) = tempfile('XXXX', TMPDIR => 1);
+my ($fh, $tempfile) = tempfile('optsXXXX', UNLINK=> 1, TMPDIR => 1);
 
 my $output;
 local $/;              # enable "slurp" mode

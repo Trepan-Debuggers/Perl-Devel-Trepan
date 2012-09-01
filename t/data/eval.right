@@ -15,6 +15,14 @@ $DB::D[2] =
   '5'
   ]}
 $DB::D[3] = 2
+*** Too many arguments for main::gcd near "8)
+
+"
+$DB::D[4] = <undef>
+*** Too many arguments for main::gcd near "6)
+
+"
+$DB::D[4] = <undef>
 $DB::D[4] = 0
 $DB::D[5] = 7
 x1 main::(gcd.pl:9)

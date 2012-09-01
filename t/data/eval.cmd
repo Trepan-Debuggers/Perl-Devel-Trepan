@@ -6,6 +6,8 @@ set display eval dumper
 @ARGV
 @ @ARGV
 $ @ARGV
+gcd(3,5,8)
+eval gcd(2,4,6)
 # An eval with no sigil. We once had a bug here
 use English
 eval 3+4

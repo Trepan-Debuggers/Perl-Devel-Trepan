@@ -95,6 +95,7 @@ sub run($$)
     my $code_to_eval;
     my $cmd_name = $args->[0];
     my $eval_lead_word;
+    my $hide_position = 1;
 
     if (1 == scalar @$args) {
 	if ($proc->{terminated}) {
@@ -104,6 +105,7 @@ sub run($$)
 	# No string passed to eval. Pick up string to eval from
 	# current source text.
 	$code_to_eval  = $proc->current_source_text();
+	$hide_position = 0;
 	if ('?' eq substr($cmd_name, -1)) {
 	    $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
 	    $code_to_eval = 
@@ -125,7 +127,8 @@ sub run($$)
     {
 	my $return_type = parse_eval_suffix($cmd_name);
 	$return_type = parse_eval_sigil($eval_lead_word) unless $return_type;
-	my $opts = {return_type => $return_type};
+	my $opts = {return_type   => $return_type, 
+		    hide_position => $hide_position};
 	no warnings 'once';
 	# FIXME: 4 below is a magic fixup constant, also found in
 	# DB::finish.  Remove it.

@@ -502,11 +502,12 @@ sub run_command($$)
     if ($self->{settings}{autoeval} || $eval_command) {
         my $return_type = parse_eval_sigil($current_command);
         $return_type = '$' unless $return_type;
-        my $opts = {nest => 0, return_type => $return_type};
+        my $opts = {nest => 0, hide_position => 1, return_type => $return_type};
 
         # FIXME: 2 below is a magic fixup constant, also found in
         # DB::finish.  Remove it.
         if (0 == $self->{frame_index}) {
+	    chomp $current_command;
             $self->eval($current_command, $opts, 2);
         } else {
             my $return_type = $DB::eval_opts->{return_type} = 
@@ -515,8 +516,6 @@ sub run_command($$)
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             } elsif ('@' eq $opts->{return_type}) {
                 @DB::eval_result = $self->eval($current_command, $opts, 2);
-            } elsif ('%' eq $opts->{return_type}) {
-                %DB::eval_result = $self->eval($current_command, $opts, 2);
             } else {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             }

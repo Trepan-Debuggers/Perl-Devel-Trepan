@@ -340,7 +340,8 @@ sub DB {
 			return_type       => $return_type,
 			user_context      => $usrctxt,
 			fix_file_and_line => $DB::fix_file_and_line,
-			hide_position     => 0};
+			hide_position     => $eval_opts->{hide_position} || 0
+		    };
 
 		    if ('@' eq $return_type) {
 			&DB::eval_with_return($eval_str, $opts, @saved);

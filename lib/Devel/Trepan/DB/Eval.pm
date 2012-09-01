@@ -74,12 +74,6 @@ sub eval_with_return {
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
 	};
-	my $msg = $@;
-	if ($opts->{hide_position}) {
-	    $msg =~ s/ at .* line \d+[.,]//;
-	    $msg =~ s/ at EOF$/ at end of string/;
-	}
-	_warnall($msg) if $msg && $opts->{show_error};
         
         # Restore those old values.
         $DB::trace  = $otrace;
@@ -87,9 +81,15 @@ sub eval_with_return {
         $DB::fix_file_and_line = 1;
         $DEBUGGING  = $od;
 
-        my $EVAL_ERROR_SAVE = $EVAL_ERROR;
-        if ($EVAL_ERROR_SAVE) {
-            _warnall($EVAL_ERROR_SAVE);
+        my $msg = $EVAL_ERROR;
+        if ($msg) {
+	    chomp $msg;
+	    if ($opts->{hide_position}) {
+		$msg =~ s/ at .* line \d+[.,]//;
+		$msg =~ s/ line \d+,//;
+		$msg =~ s/ at EOF$/ at end of string/;
+	    }
+            _warnall($msg);
             $eval_str = '';
             return undef;
         } else {

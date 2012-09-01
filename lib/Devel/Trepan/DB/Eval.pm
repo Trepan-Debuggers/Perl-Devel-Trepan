@@ -23,7 +23,7 @@ BEGIN {
                                  
 }    
 
-# evaluate $eval_str in the context of $user_context (a package name).
+# evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
 # $return_type indicates the return context: 
 #  @ for array context, 
@@ -49,7 +49,7 @@ sub eval_with_return {
         local $osingle = $DB::single;
         local $od      = $DEBUGGING;
 
-        my $eval_setup = $opts->{user_context} || '';
+        my $eval_setup = $opts->{namespace_package} || '';
         
         # Make sure __FILE__ and __LINE__ are set correctly
 	if( $opts->{fix_file_and_line}) {
@@ -62,8 +62,6 @@ sub eval_with_return {
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
-        } elsif ('!' eq $return_type) {
-            my @res = eval "$eval_setup $eval_str\n";
         # } elsif ('>' eq $return_type) {
         #     ($eval_result, $stderr, @result) = capture {
 	# 	eval "$eval_setup $eval_str\n";

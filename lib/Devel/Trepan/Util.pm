@@ -119,13 +119,13 @@ sub parse_eval_suffix($)
 {
     my $cmd = shift;
     my $suffix = substr($cmd, -1);
-    return ( index('%@$', $suffix) != -1) ? $suffix : '';
+    return ( index('%@$;>', $suffix) != -1) ? $suffix : '';
 }
 
 sub parse_eval_sigil($)
 {
     my $cmd = shift;
-    return ($cmd =~ /^\s*([%\$\@])/) ? $1 : ';';
+    return ($cmd =~ /^\s*([%\$\@>;])/) ? $1 : ';';
 }
 
 # Demo code

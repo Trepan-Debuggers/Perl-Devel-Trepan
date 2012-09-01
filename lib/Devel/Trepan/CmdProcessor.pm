@@ -409,8 +409,7 @@ sub process_commands($$$;$)
         $self->{last_tid} = $DB::tid;
         $DB::single       = $self->{DB_single};
     }
-    $DB::running      = $self->{DB_running};
-
+    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the

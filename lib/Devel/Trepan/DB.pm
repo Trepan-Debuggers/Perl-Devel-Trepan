@@ -14,21 +14,11 @@ the C<END> block documentation for more details.
 
 =cut
 
-# rocky: I'm copying what perl5db does here, which I suppose has some
-# time-honored benefit. That doesn't mean though that I like it. FIXME!
-package Devel::Trepan::Terminated;
-
-sub at_exit {
-    $DB::ready = 1;
-    # The below is there to have something to look at in "list" command.
-    "Debugged program terminated.  Use 'q' to quit or 'R' to restart.";
-}
-
 package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
-use vars qw($usrctxt $running $caller
+use vars qw($running $caller
             $event @ret $ret $return_value @return_value
             $eval_opts $eval_str
             $fall_off_on_end
@@ -39,6 +29,7 @@ use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::Eval;
 use Devel::Trepan::DB::Sub;
+use Devel::Trepan::Terminated;
 
 # "private" globals
 my ($deep, @saved, @skippkg);
@@ -118,7 +109,6 @@ BEGIN {
     $ready = 0;
     @saved = ();
     @skippkg = ();
-    $usrctxt = '';
     
     # ensure we can share our non-threaded variables or no-op
     if ($ENV{PERL5DB_THREADED}) {
@@ -188,8 +178,10 @@ sub DB {
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 
     # Set package namespace for running eval's in the user context. 
-    # However this won't let them modify 'my' variables, alas.
-    $usrctxt = "package $DB::package; \@_ = \@DB::_;";
+    # However this won't let them modify lexical variables, alas.
+    # This has to be 'local' rather than 'my' to allow recursive
+    # debugging ("debug" command).
+    local $namespace_package = "package $DB::package; \@_ = \@DB::_;";
     
     local(*DB::dbline) = "::_<$DB::filename";
 
@@ -212,7 +204,7 @@ sub DB {
 	for my $wp (@list) {
 	    next unless $wp->enabled;
 	    my $opts = {return_type => '$', 
-			user_context => $usrctx,
+			namespace_package => $namespace_package,
 			fix_file_and_line => $DB::fix_file_and_line,
 			hide_position     => 0};
 	    my $new_val = &DB::eval_with_return($wp->expr, $opts, @saved);
@@ -248,8 +240,8 @@ sub DB {
 	    } else  {
 		my $eval_str = sprintf("\$DB::stop = do { %s; }", 
 				       $brkpt->condition);
-		my $opts = {return_type => '!',  # ignore return
-			    user_context => $usrctx,
+		my $opts = {return_type => ';',  # ignore return
+			    namespace_package => $namespace_package,
 			    fix_file_and_line => $DB::fix_file_and_line,
 			    hide_position     => 0};
 		&DB::eval_with_return($eval_str, $opts, @saved);
@@ -291,7 +283,8 @@ sub DB {
     }
 
     for my $action (@action) {
-	&DB::eval($usrctxt, $action->condition, @saved) if $action->enabled;
+	&DB::eval($namespace_package, $action->condition, @saved) 
+	    if $action->enabled;
 	my $hits = $action->hits + 1;
 	$action->hits($hits);
     }
@@ -310,7 +303,7 @@ sub DB {
 		for my $disp (@$display_aref) {
 		    next unless $disp && $disp->enabled;
 		    my $opts = {return_type => $disp->return_type,
-				user_context => $usrctx,
+				namespace_package => $namespace_package,
 				fix_file_and_line => $DB::fix_file_and_line,
 				hide_position     => 0};
 		    # FIXME: allow more than just scalar contexts.
@@ -338,7 +331,7 @@ sub DB {
 		    $return_type = '' unless defined $return_type;
 		    my $opts = {
 			return_type       => $return_type,
-			user_context      => $usrctxt,
+			namespace_package => $namespace_package,
 			fix_file_and_line => $DB::fix_file_and_line,
 			hide_position     => $eval_opts->{hide_position} || 0
 		    };
@@ -445,6 +438,11 @@ sub catch {
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
     ) = @{$DB::caller};
+
+    # Set package namespace for running eval's in the user context. 
+    # However this won't let them modify lexical variables, alas.
+    my $namespace_package = "package $DB::package; \@_ = \@DB::_;";
+
     $event = 'post-mortem';
     $running = 0;
     for my $c (@clients) {
@@ -457,7 +455,7 @@ sub catch {
 		next unless $disp && $disp->enabled;
 		my $opts = {
 		    return_type       => $disp->return_type, 
-		    user_context      => $usrctxt,
+		    namespace_package => $namespace_package,
 		    fix_file_and_line => $DB::fix_file_and_line,
 		    hide_position     => 0};
 		my $eval_result = &DB::eval_with_return($disp->arg, $opts, 
@@ -479,8 +477,8 @@ sub catch {
 		# client wants something eval-ed
 		# FIXME: turn into subroutine.
 		
-		my $opts = {return_type => $eval_opts->{return_type}, 
-			    user_context => $usrctxt,
+		my $opts = {return_type       => $eval_opts->{return_type}, 
+			    namespace_package => $namespace_package,
 			    fix_file_and_line => $DB::fix_file_and_line,
 			    hide_position     => 0};
 		

@@ -426,7 +426,7 @@ sub get_list {
 
 use strict;                # this can run only after DB() and sub() are defined
 
-sub save {
+sub save($) {
   @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
              $OUTPUT_FIELD_SEPARATOR, 
 	     $INPUT_RECORD_SEPARATOR, 

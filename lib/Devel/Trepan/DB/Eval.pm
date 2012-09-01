@@ -31,7 +31,7 @@ BEGIN {
 #  ! to ignore result
 #  
 sub eval_with_return {
-    my ($user_context, $eval_str, $return_type, @saved) = @_;
+    my ($eval_str, $opts, @saved) = @_;
     no strict;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
      $OUTPUT_FIELD_SEPARATOR, 
@@ -49,18 +49,21 @@ sub eval_with_return {
         local $osingle = $DB::single;
         local $od      = $DEBUGGING;
 
+        my $eval_setup = $opts->{user_context} || '';
+        
         # Make sure __FILE__ and __LINE__ are set correctly
-        my $eval_setup = $user_context;
-        my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
-        $eval_setup .= $position_str if $DB::fix_file_and_line;
+	if( $opts->{fix_file_and_line}) {
+	    my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";
+	    $eval_setup .= $position_str ;
+	}
 
+	my $return_type = $opts->{return_type};
         if ('$' eq $return_type) {
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
         } elsif ('!' eq $return_type) {
             my @res = eval "$eval_setup $eval_str\n";
-	    _warnall($@) if $@;
         # } elsif ('>' eq $return_type) {
         #     ($eval_result, $stderr, @result) = capture {
 	# 	eval "$eval_setup $eval_str\n";
@@ -71,6 +74,12 @@ sub eval_with_return {
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
 	};
+	my $msg = $@;
+	if ($opts->{hide_position}) {
+	    $msg =~ s/ at .* line \d+[.,]//;
+	    $msg =~ s/ at EOF$/ at end of string/;
+	}
+	_warnall($msg) if $msg && $opts->{show_error};
         
         # Restore those old values.
         $DB::trace  = $otrace;

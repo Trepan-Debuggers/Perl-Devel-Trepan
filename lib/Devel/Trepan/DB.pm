@@ -211,9 +211,11 @@ sub DB {
 	my @list= @{$c->{watch}->{list}};
 	for my $wp (@list) {
 	    next unless $wp->enabled;
-	    my $new_val = &DB::eval_with_return($usrctxt, $wp->expr, 
-						'$',
-						@saved);
+	    my $opts = {return_type => '$', 
+			user_context => $usrctx,
+			fix_file_and_line => $DB::fix_file_and_line,
+			hide_position     => 0};
+	    my $new_val = &DB::eval_with_return($wp->expr, $opts, @saved);
 	    my $old_val = $wp->old_value;
 	    no warnings 'once';
 	    next if !defined($old_value) and !defined($new_val);
@@ -246,9 +248,11 @@ sub DB {
 	    } else  {
 		my $eval_str = sprintf("\$DB::stop = do { %s; }", 
 				       $brkpt->condition);
-		&DB::eval_with_return($usrctxt, $eval_str, 
-				      {return_type => '!'}, # ignore return
-				      @saved);
+		my $opts = {return_type => '!',  # ignore return
+			    user_context => $usrctx,
+			    fix_file_and_line => $DB::fix_file_and_line,
+			    hide_position     => 0};
+		&DB::eval_with_return($eval_str, $opts, @saved);
 	    }
 	    if ($stop && $brkpt->enabled) {
 		$DB::signal |= 1;
@@ -305,10 +309,13 @@ sub DB {
 		my $display_aref = $c->display_lists;
 		for my $disp (@$display_aref) {
 		    next unless $disp && $disp->enabled;
+		    my $opts = {return_type => $disp->return_type,
+				user_context => $usrctx,
+				fix_file_and_line => $DB::fix_file_and_line,
+				hide_position     => 0};
 		    # FIXME: allow more than just scalar contexts.
 		    my $eval_result =  
-			&DB::eval_with_return($usrctxt, $disp->arg, 
-					      $disp->return_type, @saved);
+			&DB::eval_with_return($disp->arg, $opts, @saved);
 		    my $mess = sprintf("%d: $eval_result", $disp->number);
 		    $c->output($mess);
 		}
@@ -329,21 +336,17 @@ sub DB {
 		    local $nest = $eval_opts->{nest};
 		    my $return_type = $eval_opts->{return_type};
 		    $return_type = '' unless defined $return_type;
+		    my $opts = {
+			return_type       => $return_type,
+			user_context      => $usrctxt,
+			fix_file_and_line => $DB::fix_file_and_line,
+			hide_position     => 0};
 
-		    if ('$' eq $return_type) {
-			$DB::eval_result = 
-			    &DB::eval_with_return($usrctxt, $eval_str, 
-						  $return_type, @saved);
-		    } elsif ('@' eq $return_type) {
-			&DB::eval_with_return($usrctxt, $eval_str, 
-					      $return_type, @saved);
-		    } elsif ('%' eq $return_type) {
-			&DB::eval_with_return($usrctxt, $eval_str, 
-					      $return_type, @saved);
+		    if ('@' eq $return_type) {
+			&DB::eval_with_return($eval_str, $opts, @saved);
 		    } else {
-			$DB::eval_result = 
-			    &DB::eval_with_return($usrctxt, $eval_str, 
-						  $return_type, @saved);
+			$eval_result = 
+			    &DB::eval_with_return($eval_str, $opts, @saved);
 		    }
 
 		    if ($nest) {
@@ -451,10 +454,13 @@ sub catch {
 	    my $display_aref = $c->display_lists;
 	    for my $disp (@$display_aref) {
 		next unless $disp && $disp->enabled;
-		# FIXME: allow more than just scalar contexts.
-		my $eval_result =  
-		    &DB::eval_with_return($usrctxt, $disp->arg, 
-					  $disp->return_type, @saved);
+		my $opts = {
+		    return_type       => $disp->return_type, 
+		    user_context      => $usrctxt,
+		    fix_file_and_line => $DB::fix_file_and_line,
+		    hide_position     => 0};
+		my $eval_result = &DB::eval_with_return($disp->arg, $opts, 
+							@saved);
 		my $mess = sprintf("%d: $eval_result", $disp->number);
 		$c->output($mess);
 	    }
@@ -472,24 +478,18 @@ sub catch {
 		# client wants something eval-ed
 		# FIXME: turn into subroutine.
 		
-		my $return_type = $eval_opts->{return_type};
+		my $opts = {return_type => $eval_opts->{return_type}, 
+			    user_context => $usrctxt,
+			    fix_file_and_line => $DB::fix_file_and_line,
+			    hide_position     => 0};
 		
-		if ('$' eq $return_type) {
-		    $eval_result = 
-			&DB::eval_with_return($usrctxt, $eval_str, 
-					      $return_type, @saved);
-		} elsif ('@' eq $return_type) {
-		    &DB::eval_with_return($usrctxt, $eval_str, 
-					  $return_type, @saved);
-		} elsif ('%' eq $return_type) {
-		    &DB::eval_with_return($usrctxt, $eval_str, 
-					  $return_type, @saved);
+		if ('@' eq $opts->{return_type}) {
+		    &DB::eval_with_return($eval_str, $opts, @saved);
 		} else {
 		    $eval_result = 
-			&DB::eval_with_return($usrctxt, $eval_str, 
-					      $return_type, @saved);
+			&DB::eval_with_return($eval_str, $opts, @saved);
 		}
-		
+
 		$after_eval = 1;
 		$running = 0;
 	    }

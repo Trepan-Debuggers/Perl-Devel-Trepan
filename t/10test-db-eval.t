@@ -43,4 +43,11 @@ $opts->{return_type} = '@';
 DB::eval('@ary', $opts);
 is(scalar @DB::eval_result, 5);
 
+my %hash = ('foo' => 'bar', 'a' => 1);
+$opts->{return_type} = '%';
+DB::eval('%hash', $opts);
+is($DB::eval_result{'foo'}, 'bar');
+my @keys = keys(%DB::eval_result);
+is(scalar @keys, 2);
+
 done_testing;

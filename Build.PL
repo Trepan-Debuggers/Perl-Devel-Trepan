@@ -60,6 +60,7 @@ my $builder = Module::Build->new(
 	'Term::ReadKey'                     => 0,
 	'Eval::WithLexicals'                => 0,
 	'Data::Printer'                     => 0,
+	'Pod::Text::Color'                  => 0,
     },
 
     requires => {
@@ -70,6 +71,7 @@ my $builder = Module::Build->new(
 	'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
+	'Pod::Text'                         => 0,
         'Syntax::Highlight::Perl::Improved' => 0,
         'rlib'                              => '0.02',
         'version'                           => 0,

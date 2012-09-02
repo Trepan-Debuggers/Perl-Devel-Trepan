@@ -177,6 +177,7 @@ lib/Devel/Trepan/IO/TCPClient.pm
 lib/Devel/Trepan/IO/TCPPack.pm
 lib/Devel/Trepan/IO/TCPServer.pm
 lib/Devel/Trepan/Options.pm
+lib/Devel/Trepan/Pod2Text.pm
 lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Terminated.pm

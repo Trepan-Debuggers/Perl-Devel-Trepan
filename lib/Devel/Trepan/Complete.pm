@@ -1,11 +1,10 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; use strict; 
 use Exporter;
 
-
 package Devel::Trepan::Complete;
-use vars qw(@ISA @EXPORT);
-@ISA = qw(Exporter);
+
+use vars qw(@ISA @EXPORT); @ISA = qw(Exporter);
 @EXPORT = qw(complete_token complete_token_with_next 
              next_token signal_complete
              complete_token_filtered_with_next);

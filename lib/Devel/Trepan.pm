@@ -370,6 +370,37 @@ If "auto eval" is not set on, or if running the Perl statement
 produces an error, we display an error message that the entered string
 is "undefined".
 
+=head2 Debugger Command Examples
+
+=head3 Commenting
+ # This line does nothing. It is a comment and is useful
+ # in debugger command files.
+      # any amount of leading space is also ok
+
+=head4 Splitting Commands
+ 
+The following runs two commands: C<info program> and C<list>
+
+ info program;; list 
+
+The following gives a syntax error since C<;;> splits the line and the
+simple debugger parse then thinks that the quote (") is not closed.
+
+ print "hi ;;-)\n" 
+ 
+If you have the Devel::Trepan::Shell plugin, you can go into a real
+shell and run the above. 
+
+=head4 Command Continuation
+
+If you want to continue a command on the next line use C<\> at the end
+of the line. For example:
+
+ eval $x = "This is \
+ a multi-line string"
+
+The string in variable C<$x> will have a C<\n> before the article "a".
+
 =head4 Command suffixes which have special meaning
 
 Some commands like C<step>, or C<list> do different things when an

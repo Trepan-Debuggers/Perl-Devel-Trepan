@@ -9,6 +9,10 @@ and then present using its output mechanism
 =cut
 
 package Devel::Trepan::Pod2Text;
+
+use vars qw(@ISA @EXPORT);
+@ISA = qw(Exporter); @EXPORT = qw(pod2text);
+
 use warnings; use strict;
 
 use vars qw($HAVE_TEXT_COLOR $HAVE_TEXT);
@@ -30,6 +34,7 @@ sub pod2text($;$$)
     my ($input_file, $color, $width) = @_;
 
     $width = ($ENV{'COLUMNS'} || 80) unless $width;
+    $color = 0 unless $color;
 
     # Figure out what formatter we're going to use.
     my $formatter = 'Pod::Text';
@@ -41,7 +46,7 @@ sub pod2text($;$$)
 
     my $p2t = $formatter->new(width => $width);
     my $output_string;
-    open(my $out_fh, ">", \$output_string);
+    open(my $out_fh, '>', \$output_string);
     $p2t->parse_from_file($input_file, $out_fh);
     return $output_string;
 }

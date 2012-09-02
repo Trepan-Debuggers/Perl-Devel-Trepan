@@ -6,6 +6,9 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Help;
 use warnings; no warnings 'redefine';
 
+use Devel::Trepan::Pod2Text qw(pod2text);
+use Devel::Trepan::Complete qw(complete_token);
+
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
 
@@ -84,8 +87,7 @@ sub complete($$)
     my $proc = $self->{proc};
     my @candidates = (keys %{CATEGORIES()}, qw(* all), 
                       $self->command_names());
-    my @matches = 
-        Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+    my @matches = complete_token(\@candidates, $prefix);
     # my @aliases = 
     #   Devel::Trepan::Complete::complete_token_filtered($proc->{aliases}, 
     #                                                    $prefix, \@matches);
@@ -103,11 +105,15 @@ sub complete_token_with_next($$;$)
         my %commands = %{$proc->{commands}};
         if (exists $commands{$cmd}) {
             push @result, [$cmd, $commands{$cmd}];
-            # if ('syntax' eq $cmd) {
-            #   complete_method =  Syntax->new(syntax_files);
-            # } else {
-            #   $proc->commands.member?(cmd) ? $proc->commands[cmd] : 0;
-            # }
+            if ('syntax' eq $cmd) {
+		my @completions = ();
+		@completions = complete_token($self->syntax_files(), $cmd);
+		push @result, @completions;
+            } else {
+		# foreach (keys $proc->{commands}) {
+		#     push(@result, [$_, undef]) if $_ eq $cmd;
+		# }
+            }
         } else {
             push @result, [$cmd, ['*'] ];
         }
@@ -172,10 +178,10 @@ sub syntax_files($)
 {
     my $self = shift;
     return $self->{syntax_files} if $self->{syntax_files};
-    my @result = map({ $_ = basename($_, '.txt') } 
-                     glob(File::Spec->catfile($HELP_DIR, "/*.txt")));
-    $self->{syntax_files} = @result;
-    return @result;
+    my @result = map({ $_ = basename($_, '.pod') } 
+                     glob(File::Spec->catfile($HELP_DIR, "/*.pod")));
+    $self->{syntax_files} = \@result;
+    return \@result;
 }
 
 sub show_command_syntax($$)
@@ -184,31 +190,33 @@ sub show_command_syntax($$)
     if (scalar @$args == 2) {
         $self->{syntax_summary_help} ||= {};
         $self->section("List of syntax help");
-        for my $name (syntax_files($self)) {
+        for my $name (@{syntax_files($self)}) {
             unless($self->{syntax_summary_help}{$name}) {
-                my $filename = File::Spec->catfile($HELP_DIR, "${name}.txt");
+                my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
                 my @lines = $self->readlines($filename);
                 $self->{syntax_summary_help}{$name} = $lines[0];
             }
             my $msg = sprintf("  %-8s -- %s", $name, 
                               $self->{syntax_summary_help}{$name});
-            $self->msg($msg);
+            $self->msg($msg, {unlimited => 1});
         }
     } else {
         my @args = splice(@{$args}, 2);
         for my $name (@args) {
             $self->{syntax_help} ||= {};
+	    my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
             unless ($self->{syntax_help}{name}) {
-                my $filename = 
-                    File::Spec->catfile($HELP_DIR, "${name}.txt");
-                my @lines = $self->readlines($filename);
+		my @lines = $self->readlines($filename);
                 shift @lines;
                 $self->{syntax_help}{$name} = join("\n", @lines);
             }
             
             if (exists $self->{syntax_help}{$name}) {
-                $self->section("Debugger syntax for a ${name}:");
-                $self->msg($self->{syntax_help}{$name});
+		my $proc = $self->{proc};
+		my $text = pod2text($filename, 
+				    $proc->{settings}{highlight},
+				    $proc->{settings}{maxwidth});
+                $self->msg($text);
             } else {
                 $self->errmsg("No syntax help for ${name}");
             }
@@ -311,7 +319,7 @@ unless (caller) {
     my $sep = '=' x 30 . "\n";
     print join(', ', $help_cmd->complete('br')), "\n";
     print join(', ', $help_cmd->complete('un')), "\n";
-    list_categories($help_cmd);
+    $help_cmd->list_categories();
     print $sep;
     $help_cmd->run([$NAME, 'help']);
     print $sep;
@@ -326,6 +334,11 @@ unless (caller) {
     $help_cmd->run([$NAME, 'running', '*']);
     print $sep;
     $help_cmd->run([$NAME, 'syntax']);
+    print $sep;
+    $help_cmd->run([$NAME, 'syntax', 'command']);
+    print $sep;
+    # 
+    $help_cmd->complete("$NAME syntax c");
     print $sep;
     $proc->{terminated} = 1;
     $help_cmd->run([$NAME, '*']);

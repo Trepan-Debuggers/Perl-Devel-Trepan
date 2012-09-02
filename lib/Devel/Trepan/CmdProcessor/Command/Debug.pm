@@ -28,7 +28,11 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 ${NAME} [STRING]
 
-Recursive debug STRING.
+Recursively debug STRING.
+
+Recursively debug STRING. The level of recursive debugging is shown in
+the prompt. For example ((trepan.pl)) indicates one nested level of
+debugging.
 
 Examples:
 

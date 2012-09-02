@@ -260,15 +260,65 @@ Perl code.
 
 =head4 debug PERL-EXPRESSION
 
+Recursively debug PERL-EXPRESSION. The level of recursive debugging is
+shown in the prompt. For example ((trepan.pl)) indicates one nested
+level of debugging.
+
 =head3 Making the program stop at certain points
 
 =head4 break
 
-=head4 tbreak
+break [LOCATION] [if CONDITION]
 
-=head4 condition
+Set a breakpoint. If no location is given use the current stopping
+point.
 
-=head4 delete
+Examples:
+   break                  # set a breakpoint on the current line
+   break gcd              # set a breakpoint in function gcd
+   break gcd if \$a == 1   # set a breakpoint in function gcd with 
+                          # condition \$a == 1
+   break 10               # set breakpoint on line 10
+
+When a breakpoint is hit the event icon is xx.
+
+See also "tbreak", "delete", "info break" and "condition".
+
+=head4 tbreak [LOCATION]
+
+Set a one-time breakpoint. The breakpoint is removed after it is hit.
+If no location is given use the current stopping point.
+
+Examples:
+   trbreak
+   tbreak 10               # set breakpoint on line 10
+
+When a breakpoint is hit the event icon is x1.
+
+See also "break".
+
+=head4 condition BP_NUMBER CONDITION
+
+BP_NUMBER is a breakpoint number.  CONDITION is an expression which
+must evaluate to True before the breakpoint is honored.  If CONDITION
+is absent, any existing condition is removed; i.e., the breakpoint is
+made unconditional.
+
+Examples:
+   condition 5 x > 10  # Breakpoint 5 now has condition x > 10
+   condition 5         # Remove above condition
+
+See also "break", "enable" and "disable".
+
+=head4 delete [bpnumber [bpnumber...]]  
+
+Delete some breakpoints.
+
+Arguments are breakpoint numbers with spaces in between. To delete
+all breakpoints, give no arguments.  
+
+See also the "clear" command which clears breakpoints by line number
+and "info break" to get a list of breakpoint numbers.
 
 =head4 enable
 

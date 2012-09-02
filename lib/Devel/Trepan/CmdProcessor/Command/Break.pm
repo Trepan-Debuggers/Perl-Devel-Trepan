@@ -38,6 +38,8 @@ Examples:
                           # condition \$a == 1
    ${NAME} 10               # set breakpoint on line 10
 
+When a breakpoint is hit the event icon is xx.
+
 See also "tbreak", "delete", "info break" and "condition".
 HELP
 

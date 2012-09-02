@@ -180,8 +180,8 @@ sub syntax_files($)
     return $self->{syntax_files} if $self->{syntax_files};
     my @result = map({ $_ = basename($_, '.pod') } 
                      glob(File::Spec->catfile($HELP_DIR, "/*.pod")));
-    $self->{syntax_files} = \@result;
-    return \@result;
+    $self->{syntax_files} = @result;
+    return @result;
 }
 
 sub show_command_syntax($$)
@@ -190,7 +190,7 @@ sub show_command_syntax($$)
     if (scalar @$args == 2) {
         $self->{syntax_summary_help} ||= {};
         $self->section("List of syntax help");
-        for my $name (@{syntax_files($self)}) {
+        for my $name (syntax_files($self)) {
             unless($self->{syntax_summary_help}{$name}) {
                 my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
                 my @lines = $self->readlines($filename);
@@ -205,13 +205,7 @@ sub show_command_syntax($$)
         for my $name (@args) {
             $self->{syntax_help} ||= {};
 	    my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
-            unless ($self->{syntax_help}{name}) {
-		my @lines = $self->readlines($filename);
-                shift @lines;
-                $self->{syntax_help}{$name} = join("\n", @lines);
-            }
-            
-            if (exists $self->{syntax_help}{$name}) {
+            if ( -r $filename) {
 		my $proc = $self->{proc};
 		my $text = pod2text($filename, 
 				    $proc->{settings}{highlight},

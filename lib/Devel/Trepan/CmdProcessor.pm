@@ -265,6 +265,15 @@ sub process_after_eval($) {
                 $val_str = '<undef>'
             }
             $self->msg("$prefix\n\@\{$val_str}");
+    } elsif ('%' eq $return_type) {
+            if (%DB::eval_result) {
+                $val_str = $fn->(\%DB::eval_result, %$print_properties);
+                chomp $val_str;
+                @{$DB::D[$last_eval_value++]} = %DB::eval_result;
+            } else {
+                $val_str = '<undef>'
+            }
+            $self->msg("$prefix\n\@\{$val_str}");
     } elsif ('>' eq $return_type || '2>' eq $return_type ) {
         $self->msg($DB::eval_result);
     }  else {
@@ -518,6 +527,8 @@ sub run_command($$)
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             } elsif ('@' eq $opts->{return_type}) {
                 @DB::eval_result = $self->eval($current_command, $opts, 2);
+            } elsif ('%' eq $opts->{return_type}) {
+                %DB::eval_result = $self->eval($current_command, $opts, 2);
             } else {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             }

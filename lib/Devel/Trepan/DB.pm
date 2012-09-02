@@ -334,6 +334,8 @@ sub DB {
 
                     if ('@' eq $return_type) {
                         &DB::eval_with_return($eval_str, $opts, @saved);
+		    } elsif ('%' eq $return_type) {
+			&DB::eval_with_return($eval_str, $opts, @saved);
                     } else {
                         $eval_result = 
                             &DB::eval_with_return($eval_str, $opts, @saved);
@@ -478,6 +480,8 @@ sub catch {
 
                 if ('@' eq $opts->{return_type}) {
                     &DB::eval_with_return($eval_str, $opts, @saved);
+		} elsif ('%' eq $opts->{return_type}) {
+			&DB::eval_with_return($eval_str, $opts, @saved);
                 } else {
                     $eval_result = 
                         &DB::eval_with_return($eval_str, $opts, @saved);

@@ -18,6 +18,7 @@ BEGIN {
     # program we use these:
     $DB::eval_result = undef;   # Place for result if scalar;
     @DB::eval_result = ();      # place for result if array
+    %DB::eval_result = ();      # place for result if hash
 }    
 
 # evaluate $eval_str in the context of $package_namespace (a package name).
@@ -59,6 +60,8 @@ sub eval_with_return {
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
+        } elsif ('%' eq $return_type) {
+            eval "$eval_setup \%DB::eval_result=$eval_str\n";
         # } elsif ('>' eq $return_type) {
         #     ($eval_result, $stderr, @result) = capture {
         #       eval "$eval_setup $eval_str\n";

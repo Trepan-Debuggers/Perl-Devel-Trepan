@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
-# require 'tmpdir'
 
-# Part of Trepan::CmdProcess that loads up debugger commands from
+# Part of Devel::Trepan::CmdProcessor that loads up debugger commands from
 # builtin and user directories.  
 # Sets @commands, @aliases, @macros
 use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 $Load_seen = 1;
-use warnings;
-use strict;
+use warnings; use strict;
 no warnings 'redefine';
 
 use File::Spec;

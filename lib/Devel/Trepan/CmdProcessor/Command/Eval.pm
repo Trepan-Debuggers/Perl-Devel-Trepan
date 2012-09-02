@@ -8,7 +8,7 @@ package Devel::Trepan::CmdProcessor::Command::Eval;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => qw(eval? eval@ eval$ eval@? @ % $ p);
+use constant ALIASES    => qw(eval? eval@ eval% eval$ eval@? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
 use constant NEED_STACK  => 0;
@@ -51,7 +51,7 @@ may be used again easily.
 
 Normally ${NAME} assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
-by adding the appropriate sigil @, or \$.
+by adding the appropriate sigil \@, \%, or \$.
 
 Examples:
 
@@ -65,6 +65,7 @@ ${NAME}?     # but strips off leading 'if', 'while', ..
 ${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
              # an array converted to a scalar.
 @ \@ARG       # Same as above if \@ alias is around
+${NAME}% \%ENV  # Make sure the result saved is a hash
 use English  # Note this is a statement, not an expression
 use English; # Same as above
 ${NAME}\$ use English # Error because this is not a valid expression 

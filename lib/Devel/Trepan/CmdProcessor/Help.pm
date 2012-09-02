@@ -1,8 +1,8 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
-use strict;
+use strict; use warnings;
+
 use Exporter;
-use warnings;
 
 package Devel::Trepan::CmdProcessor;
 

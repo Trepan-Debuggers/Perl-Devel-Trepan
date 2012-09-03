@@ -14,11 +14,10 @@ our $MIN_ABBREV = length('de');
 our $HELP   = <<"HELP";
 Set debugger debugging controls
 
-See 'help set debug *' for a list of subcommands or 'help set debug <name>' 
-for help on a particular trace subcommand.
+See C<help set debug *> for a list of subcommands or C<help set debug I<name>>
+for help on a particular debugging control.
 HELP
-our $SHORT_HELP = 
-"Set debugging controls";
+our $SHORT_HELP = "Set debugging controls";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 

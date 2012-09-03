@@ -12,7 +12,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('de');
 our $HELP   = <<"HELP";
-Set debugger debugging controls
+Show debugger debugging controls
 
 See 'help show debug *' for a list of subcommands or 'help show debug <name>' 
 for help on a particular trace subcommand.

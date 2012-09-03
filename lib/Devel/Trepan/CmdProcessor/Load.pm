@@ -279,7 +279,7 @@ sub next_complete($$$$$)
 	    return map {$_->[0]} @match_pairs;
 	} else {
 	    if (scalar @match_pairs == 1) {
-		if ($next_blank_pos >= length($str) 
+		if ($next_blank_pos == length($str)-1 
 		    && ' ' ne substr($str, length($str)-1)) {
 		    return map {$_->[0]} @match_pairs;
 		} elsif ($match_pairs[0]->[0] eq $token) {

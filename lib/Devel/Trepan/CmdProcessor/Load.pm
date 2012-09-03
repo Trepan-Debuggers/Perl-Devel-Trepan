@@ -270,9 +270,10 @@ sub next_complete($$$$$)
     return () if !$token && !$last_token;
     return () unless defined($cmd);
     return @{$cmd} if ref($cmd) eq 'ARRAY';
-    
+    return $cmd->($token) if (ref($cmd) eq 'CODE');
+
     if ($cmd->can("complete_token_with_next")) {
-	my @match_pairs = $cmd->complete_token_with_next($token);
+ 	my @match_pairs = $cmd->complete_token_with_next($token);
 	return () unless scalar @match_pairs;
 	if ($next_blank_pos >= length($str)) {
 	    return map {$_->[0]} @match_pairs;

@@ -73,7 +73,19 @@ my @expect = qw(files frame functions);
 is(scalar(@msgs), scalar @expect);
 for (my $i=0; $i < scalar @expect; $i++) {
     is($msgs[$i], $expect[$i], 
-       "Expecting completion $i of '$prefix' to be ${expect[$i]}");
+       "Expecting completion $i of '$prefix' to be '${expect[$i]}'");
+}
+
+# Completion of 'help syntax c' is ['command']
+$prefix = 'help syntax c';
+$cmd->{proc}{cmd_argstr} = $prefix;
+@msgs = ();
+$cmd->run([$cmd->name, $prefix]);
+@expect = qw(command);
+is(scalar(@msgs), scalar @expect);
+for (my $i=0; $i < scalar @expect; $i++) {
+    is($msgs[$i], $expect[$i], 
+       "Expecting completion $i of '$prefix' to be '${expect[$i]}'");
 }
 
 done_testing();

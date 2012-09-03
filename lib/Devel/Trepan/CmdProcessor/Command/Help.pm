@@ -95,25 +95,28 @@ sub complete($$)
     sort @matches;
 }
 
+sub complete_syntax($$) {
+    my ($self, $prefix) = @_;
+    my @candidates = @{$self->syntax_files()};
+    my @matches = complete_token(\@candidates, $prefix);
+    sort @matches;
+}
+
 sub complete_token_with_next($$;$)
 {
     my ($self, $prefix, $cmd_prefix) = @_;
     my $proc = $self->{proc};
     my @result = ();
-    my @matches = complete($self, $prefix);
+    my @matches = $self->complete($prefix);
     foreach my $cmd (@matches) {
         my %commands = %{$proc->{commands}};
         if (exists $commands{$cmd}) {
             push @result, [$cmd, $commands{$cmd}];
-            if ('syntax' eq $cmd) {
-		my @completions = ();
-		@completions = complete_token($self->syntax_files(), $cmd);
-		push @result, @completions;
-            } else {
-		# foreach (keys $proc->{commands}) {
-		#     push(@result, [$_, undef]) if $_ eq $cmd;
-		# }
-            }
+	} elsif ('syntax' eq $cmd) {
+	    my @syntax_files = @{$self->syntax_files()};
+	    push @result, [$cmd, 
+			   sub { my $prefix = shift; 
+				 $self->complete_syntax($prefix) } ];
         } else {
             push @result, [$cmd, ['*'] ];
         }
@@ -178,10 +181,10 @@ sub syntax_files($)
 {
     my $self = shift;
     return $self->{syntax_files} if $self->{syntax_files};
-    my @result = map({ $_ = basename($_, '.pod') } 
-                     glob(File::Spec->catfile($HELP_DIR, "/*.pod")));
-    $self->{syntax_files} = @result;
-    return @result;
+    my @pods = glob(File::Spec->catfile($HELP_DIR, "/*.pod"));
+    my @result = map({ $_ = basename($_, '.pod') }  @pods);
+    $self->{syntax_files} = \@result;
+    return \@result;
 }
 
 sub show_command_syntax($$)
@@ -190,7 +193,7 @@ sub show_command_syntax($$)
     if (scalar @$args == 2) {
         $self->{syntax_summary_help} ||= {};
         $self->section("List of syntax help");
-        for my $name (syntax_files($self)) {
+        for my $name (@{$self->syntax_files()}) {
             unless($self->{syntax_summary_help}{$name}) {
                 my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
                 my @lines = $self->readlines($filename);
@@ -313,6 +316,7 @@ unless (caller) {
     my $sep = '=' x 30 . "\n";
     print join(', ', $help_cmd->complete('br')), "\n";
     print join(', ', $help_cmd->complete('un')), "\n";
+    print join(', ', $help_cmd->complete("sy")), "\n";
     $help_cmd->list_categories();
     print $sep;
     $help_cmd->run([$NAME, 'help']);
@@ -330,9 +334,6 @@ unless (caller) {
     $help_cmd->run([$NAME, 'syntax']);
     print $sep;
     $help_cmd->run([$NAME, 'syntax', 'command']);
-    print $sep;
-    # 
-    $help_cmd->complete("$NAME syntax c");
     print $sep;
     $proc->{terminated} = 1;
     $help_cmd->run([$NAME, '*']);

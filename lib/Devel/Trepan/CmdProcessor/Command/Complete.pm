@@ -58,7 +58,12 @@ unless (caller) {
     	$cmd->run([$cmd->name, $prefix]);
     	print '=' x 40, "\n";
     }
-   $cmd->run([$cmd->name, 'fdafsasfda']);
+    for my $prefix ('help syntax c') {
+    	$cmd->{proc}{cmd_argstr} = $prefix;
+    	$cmd->run([$cmd->name, $prefix]);
+    	print '=' x 40, "\n";
+    }
+    # $cmd->run([$cmd->name, 'fdafsasfda']);
 }
 
 1;

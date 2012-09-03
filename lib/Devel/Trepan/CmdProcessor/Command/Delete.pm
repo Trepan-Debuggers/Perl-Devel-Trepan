@@ -24,15 +24,18 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [bpnumber [bpnumber...]]  
+=pod
+
+${NAME} [I<bp-number> [I<bp-number>...]]  
 
 Delete some breakpoints.
 
 Arguments are breakpoint numbers with spaces in between.  To delete
 all breakpoints, give no arguments.  
 
-See also the "clear" command which clears breakpoints by line number
-and "info break" to get a list of breakpoint numbers.
+See also the C<clear> command which clears breakpoints by line number
+and C<info break> to get a list of breakpoint numbers.
+=cut
 HELP
 
 # This method runs the command

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -26,18 +26,22 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} BP_NUMBER CONDITION
+=pod
 
-BP_NUMBER is a breakpoint number.  CONDITION is an expression which
-must evaluate to True before the breakpoint is honored.  If CONDITION
-is absent, any existing condition is removed; i.e., the breakpoint is
-made unconditional.
+${NAME} I<bp-number> I<perl-expression>
 
-Examples:
-   ${NAME} 5 x > 10  # Breakpoint 5 now has condition x > 10
-   ${NAME} 5         # Remove above condition
+I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
+expression which must evaluate to true before the breakpoint is
+honored.  If I<perl-expression> is absent, any existing condition is removed;
+i.e., the breakpoint is made unconditional.
 
-See also "break", "enable" and "disable".
+=head2 Examples:
+
+ ${NAME} 5 x > 10  # Breakpoint 5 now has condition x > 10
+ ${NAME} 5         # Remove above condition
+
+See also C<break>, C<enable> and C<disable>.
+=cut
 HELP
 
 # This method runs the command

@@ -26,6 +26,8 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
+=pod
+
 B<${NAME}> I<string>
 
 Recursively debug I<string>.

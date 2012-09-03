@@ -3,12 +3,17 @@ Revision history for Devel-Trepan
 0.36 - 
 
 - Allow color in Data::Printer output
-- More doc tweaking
+- Help strings are now in pod format and we run pod2text to give help. 
+  This means terminal width settings can be adjusted (with set max width)
+  and terminal highlighting is handled. We are also closer to automating
+  a Devel::Trepan manual 
 - Continuation of a command now allowed if you end a line with '\'
   This should make writing macros for example easier and may help 
   in eval
 - There's enough flexibility with eval that we don't need special 
   ! handling. Remove that.
+- Bug in tab completion of help syntax fixed.
+- Tidy syntax errors in evaluation
 
 0.35  - Aug 27, 2012
 - More CPANTS failures, Had broken tolerance in older Perls and 

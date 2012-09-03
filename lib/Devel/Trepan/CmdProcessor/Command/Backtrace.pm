@@ -22,18 +22,21 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [COUNT]
+=pod
 
-Print a stack trace, with the most recent frame at the top.  With a
+${NAME} [I<count>]
+
+Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries. 
 
-An arrow indicates the 'current frame'. The current frame determines
-the context used for many debugger commands such as source-line
-listing or the 'edit' command.
+In the listing produced, an arrow indicates the 'current frame'. The
+current frame determines the context used for many debugger commands
+such as source-line listing or the C<edit> command.
 
-Examples:
-   ${NAME}    # Print a full stack trace
-   ${NAME} 2  # Print only the top two entries
+=head2 Examples:
+ ${NAME}    # Print a full stack trace
+ ${NAME} 2  # Print only the top two entries
+=cut
 HELP
 
 sub complete($$)

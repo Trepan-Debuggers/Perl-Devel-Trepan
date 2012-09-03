@@ -44,12 +44,12 @@ lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
 lib/Devel/Trepan/CmdProcessor/Command/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Handle.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help.pm
-lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt
-lib/Devel/Trepan/CmdProcessor/Command/Help/examples.txt
-lib/Devel/Trepan/CmdProcessor/Command/Help/filename.txt
-lib/Devel/Trepan/CmdProcessor/Command/Help/location.txt
+lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod
+lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod
+lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod
+lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/README
-lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.txt
+lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod
 lib/Devel/Trepan/CmdProcessor/Command/Info.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm
@@ -61,7 +61,6 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
-lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Dump.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/My.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Our.pm

@@ -71,8 +71,10 @@ sub help2podstring($;$$)
     open(my $out_fh, '>', \$output_string);
     open(my $in_fh, '<', \$input_string);
 
-    $input_string = "=pod\n\n$input_string";
-    $input_string .= "\n=cut\n" unless "\n=cut\n" eq substr($input_string, -6);
+    $input_string = "=pod\n\n$input_string" unless 
+	"=pod\n" eq substr($input_string, 0, 4);
+    $input_string .= "\n=cut\n" unless 
+	"\n=cut\n" eq substr($input_string, -6);
     $p2t->parse_from_file($in_fh, $out_fh);
     return $output_string;
 }

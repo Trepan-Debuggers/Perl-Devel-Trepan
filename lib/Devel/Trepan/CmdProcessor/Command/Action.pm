@@ -27,6 +27,8 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
+=pod
+
 B<${NAME}> I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is

@@ -24,20 +24,26 @@ use vars @CMD_VARS;   # value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [[FILE] [LINE]]
+=pod
+
+${NAME} [[I<file>] [I<line>]]
 
 With no argument, edits file containing most recent line listed.
-The value of the environment variable EDITOR is used for the
-editor to run. If no EDITOR environment variable is set /bin/ex
+The value of the environment variable I<EDITOR> is used for the
+editor to run. If no I<EDITOR> environment variable is set /bin/ex
 is used. The editor should support line and file positioning via
-   editor-name +line file-name
+
+ editor-name +line file-name
+
 (Most editors do.)
 
-Examples:
-${NAME}            # Edit current location
-${NAME} 7          # Edit current file at line 7
-${NAME} test.rb    # Edit test.rb, line 1
-${NAME} test.rb 10 # Edit test.rb  line 10
+=head2 Examples:
+
+ ${NAME}            # Edit current location
+ ${NAME} 7          # Edit current file at line 7
+ ${NAME} test.rb    # Edit test.rb, line 1
+ ${NAME} test.rb 10 # Edit test.rb  line 10
+=cut
 HELP
 
 # FIXME: include line numbers. Should we include all files? 

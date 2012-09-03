@@ -27,6 +27,8 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
+=pod
+
 B<$NAME> [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.

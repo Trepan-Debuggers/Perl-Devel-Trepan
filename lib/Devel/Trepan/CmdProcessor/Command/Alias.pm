@@ -22,6 +22,8 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
+=pod
+
 B<${NAME}> I<alias> I<command>
 
 Add alias I<alias> for a debugger command I<command>.  

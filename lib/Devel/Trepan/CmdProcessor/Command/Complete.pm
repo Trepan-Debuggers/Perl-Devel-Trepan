@@ -25,9 +25,12 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
+=pod 
+
 B<${NAME}> I<comamand-prefix>
 
 List the command completions of I<command-prefix>.
+=cut
 HELP
 
 # This method runs the command

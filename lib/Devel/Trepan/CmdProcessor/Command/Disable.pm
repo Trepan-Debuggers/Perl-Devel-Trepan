@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -32,10 +32,13 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} bpnumber [bpnumber ...]
+=pod
+
+${NAME} I<bp-number> [I<bp-number> ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
-numbers. See also "info break" to get a list.
+numbers. See also C<info break> to get a list of breakpoints
+=cut
 HELP
     
 ### FIXME: parameterize and combine these. Also combine with enable.

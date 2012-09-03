@@ -26,18 +26,22 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} PERL-EXPRESSION
- 
-Print value of expression PERL-EXPRESSON each time the program stops.
+=pod 
 
-Examples:
-   ${NAME} \$a  # Display variable \$a each time we enter debugger
-   ${NAME} join(', ', \@ARGV)  # show values of array \@ARGV
+${NAME} I<Perl-expression>
+ 
+Print value of expression I<Perl-expression> each time the program stops.
+
+=head2 Examples:
+
+ ${NAME} \$a  # Display variable \$a each time we enter debugger
+ ${NAME} join(', ', \@ARGV)  # show values of array \@ARGV
 
 If what you want to do is evaluate a Perl expression or statement once
-rather than every time the program stops, see "eval".
+rather than every time the program stops, see C<eval>.
 
-See also "undisplay", "enable", "disable".
+See also C<undisplay>, C<enable>, C<disable>.
+=cut
 HELP
 
 # This method runs the command

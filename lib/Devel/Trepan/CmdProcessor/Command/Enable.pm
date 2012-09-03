@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -30,26 +30,36 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} NUM [NUM ...]
+=pod
+
+${NAME} I<num> [I<num> ...]
     
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
 The prefaces are interpreted as follows:
-  a:  action number
-  b:  breakpoint number
-  w:  watch expression number
 
-If NUM is starts with a digit NUM is taken to be a breakpoint number.
+=over
 
-Examples:
+=item a -- action number
 
-   $NAME 1 2    # Enable breakpoint 1 and 2
-   $NAME b1 b2  # Same as above
-   $NAME a4     # Enable action 4
-   $NAME w1 2   # Enable watch expression 1 and breakpoint 2
+=item b -- breakpoint number
 
-See also "info break" to get a list of breakpoints, and "disable" to
+=item w -- watch expression number
+
+=back
+
+If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
+
+=head2 Examples:
+
+ $NAME 1 2    # Enable breakpoint 1 and 2
+ $NAME b1 b2  # Same as above
+ $NAME a4     # Enable action 4
+ $NAME w1 2   # Enable watch expression 1 and breakpoint 2
+
+See also C<info break> to get a list of breakpoints, and C<disable> to
 disable breakpoints.
+=cut
 HELP
 
 ### FIXME: parameterize and combine these. Also combine with disable.

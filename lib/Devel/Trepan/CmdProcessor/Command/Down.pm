@@ -21,12 +21,15 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [COUNT]
+=pod
+
+${NAME} [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.
 
-See also 'up' and 'frame'.
+See also C<up> and C<frame>.
+=cut
 HELP
 
 sub complete($$)

@@ -33,16 +33,16 @@ eval.pl [1-10]
   9    	    print "ho\n";
  10    	    5;
 $DB::D[1] = 1
--- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:2)
+-- main::((eval 1955)[eval.pl:10]:2 remapped bogus.pl:2)
 
 $x = 2;
 $y = 3;
 $z = 4
--- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:3)
+-- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
 $x = 2;
 $y = 3;
 $z = 4
--- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:4)
+-- main::((eval 1955)[eval.pl:10]:4 remapped bogus.pl:4)
 $y = 3;
 $z = 4
 -- main::(eval.pl:6)
@@ -50,7 +50,7 @@ $eval_sub='
 eval $eval_sub;
 -- main::(eval.pl:13)
 $y = five();
--- main::(bogus.pl remapped (eval 1955)[eval.pl:10]:3)
+-- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
 --> #0 @ = main::five() in 
 	file `(eval 1000)[eval.pl:12]' at line 3
     #1 file `eval.pl' at line 13

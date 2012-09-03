@@ -202,8 +202,8 @@ sub source_location_info($)
 		$filename = DB::LineCache::map_script($filename, $string);
 	    }
 	    $canonic_filename = $self->canonic_file($self->filename(), 0);
-	    return "$filename:$line_number " . 
-		"remapped ${canonic_filename}:${line_number}$cop_addr";
+	    return "${canonic_filename}:${line_number} " . 
+		"remapped $filename:$line_number$cop_addr";
     	}
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);

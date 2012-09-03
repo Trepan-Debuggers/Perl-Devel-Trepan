@@ -34,8 +34,9 @@ $opts = {
 		$skip--; 
 		next;
 	    }
-            if (/remapped \(eval .+:\d+\)/) {
-                s/main::\(.* remapped \(eval \d+\).+\]:(\d+)/main::(bogus.pl remapped (eval 1955)[eval.pl:10]:$1/;
+            # if (/main::\(\(eval .+:\d+\).* remapped /) {
+            if (/main::\(\(eval .+:\d+.* remapped /) {
+                s/main::\(\(eval .+:\d+.* remapped (?:.+):(\d+)/main::((eval 1955)[eval.pl:10]:$1 remapped bogus.pl:$1/;
             } elsif (/.. \(.+\:\d+\)/) {
                 if ($OSNAME eq 'MSWin32') {
                     s/\((?:.+\\)?(.+\:\d+)\)/($1)/;

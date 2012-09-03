@@ -8,10 +8,10 @@ my $opts = {
     filter => sub{
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
-	for my $line (split("\n", $got_lines)) {
-	    $line =~ s/main::\(.* remapped \(eval \d+\).+\]:(\d+)/main::(bogus.pl remapped (eval 1955)[Eval.pm:$1]/;
+	for (split("\n", $got_lines)) {
+	    s/main::\(\(eval .+:\d+.* remapped (?:.+):(\d+)/main::((eval 1955)[Eval.pm:73]:$1 remapped bogus.pl:$1/;
 	    # $line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
-	    push @result, $line;
+	    push @result, $_;
 	}
 	$got_lines = join("\n", @result);
 	return ($got_lines, $correct_lines);

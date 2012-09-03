@@ -10,13 +10,13 @@ use Test::More;
 use rlib '../lib';
 use Devel::Trepan::Pod2Text;
 
-my $string = Devel::Trepan::Pod2Text::pod2text(__FILE__);
+my $string = Devel::Trepan::Pod2Text::pod2string(__FILE__);
 my @array = split("\n", $string);
 ok($string);
 is(scalar @array, 2);
-my $string2 = Devel::Trepan::Pod2Text::pod2text(__FILE__, 0, 30);
+my $string2 = Devel::Trepan::Pod2Text::pod2string(__FILE__, 0, 30);
 @array = split("\n", $string2);
 ok($string2);
-is(scalar @array, 4);
+is(scalar @array, 3);
 
 done_testing;

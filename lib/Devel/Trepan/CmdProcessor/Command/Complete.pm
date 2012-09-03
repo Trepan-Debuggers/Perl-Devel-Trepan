@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -25,9 +25,9 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} COMMAND-PREFIX
+B<${NAME}> I<comamand-prefix>
 
-List the completions for the rest of the line as a command.
+List the command completions of I<command-prefix>.
 HELP
 
 # This method runs the command

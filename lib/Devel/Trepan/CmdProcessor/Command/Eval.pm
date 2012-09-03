@@ -11,7 +11,7 @@ unless (@ISA) {
 use constant ALIASES    => qw(eval? eval@ eval% eval$ eval@? @ % $ p);
 use constant CATEGORY   => 'data';
 use constant SHORT_HELP => 'Run code in the current context';
-use constant NEED_STACK  => 0;
+use constant NEED_STACK => 0;
 use constant MIN_ARGS  => 0;  # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
 EOE
@@ -24,7 +24,7 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [STRING]
+B<${NAME}> [I<string>]
 
 Run code in the context of the current frame.
 
@@ -32,46 +32,47 @@ If no string is given after the command "eval", we run the string from
 the current source code about to be run. If the command ends ? (via an
 alias) and no string is given we will the perform the translations:
 
-   {if|elsif|unless} (expr) [{]  => expr
-   {until|while} (expr) [{]      => expr
-   return expr [;]               => expr
-   {my|local|our} (expr1, expr2) = (v1,v2);
-                                 => (expr1, expr2) = (v1,v2)
-   {my|local|our} var = expr ;   => expr
-   given expr                    => expr
-   sub fn(params)                => (params)
-   var = expr                    => expr
+ {if|elsif|unless} (expr) [{]  => expr
+ {until|while} (expr) [{]      => expr
+ return expr [;]               => expr
+ {my|local|our} (expr1, expr2) = (v1,v2);
+                               => (expr1, expr2) = (v1,v2)
+ {my|local|our} var = expr ;   => expr
+ given expr                    => expr
+ sub fn(params)                => (params)
+ var = expr                    => expr
 
 The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-The value of the expression is stored into global array \@DB:D so it
+The value of the expression is stored into global array I<\@DB:D> so it
 may be used again easily. 
 
 Normally ${NAME} assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
-by adding the appropriate sigil \@, \%, or \$.
+by adding the appropriate sigil C<\@>, C<\%>, or C<\$>.
 
-Examples:
+=head2 Examples:
 
-${NAME} 1+2 # 3
-${NAME}\$ 3   # Same as above, but the return type is explicit
-\$ 3       # Probably same as above if \$ alias is around
-${NAME} \$^X  # Possibly /usr/bin/perl
-${NAME}      # Run current source-code line
-${NAME}?     # but strips off leading 'if', 'while', ..
-          # from command 
-${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
-             # an array converted to a scalar.
-@ \@ARG       # Same as above if \@ alias is around
-${NAME}% \%ENV  # Make sure the result saved is a hash
-use English  # Note this is a statement, not an expression
-use English; # Same as above
-${NAME}\$ use English # Error because this is not a valid expression 
+ ${NAME} 1+2 # 3
+ ${NAME}\$ 3   # Same as above, but the return type is explicit
+ \$ 3       # Probably same as above if \$ alias is around
+ ${NAME} \$^X  # Possibly /usr/bin/perl
+ ${NAME}      # Run current source-code line
+ ${NAME}?     # but strips off leading 'if', 'while', ..
+           # from command 
+ ${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
+              # an array converted to a scalar.
+ @ \@ARG       # Same as above if \@ alias is around
+ ${NAME}% \%ENV  # Make sure the result saved is a hash
+ use English  # Note this is a statement, not an expression
+ use English; # Same as above
+ ${NAME}\$ use English # Error because this is not a valid expression 
 
-See also 'set auto eval'. The command can help one predict future execution.
-See 'set buffer trace' for showing what may have already been run.
+See also C<set auto eval>. The command can help one predict future execution.
+See C<set buffer trace> for showing what may have already been run.
+=cut
 HELP
 
 sub complete($$)

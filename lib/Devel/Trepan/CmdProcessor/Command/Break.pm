@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -26,21 +26,23 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [LOCATION] [if CONDITION]
+B<${NAME}> [I<location>] [B<if> I<condition>]
 
-Set a breakpoint. If no location is given use the current stopping
-point.
+Set a breakpoint. If I<location> is given use the current stopping
+point. An optional condition may be given.
 
-Examples:
-   ${NAME}                  # set a breakpoint on the current line
-   ${NAME} gcd              # set a breakpoint in function gcd
-   ${NAME} gcd if \$a == 1   # set a breakpoint in function gcd with 
-                          # condition \$a == 1
-   ${NAME} 10               # set breakpoint on line 10
+=head2 Examples:
 
-When a breakpoint is hit the event icon is xx.
+ ${NAME}                  # set a breakpoint on the current line
+ ${NAME} gcd              # set a breakpoint in function gcd
+ ${NAME} gcd if \$a == 1   # set a breakpoint in function gcd with 
+                        # condition \$a == 1
+ ${NAME} 10               # set breakpoint on line 10
 
-See also "tbreak", "delete", "info break" and "condition".
+When a breakpoint is hit the event icon is C<xx>.
+
+See also C<help breakpoints>.
+=cut
 HELP
 
 # FIXME: Should we include all files? 

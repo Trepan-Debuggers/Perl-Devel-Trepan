@@ -27,41 +27,41 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 $NAME = set_name();
 $HELP = <<"HELP";
+
 ${NAME}[+|-] [into] [count]
-${NAME} until EXPRESSION
-${NAME} thread
-${NAME} to METHOD-NAME
+
 ${NAME} over 
+
 ${NAME} out
 
 Execute the current line, stopping at the next event.  Sometimes this
-is called 'step into'.
+is called "step into".
 
 With an integer argument, step that many times.  With an 'until'
 expression that expression is evaluated and we stop the first time it
 is true.
 
-A suffix of '+' in a command or an alias forces a move to another
-position, while a suffix of '-' disables this requirement.  A suffix
-of '>' will continue until the next call. ('finish' will run run until
+A suffix of C<+> in a command or an alias forces a move to another
+position, while a suffix of C<-> disables this requirement.  A suffix
+of '>' will continue until the next call. (C<finish> will run run until
 the return for that call.)
 
-If no suffix is given, the debugger setting 'different' determines
+If no suffix is given, the debugger setting C<different> determines
 this behavior.
 
-Examples: 
-  ${NAME}        # step 1 event, *any* event obeying 'set different' setting
-  ${NAME} 1      # same as above
-  ${NAME}+       # same but force stopping on a new line
-  ${NAME}-       # same but force stopping on a new line a new frame added
-  ${NAME} until a > b
-  ${NAME} over   # same as 'next'
-  ${NAME} out    # same as 'finish'
-  ${NAME} thread # step stopping only in the current thread. Is the same
-                 # as step until Thread.current.object_id == #object_id
+=head2 Examples: 
 
-Related and similar is the 'next' (step over) and 'finish' (step out)
-commands.  All of these are slower than running to a breakpoint.
+ ${NAME}        # step 1 event, any event obeying 'set different' setting
+ ${NAME} 1      # same as above
+ ${NAME}+       # same but force stopping on a new line
+ ${NAME}-       # same but force stopping on a new line a new frame added
+ ${NAME} over   # same as 'next'
+ ${NAME} out    # same as 'finish'
+
+Related and similar is the C<next> (step over) and C<finish> (step out)
+commands. All of these are slower than running to a breakpoint. See also
+C<set different>.
+=cut
 HELP
 
 my $Keyword_to_related_cmd = {

@@ -6,7 +6,7 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Help;
 use warnings; no warnings 'redefine';
 
-use Devel::Trepan::Pod2Text qw(pod2text);
+use Devel::Trepan::Pod2Text qw(pod2string help2podstring);
 use Devel::Trepan::Complete qw(complete_token);
 
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
@@ -29,21 +29,21 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [command [subcommand]|expression]
+B<${NAME}> [I<command> [I<subcommand>]|I<expression>]
 
 Without argument, print the list of available debugger commands.
 
 When an argument is given, it is first checked to see if it is command
-name. 'help where' gives help on the 'where' debugger command.
+name. C<help backtrace> gives help on the C<backtrace> debugger command.
 
-If the environment variable \$PAGER is defined, the file is
+If the environment variable I<\$PAGER> is defined, the file is
 piped through that command.  You will notice this only for long help
 output.
 
-Some commands like 'info', 'set', and 'show' can accept an
+Some commands like C<info>, C<set>, and C<show> can accept an
 additional subcommand to give help just about that particular
-subcommand. For example 'help info line' gives help about the
-info line command.
+subcommand. For example C<help info line> gives help about the
+C<info line> command.
 HELP
 
 BEGIN {
@@ -112,11 +112,11 @@ sub complete_token_with_next($$;$)
         my %commands = %{$proc->{commands}};
         if (exists $commands{$cmd}) {
             push @result, [$cmd, $commands{$cmd}];
-	} elsif ('syntax' eq $cmd) {
-	    my @syntax_files = @{$self->syntax_files()};
-	    push @result, [$cmd, 
-			   sub { my $prefix = shift; 
-				 $self->complete_syntax($prefix) } ];
+        } elsif ('syntax' eq $cmd) {
+            my @syntax_files = @{$self->syntax_files()};
+            push @result, [$cmd, 
+                           sub { my $prefix = shift; 
+                                 $self->complete_syntax($prefix) } ];
         } else {
             push @result, [$cmd, ['*'] ];
         }
@@ -207,12 +207,12 @@ sub show_command_syntax($$)
         my @args = splice(@{$args}, 2);
         for my $name (@args) {
             $self->{syntax_help} ||= {};
-	    my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
+            my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
             if ( -r $filename) {
-		my $proc = $self->{proc};
-		my $text = pod2text($filename, 
-				    $proc->{settings}{highlight},
-				    $proc->{settings}{maxwidth});
+                my $proc = $self->{proc};
+                my $text = pod2string($filename, 
+                                      $proc->{settings}{highlight},
+                                      $proc->{settings}{maxwidth});
                 $self->msg($text);
             } else {
                 $self->errmsg("No syntax help for ${name}");
@@ -233,10 +233,10 @@ sub run($$)
             $self->section('All currently valid command names:');
             my @cmds = sort($self->command_names());
             $self->msg($self->columnize_commands(\@cmds));
-	    if (scalar keys %{$proc->{aliases}}) {
-		$self->msg('');
-		show_aliases($self) 
-	    }
+            if (scalar keys %{$proc->{aliases}}) {
+                $self->msg('');
+                show_aliases($self) 
+            }
             # $self->show_macros   unless scalar @$self->{proc}->macros;
         } elsif ($cmd_name =~ /^aliases$/i) {
             show_aliases($self);
@@ -264,6 +264,10 @@ sub run($$)
                 $cmd_obj->can("help") ? $cmd_obj->help($args) 
                 : $cmd_obj->{help};
             if ($help_text) {
+                $help_text = help2podstring($help_text,
+                                            $proc->{settings}{highlight},
+                                            $proc->{settings}{maxwidth});
+                chomp $help_text;
                 $self->msg($help_text) ;
                 if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
                     my $aliases_str = join(', ', @{$cmd_obj->{aliases}});

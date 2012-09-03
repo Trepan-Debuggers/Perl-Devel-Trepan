@@ -25,11 +25,11 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-$NAME 
+B<$NAME>
 
-Restart debugger and program via an exec call.
+Restart debugger and program via an I<exec()> call.
 
-See also 'show args' for the exact invocation that will be used.
+See also C<show args> for the exact invocation that will be used.
 HELP
 
 # This method runs the command

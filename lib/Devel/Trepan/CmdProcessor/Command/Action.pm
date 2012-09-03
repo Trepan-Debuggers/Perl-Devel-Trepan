@@ -14,35 +14,47 @@ unless (@ISA) {
 use constant ALIASES    => qw(a);
 use constant CATEGORY   => 'breakpoints';
 use constant NEED_STACK => 0;
-use constant SHORT_HELP => 'Set an action to be done before the line is executed.'
 use constant MIN_ARGS  => 2;      # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
 EOE
 }
+
+use constant SHORT_HELP => 
+    'Set an action to be done before the line is executed.';
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} POSITION Perl-statement 
+B<${NAME}> I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is
 '.', set an action on the line about to be executed. The sequence
 of steps taken by the debugger is:
 
-1. check for a breakpoint at this line 
-2. print the line if necessary (tracing) 
-3. do any actions associated with that line 
-4. prompt user if at a breakpoint or in single-step 
-5. evaluate line 
+=over
+
+=item 1. check for a breakpoint at this line 
+
+=item 2. print the line if necessary (tracing) 
+
+=item 3. do any actions associated with that line 
+
+=item 4. prompt user if at a breakpoint or in single-step 
+
+=item 5. evaluate line 
+
+=back
 
 For example, this will print out \$foo every time line 53 is passed:
 
-Examples:
-   ${NAME} 53 print "DB FOUND \$foo\\n"
+=head2 Examples:
 
-See also "break", "enable" and "disable".
+ ${NAME} 53 print "DB FOUND \$foo\\n"
+
+See also C<help breakpoints>.
+=cut
 HELP
 
 # This method runs the command
@@ -54,24 +66,24 @@ sub run($$) {
     shift @args;
 
     my ($filename, $lineno, $fn, $gobble_count, $rest) = 
-	$proc->parse_position(\@args, 0); # should be: , 1);
+        $proc->parse_position(\@args, 0); # should be: , 1);
     shift @args if $gobble_count-- > 0;
     shift @args if $gobble_count-- > 0;
     # error should have been shown previously
 
     my $action_expression = join(' ', @args);
     unless (is_valid_condition($action_expression)) {
-	$proc->errmsg("Invalid action: $action_expression");
-	return
+        $proc->errmsg("Invalid action: $action_expression");
+        return
     }
     my $action = $self->{dbgr}->set_action($lineno, $filename, 
-					   $action_expression);
+                                           $action_expression);
     if ($action) {
-	my $id = $action->id;
-	my $filename = $proc->canonic_file($action->filename);
-	my $line_num = $action->line_num;
-	$proc->{actions}->add($action);
-	$proc->msg("Action $id set in $filename at line $line_num");
+        my $id = $action->id;
+        my $filename = $proc->canonic_file($action->filename);
+        my $line_num = $action->line_num;
+        $proc->{actions}->add($action);
+        $proc->msg("Action $id set in $filename at line $line_num");
 
     }
 }

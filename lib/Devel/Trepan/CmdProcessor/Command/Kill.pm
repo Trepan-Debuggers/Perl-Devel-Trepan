@@ -27,18 +27,18 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-$NAME [signal-number|signal-name]
+B<$NAME> [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
 
-Equivalent of kill('KILL', \$\$). This is an unmaskable
+Equivalent of C<kill('KILL', \$\$)>. This is an unmaskable
 signal\. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
-However when this command is aliased from a command ending in !, no 
+However when this command is aliased from a command ending in C<!>, no 
 questions are asked.
 
-Examples:
+=head2 Examples:
 
   $NAME  
   $NAME KILL # same as above
@@ -49,7 +49,8 @@ Examples:
   $NAME unconditionally # same as above
   $NAME TERM # Send "TERM" signal
 
-See also 'quit'.
+See also C<set confirm> and C<quit>.
+=cut
 HELP
 
 sub complete($$) {

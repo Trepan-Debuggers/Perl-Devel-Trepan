@@ -22,11 +22,11 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-unalias ALIAS
+unalias I<alias>
 
-Remove alias ALIAS
+Remove alias I<alias>
 
-See also 'alias'.
+See also C<alias>.
 HELP
 
 our $ARGS  = 1;

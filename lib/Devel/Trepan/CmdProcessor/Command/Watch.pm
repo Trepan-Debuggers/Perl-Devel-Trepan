@@ -27,15 +27,17 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} PERL-EXPRESSION
+${NAME} I<perl-expression>
  
-Stop very time PERL-EXPRESSION changes from its prior value.
+Stop very time I<perl-expression> changes from its prior value.
 
-Examples:
-   ${NAME} \$a  # enter debugger when the value of \$a changes
-   ${NAME} scalar(\@ARGV))  # enter debugger if size of \@ARGV changes.
+=head2 Examples:
 
-See also "delete", "enable", and "disable" and "info watch".
+ ${NAME} \$a  # enter debugger when the value of \$a changes
+ ${NAME} scalar(\@ARGV))  # enter debugger if size of \@ARGV changes.
+
+See also C<delete>, C<enable>, and C<disable> and C<info watch>.
+=cut
 HELP
 
 # This method runs the command

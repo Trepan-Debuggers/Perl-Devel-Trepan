@@ -35,31 +35,57 @@ Show information about the current file. If no filename is given and
 the program is running, then the current file associated with the
 current stack entry is used. Giving . has the same effect. 
 
-Given * gives a list of all files we know about.
+C<*> gives a list of all files we know about.
 
-Sub options which can be shown about a file are:
+Sub-options which can be shown about a file are:
 
-brkpts -- Line numbers where there are statement boundaries. 
-          These lines can be used in breakpoint commands.
-ctime  -- File creation time
-iseq   -- Instruction sequences from this file.
-mtime  -- File modification time
-sha1   -- A SHA1 hash of the source text. This may be useful in comparing
-          source code.
-size   -- The number of lines in the file.
-stat   -- File.stat information
+=over 2
 
-all    -- All of the above information.
+=item brkpts
 
-If no sub-options are given, \"$DEFAULT_FILE_ARGS\" are assumed.
+Line numbers where there are statement boundaries.  These lines can be
+used in breakpoint commands.
 
-Examples:
+=item ctime 
 
-${CMD}      # Show \"${DEFAULT_FILE_ARGS}\" information about current file
-${CMD} .    # same as above
-${CMD} . brkpts      # show the number of lines in the current file
-${CMD} . brkpts size # same as above but also list breakpoint line numbers
-${CMD} *    # Give a list of files we know about
+File creation time
+
+=item iseq 
+
+Instruction sequences from this file.
+
+=item time 
+
+File modification time
+
+=item sha1
+
+A SHA1 hash of the source text. This may be useful in comparing source code.
+
+=item size
+
+The number of lines in the file.
+
+=item stat 
+
+I<stat()> information
+
+=item all --
+
+All of the above information.
+
+=back
+
+If no sub-options are given, I<\"$DEFAULT_FILE_ARGS\"> are assumed.
+
+=head2 Examples:
+
+ ${CMD}      # Show \"${DEFAULT_FILE_ARGS}\" information about current file
+ ${CMD} .    # same as above
+ ${CMD} . brkpts      # show the number of lines in the current file
+ ${CMD} . brkpts size # above plus file size
+ ${CMD} *    # Give a list of files we know about
+=cut
 HELP
 
 our $SHORT_HELP = 'Show information about the current loaded file(s)';

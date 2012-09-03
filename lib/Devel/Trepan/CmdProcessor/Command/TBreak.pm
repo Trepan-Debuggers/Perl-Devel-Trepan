@@ -35,7 +35,9 @@ Examples:
    ${NAME}
    ${NAME} 10               # set breakpoint on line 10
 
-See also "break".
+When a breakpoint is hit the event icon is C<x1>.
+
+See also C<break> and C<help breakpoints>.
 HELP
 
 #  include Trepan::Condition

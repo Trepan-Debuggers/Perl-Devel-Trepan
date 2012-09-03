@@ -10,7 +10,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY   => 'data';
-    use constant SHORT_HELP => 'debug into a Perl expression';
+    use constant SHORT_HELP => 'debug into a Perl expression or statement';
     use constant MIN_ARGS   => 1;      # Need at least this many
     use constant MAX_ARGS   => undef;  # Need at most this many - 
                                        # undef -> unlimited.
@@ -26,18 +26,18 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} [STRING]
+B<${NAME}> I<string>
 
-Recursively debug STRING.
+Recursively debug I<string>.
 
-Recursively debug STRING. The level of recursive debugging is shown in
-the prompt. For example ((trepan.pl)) indicates one nested level of
-debugging.
+The level of recursive debugging is shown in the prompt. For example
+C<((trepan.pl))> indicates one nested level of debugging.
 
-Examples:
+=head2 Examples:
 
-${NAME} finonacci(5)   # Debug fibonacci funcition
-${NAME} \$x=1; \$y=2;    # Kind of pointless, but doable.
+ ${NAME} finonacci(5)   # Debug fibonacci funcition
+ ${NAME} \$x=1; \$y=2;    # Kind of pointless, but doable.
+=cut
 HELP
 
 # sub complete($$)
@@ -61,6 +61,10 @@ sub run($$)
         # We want to see our debug (eval) with its string.
         fix_file_and_line => 0
     };
+
+    # FIXME: may mess up trace print. And cause skips we didn't want.
+    ## Skip over stopping in the eval that is setup below.
+    ## $proc->{skip_count} = 1;
 
     # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.

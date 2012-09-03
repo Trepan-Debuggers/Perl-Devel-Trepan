@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -22,22 +22,23 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-${NAME} ALIAS COMMAND
+B<${NAME}> I<alias> I<command>
 
-Add alias ALIAS for a debugger command COMMAND.  
+Add alias I<alias> for a debugger command I<command>.  
 
 Add an alias when you want to use a command abbreviation for a command
-that would otherwise be ambigous. For example, by default we make 's'
-be an alias of 'step' to force it to be used. Without the alias, "s"
-might be "step", "show", or "set" among others
+that would otherwise be ambigous. For example, by default we make C<s>
+be an alias of C<step> to force it to be used. Without the alias, C<s>
+might be C<step>, C<show>, or C<set>, among others.
 
-Example:
+=head2 Examples:
 
-alias cat list   # "cat rubyfile.rb" is the same as "list rubyfile.rb"
-alias s   step   # "s" is now an alias for "step".
-                 # The above examples done by default.
+ alias cat list   # "cat file.pl" is the same as "list file.pl"
+ alias s   step   # "s" is now an alias for "step".
+                  # The above examples done by default.
 
-See also 'unalias' and 'show ${NAME}'.
+See also C<unalias> and C<show> ${NAME}.
+=cut
 HELP
 
 # Run command.
@@ -45,25 +46,25 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     if (scalar @$args == 1) {
-	$proc->{commands}->{show}->run(['show', ${NAME}]);
+        $proc->{commands}->{show}->run(['show', ${NAME}]);
     } elsif (scalar @$args == 2) {
-	$proc->{commands}->{show}->run(['show', ${NAME}, $args->[1]]);
+        $proc->{commands}->{show}->run(['show', ${NAME}, $args->[1]]);
     } else {
-	my ($junk, $al, $command, @rest) = @$args;
-	my $old_command = $proc->{aliases}{$al};
-	if (exists $proc->{commands}{$command}) {
-	    my $cmd_str = join(' ', ($command, @rest));
-	    $proc->add_alias($command, $al, $cmd_str);
-	    if ($old_command) {
-		$proc->remove_alias($old_command);
-		$self->msg("Alias '${al}' for command string '${cmd_str}' replaced old " .
-			   "alias for '${old_command}'.");
-	    } else {
-		$self->msg("New alias '${al}' for command string '${cmd_str}' created.");
-	    }
-	} else {
-	    $self->errmsg("You must alias to a command name, and '${command}' isn't one.");
-	}
+        my ($junk, $al, $command, @rest) = @$args;
+        my $old_command = $proc->{aliases}{$al};
+        if (exists $proc->{commands}{$command}) {
+            my $cmd_str = join(' ', ($command, @rest));
+            $proc->add_alias($command, $al, $cmd_str);
+            if ($old_command) {
+                $proc->remove_alias($old_command);
+                $self->msg("Alias '${al}' for command string '${cmd_str}' replaced old " .
+                           "alias for '${old_command}'.");
+            } else {
+                $self->msg("New alias '${al}' for command string '${cmd_str}' created.");
+            }
+        } else {
+            $self->errmsg("You must alias to a command name, and '${command}' isn't one.");
+        }
     }
 }
 

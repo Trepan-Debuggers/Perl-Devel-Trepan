@@ -1,4 +1,5 @@
 # Test of alias debugger command
+set max width 80
 alias yy foo
 alias yy step
 alias evd set display eval

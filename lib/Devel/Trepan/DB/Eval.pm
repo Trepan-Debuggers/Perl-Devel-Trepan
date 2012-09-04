@@ -47,7 +47,7 @@ sub eval_with_return {
         local $osingle = $DB::single;
         local $od      = $DEBUGGING;
 
-        my $eval_setup = $opts->{namespace_package} || '';
+        my $eval_setup = $opts->{namespace_package} || $namespace_package;
         
         # Make sure __FILE__ and __LINE__ are set correctly
         if( $opts->{fix_file_and_line}) {

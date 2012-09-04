@@ -22,7 +22,7 @@ use vars qw($running $caller
             $event @ret $ret $return_value @return_value
             $eval_opts $eval_str
             $fall_off_on_end
-            $stop @clients $ready $tid
+            $stop @clients $ready $tid @saved
             $init_dollar0 $OS_STARTUP_DIR);
 
 use Devel::Trepan::DB::Backtrace;
@@ -32,7 +32,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my ($deep, @saved, @skippkg);
+my ($deep, @skippkg);
 
 my $ineval = {};
 
@@ -334,8 +334,8 @@ sub DB {
 
                     if ('@' eq $return_type) {
                         &DB::eval_with_return($eval_str, $opts, @saved);
-		    } elsif ('%' eq $return_type) {
-			&DB::eval_with_return($eval_str, $opts, @saved);
+                    } elsif ('%' eq $return_type) {
+                        &DB::eval_with_return($eval_str, $opts, @saved);
                     } else {
                         $eval_result = 
                             &DB::eval_with_return($eval_str, $opts, @saved);
@@ -480,8 +480,8 @@ sub catch {
 
                 if ('@' eq $opts->{return_type}) {
                     &DB::eval_with_return($eval_str, $opts, @saved);
-		} elsif ('%' eq $opts->{return_type}) {
-			&DB::eval_with_return($eval_str, $opts, @saved);
+                } elsif ('%' eq $opts->{return_type}) {
+                        &DB::eval_with_return($eval_str, $opts, @saved);
                 } else {
                     $eval_result = 
                         &DB::eval_with_return($eval_str, $opts, @saved);

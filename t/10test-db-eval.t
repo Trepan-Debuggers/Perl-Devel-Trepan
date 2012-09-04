@@ -10,8 +10,8 @@ use vars qw(@saved);
 sub save() {
   @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
              $OUTPUT_FIELD_SEPARATOR, 
-	     $INPUT_RECORD_SEPARATOR, 
-	     $OUTPUT_RECORD_SEPARATOR, $WARNING );
+             $INPUT_RECORD_SEPARATOR, 
+             $OUTPUT_RECORD_SEPARATOR, $WARNING );
 
   $OUTPUT_FIELD_SEPARATOR  = ""; 
   $INPUT_RECORD_SEPARATOR  = "\n";
@@ -26,7 +26,7 @@ sub _warnall($) {
 
 sub eval($$) {
     my ($eval_str, $opts) = @_;
-    $opts->{user_context} = "package main;";
+    $opts->{namespace_package} = "package main;";
     save();
     &DB::eval_with_return($eval_str, $opts, @saved);
 }

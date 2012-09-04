@@ -20,51 +20,58 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME} MACRO-NAME sub { ... }
+our $HELP = <<'HELP';
+=pod
 
-Define MACRO-NAME as a debugger macro. Debugger macros get a list of
+macro I<macro-name> sub { ... }
+
+Define I<macro-name> as a debugger macro. Debugger macros get a list of
 arguments which you supply without parenthesis or commas. See below
 for an example.
 
 The macro (really a Perl anonymous subroutine) should return either a
 string or an array reference to a list of strings. The string in both
 cases are strings of debugger commands.  If the return is a string,
-that gets tokenized by a simple split(/ /, \$string).  Note that macro
-processing is done right after splitting on ;; so if the macro returns
-a string containing ;; this will not be handled on the string
-returned.
+that gets tokenized by a simple C<split(/ /, $string)>.  Note that
+macro processing is done right after splitting on C<;;> so if the macro
+returns a string containing C<;;> this will not be handled on the
+string returned.
 
 If instead, a reference to a list of strings is returned, then the
 first string is shifted from the array and executed. The remaining
 strings are pushed onto the command queue. In contrast to the first
-string, subsequent strings can contain other macros. Any ;; in those
+string, subsequent strings can contain other macros. Any C<;;> in those
 strings will be split into separate commands.
 
-Here is an example. The below creates a macro called fin+ which
-issues two commands 'finish' followed by 'step':
+=head2 Examples:
 
-  macro fin+ sub{ ['finish', 'step']}
+The below creates a macro called fin+ which issues two commands
+C<finish> followed by C<step>:
 
-If you wanted to parameterize the argument of the 'finish' command
+ macro fin+ sub{ ['finish', 'step']}
+
+If you wanted to parameterize the argument of the C<finish> command
 you could do that this way:
 
-  macro fin+ sub{ \\
-		  ['finish ' . (shift), 'step'] \\
+  macro fin+ sub{ \
+		  ['finish', 'step ' . (shift)] \
                 }
 
-Invoking with 
+Invoking with: 
+
   fin+ 3
 
-would expand to ["finish 3", "step"]
+would expand to C<["finish", "step 3"]>
 
-If you were to add another parameter for 'step', the note that the 
-invocation might be 
-  fin+ 3 2
+If you were to add another parameter, note that the invocation is like
+you use for other debugger commands, no commas or parenthesis. That is:
 
-rather than 'fin+(3,2)' or 'fin+ 3, 2'.
+ fin+ 3 2
 
-See also 'info macro'.
+rather than C<fin+(3,2)> or C<fin+ 3, 2>.
+
+See also C<info macro>.
+=cut
 HELP
   
 # This method runs the command

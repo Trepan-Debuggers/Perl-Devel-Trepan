@@ -32,7 +32,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my ($deep, @skippkg);
+my ($deep, @saved, @skippkg);
 
 my $ineval = {};
 
@@ -181,7 +181,7 @@ sub DB {
     # However this won't let them modify lexical variables, alas.
     # This has to be 'local' rather than 'my' to allow recursive
     # debugging ("debug" command).
-    local $namespace_package = "package $DB::package; \@_ = \@DB::_;";
+    local $namespace_package = "package $DB::package;";
     
     local(*DB::dbline) = "::_<$DB::filename";
 
@@ -439,7 +439,7 @@ sub catch {
 
     # Set package namespace for running eval's in the user context. 
     # However this won't let them modify lexical variables, alas.
-    my $namespace_package = "package $DB::package; \@_ = \@DB::_;";
+    my $namespace_package = "package $DB::package;";
 
     $event = 'post-mortem';
     $running = 0;

@@ -24,14 +24,16 @@ sub eval($$$$$) {
             $self->msg("Evaluation occurs in top-most frame not this one");
         }
         $DB::eval_str = $self->{dbgr}->evalcode($code_to_eval);
-	$DB::eval_opts = $opts;
-	$DB::result_opts = $opts;
-        $self->{DB_running} = 2;
-	$self->{leave_cmd_loop} = 1;
+        $DB::eval_opts = $opts;
+        $DB::result_opts = $opts;
 
-	## FIXME: try this:
+        ## This doesn't work because it doesn't pick up "my" variables
         # DB::eval_with_return($code_to_eval, $opts, @DB::saved);
         # $self->process_after_eval();
+        
+        # All the way back to DB seems to work here.
+        $self->{DB_running} = 2;
+        $self->{leave_cmd_loop} = 1;
 
     } else {
         # Have to use Eval::WithLexicals which, unfortunately,
@@ -75,6 +77,93 @@ sub eval($$$$$) {
     }
 }
 
+my $last_eval_value = 0;
+
+sub handle_eval_result($) {
+    my ($self) = @_;
+    my $val_str;
+    my $prefix="\$DB::D[$last_eval_value] =";
+    
+    # Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
+    # Having a non-empty @ARGV will cause Tidy to croak.
+    local @ARGV=();
+
+    my $fn;
+    my $print_properties = {};
+    my $evdisp = $self->{settings}{displayeval};
+    if ('tidy' eq $evdisp) {
+        $fn = \&Data::Dumper::Perltidy::Dumper;
+    } elsif ('dprint' eq $evdisp) {
+        $print_properties = {
+            colored => $self->{settings}{highlight},
+        };
+        $fn = \&dprint;
+    } else {
+        $fn = \&Data::Dumper::Dumper;
+    }
+    my $return_type = $DB::eval_opts->{return_type};
+    $return_type = '' unless defined $return_type;
+    if ('$' eq $return_type) {
+            if (defined $DB::eval_result) {
+                $DB::D[$last_eval_value++] = $DB::eval_result;
+                if ('dprint' eq $evdisp) {
+                    $val_str = 
+                        $fn->(\$DB::eval_result, %$print_properties);
+                } else {
+                    $val_str = $fn->($DB::eval_result);
+                }
+                chomp $val_str;
+            } else {
+                $DB::eval_result = '<undef>' ;
+            }
+            $self->msg("$prefix $DB::eval_result");
+    } elsif ('@' eq $return_type) {
+            if (@DB::eval_result) {
+                $val_str = $fn->(\@DB::eval_result, %$print_properties);
+                chomp $val_str;
+                @{$DB::D[$last_eval_value++]} = @DB::eval_result;
+            } else {
+                $val_str = '<undef>'
+            }
+            $self->msg("$prefix\n\@\{$val_str}");
+    } elsif ('%' eq $return_type) {
+            if (%DB::eval_result) {
+                $val_str = $fn->(\%DB::eval_result, %$print_properties);
+                chomp $val_str;
+                @{$DB::D[$last_eval_value++]} = %DB::eval_result;
+            } else {
+                $val_str = '<undef>'
+            }
+            $self->msg("$prefix\n\@\{$val_str}");
+    } elsif ('>' eq $return_type || '2>' eq $return_type ) {
+        $self->msg($DB::eval_result);
+    }  else {
+            if (defined $DB::eval_result) {
+                if ('dprint' eq $evdisp) {
+                    $val_str = $DB::D[$last_eval_value++] = 
+                        $fn->(\$DB::eval_result, %$print_properties);
+                } else {
+                    $val_str = $DB::D[$last_eval_value++] = 
+                        $fn->($DB::eval_result);
+                }
+                chomp $val_str;
+            } else {
+                $val_str = '<undef>'
+            }
+            $self->msg("$prefix ${val_str}");
+    }
+    
+    if (defined($self->{set_wp})) {
+            $self->{set_wp}->old_value($DB::eval_result);
+            $self->{set_wp} = undef;
+    }
+    
+    $DB::eval_opts = {
+            return_type => '',
+    };
+    $DB::eval_result = undef;
+    @DB::eval_result = undef;
+}
 
 unless (caller) {
 }

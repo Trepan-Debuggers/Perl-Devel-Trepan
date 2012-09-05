@@ -26,7 +26,7 @@ BEGIN {
 # $return_type indicates the return context: 
 #  @ for array context, 
 #  $ for scalar context,
-#  ! to ignore result
+#  % save result in a hash variable
 #  
 sub eval_with_return {
     my ($eval_str, $opts, @saved) = @_;
@@ -47,8 +47,11 @@ sub eval_with_return {
         local $osingle = $DB::single;
         local $od      = $DEBUGGING;
 
-        my $eval_setup = $opts->{namespace_package} || $namespace_package;
-        
+        # Set package namespace for running eval's in the namespace
+        # of the debugged program.
+        my $eval_setup = $opts->{namespace_package} || $DB::namespace_package;
+        $eval_setup   .= "\n\@_ = \@DB::_;";
+
         # Make sure __FILE__ and __LINE__ are set correctly
         if( $opts->{fix_file_and_line}) {
             my $position_str = "\n# line $DB::lineno \"$DB::filename\"\n";

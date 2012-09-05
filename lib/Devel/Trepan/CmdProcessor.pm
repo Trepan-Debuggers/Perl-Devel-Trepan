@@ -216,94 +216,6 @@ sub process_command_and_quit($)
     }
 }
 
-my $last_eval_value = 0;
-
-sub process_after_eval($) {
-    my ($self) = @_;
-    my $val_str;
-    my $prefix="\$DB::D[$last_eval_value] =";
-    
-    # Perltidy::Dumper uses Tidy which looks at @ARGV for filenames.
-    # Having a non-empty @ARGV will cause Tidy to croak.
-    local @ARGV=();
-
-    my $fn;
-    my $print_properties = {};
-    my $evdisp = $self->{settings}{displayeval};
-    if ('tidy' eq $evdisp) {
-        $fn = \&Data::Dumper::Perltidy::Dumper;
-    } elsif ('dprint' eq $evdisp) {
-        $print_properties = {
-            colored => $self->{settings}{highlight},
-        };
-        $fn = \&dprint;
-    } else {
-        $fn = \&Data::Dumper::Dumper;
-    }
-    my $return_type = $DB::eval_opts->{return_type};
-    $return_type = '' unless defined $return_type;
-    if ('$' eq $return_type) {
-            if (defined $DB::eval_result) {
-                $DB::D[$last_eval_value++] = $DB::eval_result;
-                if ('dprint' eq $evdisp) {
-                    $val_str = 
-                        $fn->(\$DB::eval_result, %$print_properties);
-                } else {
-                    $val_str = $fn->($DB::eval_result);
-                }
-                chomp $val_str;
-            } else {
-                $DB::eval_result = '<undef>' ;
-            }
-            $self->msg("$prefix $DB::eval_result");
-    } elsif ('@' eq $return_type) {
-            if (@DB::eval_result) {
-                $val_str = $fn->(\@DB::eval_result, %$print_properties);
-                chomp $val_str;
-                @{$DB::D[$last_eval_value++]} = @DB::eval_result;
-            } else {
-                $val_str = '<undef>'
-            }
-            $self->msg("$prefix\n\@\{$val_str}");
-    } elsif ('%' eq $return_type) {
-            if (%DB::eval_result) {
-                $val_str = $fn->(\%DB::eval_result, %$print_properties);
-                chomp $val_str;
-                @{$DB::D[$last_eval_value++]} = %DB::eval_result;
-            } else {
-                $val_str = '<undef>'
-            }
-            $self->msg("$prefix\n\@\{$val_str}");
-    } elsif ('>' eq $return_type || '2>' eq $return_type ) {
-        $self->msg($DB::eval_result);
-    }  else {
-            if (defined $DB::eval_result) {
-                if ('dprint' eq $evdisp) {
-                    $val_str = $DB::D[$last_eval_value++] = 
-                        $fn->(\$DB::eval_result, %$print_properties);
-                } else {
-                    $val_str = $DB::D[$last_eval_value++] = 
-                        $fn->($DB::eval_result);
-                }
-                chomp $val_str;
-            } else {
-                $val_str = '<undef>'
-            }
-            $self->msg("$prefix ${val_str}");
-    }
-    
-    if (defined($self->{set_wp})) {
-            $self->{set_wp}->old_value($DB::eval_result);
-            $self->{set_wp} = undef;
-    }
-    
-    $DB::eval_opts = {
-            return_type => '',
-    };
-    $DB::eval_result = undef;
-    @DB::eval_result = undef;
-}
-
 sub skip_if_next($$) 
 {
     my ($self, $event) = @_;
@@ -329,7 +241,7 @@ sub process_commands($$$;$)
     
     my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
-        process_after_eval($self);
+        handle_eval_result($self);
         if ($event eq 'after_nest') {
             $self->msg("Leaving nested debug level $DB::level");
             $self->{prompt} = compute_prompt($self);
@@ -532,7 +444,7 @@ sub run_command($$)
             } else {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             }
-            process_after_eval($self);
+            handle_eval_result($self);
         }
         return;
     }

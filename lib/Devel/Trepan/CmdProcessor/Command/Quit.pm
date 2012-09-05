@@ -22,24 +22,28 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME}[!] [unconditionally] [exit code] 
+our $HELP = <<'HELP';
+=pod
 
-gentle termination
+quit[!] [unconditionally] [I<exit-code>] 
 
-The program being debugged is exited via exit() which runs the Kernel
-at_exit finalizers. If a return code is given, that is the return code
-passed to exit() - presumably the return code that will be passed back
-to the OS. If no exit code is given, 0 is used.
+Gently terminate.
 
-Examples: 
-  ${NAME}                 # quit prompting if we are interactive
-  ${NAME} unconditionally # quit without prompting
-  ${NAME}!                # same as above
-  ${NAME} 0               # same as "quit"
-  ${NAME}! 1              # unconditional quit setting exit code 1
+The program being debugged is exited via I<exit()> which runs the
+Kernel I<at_exit()> finalizers. If a return code is given, that is the
+return code passed to I<exit()> - presumably the return code that will
+be passed back to the OS. If no exit code is given, 0 is used.
 
-See also "kill".
+=head2 Examples: 
+
+ quit                 # quit prompting if we are interactive
+ quit unconditionally # quit without prompting
+ quit!                # same as above
+ quit 0               # same as "quit"
+ quit! 1              # unconditional quit setting exit code 1
+
+See also C<kill>.
+=cut
 HELP
 
 # FIXME: Combine 'quit' and 'exit'. The only difference is whether
@@ -54,24 +58,24 @@ sub run($$)
     my $unconditional = 0;
     if (scalar(@args) > 1 && $args->[-1] eq 'unconditionally') {
         pop @args;
-	$unconditional = 1;
+        $unconditional = 1;
     } elsif (substr($args[0], -1) eq '!') {
         $unconditional = 1;
     }
     unless ($unconditional || $proc->{terminated} ||
-	    $proc->confirm('Really quit?', 0)) {
-	$self->msg('Quit not confirmed.');
-	return;
+            $proc->confirm('Really quit?', 0)) {
+        $self->msg('Quit not confirmed.');
+        return;
     }
 
     my $exitrc = 0;
     if (scalar(@args) > 1) {
-	if ($args[1] =~ /\d+/) {
-	    $exitrc = $args[1];
-	} else {
-	    $self->errmsg("Bad an Integer return type \"$args[1]\"");
-	    return;
-	}
+        if ($args[1] =~ /\d+/) {
+            $exitrc = $args[1];
+        } else {
+            $self->errmsg("Bad an Integer return type \"$args[1]\"");
+            return;
+        }
     }
     no warnings 'once';
     $DB::single = 0;
@@ -87,9 +91,9 @@ unless (caller) {
     my $cmd = __PACKAGE__->new($proc);
     my $child_pid = fork;
     if ($child_pid == 0) { 
-	$cmd->run([$NAME, 'unconditionally']);
+        $cmd->run([$NAME, 'unconditionally']);
     } else {
-	wait;
+        wait;
     }
     $cmd->run([$NAME, '5', 'unconditionally']);
 }

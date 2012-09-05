@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -25,19 +25,23 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME} [LOCATION]
+our $HELP = <<'HELP';
+=pod
+
+tbreak [I<location>]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.
 If no location is given use the current stopping point.
 
-Examples:
-   ${NAME}
-   ${NAME} 10               # set breakpoint on line 10
+=head2 Examples:
+
+   tbreak
+   tbreak 10 # set breakpoint on line 10
 
 When a breakpoint is hit the event icon is C<x1>.
 
 See also C<break> and C<help breakpoints>.
+=cut
 HELP
 
 #  include Trepan::Condition

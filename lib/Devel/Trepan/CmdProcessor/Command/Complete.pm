@@ -27,7 +27,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod 
 
-B<${NAME}> I<comamand-prefix>
+complete I<comamand-prefix>
 
 List the command completions of I<command-prefix>.
 =cut

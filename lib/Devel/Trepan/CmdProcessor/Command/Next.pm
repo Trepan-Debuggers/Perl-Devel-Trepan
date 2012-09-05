@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -27,26 +27,30 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME}[+|-] [count]
+our $HELP = <<'HELP';
+=pod
+
+next[+|-] [I<count>]
 
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called 'step over'.
 
-With an integer argument, perform '${NAME}' that many times. However if
+With an integer argument, perform 'next' that many times. However if
 an exception occurs at this level, or we 'return' or 'yield' or the
 thread changes, we stop regardless of count.
 
-A suffix of '+' on the command or an alias to the command forces to
-move to another line, while a suffix of '-' does the opposite and
+A suffix of C<+> on the command or an alias to the command forces to
+move to another line, while a suffix of C<-> does the opposite and
 disables the requiring a move to a new line. If no suffix is given,
 the debugger setting 'different' determines this behavior.
 
 If no suffix is given, the debugger setting 'different'
 determines this behavior.
 
-Examples: 
-  ${NAME}
+=head2 Example: 
+
+  next
+=cut
 HELP
 
 # This method runs the command

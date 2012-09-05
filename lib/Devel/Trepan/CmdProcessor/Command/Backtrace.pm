@@ -71,6 +71,7 @@ sub run($$)
 }
 
 unless(caller) {
+    # FIXME: DRY this code by putting in common location.
     require Devel::Trepan::DB;
     require Devel::Trepan::Core;
     my $db = Devel::Trepan::Core->new;

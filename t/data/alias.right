@@ -12,21 +12,21 @@ Eval result display style is dumper.
 Alias 'evd' for command string 'set display eval dumper' replaced old alias for 'set display eval'.
 Eval result display style is dumper.
 New alias 'upper' for command string 'up' created.
-  up [COUNT]
+  up [*count*]
 
   Move the current frame up in the stack trace (to an older frame). 0 is the
   most recent frame. If no count is given, move up 1.
 
-  See also 'down' and 'frame'.
+  See also "down" and "frame".
 
 Aliases: upper
 Alias for upper removed.
-  up [COUNT]
+  up [*count*]
 
   Move the current frame up in the stack trace (to an older frame). 0 is the
   most recent frame. If no count is given, move up 1.
 
-  See also 'down' and 'frame'.
+  See also "down" and "frame".
 
 set auto eval is off.
 *** Undefined command: "upper". Try "help".

@@ -25,21 +25,21 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod 
 
-B<${NAME}> [I<location>] [B<if> I<condition>]
+break [I<location>] [B<if> I<condition>]
 
 Set a breakpoint. If I<location> is given use the current stopping
 point. An optional condition may be given.
 
 =head2 Examples:
 
- ${NAME}                  # set a breakpoint on the current line
- ${NAME} gcd              # set a breakpoint in function gcd
- ${NAME} gcd if \$a == 1   # set a breakpoint in function gcd with 
-                        # condition \$a == 1
- ${NAME} 10               # set breakpoint on line 10
+ break                  # set a breakpoint on the current line
+ break gcd              # set a breakpoint in function gcd
+ break gcd if $a == 1   # set a breakpoint in function gcd with 
+                        # condition $a == 1
+ break 10               # set breakpoint on line 10
 
 When a breakpoint is hit the event icon is C<xx>.
 
@@ -151,16 +151,27 @@ sub run($$) {
 }
 
 unless (caller) {
-    # require Devel::Trepan::Core;
-    # my $db = Devel::Trepan::Core->new;
-    # my $intf = Devel::Trepan::Interface::User->new;
-    # my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
-    # $proc->{stack_size} = 0;
-    # my $cmd = __PACKAGE__->new($proc);
-    # $DB::single = 1;
-    # $cmd->run([$NAME, __LINE__]);
-    # my $cmd = __PACKAGE__->new($proc);
-    # $cmd->run([$NAME]);
+    # FIXME: DRY this code by putting in common location.
+    require Devel::Trepan::DB;
+    require Devel::Trepan::Core;
+    my $db = Devel::Trepan::Core->new;
+    my $intf = Devel::Trepan::Interface::User->new(undef, undef, 
+						   {readline => 0});
+    my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
+    $proc->{stack_size} = 0;
+    my $cmd = __PACKAGE__->new($proc);
+
+    eval { 
+      sub db_setup() {
+	  no warnings 'once';
+	  $DB::caller = [caller];
+	  ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine) 
+	      = @{$DB::caller};
+      }
+    };
+    db_setup();
+
+    $cmd->run([$NAME]);
 }
 
 1;

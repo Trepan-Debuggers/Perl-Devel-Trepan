@@ -95,16 +95,13 @@ sub run($$) {
 }
         
 unless (caller) {
-    require Devel::Trepan::CmdProcessor::Mock;
-    my $cmdproc = Devel::Trepan::CmdProcessor::Mock::setup();
-    # for my $cmdline  ("${cmd.name} foo Proc.new{|x, y| 'x+y'}",
-    # 		      "#{cmd.name} bad2 1+2") {
-    # 	@args = split $cmdline;
-    # 	$cmd_argstr = cmdline[args[0].size..-1].lstrip;
-    # 	$cmdproc->{cmd_argstr} = $cmd_argstr;
-    # 	$cmd->run(@args);
-    # }
-    # print $cmdproc->{macros}, "\n";
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
+    my $cmd = __PACKAGE__->new($proc);
+    $proc->{cmd_argstr} = "fin+ sub{ ['finish', 'step']}";
+    my @args = ($NAME, split(/\s+/, $proc->{cmd_argstr}));
+    $cmd->run(\@args);    
+    print join(' ', @{$proc->{macros}{'fin+'}}), "\n";
 }
 
 1;

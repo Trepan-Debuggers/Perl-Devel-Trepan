@@ -192,6 +192,7 @@ t/00test-pod.t
 t/10test-brkptmgr.t
 t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
 t/10test-cmd-kill.t
+t/10test-cmd-macro.t
 t/10test-complete.t
 t/10test-condition.t
 t/10test-db-brkpt.t

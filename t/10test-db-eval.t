@@ -50,4 +50,21 @@ is($DB::eval_result{'foo'}, 'bar');
 my @keys = keys(%DB::eval_result);
 is(scalar @keys, 2);
 
+sub test_code($$) 
+{
+    my ($code, $is_good) = @_;
+    my $msg = DB::eval_not_ok($code);
+    ok (!$msg == $is_good, "${code}" . ($msg ? ": $msg" : ''));
+}
+
+$DB::namespace_package = 'package main;';
+test_code 'test_code(1,2)', 1;
+test_code 'test_code(1)', 0;
+test_code '$x+2', 1;
+test_code "foo(", 0;
+test_code '$foo =', 0;
+test_code 'BEGIN  { $x = 1;', 0;
+test_code 'package foo; 1', 1;
+
+
 done_testing;

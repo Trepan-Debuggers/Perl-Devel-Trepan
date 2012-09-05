@@ -101,4 +101,51 @@ sub eval_with_return {
         }
     }
 }
+
+# Evaluate the argument and return 0 if there's no error.
+# If there is an error we return the error message.
+sub eval_not_ok ($) 
+{
+    my $code = shift;
+    my $wrapped = sprintf "$DB::namespace_package; sub { $code }";
+    no strict;
+    eval $wrapped;
+    if ($@) {
+	my $msg = $@;
+        $msg =~ s/ at .* line \d+[.,]//g;
+        $msg =~ s/ at EOF$/ at end of string/;
+	return $msg;
+    } else {
+	return 0;
+    }
+}
+
+unless (caller) {
+    eval {
+	sub doit($) {
+	    my $code = shift;
+	    my $msg = eval_not_ok($code);
+	    print "code: $code\n";
+	    if ($msg) {
+		print "$msg";
+	    } else {
+		print "code ok\n";
+	    }
+	}
+    };
+
+    $DB::namespace_package = 'package DB;';
+    doit  'doit(1,2,3)';
+    doit "1+";
+    doit '$x+2';
+    doit "foo(";
+    doit  '$foo =';
+    doit  'BEGIN  { $x = 1; ';
+    doit  'package foo; 1';
+
+}
+
+# doit  '$x = 1; __END__ $y=';
+
+
 1;

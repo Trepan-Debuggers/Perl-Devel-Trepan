@@ -25,10 +25,10 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-${NAME} I<bp-number> I<perl-expression>
+condition I<bp-number> I<perl-expression>
 
 I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
 expression which must evaluate to true before the breakpoint is
@@ -37,8 +37,8 @@ i.e., the breakpoint is made unconditional.
 
 =head2 Examples:
 
- ${NAME} 5 x > 10  # Breakpoint 5 now has condition x > 10
- ${NAME} 5         # Remove above condition
+ condition 5 x > 10  # Breakpoint 5 now has condition x > 10
+ condition 5         # Remove above condition
 
 See also C<break>, C<enable> and C<disable>.
 =cut
@@ -61,8 +61,11 @@ sub run($$) {
 	my @args = @{$args};
 	shift @args; shift @args;
 	$condition = join(' ', @args);
-	unless (is_valid_condition($condition)) {
+        my $msg = &DB::eval_not_ok($condition);
+	if ($msg) {
 	    $proc->errmsg("Invalid condition: $condition");
+	    chomp $msg;
+	    $proc->errmsg($msg);
 	    return
 	}
     } else {

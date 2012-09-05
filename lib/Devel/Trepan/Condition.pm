@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# NOTE: this does syntax checking and has problems on MS Windows. 
+# More specific context checking can be had in DB::Eval::eval_not_ok()
+# and that is gnereally (I think) we will be using.
 use strict; use warnings;
 package Devel::Trepan::Condition;
 use English qw( -no_match_vars );

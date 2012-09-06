@@ -28,8 +28,10 @@ EOE
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-B<${NAME}> [I<command> [I<subcommand>]|I<expression>]
+our $HELP = <<'HELP';
+=pod 
+
+help [I<command> [I<subcommand>]|I<expression>]
 
 Without argument, print the list of available debugger commands.
 
@@ -44,6 +46,7 @@ Some commands like C<info>, C<set>, and C<show> can accept an
 additional subcommand to give help just about that particular
 subcommand. For example C<help info line> gives help about the
 C<info line> command.
+=cut
 HELP
 
 BEGIN {

@@ -21,12 +21,15 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
+=pod
+
 unalias I<alias>
 
 Remove alias I<alias>
 
 See also C<alias>.
+=cut
 HELP
 
 our $ARGS  = 1;
@@ -37,7 +40,7 @@ sub complete($$)
     my $proc = $self->{proc};
     my @candidates = keys %{$proc->{aliases}};
     my @matches = 
-	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+        Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     sort @matches;
 }    
 
@@ -47,13 +50,13 @@ sub run($$) {
     my $proc = $self->{proc};
     my @args = @$args; shift @args;
     for my $arg (@args) {
-	if (exists $proc->{aliases}{$arg}) {
-	    my $command_name = $proc->{aliases}{$arg};
-	    $proc->remove_alias($command_name, $arg);
-	    $proc->msg("Alias for ${arg} removed.");
-	} else {
-	    $proc->msg("No alias found for ${arg}.");
-	}
+        if (exists $proc->{aliases}{$arg}) {
+            my $command_name = $proc->{aliases}{$arg};
+            $proc->remove_alias($command_name, $arg);
+            $proc->msg("Alias for ${arg} removed.");
+        } else {
+            $proc->msg("No alias found for ${arg}.");
+        }
     }
 }
 

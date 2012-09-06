@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -26,15 +26,17 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME} I<perl-expression>
+our $HELP = <<'HELP';
+=pod
+
+watch I<perl-expression>
  
 Stop very time I<perl-expression> changes from its prior value.
 
 =head2 Examples:
 
- ${NAME} \$a  # enter debugger when the value of \$a changes
- ${NAME} scalar(\@ARGV))  # enter debugger if size of \@ARGV changes.
+ watch $a  # enter debugger when the value of $a changes
+ watch scalar(@ARGV))  # enter debugger if size of @ARGV changes.
 
 See also C<delete>, C<enable>, and C<disable> and C<info watch>.
 =cut
@@ -50,25 +52,25 @@ sub run($$) {
 
     $expr = join(' ', @args);
     unless (is_valid_condition($expr)) {
-	$proc->errmsg("Invalid watch expression: $expr");
-	return
+        $proc->errmsg("Invalid watch expression: $expr");
+        return
     }
     my $wp = $proc->{dbgr}->{watch}->add($expr);
     if ($wp) {
-	# FIXME: handle someday...
-	# my $cmd_name = $args->[0];
-	# my $opts->{return_type} = parse_eval_suffix($cmd_name);
-	my $opts = {return_type => '$'}; 
-	my $mess = sprintf("Watch expression %d: %s set", $wp->id, $expr);
-	$proc->msg($mess);
-	# FIXME: 4 below is a magic fixup constant.
-	$proc->eval($expr, $opts, 4);
-	$proc->{set_wp} = $wp;
+        # FIXME: handle someday...
+        # my $cmd_name = $args->[0];
+        # my $opts->{return_type} = parse_eval_suffix($cmd_name);
+        my $opts = {return_type => '$'}; 
+        my $mess = sprintf("Watch expression %d: %s set", $wp->id, $expr);
+        $proc->msg($mess);
+        # FIXME: 4 below is a magic fixup constant.
+        $proc->eval($expr, $opts, 4);
+        $proc->{set_wp} = $wp;
 
-	# Without setting $DB::trace = 1, it is possible
-	# that a continue won't trigger calls to $DB::DB
-	# and therefore we won't check watch expressions.
-	$DB::trace = 1;
+        # Without setting $DB::trace = 1, it is possible
+        # that a continue won't trigger calls to $DB::DB
+        # and therefore we won't check watch expressions.
+        $DB::trace = 1;
     }
 }
 

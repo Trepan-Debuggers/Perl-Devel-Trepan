@@ -23,8 +23,10 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-B<${NAME}> [I<string>]
+our $HELP = <<'HELP';
+=pod
+
+eval [I<string>]
 
 Run code in the context of the current frame.
 
@@ -49,26 +51,26 @@ might have multiple variables on the left-hand side.
 The value of the expression is stored into global array I<\@DB:D> so it
 may be used again easily. 
 
-Normally ${NAME} assumes you are typing a statement, not an expression;
+Normally eval assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
 by adding the appropriate sigil C<\@>, C<\%>, or C<\$>.
 
 =head2 Examples:
 
- ${NAME} 1+2 # 3
- ${NAME}\$ 3   # Same as above, but the return type is explicit
- \$ 3       # Probably same as above if \$ alias is around
- ${NAME} \$^X  # Possibly /usr/bin/perl
- ${NAME}      # Run current source-code line
- ${NAME}?     # but strips off leading 'if', 'while', ..
+ eval 1+2 # 3
+ eval$ 3   # Same as above, but the return type is explicit
+ $ 3       # Probably same as above if \$ alias is around
+ eval $^X  # Possibly /usr/bin/perl
+ eval      # Run current source-code line
+ eval?     # but strips off leading 'if', 'while', ..
            # from command 
- ${NAME}@ \@ARGV  # Make sure the result saved is an array rather than 
+ eval@ @ARGV  # Make sure the result saved is an array rather than 
               # an array converted to a scalar.
- @ \@ARG       # Same as above if \@ alias is around
- ${NAME}% \%ENV  # Make sure the result saved is a hash
+ @ @ARG       # Same as above if \@ alias is around
+ eval% %ENV   # Make sure the result saved is a hash
  use English  # Note this is a statement, not an expression
  use English; # Same as above
- ${NAME}\$ use English # Error because this is not a valid expression 
+ eval$ use English # Error because this is not a valid expression 
 
 See also C<set auto eval>. The command can help one predict future execution.
 See C<set buffer trace> for showing what may have already been run.

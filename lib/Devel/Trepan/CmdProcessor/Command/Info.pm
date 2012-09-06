@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -23,14 +23,17 @@ use vars qw(@ISA);
 use vars @CMD_VARS;
 
 our $NAME       = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
+=pod
+
 Generic command for showing things about the program being debugged. 
 
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.
 
-Type "${NAME}" for a list of "info" subcommands and what they do.
-Type "help ${NAME} *" for just a list of "info" subcommands.
+Type C<info> for a list of "info" subcommands and what they do.
+Type C<help info *> for a list of C<info> subcommands.
+=cut
 HELP
 
 unless (caller) {
@@ -39,7 +42,7 @@ unless (caller) {
     my $cmd = Devel::Trepan::CmdProcessor::Command::Show->new($proc, $NAME);
     # require_relative '../mock'
     # dbgr, cmd = MockDebugger::setup
-    $cmd->run([$cmd->name])
+    $cmd->run([$NAME])
 }
 
 1;

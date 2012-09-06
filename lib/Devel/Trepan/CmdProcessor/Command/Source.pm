@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -33,25 +33,29 @@ use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME} [options] FILE
+our $HELP = <<'HELP';
+=pod 
+
+source [I<options>] I<file>
 
 options: 
+
     -q | --quiet | --no-quiet
     -c | --continue | --no-continue
     -Y | --yes | -N | --no
     -v | --verbose | --no-verbose
 
-Read debugger commands from a file named FILE.  Optional -v switch
-causes each command in FILE to be echoed as it is executed.  Option -Y
-sets the default value in any confirmation command to be 'yes' and -N
+Read debugger commands from a file named I<file>.  Optional C<-v> switch
+causes each command in FILE to be echoed as it is executed.  Option C<-Y>
+sets the default value in any confirmation command to be 'yes' and C<-N>
 sets the default value to 'no'.
 
-Option -q will turn off any debugger output that normally occurs in the
-running of the program.
+Option C<-q> will turn off any debugger output that normally occurs in
+the running of the program.
 
 An error in any command terminates execution of the command file
-unless option -c or --continue is given.
+unless option C<-c> or C<--continue> is given.
+=cut
 HELP
 
 # FIXME: put back in help.

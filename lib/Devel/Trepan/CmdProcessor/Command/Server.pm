@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -29,13 +29,16 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 $NAME = set_name();
 $HELP = <<"HELP";
-${NAME} [options] FILE
+=pod
+server [I<options>]
 
 options: 
+
     -p | --port NUMBER
     -a | --address
 
 Put debugger in server mode which opens a socket for debugger connections
+=cut
 HELP
 
 # FIXME: put back in help.

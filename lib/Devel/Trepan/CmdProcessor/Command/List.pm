@@ -330,6 +330,7 @@ unless (caller) {
     eval {
 	sub create_frame() {
 	    my ($pkg, $file, $line, $fn) = caller(0);
+	    $DB::package = $pkg;
 	    return [
 		{
 		    file      => $file,
@@ -342,8 +343,14 @@ unless (caller) {
     DB::LineCache::cache(__FILE__);
     my $frame_ary = create_frame();
     $proc->frame_setup($frame_ary);
-
+    $proc->{settings}{highlight} = 0;
     $cmd->run([$NAME]);
+    print '-' x 20, "\n";
+    $cmd->run([$NAME]);
+    print '-' x 20, "\n";
+    $cmd->run(["{$NAME}>", __FILE__, __LINE__]);
+    print '-' x 20, "\n";
+    $cmd->run(["{$NAME}>", __FILE__, 1]);
 }
 
 1;

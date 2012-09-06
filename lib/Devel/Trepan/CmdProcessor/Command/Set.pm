@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -25,18 +25,21 @@ use vars qw(@ISA);
 use vars @CMD_VARS;
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
+=pod 
+
 Modifies parts of the debugger environment.
 
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.
 
-Type "${NAME}" for a list of "${NAME}" subcommands and what they do.
-Type "help ${NAME} *" for just the list of "${NAME}" subcommands.
+Type C<set> for a list of set subcommands and what they do.
+Type C<help set *> for the list of C<set> subcommands.
 
-For compatability with older ruby-debug "${NAME} auto..." is the
-same as "${NAME} auto ...". For example "${NAME} autolist" is the same 
-as "${NAME} auto list".
+C<set auto...> is the
+same as C<set auto ...>. For example C<set autolist> is the same 
+as C<set auto list>.
+=cut
 HELP
 
 sub run($$) 

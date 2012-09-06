@@ -35,7 +35,8 @@ if (scalar @exec_strs) {
 	join(' ', @ARGV) . " 2>&1";
     @exec_strs_with_e = map {('-e', qq{$_})} @exec_strs;
 } else {
-    die "You need a Perl program to run or pass an string to eval" unless @ARGV;
+    die "You need a Perl program to run or pass an string to eval" 
+	unless @ARGV;
 
     # Resolve program name if it is not readable
     $ARGV[0] = whence_file($ARGV[0]) unless -r $ARGV[0];

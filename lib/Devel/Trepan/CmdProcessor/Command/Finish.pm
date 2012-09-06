@@ -27,21 +27,22 @@ use strict;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
-${NAME} [LEVELS]
+our $HELP = <<'HELP';
+=pod 
+
+finish [I<levels>]
 
 Continue execution until the program is about to leave the current
-function. Sometimes this is called 'step out'.
+function. Sometimes this is called "step out".
 
-When LEVELS is specified, that many frame levels need to be
-popped. The default is 1.  Note that 'yield' and exceptions raised my
-reduce the number of stack frames. Also, if a thread is switched, we
-stop ignoring levels.
+When integer I<levels> is specified, that many frame levels need to be
+popped. The default is 1.  
 
-See the break command if you want to stop at a particular point in a
-program. In general, '${NAME}', 'step' and 'next' may slow a program down
-while 'break' will have less overhead.
+See the C<break> command if you want to stop at a particular point in a
+program. In general, C<finish>, C<step> and C<next> may slow a program down
+while C<break> will have less overhead.
 
+=cut
 HELP
 
 # This method runs the command
@@ -50,22 +51,22 @@ sub run($$) {
     my $proc = $self->{proc};
 
     if ($self->{proc}{event} eq 'return') {
-	$proc->errmsg("Can't run ${NAME} while inside a return. Step and try again.");
-	return;
+        $proc->errmsg("Can't run ${NAME} while inside a return. Step and try again.");
+        return;
     }
     
     my ($opts, $level_count) = ({}, 1);
     if (scalar @$args != 1) {
-	# Form is not "finish" which means "finish 1"
-	my $count_str = $args->[1];
-	$opts = {
-	    msg_on_error => 
-		"The '${NAME}' command argument must eval to an integer. Got: ${count_str}",
-		min_value => 1
-	};
-	my $count = $proc->get_an_int($count_str, $opts);
-	return unless defined $count;
-	$level_count = $count;
+        # Form is not "finish" which means "finish 1"
+        my $count_str = $args->[1];
+        $opts = {
+            msg_on_error => 
+                "The '${NAME}' command argument must eval to an integer. Got: ${count_str}",
+                min_value => 1
+        };
+        my $count = $proc->get_an_int($count_str, $opts);
+        return unless defined $count;
+        $level_count = $count;
     }
     $proc->finish($level_count);
 }

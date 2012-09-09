@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -13,8 +13,15 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = 'Information about debugged program and its environment';
+our $SHORT_HELP = 'Information about debugged program and its environment';
 our $MIN_ABBREV = length('pr');
+
+our $HELP = <<'HELP';
+=pod
+
+Information about debugged program and its environment
+=cut
+HELP
 
 sub run($$) 
 {

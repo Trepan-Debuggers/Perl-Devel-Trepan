@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -28,8 +28,9 @@ EOE
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
-our $HELP = <<"HELP";
-${CMD} [{FILENAME|.|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
+our $HELP = <<'HELP';
+=pod
+info files [{I<filename>|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
 
 Show information about the current file. If no filename is given and
 the program is running, then the current file associated with the
@@ -76,15 +77,15 @@ All of the above information.
 
 =back
 
-If no sub-options are given, I<\"$DEFAULT_FILE_ARGS\"> are assumed.
+If no sub-options are given, I<size mtime sha1> are assumed.
 
 =head2 Examples:
 
- ${CMD}      # Show \"${DEFAULT_FILE_ARGS}\" information about current file
- ${CMD} .    # same as above
- ${CMD} . brkpts      # show the number of lines in the current file
- ${CMD} . brkpts size # above plus file size
- ${CMD} *    # Give a list of files we know about
+ info files      # Show "size mtime sha1" information about current file
+ info files .    # same as above
+ info files . brkpts      # show the number of lines in the current file
+ info files . brkpts size # above plus file size
+ info files *    # Give a list of files we know about
 =cut
 HELP
 

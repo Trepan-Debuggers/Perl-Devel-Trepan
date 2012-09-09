@@ -1,5 +1,5 @@
 # -*- Coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -17,20 +17,23 @@ our $SHORT_HELP = 'List breakpoint information';
 ## FIXME: do automatically.
 our $CMD = "info breakpoints";
 
-our $HELP = <<"HELP";
-${CMD} [num1 ...] [verbose]
+our $HELP = <<'HELP';
+=pod
+
+info breakpoints [I<num1> ...] [verbose]
 
 Show status of user-settable breakpoints. If no breakpoint numbers are
 given, the show all breakpoints. Otherwise only those breakpoints
 listed are shown and the order given. If VERBOSE is given, more
 information provided about each breakpoint.
 
-The "Disp" column contains one of "keep", "del", the disposition of
+The C<Disp> column contains one of C<keep>, C<del>, the disposition of
 the breakpoint after it gets hit.
 
-The "enb" column indicates whether the breakpoint is enabled.
+The C<Enb> column indicates whether the breakpoint is enabled.
 
-The "Where" column indicates where the breakpoint is located.
+The C<Where> column indicates where the breakpoint is located.
+=cut
 HELP
 
 our $MIN_ABBREV  = length('br');

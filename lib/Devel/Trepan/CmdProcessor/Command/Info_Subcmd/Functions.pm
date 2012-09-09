@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -22,10 +22,13 @@ EOE
 }
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
-our $HELP = <<"HELP";
-${CMD} [REGEXP]
+our $HELP = <<'HELP';
+=pod
 
-All functions names or those matching REGEXP
+info functions [I<regexp>]
+
+All functions names or those matching I<regexp>.
+=cut
 HELP
 
 our $SHORT_HELP = 'All function names, or those matching REGEXP';

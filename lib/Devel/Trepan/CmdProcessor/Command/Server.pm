@@ -30,6 +30,7 @@ use vars @CMD_VARS;  # Value inherited from parent
 $NAME = set_name();
 $HELP = <<"HELP";
 =pod
+
 server [I<options>]
 
 options: 
@@ -66,7 +67,7 @@ sub parse_options($$)
     my $result = &GetOptionsFromArray($args,
           'port:n' => \$opts->{port},
           'host:s' => \$opts->{host},
-	);
+        );
     $opts;
 }
 
@@ -80,7 +81,7 @@ sub run($$)
     $options->{logger} = $intf->[-1]{output}{output};
     # Push a new server interface.
     my $script_intf = Devel::Trepan::Interface::Server->new(undef, undef,
-							    $options);
+                                                            $options);
     push @{$intf}, $script_intf;
 }
 

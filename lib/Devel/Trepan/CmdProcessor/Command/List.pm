@@ -109,7 +109,7 @@ currently stopped. On line 253 there is a breakpoint 1 which is
 enabled, while at line 255 there is an breakpoint 2 which is
 disabled.
 
-See also C<"set autolist".
+See also C<set autolist>.
 
 =cut
 HELP
@@ -328,17 +328,17 @@ unless (caller) {
     require Devel::Trepan::DB::Sub;
     require Devel::Trepan::DB::LineCache;
     eval {
-	sub create_frame() {
-	    my ($pkg, $file, $line, $fn) = caller(0);
-	    $DB::package = $pkg;
-	    return [
-		{
-		    file      => $file,
-		    fn        => $fn,
-		    line      => $line,
-		    pkg       => $pkg,
-		}];
-	}
+        sub create_frame() {
+            my ($pkg, $file, $line, $fn) = caller(0);
+            $DB::package = $pkg;
+            return [
+                {
+                    file      => $file,
+                    fn        => $fn,
+                    line      => $line,
+                    pkg       => $pkg,
+                }];
+        }
     };
     DB::LineCache::cache(__FILE__);
     my $frame_ary = create_frame();

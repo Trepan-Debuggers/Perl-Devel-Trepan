@@ -56,11 +56,12 @@ my $builder = Module::Build->new(
         'Test::More'                        => '0.81',
     },
     recommends => {
-	'Term::ReadLine::Perl'              => 0,
-	'Term::ReadKey'                     => 0,
-	'Eval::WithLexicals'                => 0,
 	'Data::Printer'                     => 0,
+	'Devel::Callsite'                   => 0,
+	'Eval::WithLexicals'                => 0,
 	'Pod::Text::Color'                  => 0,
+	'Term::ReadKey'                     => 0,
+	'Term::ReadLine::Perl'              => 0,
     },
 
     requires => {

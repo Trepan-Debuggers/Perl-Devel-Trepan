@@ -14,10 +14,13 @@ my  @CMD = split(/ /, $CMD);
 use constant MAX_ARGS => undef;
 use constant NEED_STACK => 1;
 our $MIN_ABBREV = length('o');
-our $HELP   = <<"HELP";
-${CMD}
+our $HELP   = <<'HELP';
+=pod
 
-List 'our' variables at the current stack level.
+info variables our
+
+List C<our> variables at the current stack level.
+=cut
 HELP
 our $SHORT_HELP   = "Information about 'our' variables.";
 

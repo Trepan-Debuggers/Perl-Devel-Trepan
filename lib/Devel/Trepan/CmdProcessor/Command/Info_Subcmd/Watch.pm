@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
@@ -12,14 +12,17 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
-our $CMD = "info watch";
-our $HELP         = <<"EOH";
-${CMD} [WATCHPOINT1 WATCHPOINT2 ...]
+our $CMD = 'info watch';
+our $HELP = <<'HELP';
+=pod
+
+info watch [I<watchpoint1> I<watchpoint2> ...]
 
 List watch information. If watchpoints are specified, only information
 about them is shown. If no watchpoints are specified, show information
 about all watchpoints.
-EOH
+=cut
+HELP
 
 our $MIN_ABBREV = length('wa');
 our $SHORT_HELP = "Show watchpoint information";

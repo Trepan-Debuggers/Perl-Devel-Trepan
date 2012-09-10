@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -12,8 +12,11 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('va');
-our $HELP   = <<"HELP";
-Information on 'our' or 'my' variables.
+our $HELP   = <<'HELP';
+=pod
+
+Information on C<our> or C<my> variables.
+=cut
 HELP
 our $SHORT_HELP   = "List 'our' or 'my' variables.";
 

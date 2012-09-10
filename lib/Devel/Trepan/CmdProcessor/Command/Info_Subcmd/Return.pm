@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rockb@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -13,7 +13,14 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show the value about to be returned";
+our $SHORT_HELP = "Show the value about to be returned";
+our $HELP = <<'HELP';
+=pod
+
+Show the value about to be returned.
+=cut
+HELP
+
 our $MIN_ABBREV = length('ret');
 use constant NEED_STACK => 1;
 

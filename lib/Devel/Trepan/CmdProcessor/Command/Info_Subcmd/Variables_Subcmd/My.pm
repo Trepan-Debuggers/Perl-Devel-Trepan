@@ -21,19 +21,24 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 our $CMD = "info variables my";
 our @CMD = split(/ /, $CMD);
 our $MIN_ABBREV = length('m');
-our $HELP   = <<"HELP";
-${CMD}
-${CMD} -v
-${CMD} VAR1 [VAR2...]
+our $HELP   = <<'HELP';
+=pod
 
-Lists 'my' variables at the current frame. Use the frame changing
-commands like 'up', 'down' or 'frame' set the current frame.
+info variables my
 
-In the first form, give a list of 'my' variable names only. 
-In the second form, list variable names and values
-In the third form, list variable names and values of VAR1, etc.
+info variables my -v
 
-See also 'set variable', and frame changing commands
+info variables my I<var1> [I<var2>...]
+
+Lists C<my> variables at the current frame. Use the frame changing
+commands like C<up>, C<down> or C<frame> set the current frame.
+
+In the first form, give a list of C<my> variable names only.  In the
+second form, list variable names and values In the third form, list
+variable names and values of VAR1, etc.
+
+See also C<set variable>, and frame changing commands.
+=cut
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";
 

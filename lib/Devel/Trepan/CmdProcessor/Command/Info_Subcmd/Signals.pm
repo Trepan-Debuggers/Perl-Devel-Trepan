@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
@@ -15,23 +15,27 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
 our $CMD = "info signals";
-our $HELP         = <<"EOH";
-${CMD} 
-${CMD} SIG1 [SIG2 ..]
+our $HELP         = <<'HELP';
+=pod
+
+info signals 
+
+info signals I<signal1> [I<signal2> ..]
 
 In the first form a list of the existing signals and actions are shown.
 
 In the second form, list just the given signals and their definitions
 are shown.
 
-Signals can be either their signal name or number. For a signal name
-the case is not significant and can be prefaced by SIG or not. For a
-signal number, you can preface the number with + or -, but both are
-ignored. A negative number is the same as its corresponding positive
-number.  
+Signals can be either their signal name or number. The case is not
+significant when giving a signal name. A signal name C<SIG> or
+not. For a signal number, you can preface the number with C<+> or
+C<->, but both are ignored. A negative number is the same as its
+corresponding positive number.
 
-See "handle" for descriptions of the settable fields shown
-EOH
+See C<handle> for descriptions of the settable fields shown.
+=cut
+HELP
 
 our $MIN_ABBREV = length('sig');
 our $SHORT_HELP = 'What debugger does when program gets various signals';

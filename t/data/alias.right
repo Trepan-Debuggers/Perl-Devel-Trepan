@@ -18,7 +18,6 @@ New alias 'upper' for command string 'up' created.
   most recent frame. If no count is given, move up 1.
 
   See also "down" and "frame".
-
 Aliases: upper
 Alias for upper removed.
   up [*count*]
@@ -27,6 +26,5 @@ Alias for upper removed.
   most recent frame. If no count is given, move up 1.
 
   See also "down" and "frame".
-
 set auto eval is off.
 *** Undefined command: "upper". Try "help".

@@ -37,27 +37,27 @@ sub new($$$)
     my @prefix = split('::', $class);
     shift @prefix; shift @prefix; shift @prefix; shift @prefix;
     my $self = {
-	subcmds => {},
-	name    => $name,
-	proc    => $parent->{proc},
-	parent  => $parent, 
-	prefix  => \@prefix,
-	cmd_str => join(' ', map {lc $_} @prefix)
+        subcmds => {},
+        name    => $name,
+        proc    => $parent->{proc},
+        parent  => $parent, 
+        prefix  => \@prefix,
+        cmd_str => join(' ', map {lc $_} @prefix)
     };
     # Initialization
     my $parent_name = ucfirst $parent->{name};
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::$parent_name";
     my $excluded_cmd_vars = {'$HELP' => 1, 
-			     '$NAME'=>2};
+                             '$NAME'=>2};
     for my $field (@Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS) {
-	next if exists $excluded_cmd_vars->{$field} && 
-	    $excluded_cmd_vars->{$field} == 2;
-	my $sigil = substr($field, 0, 1);
-	my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
-	if ($sigil eq '$') {
-	    my $lc_field = lc $new_field;
-	    $self->{$lc_field} = eval "\$${class}::${new_field}";
-	}
+        next if exists $excluded_cmd_vars->{$field} && 
+            $excluded_cmd_vars->{$field} == 2;
+        my $sigil = substr($field, 0, 1);
+        my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
+        if ($sigil eq '$') {
+            my $lc_field = lc $new_field;
+            $self->{$lc_field} = eval "\$${class}::${new_field}";
+        }
     }
     my @ary = eval "${class}::ALIASES()";
     $self->{aliases} = @ary ? [@ary] : [];
@@ -86,33 +86,33 @@ sub load_debugger_subsubcommands($$)
     my $parent_name = ucfirst $self->{name};
     my $cmd_name    = $self->{prefix}[0];
     my @path = ($cmd_dir, '..', "${cmd_name}_Subcmd",
-		$parent_name . '_Subcmd');
+                $parent_name . '_Subcmd');
     my $subcmd_dir = File::Spec->catfile(@path);
     if (-d $subcmd_dir) {
-	my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
-	for my $pm (@files) {
-	    my $basename = basename($pm, '.pm');
-	    my $item = sprintf("%s::%s::%s", 
-			       ucfirst($cmd_name),
-			       ucfirst($parent_name), 
-			       ucfirst($basename));
-	    if (-d File::Spec->catfile(dirname($pm), $basename . '_Subcmd')) {
-		push @{$self->{subcmd_names}}, $item;
-	    } else {
-		push @{$self->{cmd_names}}, $item;
-		push @{$self->{cmd_basenames}}, $basename;
-	    }
-	    my $rc = eval "require '$pm' || 1";
-	    if ($rc eq 'Skip me!') {
-		;
-	    } elsif ($rc) {
-		$self->setup_subsubcommand($parent, $item, $basename);
-	    } else {
-		my $proc = $parent->{proc};
-		$proc->errmsg("Trouble reading ${pm}:");
-		$proc->errmsg($@);
-	    }
-	}
+        my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
+        for my $pm (@files) {
+            my $basename = basename($pm, '.pm');
+            my $item = sprintf("%s::%s::%s", 
+                               ucfirst($cmd_name),
+                               ucfirst($parent_name), 
+                               ucfirst($basename));
+            if (-d File::Spec->catfile(dirname($pm), $basename . '_Subcmd')) {
+                push @{$self->{subcmd_names}}, $item;
+            } else {
+                push @{$self->{cmd_names}}, $item;
+                push @{$self->{cmd_basenames}}, $basename;
+            }
+            my $rc = eval "require '$pm' || 1";
+            if ($rc eq 'Skip me!') {
+                ;
+            } elsif ($rc) {
+                $self->setup_subsubcommand($parent, $item, $basename);
+            } else {
+                my $proc = $parent->{proc};
+                $proc->errmsg("Trouble reading ${pm}:");
+                $proc->errmsg($@);
+            }
+        }
     }
 }
 
@@ -123,15 +123,15 @@ sub setup_subsubcommand($$$$)
     my $cmd_obj;
     my $cmd_name = lc $name;
     my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" . 
-	"${cmd_prefix}->new(\$self, '$cmd_name'); 1";
+        "${cmd_prefix}->new(\$self, '$cmd_name'); 1";
     if (eval $new_cmd) {
-	# Add to hash of commands, and list of subcmds
-	$self->{subcmds}{$cmd_name} = $cmd_obj;
-	$self->add($cmd_obj, $cmd_name);
+        # Add to hash of commands, and list of subcmds
+        $self->{subcmds}{$cmd_name} = $cmd_obj;
+        $self->add($cmd_obj, $cmd_name);
     } else {
-	my $proc = $parent->{proc};
-	$proc->errmsg("Error instantiating ${cmd_prefix}");
-	$proc->errmsg($@);
+        my $proc = $parent->{proc};
+        $proc->errmsg("Error instantiating ${cmd_prefix}");
+        $proc->errmsg($@);
     }
 
 }
@@ -143,19 +143,19 @@ sub lookup($$;$)
     $use_regexp = 0 if scalar @_ < 3;
     my $compare;
     if (!$self->{proc}{settings}{abbrev}) {
-	$compare = sub($) { my $name = shift; $name eq $subcmd_prefix};
+        $compare = sub($) { my $name = shift; $name eq $subcmd_prefix};
     } elsif ($use_regexp) {
-	$compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
+        $compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
     } else {
-	$compare = sub($) { 
-	    my $name = shift; 0 == index($name, $subcmd_prefix)
-	};
+        $compare = sub($) { 
+            my $name = shift; 0 == index($name, $subcmd_prefix)
+        };
     }
     my @candidates = ();
     while (my ($subcmd_name, $subcmd) = each %{$self->{subcmds}}) {
         if ($compare->($subcmd_name)) {
-	    push @candidates, $subcmd;
-	}
+            push @candidates, $subcmd;
+        }
 
     }
     if (scalar @candidates == 1) {
@@ -171,12 +171,12 @@ sub short_help($$$;$)
     $label = 0 unless defined $label;
     my $entry = $self->lookup($subcmd_name);
     if ($entry) {
-	my $prefix = '';
-	$prefix = $entry->{name} if $label;
+        my $prefix = '';
+        $prefix = $entry->{name} if $label;
         if (exist $entry->{short_help}) {
-	    $prefix .= ' -- ' if $prefix;
-	    $self->{proc}->msg($prefix . $entry->{short_help});
-	}
+            $prefix .= ' -- ' if $prefix;
+            $self->{proc}->msg($prefix . $entry->{short_help});
+        }
     } else {
         $self->{proc}->undefined_subcmd($self->{cmd_str}, $subcmd_name);
     }
@@ -205,8 +205,8 @@ sub help($$)
 {
     my ($self, $args) = @_;
     if (scalar @$args <= 3) {
-	# "help cmd subcmd". Give the general help for the command part.
-	return $self->{help};
+        # "help cmd subcmd". Give the general help for the command part.
+        return $self->{help};
     }
 
     my $subcmd_name = $args->[3];
@@ -215,39 +215,39 @@ sub help($$)
     my @subcmds     = $self->list();
 
     if ('*' eq $subcmd_name) {
-	@help_text = (sprintf("List of subcommands for command '%s':", 
-			     $self->{cmd_str}));
+        @help_text = (sprintf("List of subcommands for command '%s':", 
+                             $self->{cmd_str}));
 
-	my $subcmds = $self->{parent}->columnize_commands(\@subcmds);
-	chomp $subcmds;
-	push @help_text, $subcmds;
-	return join("\n", @help_text);
+        my $subcmds = $self->{parent}->columnize_commands(\@subcmds);
+        chomp $subcmds;
+        push @help_text, $subcmds;
+        return join("\n", @help_text);
     }
 
     # "help cmd subcmd". Give help specific for that subcommand.
     my $cmd = $self->lookup($subcmd_name, 0);
     if (defined $cmd) { 
-	if ($cmd->can("help")) {
-	    return $cmd->help($args);
-	} else {
-	    return $cmd->{help};
-	}
+        if ($cmd->can("help")) {
+            return $cmd->help($args);
+        } else {
+            return $cmd->{help};
+        }
     } else {
-	my $proc = $self->{proc};
-	my @matches = sort(grep /^#{subcmd_name}/, @subcmds);
-	my $name = $self->{cmd_str};
-	if (0 == scalar @matches) { 
-	    $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");
-	    return undef;
-	} elsif (1 == scalar @matches) {
-	    $args->[-1] = $matches[0];
-	    $self->help($args);
-	} else {
-	    @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
-	    my @sort_matches = sort @matches;
-	    push @help_text, $self->{parent}{cmd}->columnize_commands(\@sort_matches);
-	    return @help_text;
-	}
+        my $proc = $self->{proc};
+        my @matches = sort(grep /^#{subcmd_name}/, @subcmds);
+        my $name = $self->{cmd_str};
+        if (0 == scalar @matches) { 
+            $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");
+            return undef;
+        } elsif (1 == scalar @matches) {
+            $args->[-1] = $matches[0];
+            $self->help($args);
+        } else {
+            @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
+            my @sort_matches = sort @matches;
+            push @help_text, $self->{parent}{cmd}->columnize_commands(\@sort_matches);
+            return @help_text;
+        }
     }
 }
 
@@ -268,7 +268,7 @@ sub complete_token_with_next($)
     my ($self, $prefix) = @_;
     my $subcmds = $self->{subcmds};
     return Devel::Trepan::Complete::complete_token_with_next($subcmds,
-							     $prefix);
+                                                             $prefix);
   }
 
 sub run($$) 
@@ -278,8 +278,8 @@ sub run($$)
     # require Enbugger; Enbugger->stop;
     my $args_len = scalar @$args;
     if ($args_len < 3 || $args_len == 3 && $args->[-1] eq '*') {
-	$self->{proc}->summary_list($self->{cmd_str}, $self->{subcmds});
-	return 0;
+        $self->{proc}->summary_list($self->{cmd_str}, $self->{subcmds});
+        return 0;
     }
 
     my $subcmd_prefix = $args->[2];
@@ -287,12 +287,12 @@ sub run($$)
     # Run that.
     my $subcmd = $self->lookup($subcmd_prefix);
     if ($subcmd) {
-	if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
-					  $args_len-3)) {
-	    $subcmd->run($args);
-	}
+        if ($self->{proc}->ok_for_running($subcmd, $subcmd->{cmd_str},
+                                          $args_len-3)) {
+            $subcmd->run($args);
+        }
     } else {
-	$self->{proc}->undefined_subcmd($self->{name}, $subcmd_prefix);
+        $self->{proc}->undefined_subcmd($self->{name}, $subcmd_prefix);
     }
 }
 

@@ -16,19 +16,25 @@ use constant MAX_ARGS => undef;
 use constant NEED_STACK => 1;
 
 our $MIN_ABBREV = length('l');
-our $HELP   = <<"HELP";
-${CMD}
-${CMD} -v
-${CMD} VAR1 [VAR2...]
+our $HELP = <<'HELP';
+=pod
 
-Lists 'my' or 'lexical' variables at the current frame. Use the frame changing
-commands like 'up', 'down' or 'frame' set the current frame.
+info variables lexicals
 
-In the first form, give a list of 'my' or 'our' variable names only. 
-In the second form, list variable names and values
-In the third form, list variable names and values of VAR1, etc.
+info variables lexicals -v
 
-See also 'set variable', and frame changing commands
+info variables lexicals I<var1> [I<var2>...]
+
+Lists C<my> or C<lexical> variables at the current frame. Use the
+frame changing commands like C<up>, C<down> or C<frame> set the
+current frame.
+
+In the first form, give a list of C<my> or C<our> variable names only.
+In the second form, list variable names and values In the third form,
+list variable names and values of I<var1>, etc.
+
+See also C<set variable>, and frame changing commands
+=cut
 HELP
 our $SHORT_HELP   = "Information about 'my' or 'our' variables.";
 

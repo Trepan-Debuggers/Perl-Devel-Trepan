@@ -38,7 +38,7 @@ Without argument, print the list of available debugger commands.
 When an argument is given, it is first checked to see if it is command
 name. C<help backtrace> gives help on the C<backtrace> debugger command.
 
-If the environment variable I<\$PAGER> is defined, the file is
+If the environment variable I<$PAGER> is defined, the file is
 piped through that command.  You will notice this only for long help
 output.
 
@@ -264,13 +264,13 @@ sub run($$)
             }
             my $cmd_obj = $proc->{commands}{$real_name};
             my $help_text = 
-                $cmd_obj->can("help") ? $cmd_obj->help($args) 
+                $cmd_obj->can('help') ? $cmd_obj->help($args) 
                 : $cmd_obj->{help};
             if ($help_text) {
                 $help_text = help2podstring($help_text,
                                             $proc->{settings}{highlight},
                                             $proc->{settings}{maxwidth});
-                chomp $help_text;
+                chomp $help_text; chomp $help_text;
                 $self->msg($help_text) ;
                 if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
                     my $aliases_str = join(', ', @{$cmd_obj->{aliases}});

@@ -6,11 +6,10 @@
 
 use rlib '../..';
 
-=head1 C<Devel::Trepan::Terminated>
+=head1 C<DB>
 
-Contains the C<at_exit> routine that the debugger uses to issue the
-C<Debugged program terminated ...> message after the program completes. See
-the C<END> block documentation for more details.
+Devel::Trepan customized DB package. Down the line this should be split off
+and merged with DB that perl5db.pl and other use
 
 =cut
 
@@ -32,7 +31,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my ($deep, @saved, @skippkg);
+my ($deep, @saved, @skippkg, $HAVE_DEVEL_CALLSITE);
 
 my $ineval = {};
 
@@ -136,6 +135,9 @@ BEGIN {
 
     # No extry/exit tracing.
     $frame = 0;
+
+    $HAVE_DEVEL_CALLSITE = eval("use Devel::Callsite; 1") ? 1 : 0;
+
 }
 
 END {
@@ -173,7 +175,11 @@ sub DB {
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
     ) = @{$DB::caller};
+
     local $filename_ini = $filename;
+
+    local $OP_addr = ($HAVE_DEVEL_CALLSITE) 
+        ? Devel::Callsite::callsite() : undef; 
 
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 

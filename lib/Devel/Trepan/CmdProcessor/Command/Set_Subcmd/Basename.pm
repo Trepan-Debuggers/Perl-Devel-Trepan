@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,7 +11,14 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Set to show only file basename in showing file names";
+our $SHORT_HELP = 'Set to show only file basename in showing file names';
+our $HELP   = <<'HELP';
+=pod
+
+Set to show only file basename in showing file names
+=cut
+HELP
+
 our $MIN_ABBREV = length('ba');
 
 if (__FILE__ eq $0) {

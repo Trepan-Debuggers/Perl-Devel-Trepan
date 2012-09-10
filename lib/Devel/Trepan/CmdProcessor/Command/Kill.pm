@@ -26,15 +26,15 @@ use strict;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-B<$NAME> [I<signal-number>|I<signal-name>]
+kill [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
 
-Equivalent of C<kill('KILL', \$\$)>. This is an unmaskable
-signal\. Use this when all else fails, e.g. in thread code, use this.
+Equivalent of C<kill('KILL', $$)>. This is an unmaskable
+signal. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
 However when this command is aliased from a command ending in C<!>, no 
@@ -42,14 +42,14 @@ questions are asked.
 
 =head2 Examples:
 
-  $NAME  
-  $NAME KILL # same as above
-  $NAME kill # same as above
-  $NAME -9   # same as above
-  $NAME  9   # same as above
-  $NAME! 9   # same as above, but no questions asked
-  $NAME unconditionally # same as above
-  $NAME TERM # Send "TERM" signal
+  kill  
+  kill KILL # same as above
+  kill kill # same as above
+  kill -9   # same as above
+  kill  9   # same as above
+  kill! 9   # same as above, but no questions asked
+  kill unconditionally # same as above
+  kill TERM # Send "TERM" signal
 
 See also C<set confirm> and C<quit>.
 =cut

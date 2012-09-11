@@ -3,7 +3,7 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Show::Display::COP;
+package Devel::Trepan::CmdProcessor::Command::Show::Display::OP;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
 use strict;
@@ -15,16 +15,18 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 use constant MAX_ARGS => 0;
-our $HELP         = <<"HELP";
+our $HELP         = <<'HELP';
+=pod
 
-Show COP address in debugger location.
+Show OP address in debugger location.
 
-See also "set display cop", "show line", "show program" and
-"disassemble" (via plugin
+See also C<set display op>, C<show line>, C<show program> and
+C<disassemble> via plugin L<Devel::Trepan::Disassemble>
+=cut
 HELP
 
 our $MIN_ABBREV   = length('ev');
-our $SHORT_HELP   = "Show COP address setting";
+our $SHORT_HELP   = "Show OP address setting";
  
 unless (caller) {
   # Demo it.

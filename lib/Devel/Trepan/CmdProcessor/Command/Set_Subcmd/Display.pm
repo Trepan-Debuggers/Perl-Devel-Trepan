@@ -16,16 +16,21 @@ our $HELP   = 'Set display attributes';
 
 unless (caller) { 
     # Demo it.
-    require Devel::Trepan;
-    # require_relative '../../mock'
-    # dbgr, parent_cmd = MockDebugger::setup('set', false)
-    # cmd              = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
-    #                                                      parent_cmd)
-    # cmd.run(cmd.prefix + ['string', '30'])
-    
-    # %w(s lis foo).each do |prefix|
-    #   p [prefix, cmd.complete(prefix)]
-    # end
+    # FIXME: DRY with other subcommand manager demo code.
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'set');
+    my $cmd = __PACKAGE__->new($parent, 'display');
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, "\n";
+    for my $arg ('ev', 'op', 'foo') {
+	my @aref = $cmd->complete_token_with_next($arg);
+	printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
+    }
+
+    print join(' ', @{$cmd->{prefix}}), "\n"; 
+    $cmd->run($cmd->{prefix});
+    # $cmd->run($cmd->{prefix}, ('except', 'on'));
 }
 
 1;

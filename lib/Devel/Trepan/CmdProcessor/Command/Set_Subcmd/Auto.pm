@@ -34,25 +34,22 @@ our $SHORT_HELP =
 
 unless (caller) { 
     # Demo it.
+    # FIXME: DRY with other subcommand manager demo code.
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new;
     my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'set');
-    # use Enbugger 'trepan'; Enbugger->stop;
     my $cmd = __PACKAGE__->new($parent, 'auto');
     print $cmd->{help}, "\n";
-    # print "min args: ", eval('$' . __PACKAGE__ . "::MIN_ARGS"), "\n";
-    # for my $arg ('e', 'lis', 'foo') {
-    #   my $aref = $cmd->complete_token_with_next($arg);
-    #   print "$aref\n";
-    #   printf("complete($arg) => %s\n", 
-    #          join(", ", @{$aref})) if $aref;
-    # }
+    print "min args: ", $cmd->MIN_ARGS, "\n";
+    for my $arg ('e', 'lis', 'foo') {
+	my @aref = $cmd->complete_token_with_next($arg);
+	printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
+    }
 
-    # $cmd->run(($cmd->prefix  ('string', '30'));
+    print join(' ', @{$cmd->{prefix}}), "\n"; 
+    $cmd->run($cmd->{prefix});
+    # $cmd->run($cmd->{prefix}, ('string', '30'));
     
-    # for my $prefix qw(s lis foo) {
-    #   p [prefix, cmd.complete(prefix)];
-    # }
 }
 
 1;

@@ -22,7 +22,8 @@ use vars qw($running $caller
             $eval_opts $eval_str
             $fall_off_on_end
             $stop @clients $ready $tid @saved
-            $init_dollar0 $OS_STARTUP_DIR);
+            $init_dollar0 $OS_STARTUP_DIR
+            $HAVE_DEVEL_CALLSITE);
 
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Breakpoint;
@@ -31,7 +32,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my ($deep, @saved, @skippkg, $HAVE_DEVEL_CALLSITE);
+my ($deep, @saved, @skippkg);
 
 my $ineval = {};
 

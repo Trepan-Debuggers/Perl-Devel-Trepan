@@ -3,7 +3,9 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Set::Display::COP;
+use Devel::Trepan::DB;
+
+package Devel::Trepan::CmdProcessor::Command::Set::Display::OP;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
 
 use strict;
@@ -14,25 +16,37 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = <<"HELP";
+our $HELP         = <<'HELP';
+=pod
 
-Set to show the COP address in location status.
+Set to show the OP address in location status.
 
-The COP address is the address of the Perl Tree Opcode that is about
+The OP address is the address of the Perl Tree Opcode that is about
 to be run. It gives the most precise indication of where you are.
 This can be useful in disambiguating where among Perl several
 statements in a line you are at. 
 
 In the future we may also allow a breakpoint at a COP address.
 
-See also "show display cop", "show line", "show program" and
-"disassemble" (via plugin Devel::Trepan::Disassemble).
+See also C<show display op>, C<show line>, C<show program> and
+C<disassemble> (via plugin L<Devel::Trepan::Disassemble>).
+=cut
 HELP
 
 our $MIN_ABBREV   = length('co');
 use constant MAX_ARGS => 1;
-our $SHORT_HELP   = "Set to show COP address in locations";
+our $SHORT_HELP   = "Set to show OP address in locations";
  
+sub run($$)
+{ 
+    my ($self, $args) = @_;
+    if ($DB::HAVE_DEVEL_CALLSITE) {
+	$self->SUPER::run($args);
+    } else {
+	$self->{proc}->errmsg("You need Devel::Callsite installed to run this");
+    }
+}
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

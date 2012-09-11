@@ -185,11 +185,9 @@ sub source_location_info($)
     my $filename = $self->{frame}{file};
     my $line_number = $self->line() || 0;
 
-    my $cop_addr = '';
-    if ($self->{settings}{displaycop}) {
-	my $cop = 
-	    + $DB::dbline[$line_number] if defined $DB::dbline[$line_number];
-	$cop_addr = sprintf " \@0x%x", $cop;
+    my $op_addr = '';
+    if ($self->{settings}{displayop} && $DB::OP_addr) {
+	$op_addr = sprintf " \@0x%x", $DB::OP_addr;
     }
     if (DB::LineCache::filename_is_eval($filename)) {
     	if ($DB::filename eq $filename) {
@@ -203,11 +201,11 @@ sub source_location_info($)
 	    }
 	    $canonic_filename = $self->canonic_file($self->filename(), 0);
 	    return "${canonic_filename}:${line_number} " . 
-		"remapped $filename:$line_number$cop_addr";
+		"remapped $filename:$line_number$op_addr";
     	}
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);
-    return "${canonic_filename}:${line_number}$cop_addr";
+    return "${canonic_filename}:${line_number}$op_addr";
 } 
 
 unless (caller()) {

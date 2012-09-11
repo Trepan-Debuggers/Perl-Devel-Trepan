@@ -171,7 +171,7 @@ commands.  All of these are slower than running to a breakpoint.
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called "step over".
 
-=head4 continue [LOCATION]
+=head4 continue [I<location>]
 
 Leave the debugger loop and continue execution. Subsequent entry to
 the debugger however may occur via breakpoints or explicit calls, or
@@ -404,7 +404,7 @@ For example, this will print out the value of C<$foo> every time line
 
 =head3 Examining the call stack
 
-=head4 backtrace [COUNT]
+=head4 backtrace [I<count>]
 
 Print a stack trace, with the most recent frame at the top.  With a
 positive number, print at most many entries. 
@@ -419,13 +419,13 @@ Examples:
    bactrace 2  # Print only the top two entries
 
 
-=head4 frame FRAME-NUMBER
+=head4 frame [I<frame-number>]
 
-Change the current frame to frame FRAME-NUMBER if specified, or the
+Change the current frame to frame I<frame-number> if specified, or the
 most-recent frame, 0, if no frame number specified.
 
 A negative number indicates the position from the other or
-least-recently-entered end.  So 'frame -1' moves to the oldest frame.
+least-recently-entered end.  So C<frame -1> moves to the oldest frame.
 
 Examples:
 
@@ -436,12 +436,12 @@ Examples:
     frame 1   # Move to frame 1. Same as: frame 0; up
     frame -1  # The least-recent frame
 
-=head4 up [COUNT]
+=head4 up [I<count>]
 
 Move the current frame up in the stack trace (to an older frame). 0 is
 the most recent frame. If no count is given, move up 1.
 
-=head4 down [COUNT]
+=head4 down [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.

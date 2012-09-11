@@ -28,7 +28,10 @@ statements in a line you are at.
 
 In the future we may also allow a breakpoint at a COP address.
 
-See also C<show display op>, C<show line>, C<show program> and
+See also L<C<show display
+op>|Devel::Trepan::CmdProcessor::Command::Show::Display::OP>, C<show
+line>, L<C<show
+program>|Devel::Trepan::CmdProcessor::Command::Show::Program> and
 C<disassemble> (via plugin L<Devel::Trepan::Disassemble>).
 =cut
 HELP

@@ -26,13 +26,13 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-B<${NAME}> I<position> I<Perl-statement>
+action I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is
-'.', set an action on the line about to be executed. The sequence
+C<.>, set an action on the line about to be executed. The sequence
 of steps taken by the debugger is:
 
 =over
@@ -49,7 +49,7 @@ of steps taken by the debugger is:
 
 =back
 
-For example, this will print out \$foo every time line 53 is passed:
+For example, this will print out $foo every time line 53 is passed:
 
 =head2 Examples:
 

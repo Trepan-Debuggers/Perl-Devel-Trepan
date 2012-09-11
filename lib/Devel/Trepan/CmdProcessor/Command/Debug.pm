@@ -25,20 +25,20 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-B<${NAME}> I<string>
+debug I<Perl-code>
 
-Recursively debug I<string>.
+Recursively debug I<Perl-code>.
 
 The level of recursive debugging is shown in the prompt. For example
 C<((trepan.pl))> indicates one nested level of debugging.
 
 =head2 Examples:
 
- ${NAME} finonacci(5)   # Debug fibonacci funcition
- ${NAME} \$x=1; \$y=2;    # Kind of pointless, but doable.
+ debug finonacci(5)   # Debug fibonacci function
+ debug $x=1; $y=2;    # Kind of pointless, but doable.
 =cut
 HELP
 

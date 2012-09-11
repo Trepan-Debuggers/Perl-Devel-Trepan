@@ -32,7 +32,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-${NAME} I<num> [I<num> ...]
+enable I<num> [I<num> ...]
     
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
@@ -52,10 +52,10 @@ If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
 
 =head2 Examples:
 
- $NAME 1 2    # Enable breakpoint 1 and 2
- $NAME b1 b2  # Same as above
- $NAME a4     # Enable action 4
- $NAME w1 2   # Enable watch expression 1 and breakpoint 2
+ enable 1 2    # Enable breakpoint 1 and 2
+ enable b1 b2  # Same as above
+ enable a4     # Enable action 4
+ enable w1 2   # Enable watch expression 1 and breakpoint 2
 
 See also C<info break> to get a list of breakpoints, and C<disable> to
 disable breakpoints.

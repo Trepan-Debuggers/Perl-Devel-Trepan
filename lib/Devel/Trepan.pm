@@ -132,17 +132,27 @@ command, but rather some of the more basic commands and options.
 
 =head3 Commands involving Running the program
 
-=head4 step [COUNT]
+=head4 step 
+
+step[+|-] [into] [I<count>]
+
+step over 
+
+step out
 
 Execute the current line, stopping at the next event.  Sometimes this
-is called 'step into'.
+is called "step into".
 
-With an integer argument, step that many times.  
+With an integer argument, step that many times.  With an 'until'
+expression that expression is evaluated and we stop the first time it
+is true.
 
 A suffix of C<+> in a command or an alias forces a move to another
-position.
+position, while a suffix of C<-> disables this requirement.  A suffix
+of '>' will continue until the next call. (C<finish> will run run until
+the return for that call.)
 
-If no suffix is given, the debugger setting 'different' determines
+If no suffix is given, the debugger setting C<different> determines
 this behavior.
 
 Examples: 
@@ -169,6 +179,17 @@ exceptions.
 
 If a parameter is given, a temporary breakpoint is set at that position
 before continuing. 
+
+=head4 Examples:
+
+ continue
+ continue 10    # continue to line 10
+ continue gcd   # continue to first instruction of method gcd
+
+See also L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
+L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
+L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
+C<help location>.
 
 Examples:
 
@@ -258,11 +279,17 @@ Examples:
 See also C<set auto eval> to treat unrecognized debugger commands as
 Perl code.
 
-=head4 debug PERL-EXPRESSION
+=head4 debug I<Perl-code>
 
-Recursively debug PERL-EXPRESSION. The level of recursive debugging is
-shown in the prompt. For example ((trepan.pl)) indicates one nested
-level of debugging.
+Recursively debug I<Perl-code>.
+
+The level of recursive debugging is shown in the prompt. For example
+C<((trepan.pl))> indicates one nested level of debugging.
+
+Examples:
+
+ debug finonacci(5)   # Debug fibonacci function
+ debug $x=1; $y=2;    # Kind of pointless, but doable.
 
 =head3 Making the program stop at certain points
 
@@ -297,14 +324,17 @@ When a breakpoint is hit the event icon is x1.
 
 See also "break".
 
-=head4 condition BP_NUMBER CONDITION
+=head4 condition
 
-BP_NUMBER is a breakpoint number.  CONDITION is an expression which
-must evaluate to True before the breakpoint is honored.  If CONDITION
-is absent, any existing condition is removed; i.e., the breakpoint is
-made unconditional.
+condition I<bp-number> I<perl-expression>
+
+I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
+expression which must evaluate to true before the breakpoint is
+honored.  If I<perl-expression> is absent, any existing condition is removed;
+i.e., the breakpoint is made unconditional.
 
 Examples:
+
    condition 5 x > 10  # Breakpoint 5 now has condition x > 10
    condition 5         # Remove above condition
 
@@ -322,9 +352,54 @@ and "info break" to get a list of breakpoint numbers.
 
 =head4 enable
 
+enable I<num> [I<num> ...]
+    
+Enables breakpoints, watch expressions or actions given as a space
+separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
+The prefaces are interpreted as follows:
+
+=over
+
+=item a -- action number
+
+=item b -- breakpoint number
+
+=item w -- watch expression number
+
+=back
+
+If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
+
 =head4 disable
 
+disable I<bp-number> [I<bp-number> ...]
+    
+Disables the breakpoints given as a space separated list of breakpoint
+numbers. See also C<info break> to get a list of breakpoints
+
 =head4 action
+
+action I<position> I<Perl-statement>
+
+Set an action to be done before the line is executed. If line is
+C<.>, set an action on the line about to be executed. The sequence
+of steps taken by the debugger is:
+
+=over
+
+=item 1. check for a breakpoint at this line 
+
+=item 2. print the line if necessary (tracing) 
+
+=item 3. do any actions associated with that line 
+
+=item 4. prompt user if at a breakpoint or in single-step 
+
+=item 5. evaluate line 
+
+=back
+
+For example, this will print out $foo every time line 53 is passed:
 
 =head4 watch
 

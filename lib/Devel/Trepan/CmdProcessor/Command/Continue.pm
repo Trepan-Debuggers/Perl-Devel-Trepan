@@ -31,7 +31,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-${NAME} [I<location>]
+continue [I<location>]
 
 Leave the debugger loop and continue execution. Subsequent entry to
 the debugger however may occur via breakpoints or explicit calls, or
@@ -42,12 +42,17 @@ before continuing.
 
 =head2 Examples:
 
- ${NAME}
- ${NAME} 10    # continue to line 10
- ${NAME} gcd   # continue to first instruction of method gcd
+ continue
+ continue 10    # continue to line 10
+ continue gcd   # continue to first instruction of method gcd
 
-See also C<step>, C<next>, C<finish> commands and C<help location>.
+See also L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
+L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
+L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
+C<help location>.
+
 =cut
+
 HELP
 
 

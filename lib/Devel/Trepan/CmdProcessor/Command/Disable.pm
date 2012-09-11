@@ -31,10 +31,10 @@ use vars @CMD_VARS;  # Value inherited from parent
 # require_relative '../../app/util'
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-${NAME} I<bp-number> [I<bp-number> ...]
+disable I<bp-number> [I<bp-number> ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints

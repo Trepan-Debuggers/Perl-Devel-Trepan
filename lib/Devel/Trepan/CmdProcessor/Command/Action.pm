@@ -49,11 +49,12 @@ of steps taken by the debugger is:
 
 =back
 
-For example, this will print out $foo every time line 53 is passed:
+For example, this will print out the value of C<$foo> every time line
+53 is passed:
 
 =head2 Examples:
 
- ${NAME} 53 print "DB FOUND \$foo\\n"
+ ${NAME} 53 print "DB FOUND $foo\n"
 
 See also C<help breakpoints>.
 =cut

@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -20,10 +20,10 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-${NAME} [I<count>]
+down [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.

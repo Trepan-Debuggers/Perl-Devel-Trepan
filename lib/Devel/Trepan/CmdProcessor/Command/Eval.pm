@@ -26,7 +26,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-eval [I<string>]
+eval[@$][?] [I<string>]
 
 Run code in the context of the current frame.
 
@@ -48,12 +48,12 @@ The above is done via regular expression. No fancy parsing is done, say,
 to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
-The value of the expression is stored into global array I<\@DB:D> so it
+The value of the expression is stored into global array I<@DB:D> so it
 may be used again easily. 
 
 Normally eval assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
-by adding the appropriate sigil C<\@>, C<\%>, or C<\$>.
+by adding the appropriate sigil C<@>, C<%>, or C<$>.
 
 =head2 Examples:
 
@@ -73,7 +73,6 @@ by adding the appropriate sigil C<\@>, C<\%>, or C<\$>.
  eval$ use English # Error because this is not a valid expression 
 
 See also C<set auto eval>. The command can help one predict future execution.
-See C<set buffer trace> for showing what may have already been run.
 =cut
 HELP
 

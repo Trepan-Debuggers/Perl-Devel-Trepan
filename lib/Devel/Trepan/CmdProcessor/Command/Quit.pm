@@ -42,7 +42,7 @@ be passed back to the OS. If no exit code is given, 0 is used.
  quit 0               # same as "quit"
  quit! 1              # unconditional quit setting exit code 1
 
-See also C<kill>.
+See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.
 =cut
 HELP
 

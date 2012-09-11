@@ -377,9 +377,7 @@ disable I<bp-number> [I<bp-number> ...]
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints
 
-=head4 action
-
-action I<position> I<Perl-statement>
+=head4 action I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is
 C<.>, set an action on the line about to be executed. The sequence
@@ -399,7 +397,8 @@ of steps taken by the debugger is:
 
 =back
 
-For example, this will print out $foo every time line 53 is passed:
+For example, this will print out the value of C<$foo> every time line
+53 is passed:
 
 =head4 watch
 

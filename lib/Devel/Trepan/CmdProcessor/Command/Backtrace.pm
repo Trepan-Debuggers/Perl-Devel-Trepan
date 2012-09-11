@@ -24,7 +24,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-${NAME} [I<count>]
+backtrace [I<count>]
 
 Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries. 
@@ -34,8 +34,9 @@ current frame determines the context used for many debugger commands
 such as source-line listing or the C<edit> command.
 
 =head2 Examples:
- ${NAME}    # Print a full stack trace
- ${NAME} 2  # Print only the top two entries
+
+ backtrace    # Print a full stack trace
+ backtrace 2  # Print only the top two entries
 =cut
 HELP
 

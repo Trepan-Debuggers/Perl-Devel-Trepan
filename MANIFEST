@@ -85,7 +85,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Skip.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm
-lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm
@@ -112,7 +112,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Except.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Skip.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm
-lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/COP.pm
+lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm

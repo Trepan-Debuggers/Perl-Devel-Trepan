@@ -51,7 +51,7 @@ L<trepanning debuggers|http://github.com/rocky/rb-trepanning/wiki>.
 
 =over 4
 
-=item *
+=item * 
 
 extensive online-help
 
@@ -140,9 +140,70 @@ The help system follows the gdb classificiation. Below is not a full
 list of commands, nor does it contain the full list of options on each
 command, but rather some of the more basic commands and options.
 
+=head3 Table of Contents of Basic Commands
+
+=over
+
+=item *
+
+L</"Commands involving Running the program">
+
+=item * 
+
+L</"Examining data">
+
+=item * 
+
+L</"Making the program stop at certain points">
+
+=item * 
+
+L</"Examining the call stack">
+
+=item * 
+
+L</"Syntax of debugger commands">
+
+=back 
+
+
 =head3 Commands involving Running the program
 
-=head4 step[+|-] [into] [I<count>]
+=over 
+
+=item * 
+
+L</"step into (step)">
+
+=item *
+
+L</"step over (next)">
+
+=item * 
+
+L<"continue execution (continue)">
+
+=item * 
+
+L</"step out (finish)">
+
+=item *
+
+L</"quit[!] [unconditionally] [I<exit-code>]">
+
+=item * 
+
+L</"hard termination (kill)">
+
+=item *
+
+L</"restart execution (restart)">
+
+=back
+
+=head4 step into (step)
+
+step[+|-] [into] [I<count>]
 
 Execute the current line, stopping at the next event.  Sometimes this
 is called "step into".
@@ -153,7 +214,7 @@ is true.
 
 A suffix of C<+> in a command or an alias forces a move to another
 position, while a suffix of C<-> disables this requirement.  A suffix
-of '>' will continue until the next call. (C<finish> will run run until
+of C<E<gt>> will continue until the next call. (C<finish> will run run until
 the return for that call.)
 
 If no suffix is given, the debugger setting C<different> determines
@@ -170,12 +231,14 @@ Examples:
 Related and similar is the C<next> (step over) and C<finish> (step out)
 commands.  All of these are slower than running to a breakpoint.
 
-=head4 next
+=head4 step over (next)
 
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called "step over".
 
-=head4 continue [I<location>]
+=head4 continue execution (continue)
+
+continue [I<location>]
 
 Leave the debugger loop and continue execution. Subsequent entry to
 the debugger however may occur via breakpoints or explicit calls, or
@@ -195,12 +258,16 @@ L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
 L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
 C<help location>.
 
-=head4 finish
+=head4 step out (finish)
+
+finish
 
 Continue execution until the program is about to leave the current
 function. Sometimes this is called 'step out'.
 
-=head4 quit[!] [unconditionally] [I<exit-code>] 
+=head4 terminate gently (quit)
+
+quit[!] [unconditionally] [I<exit-code>]
 
 Gently exit the debugger and debugged program.
 
@@ -217,9 +284,12 @@ Examples:
  quit 0               # same as "quit"
  quit! 1              # unconditional quit setting exit code 1
 
-See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.
+See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill> and
+C<set confirm>.
 
-=head4 kill [I<signal-number>|I<signal-name>]
+=head4 hard termination (kill)
+
+kill[!] [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
 
@@ -242,7 +312,9 @@ Examples:
 
 See also C<quit>
 
-=head4 restart
+=head4 restart exectution (restart)
+
+restart
 
 Restart debugger and program via an exec call.
 
@@ -250,7 +322,21 @@ See also C<show args> for the exact invocation that will be used.
 
 =head3 Examining data
 
-=head4 eval[@$][?] [I<Perl-code>]
+=over
+
+=item * 
+
+L</"Evaluate Perl code (eval)">
+
+=item *
+
+L</"Recursively Debug into Perl code">
+
+=back 
+
+=head4 Evaluate Perl code (eval)
+
+eval[@$][?] [I<Perl-code>]
 
 Run I<Perl-code> in the context of the current frame.
 
@@ -282,7 +368,9 @@ Examples:
 See also C<set auto eval> to treat unrecognized debugger commands as
 Perl code.
 
-=head4 debug I<Perl-code>
+=head4 Recursively Debug into Perl code
+
+debug I<Perl-code>
 
 Recursively debug I<Perl-code>.
 
@@ -494,6 +582,7 @@ is "undefined".
 =head2 Debugger Command Examples
 
 =head3 Commenting
+
  # This line does nothing. It is a comment and is useful
  # in debugger command files.
       # any amount of leading space is also ok

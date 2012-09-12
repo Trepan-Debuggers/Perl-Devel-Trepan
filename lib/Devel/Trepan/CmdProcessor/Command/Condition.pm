@@ -28,9 +28,9 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-condition I<bp-number> I<perl-expression>
+condition I<bp-number> I<Perl-expression>
 
-I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
+I<bp-number> is a breakpoint number.  I<Perl-expresion> is a Perl
 expression which must evaluate to true before the breakpoint is
 honored.  If I<perl-expression> is absent, any existing condition is removed;
 i.e., the breakpoint is made unconditional.
@@ -40,7 +40,10 @@ i.e., the breakpoint is made unconditional.
  condition 5 x > 10  # Breakpoint 5 now has condition x > 10
  condition 5         # Remove above condition
 
-See also C<break>, C<enable> and C<disable>.
+See also L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+L<C<enable>|Devel::Trepan::CmdProcessor::Command::Enable> and 
+L<C<disable>|Devel::Trepan::CmdProcessor::Command::Disable>>.
+
 =cut
 HELP
 

@@ -42,16 +42,17 @@ questions are asked.
 
 =head2 Examples:
 
-  kill  
-  kill KILL # same as above
-  kill kill # same as above
-  kill -9   # same as above
-  kill  9   # same as above
-  kill! 9   # same as above, but no questions asked
-  kill unconditionally # same as above
-  kill TERM # Send "TERM" signal
+ kill  
+ kill KILL # same as above
+ kill kill # same as above
+ kill -9   # same as above
+ kill  9   # same as above
+ kill! 9   # same as above, but no questions asked
+ kill unconditionally # same as above
+ kill TERM # Send "TERM" signal
 
-See also C<set confirm> and C<quit>.
+See also C<set confirm> and
+L<C<quit>|Devel::Trepan::CmdProcessor::Command::Quit>.
 =cut
 HELP
 

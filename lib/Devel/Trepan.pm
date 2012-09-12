@@ -28,6 +28,16 @@ __END__
 
 =pod
 
+=for comment
+This file is shared by both Trepan.pod and Trepan.pm after its __END__
+Trepan.pod is useful in the Github wiki:
+https://github.com/rocky/Perl-Devel-Trepan/wiki
+where we can immediately see the results and others can contribute.
+
+=for comment
+The version Trepan.pm however is what is seen at https://metacpan.org/module/Devel::Trepan and when folks download this file
+
+
 =head1 NAME
 
 Devel::Trepan -- A new modular Perl debugger
@@ -132,13 +142,7 @@ command, but rather some of the more basic commands and options.
 
 =head3 Commands involving Running the program
 
-=head4 step 
-
-step[+|-] [into] [I<count>]
-
-step over 
-
-step out
+=head4 step[+|-] [into] [I<count>]
 
 Execute the current line, stopping at the next event.  Sometimes this
 is called "step into".
@@ -180,7 +184,7 @@ exceptions.
 If a parameter is given, a temporary breakpoint is set at that position
 before continuing. 
 
-=head4 Examples:
+Examples:
 
  continue
  continue 10    # continue to line 10
@@ -191,51 +195,50 @@ L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
 L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
 C<help location>.
 
-Examples:
-
-    continue
-    continue 10    # continue to line 10
-    continue gcd   # continue to first instruction of method gcd
-
 =head4 finish
 
 Continue execution until the program is about to leave the current
 function. Sometimes this is called 'step out'.
 
-=head4 quit[!] [unconditionally] [exit code] 
+=head4 quit[!] [unconditionally] [I<exit-code>] 
 
-Gentlly exit the debugger and debugged program.
+Gently exit the debugger and debugged program.
 
-The program being debugged is exited via exit() which runs the Kernel
+The program being debugged is exited via I<exit()> which runs the Kernel
 at_exit finalizers. If a return code is given, that is the return code
-passed to exit() - presumably the return code that will be passed back
+passed to I<exit()> - presumably the return code that will be passed back
 to the OS. If no exit code is given, 0 is used.
 
 Examples: 
 
-    quit                 # quit prompting if we are interactive
-    quit unconditionally # quit without prompting
-    quit!                # same as above
-    quit 0               # same as "quit"
-    quit! 1              # unconditional quit setting exit code 1
+ quit                 # quit prompting if we are interactive
+ quit unconditionally # quit without prompting
+ quit!                # same as above
+ quit 0               # same as "quit"
+ quit! 1              # unconditional quit setting exit code 1
 
-=head4 kill 
+See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.
+
+=head4 kill [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
-Equivalent of kill('KILL', $$). This is an unmaskable
+
+Equivalent of C<kill('KILL', $$)>. This is an unmaskable
 signal. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
-However when this command is aliased from a command ending in !, no 
+However when this command is aliased from a command ending in C<!>, no 
 questions are asked.
 
-    kill  
-    kill KILL # same as above
-    kill -9   # same as above
-    kill  9   # same as above
-    kill! 9   # same as above, but no questions asked
-    kill unconditionally # same as above
-    kill TERM # Send "TERM" signal
+Examples: 
+
+ kill  
+ kill KILL # same as above
+ kill -9   # same as above
+ kill  9   # same as above
+ kill! 9   # same as above, but no questions asked
+ kill unconditionally # same as above
+ kill TERM # Send "TERM" signal
 
 See also C<quit>
 
@@ -247,9 +250,9 @@ See also C<show args> for the exact invocation that will be used.
 
 =head3 Examining data
 
-=head4 eval[@$][?] [STRING]
+=head4 eval[@$][?] [I<Perl-code>]
 
-Run code in the context of the current frame.
+Run I<Perl-code> in the context of the current frame.
 
 If no string is given after the word "eval", we run the string from
 the current source code about to be run. If the "eval" command ends ?
@@ -258,7 +261,7 @@ expression in the line.
 
 Normally eval assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
-by adding the appropriate sigil @, or $.
+by adding the appropriate sigil C<@>, or C<$>.
 
 Examples:
 
@@ -293,40 +296,38 @@ Examples:
 
 =head3 Making the program stop at certain points
 
-=head4 break
+=head4 break [I<location>] [if I<condition>]
 
-break [LOCATION] [if CONDITION]
-
-Set a breakpoint. If no location is given use the current stopping
-point.
+Set a breakpoint. If I<location> is given use the current stopping
+point. An optional condition may be given.
 
 Examples:
-   break                  # set a breakpoint on the current line
-   break gcd              # set a breakpoint in function gcd
-   break gcd if \$a == 1   # set a breakpoint in function gcd with 
-                          # condition \$a == 1
-   break 10               # set breakpoint on line 10
 
-When a breakpoint is hit the event icon is xx.
+ break                  # set a breakpoint on the current line
+ break gcd              # set a breakpoint in function gcd
+ break gcd if $a == 1   # set a breakpoint in function gcd with 
+                        # condition $a == 1
+ break 10               # set breakpoint on line 10
 
-See also "tbreak", "delete", "info break" and "condition".
+When a breakpoint is hit the event icon is C<xx>.
 
-=head4 tbreak [LOCATION]
+See also C<help breakpoints>.
+
+=head4 tbreak [I<location>]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.
 If no location is given use the current stopping point.
 
 Examples:
-   trbreak
+
+   tbreak
    tbreak 10               # set breakpoint on line 10
 
-When a breakpoint is hit the event icon is x1.
+When a breakpoint is hit the event icon is C<x1>.
 
-See also "break".
+See also C<break> and C<help breakpoints>.
 
-=head4 condition
-
-condition I<bp-number> I<perl-expression>
+=head4 condition I<bp-number> I<Perl-expression>
 
 I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
 expression which must evaluate to true before the breakpoint is
@@ -340,19 +341,17 @@ Examples:
 
 See also "break", "enable" and "disable".
 
-=head4 delete [bpnumber [bpnumber...]]  
+=head4 delete [I<bp-number> [I<bp-number>...]]  
 
 Delete some breakpoints.
 
 Arguments are breakpoint numbers with spaces in between. To delete
 all breakpoints, give no arguments.  
 
-See also the "clear" command which clears breakpoints by line number
-and "info break" to get a list of breakpoint numbers.
+See also the C<clear> command which clears breakpoints by line number
+and C<info break> to get a list of breakpoint numbers.
 
-=head4 enable
-
-enable I<num> [I<num> ...]
+=head4 enable I<num> [I<num> ...]
     
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
@@ -370,9 +369,7 @@ The prefaces are interpreted as follows:
 
 If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
 
-=head4 disable
-
-disable I<bp-number> [I<bp-number> ...]
+=head4 disable I<bp-number> [I<bp-number> ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints
@@ -406,17 +403,17 @@ For example, this will print out the value of C<$foo> every time line
 
 =head4 backtrace [I<count>]
 
-Print a stack trace, with the most recent frame at the top.  With a
+Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries. 
 
-An arrow indicates the 'current frame'. The current frame determines
-the context used for many debugger commands such as source-line
-listing or the 'edit' command.
+In the listing produced, an arrow indicates the 'current frame'. The
+current frame determines the context used for many debugger commands
+such as source-line listing or the C<edit> command.
 
 Examples:
 
-   backtrace   # Print a full stack trace
-   bactrace 2  # Print only the top two entries
+ backtrace    # Print a full stack trace
+ backtrace 2  # Print only the top two entries
 
 
 =head4 frame [I<frame-number>]

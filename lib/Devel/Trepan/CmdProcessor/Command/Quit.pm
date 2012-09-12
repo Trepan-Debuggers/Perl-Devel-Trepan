@@ -27,7 +27,7 @@ our $HELP = <<'HELP';
 
 quit[!] [unconditionally] [I<exit-code>] 
 
-Gently terminate.
+Gently exit the debugger and debugged program.
 
 The program being debugged is exited via I<exit()> which runs the
 Kernel I<at_exit()> finalizers. If a return code is given, that is the

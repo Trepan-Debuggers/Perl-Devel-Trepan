@@ -26,9 +26,9 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-eval[@$][?] [I<string>]
+eval[@$][?] [I<Perl-code>]
 
-Run code in the context of the current frame.
+Run I<Perl-code> in the context of the current frame.
 
 If no string is given after the command "eval", we run the string from
 the current source code about to be run. If the command ends ? (via an
@@ -59,14 +59,14 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
 
  eval 1+2 # 3
  eval$ 3   # Same as above, but the return type is explicit
- $ 3       # Probably same as above if \$ alias is around
+ $ 3       # Probably same as above if $ alias is around
  eval $^X  # Possibly /usr/bin/perl
  eval      # Run current source-code line
  eval?     # but strips off leading 'if', 'while', ..
            # from command 
  eval@ @ARGV  # Make sure the result saved is an array rather than 
               # an array converted to a scalar.
- @ @ARG       # Same as above if \@ alias is around
+ @ @ARG       # Same as above if @ alias is around
  eval% %ENV   # Make sure the result saved is a hash
  use English  # Note this is a statement, not an expression
  use English; # Same as above

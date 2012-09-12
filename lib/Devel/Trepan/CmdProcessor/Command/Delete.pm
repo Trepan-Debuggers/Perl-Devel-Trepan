@@ -23,10 +23,10 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-${NAME} [I<bp-number> [I<bp-number>...]]  
+delete [I<bp-number> [I<bp-number>...]]  
 
 Delete some breakpoints.
 

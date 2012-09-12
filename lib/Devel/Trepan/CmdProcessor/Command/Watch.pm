@@ -29,9 +29,9 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-watch I<perl-expression>
+watch I<Perl-expression>
  
-Stop very time I<perl-expression> changes from its prior value.
+Stop very time I<Perl-expression> changes from its prior value.
 
 =head2 Examples:
 

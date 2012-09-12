@@ -49,7 +49,7 @@ L<trepanning debuggers|http://github.com/rocky/rb-trepanning/wiki>.
 
 =head2 Features: 
 
-=over 4
+=over
 
 =item * 
 
@@ -140,13 +140,11 @@ The help system follows the gdb classificiation. Below is not a full
 list of commands, nor does it contain the full list of options on each
 command, but rather some of the more basic commands and options.
 
-=head3 Table of Contents of Basic Commands
-
 =over
 
 =item *
 
-L</"Commands involving Running the program">
+L</"Commands involving running the program">
 
 =item * 
 
@@ -167,43 +165,43 @@ L</"Syntax of debugger commands">
 =back 
 
 
-=head3 Commands involving Running the program
+=head3 Commands involving running the program
 
 =over 
 
 =item * 
 
-L</"step into (step)">
+L</"Step into (step)">
 
 =item *
 
-L</"step over (next)">
+L</"Step over (next)">
 
 =item * 
 
-L<"continue execution (continue)">
+L<"Continue execution (continue)">
 
 =item * 
 
-L</"step out (finish)">
+L</"Step out (finish)">
 
 =item *
 
-L</"quit[!] [unconditionally] [I<exit-code>]">
+L</"Terminate gently (quit)">
 
 =item * 
 
-L</"hard termination (kill)">
+L</"Hard termination (kill)">
 
 =item *
 
-L</"restart execution (restart)">
+L</"Restart execution (restart)">
 
 =back
 
-=head4 step into (step)
+=head4 Step into (step)
 
-step[+|-] [into] [I<count>]
+B<step>[<B<+>|B<->] [B<into>] [I<count>]
 
 Execute the current line, stopping at the next event.  Sometimes this
 is called "step into".
@@ -220,7 +218,7 @@ the return for that call.)
 If no suffix is given, the debugger setting C<different> determines
 this behavior.
 
-Examples: 
+I<Examples:> 
 
     step        # step 1 event, *any* event obeying 'set different' setting
     step 1      # same as above
@@ -231,14 +229,16 @@ Examples:
 Related and similar is the C<next> (step over) and C<finish> (step out)
 commands.  All of these are slower than running to a breakpoint.
 
-=head4 step over (next)
+=head4 Step over (next)
+
+B<next>
 
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called "step over".
 
-=head4 continue execution (continue)
+=head4 Continue execution (continue)
 
-continue [I<location>]
+B<continue> [I<location>]
 
 Leave the debugger loop and continue execution. Subsequent entry to
 the debugger however may occur via breakpoints or explicit calls, or
@@ -247,7 +247,7 @@ exceptions.
 If a parameter is given, a temporary breakpoint is set at that position
 before continuing. 
 
-Examples:
+I<Examples:>
 
  continue
  continue 10    # continue to line 10
@@ -258,16 +258,16 @@ L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
 L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
 C<help location>.
 
-=head4 step out (finish)
+=head4 Step out (finish)
 
-finish
+B<finish>
 
 Continue execution until the program is about to leave the current
 function. Sometimes this is called 'step out'.
 
-=head4 terminate gently (quit)
+=head4 Terminate gently (quit)
 
-quit[!] [unconditionally] [I<exit-code>]
+B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 
 Gently exit the debugger and debugged program.
 
@@ -276,7 +276,7 @@ at_exit finalizers. If a return code is given, that is the return code
 passed to I<exit()> - presumably the return code that will be passed back
 to the OS. If no exit code is given, 0 is used.
 
-Examples: 
+I<Examples:> 
 
  quit                 # quit prompting if we are interactive
  quit unconditionally # quit without prompting
@@ -287,9 +287,9 @@ Examples:
 See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill> and
 C<set confirm>.
 
-=head4 hard termination (kill)
+=head4 Hard termination (kill)
 
-kill[!] [I<signal-number>|I<signal-name>]
+B<kill>[B<!>] [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
 
@@ -300,7 +300,7 @@ If you are in interactive mode, you are prompted to confirm killing.
 However when this command is aliased from a command ending in C<!>, no 
 questions are asked.
 
-Examples: 
+I<Examples:> 
 
  kill  
  kill KILL # same as above
@@ -312,9 +312,9 @@ Examples:
 
 See also C<quit>
 
-=head4 restart exectution (restart)
+=head4 Restart execution (restart)
 
-restart
+B<restart>
 
 Restart debugger and program via an exec call.
 
@@ -349,7 +349,7 @@ Normally eval assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
 by adding the appropriate sigil C<@>, or C<$>.
 
-Examples:
+I<Examples:>
 
     eval 1+2 # 3
     eval$ 3   # Same as above, but the return type is explicit
@@ -370,26 +370,64 @@ Perl code.
 
 =head4 Recursively Debug into Perl code
 
-debug I<Perl-code>
+B<debug> I<Perl-code>
 
 Recursively debug I<Perl-code>.
 
 The level of recursive debugging is shown in the prompt. For example
 C<((trepan.pl))> indicates one nested level of debugging.
 
-Examples:
+I<Examples:>
 
  debug finonacci(5)   # Debug fibonacci function
  debug $x=1; $y=2;    # Kind of pointless, but doable.
 
 =head3 Making the program stop at certain points
 
-=head4 break [I<location>] [if I<condition>]
+=over
+
+=item *
+
+L</"Set a breakpoint (break)">
+
+=item *
+
+L</"Set a temporary breakpoint (tbreak)">
+
+=item *
+
+L</"Add or modify a condition on a breakpoint (condition)">
+
+=item *
+
+L</"Delete some breakpoints (delete)">
+
+=item *
+
+L</"Enable some breakpoints (enable)">
+
+=item *
+
+L</"Disable some breakpoints (disable)">
+
+=item *
+
+L</"Set an action before a line is executed (action)">
+
+=item *
+
+L</"Stop when an expression changes value (watch)">
+
+=back
+
+=head4 Set a breakpont (break)
+
+B<break> [I<location>] [B<if> I<condition>]
 
 Set a breakpoint. If I<location> is given use the current stopping
 point. An optional condition may be given.
 
-Examples:
+I<Examples:>
 
  break                  # set a breakpoint on the current line
  break gcd              # set a breakpoint in function gcd
@@ -401,12 +439,14 @@ When a breakpoint is hit the event icon is C<xx>.
 
 See also C<help breakpoints>.
 
-=head4 tbreak [I<location>]
+=head4 Set a temporary breakpoint (tbreak)
+
+B<tbreak> [I<location>]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.
 If no location is given use the current stopping point.
 
-Examples:
+I<Examples:>
 
    tbreak
    tbreak 10               # set breakpoint on line 10
@@ -415,21 +455,25 @@ When a breakpoint is hit the event icon is C<x1>.
 
 See also C<break> and C<help breakpoints>.
 
-=head4 condition I<bp-number> I<Perl-expression>
+=head4 Add or modify a condition on a breakpoint (condition)
+
+B<condition> I<bp-number> I<Perl-expression>
 
 I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
 expression which must evaluate to true before the breakpoint is
 honored.  If I<perl-expression> is absent, any existing condition is removed;
 i.e., the breakpoint is made unconditional.
 
-Examples:
+I<Examples:>
 
    condition 5 x > 10  # Breakpoint 5 now has condition x > 10
    condition 5         # Remove above condition
 
 See also "break", "enable" and "disable".
 
-=head4 delete [I<bp-number> [I<bp-number>...]]  
+=head4 Delete some breakpoints (delete)
+
+B<delete> [I<bp-number> [I<bp-number>...]]  
 
 Delete some breakpoints.
 
@@ -439,7 +483,9 @@ all breakpoints, give no arguments.
 See also the C<clear> command which clears breakpoints by line number
 and C<info break> to get a list of breakpoint numbers.
 
-=head4 enable I<num> [I<num> ...]
+=head4 Enable some breakpoints
+
+B<enable> I<num> [I<num> ...]
     
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
@@ -457,12 +503,16 @@ The prefaces are interpreted as follows:
 
 If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
 
-=head4 disable I<bp-number> [I<bp-number> ...]
+=head4 Disable some breakpoints (disable)
+
+B<disable> I<bp-number> [I<bp-number> ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints
 
-=head4 action I<position> I<Perl-statement>
+=head4 Set an action before a line is executed (action)
+
+B<action> I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is
 C<.>, set an action on the line about to be executed. The sequence
@@ -485,11 +535,42 @@ of steps taken by the debugger is:
 For example, this will print out the value of C<$foo> every time line
 53 is passed:
 
-=head4 watch
+=head4 Stop when an expression changes value (watch)
+
+B<watch> I<Perl-expression>
+
+Stop very time I<Perl-expression> changes from its prior value.
+
+I<Examples:>
+
+ watch $a  # enter debugger when the value of $a changes
+ watch scalar(@ARGV))  # enter debugger if size of @ARGV changes.
 
 =head3 Examining the call stack
 
-=head4 backtrace [I<count>]
+=over
+
+=item *
+
+L</"Print a backtrace (backtrace)">
+
+=item *
+
+L</"Select a call frame (frame)">
+
+=item *
+
+L</"Move to a more recent frame (up)">
+
+=item *
+
+L</"Move to a less recent frame (down)">
+
+=back
+
+=head4 Print a backtrace (backtrace)
+
+B<backtrace> [I<count>]
 
 Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries. 
@@ -498,13 +579,15 @@ In the listing produced, an arrow indicates the 'current frame'. The
 current frame determines the context used for many debugger commands
 such as source-line listing or the C<edit> command.
 
-Examples:
+I<Examples:>
 
  backtrace    # Print a full stack trace
  backtrace 2  # Print only the top two entries
 
 
-=head4 frame [I<frame-number>]
+=head4 Select a call frame (frame)
+
+B<frame> [I<frame-number>]
 
 Change the current frame to frame I<frame-number> if specified, or the
 most-recent frame, 0, if no frame number specified.
@@ -512,7 +595,7 @@ most-recent frame, 0, if no frame number specified.
 A negative number indicates the position from the other or
 least-recently-entered end.  So C<frame -1> moves to the oldest frame.
 
-Examples:
+I<Examples:>
 
     frame     # Set current frame at the current stopping point
     frame 0   # Same as above
@@ -521,12 +604,16 @@ Examples:
     frame 1   # Move to frame 1. Same as: frame 0; up
     frame -1  # The least-recent frame
 
-=head4 up [I<count>]
+=head4 Move to a more recent frame (up)
+
+B<up> [I<count>]
 
 Move the current frame up in the stack trace (to an older frame). 0 is
 the most recent frame. If no count is given, move up 1.
 
-=head4 down [I<count>]
+=head4 Move to a less recent frame (down)
+
+B<down> [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.

@@ -31,30 +31,30 @@ sub continue($$) {
     my ($self, $args) = @_;
     $self->{skip_count} = -1;
     if ($self->{settings}{traceprint}) {
-	$self->step();
-	return;
+        $self->step();
+        return;
     }
     if (scalar @{$args} != 1) {
-	# Form is: "continue"
-	# my $(line_number, $condition, $negate) = 
-	#    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
-	# return unless iseq && vm_offset;
-	# $bp = $self->.breakpoint_offset($condition, $negate, 1);
-	#return unless bp;
-	$self->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
+        # Form is: "continue"
+        # my $(line_number, $condition, $negate) = 
+        #    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
+        # return unless iseq && vm_offset;
+        # $bp = $self->.breakpoint_offset($condition, $negate, 1);
+        #return unless bp;
+        $self->{leave_cmd_loop} = $self->{dbgr}->cont($args->[1]);
     } else {
-	$self->{leave_cmd_loop} = $self->{dbgr}->cont;
+        $self->{leave_cmd_loop} = $self->{dbgr}->cont;
     };
     if ($self->{leave_cmd_loop}) {
-	$self->{DB_running} = 1;
-	$self->{DB_single} =  0;
+        $self->{DB_running} = 1;
+        $self->{DB_single} =  0;
     }
 }
 
 # sub quit(cmd='quit')
 # {
 #     @next_level      = 32000; # I'm guessing the stack size can't ever
-# 			      # reach this
+#                             # reach this
 #     @next_thread     = undef;
 #     @core.skip_count = -1;    # No more event stepping
 #     @leave_cmd_loop  = 1;  # Break out of the processor command loop.
@@ -69,22 +69,22 @@ sub parse_next_step_suffix($$)
     my $opts = {};
     my $sigil = substr($step_cmd, -1);
     if ('-' eq $sigil) {
-	$opts->{different_pos} = 0;
+        $opts->{different_pos} = 0;
     } elsif ('+' eq $sigil) { 
-	$opts->{different_pos} = 1;
+        $opts->{different_pos} = 1;
     } elsif ('=' eq $sigil) { 
-	$opts->{different_pos} = $self->{settings}{different}; 
-	# when ('!') { $opts->{stop_events} = {'raise' => 1} };
-	# when ('<') { $opts->{stop_events} = {'return' => 1}; }
-	# when ('>') { 
-	#     if (length($step_cmd) > 1 && substr($step_cmd, -2, 1) eq '<')  {
-	#     	$opts->{stop_events} = {'return' => 1 };
-	#     } else {
-	# 	$opts->{stop_events} = {'call' => 1; }
-	#     }
-	# }
+        $opts->{different_pos} = $self->{settings}{different}; 
+        # when ('!') { $opts->{stop_events} = {'raise' => 1} };
+        # when ('<') { $opts->{stop_events} = {'return' => 1}; }
+        # when ('>') { 
+        #     if (length($step_cmd) > 1 && substr($step_cmd, -2, 1) eq '<')  {
+        #       $opts->{stop_events} = {'return' => 1 };
+        #     } else {
+        #       $opts->{stop_events} = {'call' => 1; }
+        #     }
+        # }
     } else {
-	$opts->{different_pos} = $self->{settings}{different};
+        $opts->{different_pos} = $self->{settings}{different};
     }
     return $opts;
 }
@@ -128,7 +128,7 @@ sub running_initialize($)
     $self->{stop_events}     = undef;
     $self->{to_method}       = undef;
     $self->{last_pos}        = TrepanPosition->new(pkg => '',  filename => '',
-						   line =>'', event=>'');
+                                                   line =>'', event=>'');
 }
 
 # Should we not stop here? 
@@ -141,23 +141,23 @@ sub is_stepping_skip($)
 
     my $self = shift;
     if ($self->{skip_count} < 0) {
-	return 1;
+        return 1;
     } elsif ($self->{skip_count} > 0) {
-	$self->{skip_count} --;
-	return 1
+        $self->{skip_count} --;
+        return 1
     }
 
     if ($self->{settings}{'debugskip'}) {
         $self->msg("diff: $self->{different_pos}, event : $self->{event}");
-	$self->msg("skip_count  : $self->{skip_count}");
+        $self->msg("skip_count  : $self->{skip_count}");
     }
 
     my $frame = $self->{frame};
 
     my $new_pos = TrepanPosition->new(pkg       => $frame->{pkg}, 
-				      filename  => $frame->{file}, 
-				      line      => $frame->{line},
-				      event     => $self->{event});
+                                      filename  => $frame->{file}, 
+                                      line      => $frame->{line},
+                                      event     => $self->{event});
 
     my $skip_val = 0;
 
@@ -169,31 +169,31 @@ sub is_stepping_skip($)
     
     if ($self->{settings}{'debugskip'}) {
         $self->msg("skip: $skip_val, last: $self->{last_pos}->inspect(), " . 
-		   "new: $new_pos->inspect()"); 
+                   "new: $new_pos->inspect()"); 
     }
 
     # @last_pos[2] = new_pos[2] if 'nostack' eq $self->{different_pos};
 
     my $condition_met = 1;
     # if (! $skip_val) {
-    # 	if (@stop_condition) {
-    # 	    puts 'stop_cond' if @settings[:'debugskip'];
-    # 	    debug_eval_no_errmsg(@stop_condition);
+    #   if (@stop_condition) {
+    #       puts 'stop_cond' if @settings[:'debugskip'];
+    #       debug_eval_no_errmsg(@stop_condition);
     # } elsif (@to_method) {
-    # 	puts "method #{@frame.method} #{@to_method}" if 
-    # 	    $self->{setting}{'debugskip'};
-    # 	@frame.method == @to_method;
+    #   puts "method #{@frame.method} #{@to_method}" if 
+    #       $self->{setting}{'debugskip'};
+    #   @frame.method == @to_method;
     # } else {
-    # 	puts 'uncond' if $self->{settings}{'debugskip'};
-    # 	1;
+    #   puts 'uncond' if $self->{settings}{'debugskip'};
+    #   1;
     # };
           
     # $self->msg("condition_met: #{condition_met}, last: $self->{last_pos}, " .
-    # 	   "new: $new_pos->inspect(), different #{@different_pos.inspect}") if 
-    # 	       $self->{settings}{'debugskip'};
+    #      "new: $new_pos->inspect(), different #{@different_pos.inspect}") if 
+    #          $self->{settings}{'debugskip'};
 
     $skip_val = (($last_pos && $last_pos->eq($new_pos) && !!$self->{different_pos}) 
-		 || !$condition_met);
+                 || !$condition_met);
 
     $self->{last_pos} = $new_pos;
 

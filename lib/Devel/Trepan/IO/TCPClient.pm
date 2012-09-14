@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # Debugger Socket Input/Output Interface.
 
 use warnings; use strict;
@@ -30,12 +30,12 @@ sub new($;$)
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, CLIENT_SOCKET_OPTS);
     my $self = {
-	addr => undef,
-	buf  => '',
-	line_edit => 0, # Our name for GNU readline capability
-	state     => 'disconnected',
-	inout     => undef,
-	logger    => undef  # Complaints should be sent here.
+        addr => undef,
+        buf  => '',
+        line_edit => 0, # Our name for GNU readline capability
+        state     => 'disconnected',
+        inout     => undef,
+        logger    => undef  # Complaints should be sent here.
     };
     bless $self, $class;
     $self->open($opts) if $opts->{open};
@@ -48,8 +48,8 @@ sub close($)
     my $self = shift;
     $self->{state} = 'closing';
     if ($self->{inout}) {
-	$self->{inout}->shutdown(2);
-	close($self->{inout}) 
+        $self->{inout}->shutdown(2);
+        close($self->{inout}) 
     }
     $self->{state} = 'disconnected';
 }
@@ -67,17 +67,17 @@ sub open($;$)
     $self->{host} = $opts->{host};
     $self->{port} = $opts->{port};
     $self->{inout} = 
-    	IO::Socket::INET->new(PeerAddr=> $self->{host},
-    			      PeerPort => $self->{port},
-    			      Proto    => 'tcp',
-    			      Type     => SOCK_STREAM
-    	);
+        IO::Socket::INET->new(PeerAddr=> $self->{host},
+                              PeerPort => $self->{port},
+                              Proto    => 'tcp',
+                              Type     => SOCK_STREAM
+        );
     if ($self->{inout}) {
-    	$self->{state} = 'connected';
+        $self->{state} = 'connected';
     } else {
-    	my $msg = sprintf("Open client for host %s on port %s gives error: %s", 
-    			  $self->{host}, $self->{port}, $EVAL_ERROR);
-    	die $msg;
+        my $msg = sprintf("Open client for host %s on port %s gives error: %s", 
+                          $self->{host}, $self->{port}, $EVAL_ERROR);
+        die $msg;
     }
 }
 
@@ -95,15 +95,15 @@ sub read_msg($)
 {
     my($self) = @_;
     if ($self->{state} eq 'connected') {
-	if (!$self->{buf} || is_empty($self)) {
-	    $self->{inout}->recv($self->{buf}, TCP_MAX_PACKET);
-	    if (is_empty($self)) {
-		$self->close;
-		$self->{state} = 'disconnected';
-		die "EOF while reading on socket";
-	    }
+        if (!$self->{buf} || is_empty($self)) {
+            $self->{inout}->recv($self->{buf}, TCP_MAX_PACKET);
+            if (is_empty($self)) {
+                $self->close;
+                $self->{state} = 'disconnected';
+                die "EOF while reading on socket";
+            }
         }
-	my $data;
+        my $data;
         ($self->{buf}, $data) = unpack_msg($self->{buf});
         return $data;
     } else {
@@ -133,37 +133,37 @@ sub writeline($$)
 # Demo
 unless (caller) {
      if (scalar @ARGV) {
-	 # my $pid = fork();
-	 #if ($pid) {
-	     print "Connecting...\n";
-	     my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 1});
-	     $client->writeline("Hi there\n");
-	     # for (;;) {
-	     # 	 undef $!;
-	     # 	 my $line;
-	     # 	 unless (defined( $line = <> )) {
-	     # 	     if (eof) {
-	     # 		 print "Got EOF\n";
-	     # 		 last;
-	     # 	     }
-	     # 	     if ($!) {
-	     # 		 print STDERR $!;
-	     # 		 last;
-	     # 	     }
-	     # 	     chomp $line;
-	     # 	     last if $line eq 'quit';
-	     # 	     $line = $client->writeline($line);
-	     # 	     # print "Got: #{client.read_msg.chomp}\n";
-	     # 	 }
-	     # }
-	     $client->close;
-	 #} else {
-	     # server = TCPServer.new('localhost', 1027);
-	     # session = server.accept;
-	     # while 'quit' != (line = session.gets);
-	     # session.puts line ;
-	 #   exec "nc -l 1027";
-	 # }
+         # my $pid = fork();
+         #if ($pid) {
+             print "Connecting...\n";
+             my $client = Devel::Trepan::IO::TCPClient-> new({'open' => 1});
+             $client->writeline("Hi there\n");
+             # for (;;) {
+             #   undef $!;
+             #   my $line;
+             #   unless (defined( $line = <> )) {
+             #       if (eof) {
+             #           print "Got EOF\n";
+             #           last;
+             #       }
+             #       if ($!) {
+             #           print STDERR $!;
+             #           last;
+             #       }
+             #       chomp $line;
+             #       last if $line eq 'quit';
+             #       $line = $client->writeline($line);
+             #       # print "Got: #{client.read_msg.chomp}\n";
+             #   }
+             # }
+             $client->close;
+         #} else {
+             # server = TCPServer.new('localhost', 1027);
+             # session = server.accept;
+             # while 'quit' != (line = session.gets);
+             # session.puts line ;
+         #   exec "nc -l 1027";
+         # }
      }
 }
 

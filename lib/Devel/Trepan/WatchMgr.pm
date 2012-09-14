@@ -21,9 +21,9 @@ sub inspect($)
 {
     my $self = shift;
     sprintf("watchpoint %d, expr %s, old_value: %s, current_value %s",
-	    $self->id, $self->expr, $self->old_value // 'undef',
-	    $self->current_val // 'undef',
-	);
+            $self->id, $self->expr, $self->old_value // 'undef',
+            $self->current_val // 'undef',
+        );
 };
 
 package Devel::Trepan::WatchMgr;
@@ -50,8 +50,8 @@ sub inspect($)
     my $self = shift;
     my $str = '';
     for my $watchpoint ($self->list) {
-	next unless defined $watchpoint;
-	$str .= $watchpoint->inspect . "\n";
+        next unless defined $watchpoint;
+        $str .= $watchpoint->inspect . "\n";
     }
     $str;
 }    
@@ -76,8 +76,8 @@ sub find($$)
 {
     my ($self, $index) = @_;
     for my $object ($self->list) {
-	next unless $object;
-	return $object if $object->id eq $index;
+        next unless $object;
+        return $object if $object->id eq $index;
     }
     return undef;
 }
@@ -100,12 +100,12 @@ sub delete_by_object($$)
     my @list = $self->list;
     my $i = 0;
     for my $candidate (@list) {
-	next unless defined $candidate;
-	if ($candidate eq $delete_object) {
-	    splice @list, $i, 1;
-	    $self->{list} = \@list;
-	    return $delete_object;
-	}
+        next unless defined $candidate;
+        if ($candidate eq $delete_object) {
+            splice @list, $i, 1;
+            $self->{list} = \@list;
+            return $delete_object;
+        }
     }
     return undef;
 }
@@ -115,11 +115,11 @@ sub add($$)
     my ($self, $expr) = @_;
     my $watchpoint = WatchPoint->new(
         id       => $self->{next_id}++,
-	enabled => 1,
-	hits    => 0,
-	expr    => $expr, 
-	);
-	
+        enabled => 1,
+        hits    => 0,
+        expr    => $expr, 
+        );
+        
     push @{$self->{list}}, $watchpoint;
     return $watchpoint;
 }
@@ -129,8 +129,8 @@ sub compact($)
     my $self = shift;
     my @new_list = ();
     for my $watchpoint ($self->list) {
-	next unless defined $watchpoint;
-	push @new_list, $watchpoint;
+        next unless defined $watchpoint;
+        push @new_list, $watchpoint;
     }
     $self->{list} = \@new_list;
     return $self->{list};
@@ -148,7 +148,7 @@ sub max($)
     my $self = shift;
     my $max = 0;
     for my $watchpoint ($self->list) {
-	$max = $watchpoint->id if $watchpoint->id > $max;
+        $max = $watchpoint->id if $watchpoint->id > $max;
     }
     return $max;
 }
@@ -164,7 +164,7 @@ sub reset($)
 {
     my $self = shift;
     for my $id ($self->list) {
-     	$self->{dbgr}->delete_object($id);
+        $self->{dbgr}->delete_object($id);
      }
     $self->{list} = [];
 }
@@ -175,11 +175,11 @@ unless (caller) {
     eval <<'EOE';
     sub wp_status($$)
     { 
-	my ($watchpoints, $i) = @_;
-	printf "list size: %s\n", $watchpoints->size();
-	printf "max: %d\n", $watchpoints->max() // -1;
-	print $watchpoints->inspect();
-	print "--- ${i} ---\n";
+        my ($watchpoints, $i) = @_;
+        printf "list size: %s\n", $watchpoints->size();
+        printf "max: %d\n", $watchpoints->max() // -1;
+        print $watchpoints->inspect();
+        print "--- ${i} ---\n";
     }
 EOE
 

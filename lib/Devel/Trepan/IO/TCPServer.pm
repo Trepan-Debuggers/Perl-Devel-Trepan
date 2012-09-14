@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # Debugger Server Input/Output interface.
 
 use warnings; use strict;
@@ -31,13 +31,13 @@ sub new($;$)
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
     my $self = {
-	input     => undef,
-	output    => undef,
-	session   => undef,
-	buf       => '',    # Read buffer
-	state     => 'disconnected',
-	logger    => $opts->{logger},
-	line_edit => 0
+        input     => undef,
+        output    => undef,
+        session   => undef,
+        buf       => '',    # Read buffer
+        state     => 'disconnected',
+        logger    => $opts->{logger},
+        line_edit => 0
     };
     bless $self, $class;
     $self->open($opts) if $opts->{open};
@@ -48,7 +48,7 @@ sub is_connected($)
 {
     my $self = shift;
     $self->{state} = 'connected' if 
-	$self->{inout} and $self->{inout}->connected;
+        $self->{inout} and $self->{inout}->connected;
     return $self->{state} eq 'connected';
 }
     
@@ -69,7 +69,7 @@ sub close
     my $self = shift;
     $self->{state} = 'closing';
     if ($self->{inout}) {
-	close($self->{inout}) ;
+        close($self->{inout}) ;
     }
     $self->{state} = 'disconnected';
     print "FOOO\n";
@@ -83,13 +83,13 @@ sub open($;$)
     $self->{host} = $opts->{host};
     $self->{port} = $opts->{port};
     $self->{server} = 
-	IO::Socket::INET->new(
-	    LocalPort => $self->{port},
-	    LocalAddr => $self->{host},
-	    Type      => SOCK_STREAM,
-	    Reuse     => 1,
-	    Listen    => 1  # or SOMAXCONN
-	);
+        IO::Socket::INET->new(
+            LocalPort => $self->{port},
+            LocalAddr => $self->{host},
+            Type      => SOCK_STREAM,
+            Reuse     => 1,
+            Listen    => 1  # or SOMAXCONN
+        );
     # @server.setsockopt(Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, 5)
     #                   # @opts[:timeout])
     $self->{state} = 'listening';
@@ -114,11 +114,11 @@ sub read_msg($)
         $self->{session}->recv($self->{buf}, TCP_MAX_PACKET);
     }
     eval {
-	($self->{buf}, $data) = unpack_msg($self->{buf});
+        ($self->{buf}, $data) = unpack_msg($self->{buf});
     };
     if ($EVAL_ERROR) {
-	$self->{buf} = '';
-	die $EVAL_ERROR;
+        $self->{buf} = '';
+        die $EVAL_ERROR;
     }
     return $data;
 }
@@ -127,13 +127,13 @@ sub wait_for_connect
 {
     my($self) = @_;
     if ($self->{logger}) {
-	my $msg = sprintf("Waiting for a connection on port %d at " . 
-			  "address %s...",
-			  $self->{port}, $self->{host});
-	print {$self->{logger}} "$msg\n";
+        my $msg = sprintf("Waiting for a connection on port %d at " . 
+                          "address %s...",
+                          $self->{port}, $self->{host});
+        print {$self->{logger}} "$msg\n";
     }
     $self->{input} = $self->{output} = $self->{session} = 
-	$self->{server}->accept;
+        $self->{server}->accept;
     print {$self->{logger}} "Got connection\n" if $self->{logger};
     $self->{state} = 'connected';
 }
@@ -159,16 +159,16 @@ sub writeline($$)
 unless (caller) {
   my $server = Devel::Trepan::IO::TCPServer->new(
       { open => 1,
-	port => 1027,
+        port => 1027,
       });
 if (scalar @ARGV) {
     printf "Listening for connection...\n";
     my $line = $server->read_msg;
     while (defined($line)) {
-	chomp $line;
-	print "Got: $line\n";
-	last if $line eq 'quit';
-	$line = $server->read_msg;
+        chomp $line;
+        print "Got: $line\n";
+        last if $line eq 'quit';
+        $line = $server->read_msg;
     }
     # $server->open;
     # Thread.new do

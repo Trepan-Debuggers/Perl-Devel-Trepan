@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # Interface for client (i.e. user to communication-device) interaction.
 # The debugged program is at the other end of the communcation.
 
@@ -43,10 +43,10 @@ sub new
         # }
     }
     my $self = {
-    	output => $out,
-    	inout  => $inout,
-    	input  => $inp,
-    	user   => Devel::Trepan::Interface::User->new($inp, $out, $user_opts)
+        output => $out,
+        inout  => $inout,
+        input  => $inp,
+        user   => Devel::Trepan::Interface::User->new($inp, $out, $user_opts)
     };
     bless $self, $class;
     return $self;
@@ -81,7 +81,7 @@ sub read_remote
     my ($self) = @_;
     my $coded_line = undef;
     until ($coded_line) {
-	$coded_line = $self->{inout}->read_msg;
+        $coded_line = $self->{inout}->read_msg;
     }
     my $control = substr($coded_line, 0, 1);
     my $remote_line = substr($coded_line, 1);
@@ -100,7 +100,7 @@ sub write_remote($$$)
 # Demo
 unless (caller) {
     my $intf = Devel::Trepan::Interface::Client->new(undef, undef, undef, undef, 
-						     {open => 0});
+                                                     {open => 0});
 }
 
 1;

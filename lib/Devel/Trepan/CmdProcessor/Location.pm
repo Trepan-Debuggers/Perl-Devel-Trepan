@@ -39,15 +39,15 @@ sub canonic_file($$;$)
 
     # For now we want resolved filenames 
     if ($self->{settings}{basename}) {
-	my $is_eval = DB::LineCache::filename_is_eval($filename);
-	return $is_eval ? $filename : (basename($filename) || $filename);
+        my $is_eval = DB::LineCache::filename_is_eval($filename);
+        return $is_eval ? $filename : (basename($filename) || $filename);
     } elsif ($resolve) {
-    	my $mapped_filename = DB::LineCache::map_file($filename);
-	$filename = $mapped_filename if defined($mapped_filename);
-	my $is_eval = DB::LineCache::filename_is_eval($filename);
-	return $is_eval ? $filename : (abs_path($filename) || $filename);
+        my $mapped_filename = DB::LineCache::map_file($filename);
+        $filename = $mapped_filename if defined($mapped_filename);
+        my $is_eval = DB::LineCache::filename_is_eval($filename);
+        return $is_eval ? $filename : (abs_path($filename) || $filename);
     } else {
-	return $filename;
+        return $filename;
     }
 }
 
@@ -67,29 +67,29 @@ sub current_source_text(;$)
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text        = (DB::LineCache::getline($filename, $line_number, $opts)) 
-	|| '';
+        || '';
     chomp($text);
     my $max_show_lines = $opts->{max_lines} || 4;
     my $max_line = min($line_number + $max_show_lines - 1,
-		       DB::LineCache::size($filename));
+                       DB::LineCache::size($filename));
     my $raw_opts = {output => 'plain'};
 
     # Accumulate lines if we think this line continues to the
     # next. This code from newer perl5db is a bit heuristic, but
     # overall it is probably helpful.
     for ( my $i = $line_number + 1; 
-	  $i <= $max_line && !DB::LineCache::is_trace_line($filename, $i); 
-	  $i++ ) {
-	my $new_line = 
-	    (DB::LineCache::getline($filename, $i, $opts))   || '';
-	my $raw_text = DB::LineCache::getline($filename, $i) || '';
-	
-	# Drop out on null statements, block closers, and comments.
-	# This could however still be wrong if we have these inside a
-	# string.  Also we might erroneously list function prototypes
-	# and headers, but this is probably harmless.
-	last if $raw_text =~ /^\s*([\;\}\#\n]|$)/;
-	$text .= ("\n" . $new_line);
+          $i <= $max_line && !DB::LineCache::is_trace_line($filename, $i); 
+          $i++ ) {
+        my $new_line = 
+            (DB::LineCache::getline($filename, $i, $opts))   || '';
+        my $raw_text = DB::LineCache::getline($filename, $i) || '';
+        
+        # Drop out on null statements, block closers, and comments.
+        # This could however still be wrong if we have these inside a
+        # string.  Also we might erroneously list function prototypes
+        # and headers, but this is probably harmless.
+        last if $raw_text =~ /^\s*([\;\}\#\n]|$)/;
+        $text .= ("\n" . $new_line);
     }
     return $text;
 }
@@ -100,13 +100,13 @@ sub resolve_file_with_dir($$)
     my @dirs = @$self->{settings}{directory};
     for my $dir (split(/:/, @dirs)) {
         if ('$cwd' eq $dir) {
-	    $dir = `pwd`;
+            $dir = `pwd`;
         } elsif ('$cdir' eq $dir) {
-	    $dir = $DB::OS_STARTUP_DIR;
-	}
-	next unless $dir && !-d ($dir);
-	my $try_file = File::Spec->catfile($dir, $path_suffix);
-	return $try_file if -f $try_file;
+            $dir = $DB::OS_STARTUP_DIR;
+        }
+        next unless $dir && !-d ($dir);
+        my $try_file = File::Spec->catfile($dir, $path_suffix);
+        return $try_file if -f $try_file;
     }
     return undef;
 }
@@ -115,29 +115,29 @@ sub text_at($;$)
 {
     my ($self, $opts) = @_;
     $opts = {
-	reload_on_change => $self->{settings}{reload},
-	output           => $self->{settings}{highlight},
+        reload_on_change => $self->{settings}{reload},
+        output           => $self->{settings}{highlight},
     } unless defined $opts;
 
     my $line_no = $self->line();
     my $text;
     my $filename = $self->filename();
     if (DB::LineCache::filename_is_eval($filename)) {
-	if ($DB::filename eq $filename) {
-	    { 
-		# Some lines in @DB::line might not be defined.
-		# So we have to turn off strict here.
-		no warnings;
-		my $string = join("\n", @DB::dbline);
-		use warnings;
-		$filename = DB::LineCache::map_script($filename, $string);
-		$text = DB::LineCache::getline($filename, $line_no, $opts);
-	    }
-	}
+        if ($DB::filename eq $filename) {
+            { 
+                # Some lines in @DB::line might not be defined.
+                # So we have to turn off strict here.
+                no warnings;
+                my $string = join("\n", @DB::dbline);
+                use warnings;
+                $filename = DB::LineCache::map_script($filename, $string);
+                $text = DB::LineCache::getline($filename, $line_no, $opts);
+            }
+        }
     } else {
-	$text = line_at($filename, $line_no, $opts);
-	my ($map_file, $map_line) = 
-	    DB::LineCache->map_file_line($filename, $line_no);
+        $text = line_at($filename, $line_no, $opts);
+        my ($map_file, $map_line) = 
+            DB::LineCache->map_file_line($filename, $line_no);
     }
     $text;
   }
@@ -151,7 +151,7 @@ sub format_location($;$$$)
     my $text       = undef;
     my $ev         = '  ';
     if (defined($self->{event}) && 0 == $frame_index) {
-    	$ev = $EVENT2ICON->{$self->{event}};
+        $ev = $EVENT2ICON->{$self->{event}};
     }
 
     $self->{line_no}  = $self->{frame}{line};
@@ -171,7 +171,7 @@ sub print_location($;$)
 
     my $text = $self->current_source_text($opts);
     if ($text) {
-	$self->msg($text, {unlimited => 1});
+        $self->msg($text, {unlimited => 1});
     }
   }
   
@@ -187,22 +187,22 @@ sub source_location_info($)
 
     my $op_addr = '';
     if ($self->{settings}{displayop} && $DB::OP_addr) {
-	$op_addr = sprintf " \@0x%x", $DB::OP_addr;
+        $op_addr = sprintf " \@0x%x", $DB::OP_addr;
     }
     if (DB::LineCache::filename_is_eval($filename)) {
-    	if ($DB::filename eq $filename) {
-	    # Some lines in @DB::line might not be defined.
-	    # So we have to turn off strict here. 
-	    if ($filename ne '-e') {
-		no warnings;
-		my $string = join('', @DB::dbline);
-		use warnings;
-		$filename = DB::LineCache::map_script($filename, $string);
-	    }
-	    $canonic_filename = $self->canonic_file($self->filename(), 0);
-	    return "${canonic_filename}:${line_number} " . 
-		"remapped $filename:$line_number$op_addr";
-    	}
+        if ($DB::filename eq $filename) {
+            # Some lines in @DB::line might not be defined.
+            # So we have to turn off strict here. 
+            if ($filename ne '-e') {
+                no warnings;
+                my $string = join('', @DB::dbline);
+                use warnings;
+                $filename = DB::LineCache::map_script($filename, $string);
+            }
+            $canonic_filename = $self->canonic_file($self->filename(), 0);
+            return "${canonic_filename}:${line_number} " . 
+                "remapped $filename:$line_number$op_addr";
+        }
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);
     return "${canonic_filename}:${line_number}$op_addr";
@@ -213,14 +213,14 @@ unless (caller()) {
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
     sub create_frame() {
-    	my ($pkg, $file, $line, $fn) = caller(0);
-	return [
-	    {
-		 file      => $file,
-		 fn        => $fn,
-		 line      => $line,
-		 pkg       => $pkg,
-	    }];
+        my ($pkg, $file, $line, $fn) = caller(0);
+        return [
+            {
+                 file      => $file,
+                 fn        => $fn,
+                 line      => $line,
+                 pkg       => $pkg,
+            }];
     }
     my $frame_ary = create_frame();
     $proc->frame_setup($frame_ary);

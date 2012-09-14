@@ -55,7 +55,7 @@ sub readline($)
     my $self = shift;
     return undef if $self->is_eof;
     unless (@{$self->{input}}) {
-	return undef;
+        return undef;
     }
     my $line = shift @{$self->{input}};
     return $line ;

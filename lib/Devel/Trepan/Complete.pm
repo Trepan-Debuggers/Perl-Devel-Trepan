@@ -16,7 +16,7 @@ sub complete_token($$)
     my ($complete_ary, $prefix) = @_;
     my @result = ();
     for my $cmd (@$complete_ary) { 
-	push @result, $cmd if 0 == index($cmd, $prefix);
+        push @result, $cmd if 0 == index($cmd, $prefix);
     }
     sort @result;
 }
@@ -28,9 +28,9 @@ sub complete_token_with_next($$;$)
     my $cmd_prefix_len = length($cmd_prefix);
     my @result = ();
     while (my ($cmd_name, $cmd_obj) = each %{$complete_hash}) {
-	if  (0 == index($cmd_name, $cmd_prefix . $prefix)) {
-	    push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj] 
-	}
+        if  (0 == index($cmd_name, $cmd_prefix . $prefix)) {
+            push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj] 
+        }
     }
     sort {$a->[0] cmp $b->[0]} @result;
 }
@@ -43,8 +43,8 @@ sub complete_token_filtered($$$)
     my @complete_ary = keys %{$aliases};
     my @result = ();
     for my $cmd (@complete_ary) { 
-	push @result, $cmd if 
-	    0 == index($cmd, $prefix) && !exists $expanded->{$aliases->{$cmd}};
+        push @result, $cmd if 
+            0 == index($cmd, $prefix) && !exists $expanded->{$aliases->{$cmd}};
     }
     sort @result;
 }
@@ -59,9 +59,9 @@ sub complete_token_filtered_with_next($$$$)
     my %expanded = %{$expanded};
     my @result = ();
     for my $cmd (@complete_ary) {
-	if (0 == index($cmd, $prefix) && !exists $expanded{$aliases->{$cmd}}) {
-	    push @result, [$cmd, $commands->{$aliases->{$cmd}}];
-	}
+        if (0 == index($cmd, $prefix) && !exists $expanded{$aliases->{$cmd}}) {
+            push @result, [$cmd, $commands->{$aliases->{$cmd}}];
+        }
     }
     @result;
   }
@@ -79,14 +79,14 @@ sub next_token($$)
     my $next_nonblank_pos = $start_pos;
     my $next_blank_pos;
     if ($look_at =~ /^(\s*)(\S+)\s*/) {
-	$next_nonblank_pos += length($1);
-	$next_blank_pos = $next_nonblank_pos+length($2);
+        $next_nonblank_pos += length($1);
+        $next_blank_pos = $next_nonblank_pos+length($2);
     } elsif ($look_at =~ /^(\s+)$/) {
-	return ($start_pos + length($1), '');
+        return ($start_pos + length($1), '');
     } elsif ($look_at =~/^(\S+)\s*/) {
-	$next_blank_pos = $next_nonblank_pos + length($1);
+        $next_blank_pos = $next_nonblank_pos + length($1);
     } else {
-	die "Something is wrong in next_token";
+        die "Something is wrong in next_token";
     }
     my $token_size = $next_blank_pos - $next_nonblank_pos;
     return ($next_blank_pos, substr($str, $next_nonblank_pos, $token_size));
@@ -109,17 +109,17 @@ sub filename_list(;$$)
     # $pattern = glob($pattern) if substr($pattern, 0, 1) = '~';
     my @files = (<$pattern*>);
     if ($add_suffix) {
-	foreach (@files) {
-	    if (-l $_) {
-		$_ .= '@';
-	    } elsif (-d _) {
-		$_ .= '/';
-	    } elsif (-x _) {
-		$_ .= '*';
-	    } elsif (-S _ || -p _) {
-		$_ .= '=';
-	    }
-	}
+        foreach (@files) {
+            if (-l $_) {
+                $_ .= '@';
+            } elsif (-d _) {
+                $_ .= '/';
+            } elsif (-x _) {
+                $_ .= '*';
+            } elsif (-S _ || -p _) {
+                $_ .= '=';
+            }
+        }
     }
     return @files;
 }
@@ -129,12 +129,12 @@ my @signal_complete_completions=();
 sub signal_complete($) {
     my ($prefix) = @_;
     unless(@signal_complete_completions) {
-	@signal_complete_completions = keys %SIG;
-	my $last_sig = scalar @signal_complete_completions;
-	push(@signal_complete_completions, 
-	     map({lc $_} @signal_complete_completions));
-	my @nums = (-$last_sig .. $last_sig);
-	push @signal_complete_completions, @nums;
+        @signal_complete_completions = keys %SIG;
+        my $last_sig = scalar @signal_complete_completions;
+        push(@signal_complete_completions, 
+             map({lc $_} @signal_complete_completions));
+        my @nums = (-$last_sig .. $last_sig);
+        push @signal_complete_completions, @nums;
     }
     complete_token(\@signal_complete_completions, $prefix);
 }
@@ -144,24 +144,24 @@ unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
     my @cmds = keys %{$hash_ref};
     printf("complete_token(@cmds, '') => %s\n",
-	   join(', ', complete_token(\@cmds, '')));
+           join(', ', complete_token(\@cmds, '')));
     printf("complete_token(@cmds, 'a') => %s\n",
-	   join(', ', complete_token(\@cmds, 'a')));
+           join(', ', complete_token(\@cmds, 'a')));
     printf("complete_token(@cmds, 'b') => %s\n",
-	   join(', ', complete_token(\@cmds, 'b')));
+           join(', ', complete_token(\@cmds, 'b')));
     printf("complete_token(@cmds, 'c') => %s\n",
-	   join(', ', complete_token(\@cmds, 'c')));
+           join(', ', complete_token(\@cmds, 'c')));
     my @ary = complete_token_with_next($hash_ref, 'a');
     my @ary_str = map "($_->[0], $_->[1])", @ary;
     printf("complete_token_with_next(\$hash_ref, 'a') => %s\n",
-	   join(', ', @ary_str));
+           join(', ', @ary_str));
     print   "0         1        \n";
     print   "0123456789012345678\n";
     my $x = '  now is  the  time';
     print "$x\n";
     for my $pos (0, 2, 5, 6, 8, 9, 13, 18, 19) { 
-	my @ary = next_token($x, $pos);
-	printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
+        my @ary = next_token($x, $pos);
+        printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
     }
     print "List of filenames:\n";
     print join(', ', filename_list), "\n";

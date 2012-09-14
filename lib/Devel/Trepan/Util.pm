@@ -30,7 +30,7 @@ sub bool2YN($)
 sub hash_merge($$) {
     my ($config, $default_opts) = @_;
     while (my ($field, $default_value) = each %$default_opts) {
-	$config->{$field} = $default_value unless defined $config->{$field};
+        $config->{$field} = $default_value unless defined $config->{$field};
     };
     $config;
 }
@@ -41,10 +41,10 @@ sub safe_repr($$;$)
     $elipsis = '... ' unless defined $elipsis;
     my $strlen = length($str);
     if ($max > 0 && $strlen > $max && -1 == index($str, "\n")) {
-	sprintf("%s%s%s", substr($str, 0, $max/2), 
-		$elipsis,  substr($str, $strlen+1-($max)/2));
+        sprintf("%s%s%s", substr($str, 0, $max/2), 
+                $elipsis,  substr($str, $strlen+1-($max)/2));
     } else {
-	$str;
+        $str;
     }
 }
 
@@ -56,7 +56,7 @@ sub uniq_abbrev($$)
     my ($list, $name) = @_;
     my @candidates = ();
     for my $try_name (@$list) {
-	push @candidates, $try_name if 0 == index($try_name, $name);
+        push @candidates, $try_name if 0 == index($try_name, $name);
     }
     scalar @candidates == 1 ? $candidates[0] : $name;
 }
@@ -90,11 +90,11 @@ sub extract_expression($)
         $text =~ s/;\s*$//;
     } elsif ($text =~ /^\s*(?:my|our|local)\s*(.+(\((?:.+)\s*\)\s*=.*);.*$)/) {
         # my (...) = ...;
-	# Note: This has to appear before the below assignment
-	$text =~ s/^\s*(?:my|our|local)\s*(\((?:.+)\)\s*=.*)[^;]*;.*$/$1/;
+        # Note: This has to appear before the below assignment
+        $text =~ s/^\s*(?:my|our|local)\s*(\((?:.+)\)\s*=.*)[^;]*;.*$/$1/;
     } elsif ($text =~ /^\s*(?:my|our|local)\s+(?:.+)\s*=\s*(.+);.*$/) {
         # my ... = ...;
-	$text = $1;
+        $text = $1;
     # } elsif ($text =~ /^\s*case\s+/) {
     #     # EXPRESSION in: case EXPESSION
     #     $text =~ s/^\s*case\s*//;
@@ -138,17 +138,17 @@ unless (caller) {
     print Dumper($config), "\n";
 
     for my $file (__FILE__, 'bogus') { 
-	my $result = invalid_filename($file);
-	if (defined($result)) {
-	    print "$result\n";
-	} else {
-	    print "$file exists\n";
-	}
+        my $result = invalid_filename($file);
+        if (defined($result)) {
+            print "$result\n";
+        } else {
+            print "$file exists\n";
+        }
     }
 
     $config = {
-	term_adjust   => 1,
-	bogus         => 'yep'
+        term_adjust   => 1,
+        bogus         => 'yep'
     };
     print Dumper($config), "\n";
     hash_merge $config, $default_config;
@@ -163,35 +163,35 @@ unless (caller) {
     uniq_abbrev(\@list, 'disas');
     print join(' ', @list), "\n";
     for my $name (qw(dis disas u upper foo)) {
-	printf("uniq_abbrev of %s is %s\n", $name, 
-	       uniq_abbrev(\@list, $name));
+        printf("uniq_abbrev of %s is %s\n", $name, 
+               uniq_abbrev(\@list, $name));
     }
     # ------------------------------------
     # extract_expression
     for my $stmt (
-	'if (condition("if"))', 
-	'if (condition("if")) {', 
-	'if(condition("if")){', 
-	'until (until_termination)',
-	'until (until_termination){',
-	'return return_value',
-	'return return_value;',
-	'nothing to be done',
-	'my ($a,$b) = (5,6);',
-	) {
-	print extract_expression($stmt), "\n";
+        'if (condition("if"))', 
+        'if (condition("if")) {', 
+        'if(condition("if")){', 
+        'until (until_termination)',
+        'until (until_termination){',
+        'return return_value',
+        'return return_value;',
+        'nothing to be done',
+        'my ($a,$b) = (5,6);',
+        ) {
+        print extract_expression($stmt), "\n";
     }
 
     for my $cmd (qw(eval eval$ eval% eval@ evaluate% none)) {
-	print "parse_eval_suffix($cmd) => '". parse_eval_suffix($cmd) . "'\n";
+        print "parse_eval_suffix($cmd) => '". parse_eval_suffix($cmd) . "'\n";
     }
 
     for my $resp (qw(yes no Y NO nein nien huh?)) {
-	printf "YN($resp) => '%s'\n", YN($resp);
+        printf "YN($resp) => '%s'\n", YN($resp);
     }
     for my $resp (1, 0, '', 'Foo', undef) {
-	my $resp_str = defined $resp ? $resp : 'undef';
-	printf "bool2YN($resp_str) => '%s'\n", bool2YN($resp);
+        my $resp_str = defined $resp ? $resp : 'undef';
+        printf "bool2YN($resp_str) => '%s'\n", bool2YN($resp);
     }
 
 }

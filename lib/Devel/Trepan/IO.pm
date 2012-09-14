@@ -29,9 +29,9 @@ sub new($$;$) {
     hash_merge($opts, $DEFAULT_OPTS);
     my $line_edit = $opts->{line_edit};
     my $self = {
-	input     => $input,
-	eof       => 0,
-	line_edit => $line_edit
+        input     => $input,
+        eof       => 0,
+        line_edit => $line_edit
     };
     bless $self, $class;
     return $self;
@@ -73,9 +73,9 @@ sub new($$;$)
     $opts = {} unless defined $opts;
 
     my $self = {
-	output => $out,
-	flush_after_write => 0,
-	eof               => 0
+        output => $out,
+        flush_after_write => 0,
+        eof               => 0
     };
     bless $self, $class;
     $self

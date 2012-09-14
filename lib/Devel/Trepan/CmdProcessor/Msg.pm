@@ -24,7 +24,7 @@ sub confirm($$$)
     my ($self, $msg, $default) = @_;
     my $intf = $self->{interfaces}[-1];
     my $confirmed = $self->{settings}{confirm} ? 
-	$intf->confirm($msg, $default) : 1;
+        $intf->confirm($msg, $default) : 1;
     $intf->remove_history unless $confirmed;
     $confirmed;
 }
@@ -33,15 +33,15 @@ sub errmsg($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||={};
     if (ref($message) eq 'ARRAY') {
-	foreach my $mess (@$message) {
-	    $self->errmsg($mess, $opts)
-	}
-	return;
+        foreach my $mess (@$message) {
+            $self->errmsg($mess, $opts)
+        }
+        return;
     } else {
-	$message = $self->safe_rep($message) unless $self->{opts}{unlimited};
+        $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     }
     if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
-	$message = color('underscore') . $message . color('reset');
+        $message = color('underscore') . $message . color('reset');
     }
     $self->{interfaces}[-1]->errmsg($message);
 }
@@ -51,7 +51,7 @@ sub msg($$;$) {
     $message = $self->safe_rep($message) unless $opts->{unlimited};
     # $message = $self->perl_format($message) if $opts->{code};
     $self->{interfaces}[-1]->msg($message) if 
-	defined $self->{interfaces}[-1];
+        defined $self->{interfaces}[-1];
 
   }
 
@@ -98,7 +98,7 @@ sub section($$;$) {
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
-	$message = color('bold') . $message . color('reset');
+        $message = color('bold') . $message . color('reset');
     }
     $self->{interfaces}[-1]->msg($message);
 }
@@ -107,8 +107,8 @@ if (__FILE__ eq $0) {
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
     if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
-	my $response = $proc->confirm("Are you sure?", 1);
-	printf "You typed: %s\n", $response ? "Y" : "N";
+        my $response = $proc->confirm("Are you sure?", 1);
+        printf "You typed: %s\n", $response ? "Y" : "N";
     }
 }
 

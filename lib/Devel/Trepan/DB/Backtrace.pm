@@ -62,13 +62,13 @@ sub backtrace($;$$$) {
 
     my $i=0;
     if ($scan_for_DB_sub) {
-	my $db_fn = ($event eq 'post-mortem') ? 'catch' : 'DB'; 
-    	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
-	    if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
-		$i--;
-		last ;
-	    }
-    	}
+        my $db_fn = ($event eq 'post-mortem') ? 'catch' : 'DB'; 
+        while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+            if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
+                $i--;
+                last ;
+            }
+        }
     }
 
     # print "++count: $count, i $iline\n";
@@ -88,10 +88,10 @@ sub backtrace($;$$$) {
     # quit.
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
-	   ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
-	next if $pkg eq 'DB' && 'fn' eq 'sub';
-	# print "++file: $file, line $line $fn\n";
-	$i++;
+           ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
+        next if $pkg eq 'DB' && 'fn' eq 'sub';
+        # print "++file: $file, line $line $fn\n";
+        $i++;
         # Go through the arguments and save them for later.
         @a = ();
         for my $arg (@DB::args) {
@@ -99,7 +99,7 @@ sub backtrace($;$$$) {
             if ( not defined $arg ) {    # undefined parameter
                 push @a, "undef";
             }
-	    
+            
             elsif ( $nothard and tied $arg ) {    # tied parameter
                 push @a, "tied";
             }
@@ -108,72 +108,72 @@ sub backtrace($;$$$) {
             }
             else {                                       # can be stringified
                 local $_ =
-		    "$arg";    # Safe to stringify now - should not call f().
-		
+                    "$arg";    # Safe to stringify now - should not call f().
+                
                 # Backslash any single-quotes or backslashes.
                 s/([\'\\])/\\$1/g;
-		
+                
                 # Single-quote it unless it's a number or a colon-separated
                 # name.
                 s/(.*)/'$1'/s
-		    unless /^(?: -?[\d.]+ | \*[\w:]* )$/x;
-		
+                    unless /^(?: -?[\d.]+ | \*[\w:]* )$/x;
+                
                 # Turn high-bit characters into meta-whatever.
                 s/([\200-\377])/sprintf("M-%c",ord($1)&0177)/eg;
-		
+                
                 # Turn control characters into ^-whatever.
                 s/([\0-\37\177])/sprintf("^%c",ord($1)^64)/eg;
-		
+                
                 push( @a, $_ );
             } ## end else [ if (not defined $arg)
         } ## end for $arg (@args)
-	
+        
         # If $wantarray is true, this is array (@)context.
         # If $wantarray is false, this is scalar ($) context.
         # If neither, $wantarray isn't defined. (This is apparently a 'can't
         # happen' trap.)
         $wantarray = $wantarray ? '@' : ( defined $wantarray ? "\$" : '.' );
-	
+        
         # if the sub has args ($hasargs true), make an anonymous array of the
         # dumped args.
         $args_ary = $hasargs ? [@a] : undef;
-	
+        
         # remove trailing newline-whitespace-semicolon-end of line sequence
         # from the eval text, if any.
         $evaltext =~ s/\n\s*\;\s*\Z// if $evaltext;
-	
+        
         # Escape backslashed single-quotes again if necessary.
         $evaltext =~ s/([\\\'])/\\$1/g if $evaltext;
-	
+        
         # if the require flag is true, the eval text is from a require.
         if ($is_require) {
             $fn = "require '$evaltext'";
         }
-	
+        
         # if it's false, the eval text is really from an eval.
         elsif ( defined $is_require ) {
             $fn = "eval '$evaltext'";
         }
-	
+        
         # If the sub is '(eval)', this is a block eval, meaning we don't
         # know what the eval'ed text actually was.
         elsif ( $fn eq '(eval)' ) {
             $fn = "eval {...}";
         }
-	
+        
         # Stick the collected information into @callstack a hash reference.
         push(@callstack,
-	     {
-		 args      => $args_ary,
-		 evaltext  => $evaltext,
-		 file      => $file,
-		 fn        => $fn,
-		 line      => $line,
-		 pkg       => $pkg,
-		 wantarray => $wantarray,
-	     }
-	    );
-	
+             {
+                 args      => $args_ary,
+                 evaltext  => $evaltext,
+                 file      => $file,
+                 fn        => $fn,
+                 line      => $line,
+                 pkg       => $pkg,
+                 wantarray => $wantarray,
+             }
+            );
+        
         # Stop processing frames if the user hit control-C.
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
@@ -183,12 +183,12 @@ sub backtrace($;$$$) {
     # And the function and args for the file and line that called us
     # should also be the prior function and args.
     if ($scan_for_DB_sub) {
-	for (my $i=1; $i <= $#callstack; $i++) {
-	    $callstack[$i-1]->{args} = $callstack[$i]->{args};
-	    $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
-	}
-	$callstack[$i]{args} = undef;
-	$callstack[$i]{fn}   = undef;
+        for (my $i=1; $i <= $#callstack; $i++) {
+            $callstack[$i-1]->{args} = $callstack[$i]->{args};
+            $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
+        }
+        $callstack[$i]{args} = undef;
+        $callstack[$i]{fn}   = undef;
     }
 
     @callstack;
@@ -203,16 +203,16 @@ unless (caller) {
     # print Dumper(@callstack), "\n";
     # print $sep;
     sub five {
-	@callstack = backtrace(undef,undef,undef,0);
-	print Dumper(@callstack), "\n";
-	print $sep;
-	@callstack = backtrace(undef,1,undef,0);
-	print Dumper(@callstack), "\n";
-	print $sep;
-	@callstack = backtrace(1,0,undef,0);
-	print Dumper(@callstack), "\n";
-	print $sep;
-	5;
+        @callstack = backtrace(undef,undef,undef,0);
+        print Dumper(@callstack), "\n";
+        print $sep;
+        @callstack = backtrace(undef,1,undef,0);
+        print Dumper(@callstack), "\n";
+        print $sep;
+        @callstack = backtrace(1,0,undef,0);
+        print Dumper(@callstack), "\n";
+        print $sep;
+        5;
     }
     my $five = five();
     # $five = eval "@callstack = backtrace(undef, undef, undef, 0)";

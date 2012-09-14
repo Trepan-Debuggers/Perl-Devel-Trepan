@@ -35,7 +35,7 @@ BEGIN {
             # Don't know how to close $term
             $term = undef;
         }
-	return $HAVE_TERM_READLINE;
+        return $HAVE_TERM_READLINE;
     }
 }
 
@@ -45,20 +45,20 @@ sub new($;$$) {
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
     if ($opts->{readline} && GLOBAL_have_term_readline()) {
-	my $rc = 0;
-	$rc = eval {
-	    $self->{readline} = Term::ReadLine->new('trepan.pl');
-	    1 ;
-	};
-	if ($rc) {
-	    $self->{term_readline} = 1;
-	} else {
-	    $self->{readline} = undef;
-	    $self->{term_readline} = 0;
-	}
+        my $rc = 0;
+        $rc = eval {
+            $self->{readline} = Term::ReadLine->new('trepan.pl');
+            1 ;
+        };
+        if ($rc) {
+            $self->{term_readline} = 1;
+        } else {
+            $self->{readline} = undef;
+            $self->{term_readline} = 0;
+        }
     } else {
-	$self->{readline} = undef;
-	$self->{term_readline} = 0;
+        $self->{readline} = undef;
+        $self->{term_readline} = 0;
     }
     bless ($self, $class);
     return $self;
@@ -89,11 +89,11 @@ sub readline($;$) {
     $prompt = '' unless defined($prompt);
     my $line;
     if (defined $self->{readline}) {
-	$line = $self->{readline}->readline($prompt);
+        $line = $self->{readline}->readline($prompt);
     } else {
-	$self->{eof} = eof($self->{input});
-	return '' if $self->{eof};
-	$line = CORE::readline $self->{input};
+        $self->{eof} = eof($self->{input});
+        return '' if $self->{eof};
+        $line = CORE::readline $self->{input};
     }
     return $line;
 }
@@ -106,13 +106,13 @@ unless (caller) {
     printf "Is interactive: %s\n", ($in->is_interactive ? "yes" : "no");
     printf "Have Term::ReadLine: %s\n", ($HAVE_TERM_READLINE ? "yes" : "no");
     if (scalar(@ARGV) > 0) {
-	print "Enter some text: ";
-	my $line = $in->readline;
-	if ($in->is_eof) {
-	    print "EOF seen\n";
-	} else {
-	    print "You entered ${line}";
-	}
+        print "Enter some text: ";
+        my $line = $in->readline;
+        if ($in->is_eof) {
+            print "EOF seen\n";
+        } else {
+            print "You entered ${line}";
+        }
     }
     my $inp = __PACKAGE__->new(undef, {readline => 0});
     printf "Input open has Term::ReadLine: %s\n", ($inp->want_term_readline ? "yes" : "no");

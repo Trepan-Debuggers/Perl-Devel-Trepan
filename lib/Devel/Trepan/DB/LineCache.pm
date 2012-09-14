@@ -83,10 +83,10 @@ my @tempfiles;
 sub remove_temps() 
 {
     for my $filename (values %script2file) {
-	unlink($filename) if -f $filename;
+        unlink($filename) if -f $filename;
     }
     for my $filename (@tempfiles) {
-	unlink($filename) if -f $filename;
+        unlink($filename) if -f $filename;
     }
 }
 
@@ -100,14 +100,14 @@ END {
 sub clear_file_cache(;$)
 {
     if (scalar @_ == 1) {
-	my $filename = shift;
-	if ($file_cache{$filename}) {
-	    delete $file_cache{$filename};
-	}
+        my $filename = shift;
+        if ($file_cache{$filename}) {
+            delete $file_cache{$filename};
+        }
     } else {
-	%file_cache = {};
-	%file2file_remap = {};
-	%file2file_remap_lines = {};
+        %file_cache = {};
+        %file2file_remap = {};
+        %file2file_remap_lines = {};
     }
 }
 
@@ -117,11 +117,11 @@ sub clear_file_cache(;$)
 sub clear_file_format_cache() 
 {
     while (my ($fname, $cache_info) = each %file_cache) {
-	while (my($format, $lines) = each %{$cache_info->{lines_href}}) {
-	    next if 'plain' eq $format;
-	    my $ref = $file_cache{$fname};
-	    $ref->{lines_href}->{$format} = undef;
-	}
+        while (my($format, $lines) = each %{$cache_info->{lines_href}}) {
+            next if 'plain' eq $format;
+            my $ref = $file_cache{$fname};
+            $ref->{lines_href}->{$format} = undef;
+        }
     }
 }
 
@@ -150,31 +150,31 @@ sub checkcache(;$$)
 
     my @filenames;
     if (defined $filename) {
-	@filenames = keys %file_cache;
+        @filenames = keys %file_cache;
     } elsif (exists $file_cache{$filename}) {
-	@filenames = ($filename);
+        @filenames = ($filename);
     } else {
-	return undef;
+        return undef;
     }
 
     my @result = ();
     for my $filename (@filenames) {
-	next unless exists $file_cache{$filename};
-	my $path = $file_cache{$filename}{path};
-	if (-f  $path) {
-	    my $cache_info = $file_cache{$filename}{stat};
-	    my $stat = File::stat::stat($path);
-	    if ($cache_info) {
-		if ($stat && 
-		    ($cache_info->{size} != $stat->size or 
-		     $cache_info->{mtime} != $stat->mtime)) {
-		    push @result, $filename;
-		    update_cache($filename, $opts);
-		}
-	    }
+        next unless exists $file_cache{$filename};
+        my $path = $file_cache{$filename}{path};
+        if (-f  $path) {
+            my $cache_info = $file_cache{$filename}{stat};
+            my $stat = File::stat::stat($path);
+            if ($cache_info) {
+                if ($stat && 
+                    ($cache_info->{size} != $stat->size or 
+                     $cache_info->{mtime} != $stat->mtime)) {
+                    push @result, $filename;
+                    update_cache($filename, $opts);
+                }
+            }
         } else {
-	    push @result, $filename;
-	    update_cache($filename, $opts);
+            push @result, $filename;
+            update_cache($filename, $opts);
         }
     }
     return @result;
@@ -186,7 +186,7 @@ sub cache_script($;$)
     my ($script, $opts) = @_;
     $opts = {} unless defined $opts;
     update_script_cache($script, $opts) unless 
-	(exists $script_cache{$script});
+        (exists $script_cache{$script});
     $script;
 }
 
@@ -207,15 +207,15 @@ sub cache_file($;$$)
     my ($filename, $reload_on_change, $opts) = @_;
     $opts = {} unless defined $opts;
     if (exists $file_cache{$filename}) {
-	checkcache($filename) if $reload_on_change;
+        checkcache($filename) if $reload_on_change;
     } else {
-	$opts->{use_perl_d_file} = 1 unless defined $opts->{use_perl_d_file};
-	update_cache($filename, $opts);
+        $opts->{use_perl_d_file} = 1 unless defined $opts->{use_perl_d_file};
+        update_cache($filename, $opts);
     }
     if (exists $file_cache{$filename}) {
-	$file_cache{$filename}{path};
+        $file_cache{$filename}{path};
     } else {
-	return undef;
+        return undef;
     }
 }
 
@@ -267,9 +267,9 @@ sub getline($$;$)
     ($filename, $line_number) = map_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
     if (defined $lines && @$lines && $line_number > 0 && 
-	$line_number <= scalar @$lines) {
-	my $line = $lines->[$line_number-1];
-	chomp $line if defined $line;
+        $line_number <= scalar @$lines) {
+        my $line = $lines->[$line_number-1];
+        chomp $line if defined $line;
         return $line;
     } else {
         return undef;
@@ -289,45 +289,45 @@ sub getlines($;$)
     checkcache($filename) if $reload_on_change;
     my $format = $opts->{output} || 'plain';
     if (exists $file_cache{$filename}) {
-	my $lines_href = $file_cache{$filename}{lines_href};
-	my $lines_aref = $lines_href->{$format};
-	if ($opts->{output} && !defined $lines_aref) {
-	    my @formatted_lines = ();
-	    my $lines_aref = $lines_href->{plain};
-	    for my $line (@$lines_aref) {
-		push @formatted_lines, highlight_string($line);
-		## print $formatted_text;
-	    }
-	    $lines_href->{$format} = \@formatted_lines;
-	    return \@formatted_lines;
-	} else {
-	    return $lines_aref;
-	}
+        my $lines_href = $file_cache{$filename}{lines_href};
+        my $lines_aref = $lines_href->{$format};
+        if ($opts->{output} && !defined $lines_aref) {
+            my @formatted_lines = ();
+            my $lines_aref = $lines_href->{plain};
+            for my $line (@$lines_aref) {
+                push @formatted_lines, highlight_string($line);
+                ## print $formatted_text;
+            }
+            $lines_href->{$format} = \@formatted_lines;
+            return \@formatted_lines;
+        } else {
+            return $lines_aref;
+        }
     } elsif (exists $script_cache{$filename}) {
-	### FIXME: combine with above...
-	###  print "+++IS IN SCRIPT CACHE\n";
-	my $lines_href = $script_cache{$filename}{lines_href};
-	my $lines_aref = $lines_href->{$format};
-	if ($opts->{output} && !defined $lines_aref) {
-	    my @formatted_lines = ();
-	    my $lines_aref = $lines_href->{plain};
-	    for my $line (@$lines_aref) {
-		push @formatted_lines, highlight_string($line);
-		## print $formatted_text;
-	    }
-	    $lines_href->{$format} = \@formatted_lines;
-	    return \@formatted_lines;
-	} else {
-	    return $lines_aref;
-	}
+        ### FIXME: combine with above...
+        ###  print "+++IS IN SCRIPT CACHE\n";
+        my $lines_href = $script_cache{$filename}{lines_href};
+        my $lines_aref = $lines_href->{$format};
+        if ($opts->{output} && !defined $lines_aref) {
+            my @formatted_lines = ();
+            my $lines_aref = $lines_href->{plain};
+            for my $line (@$lines_aref) {
+                push @formatted_lines, highlight_string($line);
+                ## print $formatted_text;
+            }
+            $lines_href->{$format} = \@formatted_lines;
+            return \@formatted_lines;
+        } else {
+            return $lines_aref;
+        }
     } else {
-	$opts->{use_perl_d_file} = 1;
-	update_cache($filename, $opts);
-	if (exists $file_cache{$filename}) {
-	    return getlines($filename, $opts);
-	} else {
-	    return undef;
-	}
+        $opts->{use_perl_d_file} = 1;
+        update_cache($filename, $opts);
+        if (exists $file_cache{$filename}) {
+            return getlines($filename, $opts);
+        } else {
+            return undef;
+        }
     }
 }
 
@@ -361,7 +361,7 @@ sub remap_file($$)
 sub remap_dbline_to_file()
 { 
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
-				   TMPDIR => 1);
+                                   TMPDIR => 1);
     push @tempfiles, $tempfile;
     no strict;
     my @lines = @DB::dbline;
@@ -396,8 +396,8 @@ sub DB::LineCache::sha1($)
     $sha1 = Digest::SHA->new('sha1');
     my $line_ary = $file_cache{$filename}{lines_href}{plain};
     for my $line (@$line_ary) {
-	next unless defined $line;
-	$sha1->add($line);
+        next unless defined $line;
+        $sha1->add($line);
     }
     $file_cache{$filename}{sha1} = $sha1;
     $sha1->hexdigest;
@@ -453,18 +453,18 @@ sub map_script($$)
 {
     my ($script, $string) = @_;
     if (exists $script2file{$script}) {
-	$script2file{$script};
+        $script2file{$script};
     } else  {
-	# my $sha1 = Digest::SHA->new('sha1');
-	# $sha1->add($string);
-	my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
-				       TMPDIR => 1);
-	print $fh $string;
-	$fh->close();
-	$script2file{$script} = $tempfile;
-	# cache_file($tempfile);
-	# $file_cache{$tempfile}{sha1} = $sha1;
-	$tempfile;
+        # my $sha1 = Digest::SHA->new('sha1');
+        # $sha1->add($string);
+        my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
+                                       TMPDIR => 1);
+        print $fh $string;
+        $fh->close();
+        $script2file{$script} = $tempfile;
+        # cache_file($tempfile);
+        # $file_cache{$tempfile}{sha1} = $sha1;
+        $tempfile;
     }
 }
 
@@ -472,15 +472,15 @@ sub map_file_line($$)
 {
     my ($file, $line) = @_;
     if (exists $file2file_remap_lines{$file}) {
-	my $triplet_ref = $file2file_remap_lines{$file};
-	for my $triplet (@$triplet_ref) {
-	    my ($from_file, $range_ref, $start) = @$triplet;
-	    my @range = @$range_ref;
-	    if ( $range[0]  >= $line && $range[-1] <= $line) {
-		my $from_file = $from_file || $file;
-		return [$from_file, $start+$line-$range[0]];
-	    }
-	}
+        my $triplet_ref = $file2file_remap_lines{$file};
+        for my $triplet (@$triplet_ref) {
+            my ($from_file, $range_ref, $start) = @$triplet;
+            my @range = @$range_ref;
+            if ( $range[0]  >= $line && $range[-1] <= $line) {
+                my $from_file = $from_file || $file;
+                return [$from_file, $start+$line-$range[0]];
+            }
+        }
     }
     return ($file, $line);
 }
@@ -501,25 +501,25 @@ sub update_script_cache($$)
     my $string = $opts->{string};
     my $lines_href = {};
     if (defined($string)) {
-	my @lines = split(/\n/, $string);
-	$lines_href->{plain} = \@lines;
+        my @lines = split(/\n/, $string);
+        $lines_href->{plain} = \@lines;
     } else {
-	if ($script eq $DB::filename) {
-	    # Should be the same as the else case, 
-	    # but just in case...
-	    $lines_href->{plain} = \@DB::lines;
-	    $string = join("\n", @DB::lines);
-	} else {
-	    no strict;
-	    $lines_href->{plain} = \@{"_<$script"};
-	    $string = join("\n", @{"_<$script"});
-	}
+        if ($script eq $DB::filename) {
+            # Should be the same as the else case, 
+            # but just in case...
+            $lines_href->{plain} = \@DB::lines;
+            $string = join("\n", @DB::lines);
+        } else {
+            no strict;
+            $lines_href->{plain} = \@{"_<$script"};
+            $string = join("\n", @{"_<$script"});
+        }
     }
     $lines_href->{$opts->{output}} = highlight_string($string) if 
-	$opts->{output};
+        $opts->{output};
 
     my $entry = {
-	lines_href => $lines_href,
+        lines_href => $lines_href,
     };
     $script_cache{$script} = $entry;
     return 1;
@@ -529,13 +529,13 @@ sub read_file($)
 {
     my $path = shift;
     if (-r $path) {
-	open(FH, '<', $path);
-	seek FH, 0, 0;
-	my @lines = <FH>;
-	close FH;
-	return @lines;
+        open(FH, '<', $path);
+        seek FH, 0, 0;
+        my @lines = <FH>;
+        close FH;
+        return @lines;
     } else {
-	return undef;
+        return undef;
     }
 }
 
@@ -557,98 +557,98 @@ sub update_cache($;$)
     my $is_eval = filename_is_eval($filename);
     my $path = $filename;
     unless ($is_eval) {
-	$path = abs_path($filename) if -f $filename;
+        $path = abs_path($filename) if -f $filename;
     }
     my $lines_href;
     my $trace_nums;
     my $stat;
     if ($use_perl_d_file) {
-	my @list = ($filename);
-	if ($is_eval) {
-	    cache_script($filename);
-	    ## FIXME: create a temporary file in script2file;
-	}
-	push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
-	for my $name (@list) {
-	    no strict; # Avoid string as ARRAY ref error message
-	    if (scalar @{"main::_<$name"}) {
-		$stat = File::stat::stat($path);
-	    }
-	    my $raw_lines = \@{"main::_<$name"};
+        my @list = ($filename);
+        if ($is_eval) {
+            cache_script($filename);
+            ## FIXME: create a temporary file in script2file;
+        }
+        push @list, $file2file_remap{$path} if exists $file2file_remap{$path};
+        for my $name (@list) {
+            no strict; # Avoid string as ARRAY ref error message
+            if (scalar @{"main::_<$name"}) {
+                $stat = File::stat::stat($path);
+            }
+            my $raw_lines = \@{"main::_<$name"};
 
-	    # Perl sometimes doesn't seem to save all file data, such
-	    # as those intended for POD or possibly those after
-	    # __END__. But we want these, so we'll have to read the
-	    # file the old-fashioned way and check lines. Variable
-	    # $incomplete records if there was a mismatch.
-	    my $incomplete = 0;
-	    if (-r $path) {
-	    	my @lines_check = read_file($path);
-	    	my @lines = @$raw_lines;
-	    	for (my $i=1; $i<=$#lines; $i++) {
-	    	    if (defined $raw_lines->[$i]) {
-			$trace_nums->{$i} = 1 if ($raw_lines->[$i] != 0);
-	    		$incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
-	    	    } else {
-	    		$raw_lines->[$i] = $lines_check[$i-1] 
-	    	    }
-	    	}
-	    }
-	    use strict;
-	    $lines_href = {};
-	    $lines_href->{plain} = $raw_lines;
-	    if ($opts->{output} && defined($raw_lines)) {
-		# Some lines in $raw_lines may be undefined
-		no strict; no warnings;
-		local $WARNING=0;
-		my $highlight_lines = highlight_string(join('', @$raw_lines));
-		my @highlight_lines = split(/\n/, $highlight_lines);
-		$lines_href->{$opts->{output}} = \@highlight_lines;
-		use strict; use warnings;
-	    }
-	    my $entry = {
-		stat       => $stat,
-		lines_href => $lines_href,
-		path       => $path,
-		incomplete => $incomplete,
-		trace_nums => $trace_nums,
-	    };
-	    $read_file = 1;
+            # Perl sometimes doesn't seem to save all file data, such
+            # as those intended for POD or possibly those after
+            # __END__. But we want these, so we'll have to read the
+            # file the old-fashioned way and check lines. Variable
+            # $incomplete records if there was a mismatch.
+            my $incomplete = 0;
+            if (-r $path) {
+                my @lines_check = read_file($path);
+                my @lines = @$raw_lines;
+                for (my $i=1; $i<=$#lines; $i++) {
+                    if (defined $raw_lines->[$i]) {
+                        $trace_nums->{$i} = 1 if ($raw_lines->[$i] != 0);
+                        $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
+                    } else {
+                        $raw_lines->[$i] = $lines_check[$i-1] 
+                    }
+                }
+            }
+            use strict;
+            $lines_href = {};
+            $lines_href->{plain} = $raw_lines;
+            if ($opts->{output} && defined($raw_lines)) {
+                # Some lines in $raw_lines may be undefined
+                no strict; no warnings;
+                local $WARNING=0;
+                my $highlight_lines = highlight_string(join('', @$raw_lines));
+                my @highlight_lines = split(/\n/, $highlight_lines);
+                $lines_href->{$opts->{output}} = \@highlight_lines;
+                use strict; use warnings;
+            }
+            my $entry = {
+                stat       => $stat,
+                lines_href => $lines_href,
+                path       => $path,
+                incomplete => $incomplete,
+                trace_nums => $trace_nums,
+            };
+            $read_file = 1;
         }
     }
 
     # File based reading is done here.
     if (-f $path ) {
-	$stat = File::stat::stat($path) unless defined $stat;
+        $stat = File::stat::stat($path) unless defined $stat;
     } elsif (!$read_file) {
-	if (basename($filename) eq $filename) {
-	    # try looking through the search path.
-	    for my $dirname (@INC) {
-		$path = File::Spec->catfile($dirname, $filename);
-		if ( -f $path) {
-		    $stat = File::stat::stat($path);
-		    last;
-		}
-	    }
-	}
-	return 0 unless defined $stat;
+        if (basename($filename) eq $filename) {
+            # try looking through the search path.
+            for my $dirname (@INC) {
+                $path = File::Spec->catfile($dirname, $filename);
+                if ( -f $path) {
+                    $stat = File::stat::stat($path);
+                    last;
+                }
+            }
+        }
+        return 0 unless defined $stat;
     }
     if ( -r $path ) { 
-	my @lines = read_file($path);
-	$lines_href = {plain => \@lines};
-	if ($opts->{output}) {
-	    my $highlight_lines = highlight_string(join('', @lines));
-	    my @highlight_lines = split(/\n/, $highlight_lines);
-	    $lines_href->{$opts->{output}} = \@highlight_lines;
-	}
+        my @lines = read_file($path);
+        $lines_href = {plain => \@lines};
+        if ($opts->{output}) {
+            my $highlight_lines = highlight_string(join('', @lines));
+            my @highlight_lines = split(/\n/, $highlight_lines);
+            $lines_href->{$opts->{output}} = \@highlight_lines;
+        }
     }
     my $entry = {
-		stat       => $stat,
-		lines_href => $lines_href,
-		path       => $path,
-		incomplete => 0,
-		trace_nums => $trace_nums,
-	    };
+                stat       => $stat,
+                lines_href => $lines_href,
+                path       => $path,
+                incomplete => 0,
+                trace_nums => $trace_nums,
+            };
     $file_cache{$filename} = $entry;
     no warnings;
     $file2file_remap{$path} = $filename;
@@ -658,8 +658,8 @@ sub update_cache($;$)
 # example usage
 unless (caller) {
     BEGIN {
-	use English qw( -no_match_vars );
-	$PERLDB |= 0x400;
+        use English qw( -no_match_vars );
+        $PERLDB |= 0x400;
     };  # Turn on saving @{_<$filename};
     my $file=__FILE__;
     my $fullfile = abs_path($file);
@@ -675,16 +675,16 @@ unless (caller) {
     $lines = getlines($script_name);
     printf "%s has %d lines\n",  $script_name,  scalar @$lines;
     printf("Line 1 of $script_name is:\n%s\n", 
-	  getline($script_name, 1));
+          getline($script_name, 1));
     my $max_line = size($script_name);
     printf("%s has %d lines via size\n",  
-	   $script_name,  scalar @$lines);
+           $script_name,  scalar @$lines);
     do __FILE__;
     my @line_nums = trace_line_numbers(__FILE__);
 
     ### FIXME: add more of this stuff into unit test.
     printf("Breakpoints for: %s:\n%s\n", 
-	   __FILE__, join(', ', @line_nums[0..30]));
+           __FILE__, join(', ', @line_nums[0..30]));
     $lines = getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
     my $full_file = abs_path(__FILE__);
@@ -704,7 +704,7 @@ unless (caller) {
     
     my $stat = stat(__FILE__);
     printf("stat info size: %d, ctime %s, mode %o\n", 
-	   $stat->size, $stat->ctime, $stat->mode);
+           $stat->size, $stat->ctime, $stat->mode);
 
     my $lines_aref = getlines(__FILE__, {output=>'term'});
     print join("\n", @$lines_aref[0..5,50..55]), "\n" if defined $lines_aref;
@@ -712,9 +712,9 @@ unless (caller) {
     my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
     print "mapped eval is $filename\n";
     printf("%s is a trace line? %d\n", __FILE__, 
-	   is_trace_line(__FILE__, __LINE__-1));
+           is_trace_line(__FILE__, __LINE__-1));
     printf("%s is a trace line? %d\n", __FILE__, 
-	   is_trace_line(__FILE__, __LINE__));
+           is_trace_line(__FILE__, __LINE__));
     eval "printf \"filename_is_eval: %s, %d\n\", __FILE__, 
           filename_is_eval(__FILE__);";
     printf("filename_is_eval: %s, %d\n", __FILE__, filename_is_eval(__FILE__));
@@ -723,8 +723,8 @@ unless (caller) {
 
     $lines_aref = getlines(__FILE__, {output=>'term'});
     print("trace nums again: ", join(', ',
-			       trace_line_numbers(__FILE__)),
-	  "\n");
+                               trace_line_numbers(__FILE__)),
+          "\n");
     $DB::filename = 'bogus';
     eval "update_script_cache(__FILE__, {}); 
           print '+++', is_cached_script(__FILE__), \"\\n\"";

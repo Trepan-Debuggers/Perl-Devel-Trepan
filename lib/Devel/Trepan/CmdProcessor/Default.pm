@@ -18,7 +18,7 @@ our @ISA;
 BEGIN {
     $HAVE_DATA_PRINT = eval("use Data::Printer { colored => 1, alias => 'dprint',}; 1") ? 1 : 0;
     $HAVE_PERLTIDY   = eval {
-	require Data::Dumper::Perltidy; 
+        require Data::Dumper::Perltidy; 
     } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
     push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
@@ -28,9 +28,9 @@ BEGIN {
 # Return what to use for evaluation display
 sub default_eval_display() {
     if ($HAVE_DATA_PRINT) {
-	return 'dprint';
+        return 'dprint';
     } elsif ($HAVE_PERLTIDY) {
-	return 'tidy';
+        return 'tidy';
     } else {
        return 'dumper';
     }
@@ -46,7 +46,7 @@ use constant DEFAULT_SETTINGS => {
     basename      => 0,      # Show basename of filenames only
     confirm       => 1,      # Confirm potentially dangerous operations?
     cmddir        => [],     # Additional directories to load commands
-	                     # from
+                             # from
     different     => 0,      # stop *only* when  different position? 
     displayop     => 0,      # If set, show OP address in location
     debugdbgr     => 0,      # Debugging the debugger
@@ -58,7 +58,7 @@ use constant DEFAULT_SETTINGS => {
     
     displayeval   => default_eval_display(),
                              # use Data::Dumper (dumper) or
-	                     # Data::Dumper::Perltidy::dumper (tidy) ?
+                             # Data::Dumper::Perltidy::dumper (tidy) ?
     hidestack     => -1,     # Fixnum. How many hidden outer
                              # debugger stack frames to hide?
                              # -1 means compute value. 0

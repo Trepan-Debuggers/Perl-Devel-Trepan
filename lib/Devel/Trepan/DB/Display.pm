@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011-2012 Rocky Bernstein <rockyb@rubyforge.net>
 # FIXME: Could combine manager code from breakpoints and display
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
@@ -20,7 +20,7 @@ sub inspect($)
 {
     my $self = shift;
     sprintf("number %s, enabled: %d, fmt: %s, arg: %s",
-	    $self->number, $self->enabled, $self->fmt, $self->arg);
+            $self->number, $self->enabled, $self->fmt, $self->arg);
 };
 
 
@@ -48,8 +48,8 @@ sub inspect($)
     my $self = shift;
     my $str = '';
     for my $display (@{$self->{list}}) {
-	next unless defined $display;
-	$str .= $display->inspect . "\n";
+        next unless defined $display;
+        $str .= $display->inspect . "\n";
     }
     $str;
 }    
@@ -67,8 +67,8 @@ sub find($$)
 {
     my ($self, $index) = @_;
     for my $display (@{$self->{list}}) {
-	next unless $display;
-	return $display if $display->number eq $index;
+        next unless $display;
+        return $display if $display->number eq $index;
     }
     return undef;
 }
@@ -89,11 +89,11 @@ sub delete_by_display($$)
 {
     my ($self, $delete_display) = @_;
     for my $candidate (@{$self->{list}}) {
-	next unless defined $candidate;
-	if ($candidate eq $delete_display) {
-	    $candidate = undef;
-	    return $delete_display;
-	}
+        next unless defined $candidate;
+        if ($candidate eq $delete_display) {
+            $candidate = undef;
+            return $delete_display;
+        }
     }
     return undef;
 }
@@ -105,11 +105,11 @@ sub add($$;$)
     $return_type = '$' unless defined $return_type;
     my $number = $self->{max};
     my $disp = DBDisplay->new(
-	number      => $number, 
-	enabled     => 1, 
-	arg         => $display, 
-	fmt         => '$',
-	return_type => $return_type);
+        number      => $number, 
+        enabled     => 1, 
+        arg         => $display, 
+        fmt         => '$',
+        return_type => $return_type);
     push @{$self->{list}}, $disp;
     return $disp;
 }
@@ -119,8 +119,8 @@ sub compact($)
     my $self = shift;
     my @new_list = ();
     for my $display (@{$self->{list}}) {
-	next unless defined $display;
-	push @new_list, $display;
+        next unless defined $display;
+        push @new_list, $display;
     }
     $self->{list} = \@new_list;
     return $self->{list};
@@ -138,7 +138,7 @@ sub max($)
     my $self = shift;
     my $max = 0;
     for my $display (@{$self->{list}}) {
-	$max = $display->number if $display->number > $max;
+        $max = $display->number if $display->number > $max;
     }
     return $max;
 }
@@ -161,13 +161,13 @@ unless (caller) {
 
     sub display_status($$)
     { 
-	my ($displays, $i) = @_;
-	printf "list size: %s\n", $displays->size();
-	my $max = $displays->max();
-	$max = -1 unless defined $max;
-	printf "max: %d\n", $max;
-	print $displays->inspect();
-	print "--- ${i} ---\n";
+        my ($displays, $i) = @_;
+        printf "list size: %s\n", $displays->size();
+        my $max = $displays->max();
+        $max = -1 unless defined $max;
+        printf "max: %d\n", $max;
+        print $displays->inspect();
+        print "--- ${i} ---\n";
     }
 
     eval "use rlib '..';";
@@ -176,14 +176,14 @@ unless (caller) {
     my $displays = Devel::Trepan::DisplayMgr->new($dbgr);
     display_status($displays, 0);
     my $display1 = DBDisplay->new(
-	number=>1, enabled => 1, arg => '$dbgr', fmt => '$'
+        number=>1, enabled => 1, arg => '$dbgr', fmt => '$'
     );
 
     $displays->add($display1);
     display_status($displays, 1);
 
     my $display2 = DBDisplay->new(
-	number=>2, enabled => 0, arg => '$displays', fmt => '$'
+        number=>2, enabled => 0, arg => '$displays', fmt => '$'
     );
     $displays->add($display2);
     display_status($displays, 2);

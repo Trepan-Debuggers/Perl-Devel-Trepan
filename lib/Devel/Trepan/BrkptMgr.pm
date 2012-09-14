@@ -29,8 +29,8 @@ sub inspect($)
     my $self = shift;
     my $str = '';
     for my $brkpt ($self->list) {
-	next unless defined $brkpt;
-	$str .= $brkpt->inspect . "\n";
+        next unless defined $brkpt;
+        $str .= $brkpt->inspect . "\n";
     }
     $str;
 }
@@ -61,8 +61,8 @@ sub find($$)
     my ($self, $index) = @_;
     return undef unless $index =~ /^\d+$/;
     for my $bp (@{$self->{list}}) {
-	next unless $bp;
-	return $bp if $bp->id eq $index;
+        next unless $bp;
+        return $bp if $bp->id eq $index;
     }
     return undef;
 }
@@ -83,12 +83,12 @@ sub delete_by_brkpt($$)
 {
     my ($self, $delete_bp) = @_;
     for my $candidate (@{$self->{list}}) {
-	next unless defined $candidate;
-	if ($candidate eq $delete_bp) {
-	    $candidate = undef;
-	    $self->{dbgr} && $self->{dbgr}->delete_bp($delete_bp);
-	    return $delete_bp;
-	}
+        next unless defined $candidate;
+        if ($candidate eq $delete_bp) {
+            $candidate = undef;
+            $self->{dbgr} && $self->{dbgr}->delete_bp($delete_bp);
+            return $delete_bp;
+        }
     }
     return undef;
 }
@@ -105,8 +105,8 @@ sub compact($)
     my $self = shift;
     my @new_list = ();
     for my $brkpt (@{$self->{list}}) {
-	next unless defined $brkpt;
-	push @new_list, $brkpt;
+        next unless defined $brkpt;
+        push @new_list, $brkpt;
     }
     $self->{list} = \@new_list;
     return $self->{list};
@@ -124,7 +124,7 @@ sub max($)
     my $self = shift;
     my $max = 0;
     for my $brkpt (@{$self->{list}}) {
-	$max = $brkpt->id if $brkpt->id > $max;
+        $max = $brkpt->id if $brkpt->id > $max;
     }
     return $max;
 }
@@ -140,7 +140,7 @@ sub reset($)
 {
     my $self = shift;
     for my $bp (@{$self->{list}}) {
-     	$self->{dbgr}->delete_bp($bp);
+        $self->{dbgr}->delete_bp($bp);
      }
     $self->{list} = [];
 }
@@ -151,11 +151,11 @@ unless (caller) {
     eval <<'EOE';
     sub bp_status($$)
     { 
-	my ($brkpts, $i) = @_;
-	printf "list size: %s\n", $brkpts->size();
-	printf "max: %d\n", $brkpts->max() // -1;
-	print $brkpts->inspect();
-	print "--- ${i} ---\n";
+        my ($brkpts, $i) = @_;
+        printf "list size: %s\n", $brkpts->size();
+        printf "max: %d\n", $brkpts->max() // -1;
+        print $brkpts->inspect();
+        print "--- ${i} ---\n";
     }
 EOE
 

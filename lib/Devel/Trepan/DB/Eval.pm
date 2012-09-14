@@ -111,27 +111,27 @@ sub eval_not_ok ($)
     no strict;
     eval $wrapped;
     if ($@) {
-	my $msg = $@;
+        my $msg = $@;
         $msg =~ s/ at .* line \d+[.,]//g;
         $msg =~ s/ at EOF$/ at end of string/;
-	return $msg;
+        return $msg;
     } else {
-	return 0;
+        return 0;
     }
 }
 
 unless (caller) {
     eval {
-	sub doit($) {
-	    my $code = shift;
-	    my $msg = eval_not_ok($code);
-	    print "code: $code\n";
-	    if ($msg) {
-		print "$msg";
-	    } else {
-		print "code ok\n";
-	    }
-	}
+        sub doit($) {
+            my $code = shift;
+            my $msg = eval_not_ok($code);
+            print "code: $code\n";
+            if ($msg) {
+                print "$msg";
+            } else {
+                print "code ok\n";
+            }
+        }
     };
 
     $DB::namespace_package = 'package DB;';

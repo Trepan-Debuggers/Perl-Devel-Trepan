@@ -43,7 +43,7 @@ sub sub {
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
     if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
-	print "creating new thread\n"; 
+        print "creating new thread\n"; 
     }
     
     # If the last ten characters are '::AUTOLOAD', note we've traced
@@ -73,49 +73,49 @@ sub sub {
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
 
     if ($DB::sub eq 'DESTROY' or
-	substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
-	&$DB::sub;
-	$DB::single |= pop(@stack);
-	$DB::ret = undef;
+        substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
+        &$DB::sub;
+        $DB::single |= pop(@stack);
+        $DB::ret = undef;
     }
     elsif (wantarray) {
         # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
         # back here when the sub is finished.
-	@ret = &$sub;
+        @ret = &$sub;
 
         # Pop the single-step value back off the stack.
         $DB::single |= $stack[ $stack_depth-- ];
-	if ($single & RETURN_EVENT) {
-	    $DB::return_type = 'array';
-	    @DB::return_value = @ret;
-	    DB::DB($DB::sub) ;
-	    return @DB::return_value;
-	}
-	@ret;
+        if ($single & RETURN_EVENT) {
+            $DB::return_type = 'array';
+            @DB::return_value = @ret;
+            DB::DB($DB::sub) ;
+            return @DB::return_value;
+        }
+        @ret;
     }
     else {
-	if ( defined wantarray ) {
-	    # Save the value if it's wanted at all.
-	    $ret = &$sub;
-	}
-	else {
-	    # Void return, explicitly.
-	    &$sub;
-	    undef $ret;
-	}
+        if ( defined wantarray ) {
+            # Save the value if it's wanted at all.
+            $ret = &$sub;
+        }
+        else {
+            # Void return, explicitly.
+            &$sub;
+            undef $ret;
+        }
 
         # Pop the single-step value back off the stack.
         $single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
-	if ($single & RETURN_EVENT) {
-	    $DB::return_type = defined $ret ? 'scalar' : 'undef';
-	    $DB::return_value = $ret;
-	    DB::DB($DB::sub) ;
-	    return $DB::return_value;
-	}
+        if ($single & RETURN_EVENT) {
+            $DB::return_type = defined $ret ? 'scalar' : 'undef';
+            $DB::return_value = $ret;
+            DB::DB($DB::sub) ;
+            return $DB::return_value;
+        }
 
         # Return the appropriate scalar value.
-	$ret;
+        $ret;
     }
 }
 
@@ -129,7 +129,7 @@ sub lsub : lvalue {
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
     if ($sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
-	print "creating new thread\n";
+        print "creating new thread\n";
     }
     
     # If the last ten characters are C'::AUTOLOAD', note we've traced
@@ -175,7 +175,7 @@ sub subs {
     while (@_) {
       my $name = shift;
       push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/] 
-	if exists $DB::sub{$name};
+        if exists $DB::sub{$name};
     }
     return @ret;
   }

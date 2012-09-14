@@ -43,7 +43,7 @@ sub new
     $self->{input_lineno}  = 0;
     $self->{buffer_output} = [];
     unless ($opts->{verbose} or $out) {
-	$self->{output} = Devel::Trepan::IO::StringArrayOutput->new($self->{buffer_output});
+        $self->{output} = Devel::Trepan::IO::StringArrayOutput->new($self->{buffer_output});
     }    
     bless $self, $class;
     $self;
@@ -80,10 +80,10 @@ sub errmsg($$;$)
     my $mess = sprintf "%s%s", $prefix, $msg;
 
     if ($self->{opts}{verbose}) {
-	my $location = sprintf("%s:%s: Error in source command file",
-			       $self->{script_name}, 
-			       $self->{input_lineno});
-	$mess = sprintf("%s:\n%s%s", $prefix, $location, $prefix, $msg);
+        my $location = sprintf("%s:%s: Error in source command file",
+                               $self->{script_name}, 
+                               $self->{input_lineno});
+        $mess = sprintf("%s:\n%s%s", $prefix, $location, $prefix, $msg);
     }
     
     $self->msg($mess);
@@ -97,9 +97,9 @@ sub msg($$)
     my ($self, $msg) = @_;
     ## FIXME: there must be a better way to do this...
     if ($self->{output}->isa('Devel::Trepan::IO::TCPServer')) {
-	$self->{output}->writeline(PRINT . $msg);
+        $self->{output}->writeline(PRINT . $msg);
     } else {
-	$self->{output}->writeline($msg);
+        $self->{output}->writeline($msg);
     }
 }
 
@@ -117,17 +117,17 @@ sub read_command($;$)
     my $last = $self->readline();
     my $line = '';
     while ('\\' eq substr($last, -1)) { 
-	$line .= substr($last, 0, -1) . "\n";
-	$last = $self->readline();
+        $line .= substr($last, 0, -1) . "\n";
+        $last = $self->readline();
     }
     $line .= $last;
 
     if ($self->{opts}{verbose}) {
-	my $location = sprintf("%s line %s",
-			       $self->{script_name}, 
-			       $self->{input_lineno});
-	my $mess = sprintf '+ %s: %s', $location, $line;
-	$self->msg($mess);
+        my $location = sprintf("%s line %s",
+                               $self->{script_name}, 
+                               $self->{input_lineno});
+        my $mess = sprintf '+ %s: %s', $location, $line;
+        $self->msg($mess);
     }
     # Do something with history?
     return $line;

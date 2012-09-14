@@ -54,22 +54,22 @@ sub set_name() {
 sub new($$) {
     my($class, $proc)  = @_;
     my $self = {
-	proc     => $proc,
-	class    => $class,
-	dbgr     => $proc->{dbgr}
+        proc     => $proc,
+        class    => $class,
+        dbgr     => $proc->{dbgr}
     };
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::";
     for my $field (@CMD_VARS) {
-	my $sigil = substr($field, 0, 1);
-	my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
-	if ($sigil eq '$') {
-	    $self->{lc $new_field} = 
-		eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
-	} elsif ($sigil eq '@') {
-	    $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
-	} else {
-	    die "Woah - bad sigil: $sigil";
-	}
+        my $sigil = substr($field, 0, 1);
+        my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
+        if ($sigil eq '$') {
+            $self->{lc $new_field} = 
+                eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
+        } elsif ($sigil eq '@') {
+            $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
+        } else {
+            die "Woah - bad sigil: $sigil";
+        }
     }
     my @ary = eval "${class}::ALIASES()";
     $self->{aliases} = @ary ? [@ary] : [];
@@ -87,10 +87,10 @@ sub columnize_commands($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
     my $r = Array::Columnize::columnize($commands, 
-				       {displaywidth => $width, 
-					colsep => '    ',
-					ljust => 1, 
-					lineprefix => '  '});
+                                       {displaywidth => $width, 
+                                        colsep => '    ',
+                                        ljust => 1, 
+                                        lineprefix => '  '});
     chomp $r;
     return $r;
 }
@@ -99,10 +99,10 @@ sub columnize_numbers($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
     my $r = Array::Columnize::columnize($commands, 
-					{displaywidth => $width, 
-					 colsep => ', ',
-					 ljust => 0, 
-					 lineprefix => '  '});
+                                        {displaywidth => $width, 
+                                         colsep => ', ',
+                                         ljust => 0, 
+                                         lineprefix => '  '});
     chomp $r;
     return $r;
 }

@@ -22,24 +22,24 @@ sub inspect($)
 {
     my $self = shift;
     sprintf("id %d, file %s, line %s, type: %s, enabled: %d, negate %s, hits: %s, cond: %s",
-	    $self->id, 
-	    $self->filename, $self->line_num,
-	    $self->type,
-	    $self->enabled, 
-	    $self->negate || 0, 
-	    $self->hits, $self->condition
-	);
+            $self->id, 
+            $self->filename, $self->line_num,
+            $self->type,
+            $self->enabled, 
+            $self->negate || 0, 
+            $self->hits, $self->condition
+        );
 };
 
 sub icon_char($)
 {
     my $self = shift;
     if ('tbrkpt' eq $self->type) {
-	return 'T';
+        return 'T';
     } elsif ('brkpt' eq $self->type) { 
-	return 'B';
+        return 'B';
     } elsif ('action' eq $self->type) { 
-	return 'A';
+        return 'A';
     }
 }
 
@@ -75,12 +75,12 @@ sub find_subline($) {
     $fn_name = "main" . $fn_name if substr($fn_name,0,2) eq "::";
     my $filename = $DB::filename;
     if (exists $DB::sub{$fn_name}) {
-	my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
-	if ($from) {
-	    local *DB::dbline = "::_<$filename";
-	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
-	    return ($filename, $fn_name, $from);
-	}
+        my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
+        if ($from) {
+            local *DB::dbline = "::_<$filename";
+            ++$from while $DB::dbline[$from] == 0 && $from < $to;
+            return ($filename, $fn_name, $from);
+        }
     }
     return (undef, undef, undef);
 }
@@ -94,12 +94,12 @@ sub _find_subline {
     $name = "${DB::package}\:\:" . $name if $name !~ /::/;
     $name = "main" . $name if substr($name,0,2) eq "::";
     if (exists $DB::sub{$name}) {
-	my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
-	if ($from) {
-	    local *DB::dbline = "::_<$fname";
-	    ++$from while $DB::dbline[$from] == 0 && $from < $to;
-	    return $from;
-	}
+        my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
+        if ($from) {
+            local *DB::dbline = "::_<$fname";
+            ++$from while $DB::dbline[$from] == 0 && $from < $to;
+            return $from;
+        }
     }
     return undef;
 }
@@ -114,29 +114,29 @@ sub break_invalid {
 
     # If we're not in that file, switch over to it.
     if ( $change_dbline ) {
-	# Switch debugger's magic structures.
-	my $filekey = '_<' . $filename;
-	*DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+        # Switch debugger's magic structures.
+        my $filekey = '_<' . $filename;
+        *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
     }
 
     my $lineno = $fn_or_lineno;
     if ($fn_or_lineno =~ /\D/) {
-	my $junk;
-	($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
-	unless ($lineno) {
-	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-	    return "Subroutine $fn_or_lineno not found"
-	}
-	$change_dbline = $filename ne $DB::filename;
-	if ( $change_dbline ) {
-	    # Switch debugger's magic structures.
-	    my $filekey = '_<' . $filename;
-	    *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
-	}
+        my $junk;
+        ($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
+        unless ($lineno) {
+            *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+            return "Subroutine $fn_or_lineno not found"
+        }
+        $change_dbline = $filename ne $DB::filename;
+        if ( $change_dbline ) {
+            # Switch debugger's magic structures.
+            my $filekey = '_<' . $filename;
+            *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+        }
     }
     if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
-	*DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-	return "Line $lineno of $filename not known to be a trace line";
+        *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+        return "Line $lineno of $filename not known to be a trace line";
     }
     return undef;
 }
@@ -153,52 +153,52 @@ sub set_break {
 
     # If we're not in that file, switch over to it.
     if ( $change_dbline ) {
-	# Switch debugger's magic structures.
-	my $filekey = '_<' . $filename;
-	*DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
-	## $max      = $#dbline;
+        # Switch debugger's magic structures.
+        my $filekey = '_<' . $filename;
+        *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+        ## $max      = $#dbline;
     }
 
     my $lineno = $fn_or_lineno;
     if ($fn_or_lineno =~ /\D/) {
-	my $junk;
-	($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
-	unless ($lineno) {
-	    $s->warning("Subroutine $fn_or_lineno not found.\n");
-	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-	    return undef;
-	}
-	$change_dbline = $filename ne $DB::filename;
-	if ( $change_dbline ) {
-	    # Switch debugger's magic structures.
-	    my $filekey = '_<' . $filename;
-	    *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
-	    ## $max      = $#dbline;
-	}
+        my $junk;
+        ($filename, $junk, $lineno) = find_subline($fn_or_lineno) ;
+        unless ($lineno) {
+            $s->warning("Subroutine $fn_or_lineno not found.\n");
+            *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+            return undef;
+        }
+        $change_dbline = $filename ne $DB::filename;
+        if ( $change_dbline ) {
+            # Switch debugger's magic structures.
+            my $filekey = '_<' . $filename;
+            *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
+            ## $max      = $#dbline;
+        }
     }
     if ((!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) &&
-	!$force) {
-	$s->warning("Line $lineno of $filename not known to be a trace line.\n");
-	
-	*DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-	return undef;
+        !$force) {
+        $s->warning("Line $lineno of $filename not known to be a trace line.\n");
+        
+        *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+        return undef;
     }
     unless (defined $id) {
-	if ($type eq 'action') {
-	    $id = ++$max_action;
-	} else {
-	    $id = ++$max_bp;
-	}
+        if ($type eq 'action') {
+            $id = ++$max_action;
+        } else {
+            $id = ++$max_bp;
+        }
     }
     my $brkpt = DBBreak->new(
-	type      => $type,
-	condition => $cond,
-	id        => $id,
-	hits      => 0,
-	enabled   => $enabled,
-	filename  => $filename,
-	line_num  => $lineno
-	);
+        type      => $type,
+        condition => $cond,
+        id        => $id,
+        hits      => 0,
+        enabled   => $enabled,
+        filename  => $filename,
+        line_num  => $lineno
+        );
     
     my $ary_ref;
     $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
@@ -219,19 +219,19 @@ sub delete_bp($$) {
     my $i = $bp->line_num;
     local *dbline   = $main::{ '_<' . $bp->filename };
     if (defined $DB::dbline{$i}) {
-	my $brkpts = $DB::dbline{$i};
-	my $count = 0;
-	my $break_count = scalar @$brkpts;
-	for (my $j=0; $j <= $break_count; $j++) {
-	    $brkpt = $brkpts->[$j];
-	    next unless defined $brkpt;
-	    if ($brkpt eq $bp) {
-		undef $brkpts->[$j];
-		last;
-	    }
-	    $count++;
-	}
-	delete $DB::dbline{$i} if $count == 0;
+        my $brkpts = $DB::dbline{$i};
+        my $count = 0;
+        my $break_count = scalar @$brkpts;
+        for (my $j=0; $j <= $break_count; $j++) {
+            $brkpt = $brkpts->[$j];
+            next unless defined $brkpt;
+            if ($brkpt eq $bp) {
+                undef $brkpts->[$j];
+                last;
+            }
+            $count++;
+        }
+        delete $DB::dbline{$i} if $count == 0;
     }
 }
 
@@ -239,29 +239,29 @@ sub clr_breaks {
     my $s = shift;
     my $i;
     if (@_) {
-	while (@_) {
-	    $i = shift;
-	    $i = _find_subline($i) if ($i =~ /\D/);
-	    $s->output("Subroutine not found.\n") unless $i;
-	    if (defined $DB::dbline{$i}) {
-		my $brkpts = $DB::dbline{$i};
-		my $j = 0;
-		for my $brkpt (@$brkpts) {
-		    if ($brkpt->action ne 'brkpt') {
-			$j++;
-			next;
-		    }
-		    undef $brkpts->[$j];
-		}
-		delete $DB::dbline{$i} if $j == 0;
-	    }
-	}
+        while (@_) {
+            $i = shift;
+            $i = _find_subline($i) if ($i =~ /\D/);
+            $s->output("Subroutine not found.\n") unless $i;
+            if (defined $DB::dbline{$i}) {
+                my $brkpts = $DB::dbline{$i};
+                my $j = 0;
+                for my $brkpt (@$brkpts) {
+                    if ($brkpt->action ne 'brkpt') {
+                        $j++;
+                        next;
+                    }
+                    undef $brkpts->[$j];
+                }
+                delete $DB::dbline{$i} if $j == 0;
+            }
+        }
     } else {
-	for ($i = 1; $i <= $#DB::dbline ; $i++) {
-	    if (defined $DB::dbline{$i}) {
-		clr_breaks($s, $i);
-	    }
-	}
+        for ($i = 1; $i <= $#DB::dbline ; $i++) {
+            if (defined $DB::dbline{$i}) {
+                clr_breaks($s, $i);
+            }
+        }
     }
 }
 
@@ -276,39 +276,39 @@ sub clr_actions {
     my $s = shift;
     my $i;
     if (@_) {
-	while (@_) {
-	    $i = shift;
-	    $i = _find_subline($i) if ($i =~ /\D/);
-	    $s->output("Subroutine not found.\n") unless $i;
-	    if (defined $DB::dbline{$i}) {
-		my $brkpts = $DB::dbline{$i};
-		my $j = 0;
-		for my $brkpt (@$brkpts) {
-		    if ($brkpt->action ne 'action') {
-			$j++;
-			next;
-		    }
-		    undef $brkpts->[$j];
-		}
-		delete $DB::dbline{$i} if $j == 0;
-	    }
-	}
+        while (@_) {
+            $i = shift;
+            $i = _find_subline($i) if ($i =~ /\D/);
+            $s->output("Subroutine not found.\n") unless $i;
+            if (defined $DB::dbline{$i}) {
+                my $brkpts = $DB::dbline{$i};
+                my $j = 0;
+                for my $brkpt (@$brkpts) {
+                    if ($brkpt->action ne 'action') {
+                        $j++;
+                        next;
+                    }
+                    undef $brkpts->[$j];
+                }
+                delete $DB::dbline{$i} if $j == 0;
+            }
+        }
     } else {
-	for ($i = 1; $i <= $#DB::dbline ; $i++) {
-	    if (defined $DB::dbline{$i}) {
-		clr_breaks($s, $i);
-	    }
-	}
+        for ($i = 1; $i <= $#DB::dbline ; $i++) {
+            if (defined $DB::dbline{$i}) {
+                clr_breaks($s, $i);
+            }
+        }
     }
 }
 
 # Demo it.
 unless (caller) {
     my $brkpt = DBBreak->new(
-	filename => __FILE__, line_num => __LINE__,
-	type=>'action', condition=>'1', id=>1, hits => 0, enbled => 1,
-	negate => 0
-	);
+        filename => __FILE__, line_num => __LINE__,
+        type=>'action', condition=>'1', id=>1, hits => 0, enbled => 1,
+        negate => 0
+        );
     print $brkpt->inspect, "\n";
     # This line is a comment for below.
     $DB::filename = __FILE__;

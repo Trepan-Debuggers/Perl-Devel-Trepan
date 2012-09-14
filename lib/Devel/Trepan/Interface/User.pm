@@ -21,7 +21,7 @@ use strict;
 use constant DEFAULT_USER_OPTS => {
 
     readline   =>                       # Try to use Term::ReadLine?
-	$Devel::Trepan::IO::Input::HAVE_TERM_READLINE, 
+        $Devel::Trepan::IO::Input::HAVE_TERM_READLINE, 
     
     # The below are only used if we want and have readline support.
     # See method Trepan::term_readline below.
@@ -40,17 +40,17 @@ sub new
     $self->{opts} = $opts;
     bless $self, $class;
     if ($inp && $inp->isa('Devel::Trepan::IO:InputBase')) {
-	$self->{input} = $inp;
+        $self->{input} = $inp;
     } else {
-	$self->{input} = Devel::Trepan::IO::Input->new($inp, 
-						       {readline => $opts->{readline}})
+        $self->{input} = Devel::Trepan::IO::Input->new($inp, 
+                                                       {readline => $opts->{readline}})
     }
     if ($self->{input}{term_readline}) {
-	if ($self->{opts}{complete}) {
-	    my $attribs = $inp->{readline}->Attribs;
-	    $attribs->{attempted_completion_function} = $self->{opts}{complete};
-	}
-	$self->read_history;
+        if ($self->{opts}{complete}) {
+            my $attribs = $inp->{readline}->Attribs;
+            $attribs->{attempted_completion_function} = $self->{opts}{complete};
+        }
+        $self->read_history;
     }
     return $self;
 }
@@ -70,11 +70,11 @@ sub remove_history($;$)
     $which = -1 unless defined($which);
     return unless ($self->{input}{readline});
     if ($self->{input}{readline}->can("where_history")) {
-	my $where_history = $self->{input}{readline}->where_history();
-	$which = $where_history unless defined $which;
+        my $where_history = $self->{input}{readline}->where_history();
+        $which = $where_history unless defined $which;
     }
     $self->{input}{readline}->remove_history($which) if
-	$self->{input}{readline}->can("remove_history");
+        $self->{input}{readline}->can("remove_history");
 }
 
 sub is_closed($) 
@@ -94,14 +94,14 @@ sub confirm($$$) {
     my $response;
     while (1) {
         $response = $self->readline(sprintf '%s (%s) ', $prompt, $default_str);
-	return $default if $self->{input}->is_eof;
-	chomp($response);
-	return $default if $response eq '';
-	($response = lc(unpack("A*", $response))) =~ s/^\s+//;
-	# We don't catch "Yes, I'm sure" or "NO!", but I leave that 
-	# as an exercise for the reader.
-	last if grep(/^${response}$/, @Devel::Trepan::Util::YN);
-	$self->msg( "Please answer 'yes' or 'no'. Try again.");
+        return $default if $self->{input}->is_eof;
+        chomp($response);
+        return $default if $response eq '';
+        ($response = lc(unpack("A*", $response))) =~ s/^\s+//;
+        # We don't catch "Yes, I'm sure" or "NO!", but I leave that 
+        # as an exercise for the reader.
+        last if grep(/^${response}$/, @Devel::Trepan::Util::YN);
+        $self->msg( "Please answer 'yes' or 'no'. Try again.");
     }
     $self->remove_history;
     return grep(/^${response}$/, YES);
@@ -117,16 +117,16 @@ sub read_history($)
     my $self = shift;
     my %opts = %{$self->{opts}};
     unless ($self->{histfile}) {
-	my $dirname = $ENV{'HOME'} || $ENV{'HOMEPATH'} || glob('~');
-	$self->{histfile} = File::Spec->catfile($dirname, $opts{file_history});
+        my $dirname = $ENV{'HOME'} || $ENV{'HOMEPATH'} || glob('~');
+        $self->{histfile} = File::Spec->catfile($dirname, $opts{file_history});
     }
     my $histsize = $ENV{'HISTSIZE'} ? $ENV{'HISTSIZE'} : $opts{histsize};
     $self->{histsize} = $histsize unless defined $self->{histsize};
     if ( -f $self->{histfile} ) {
-	$self->{input}{readline}->StifleHistory($self->{histsize}) if
-	    $self->{input}{readline}->can("StifleHistory");
-	$self->{input}{readline}->ReadHistory($self->{histfile}) if
-	    $self->{input}{readline}->can("ReadHistory");
+        $self->{input}{readline}->StifleHistory($self->{histsize}) if
+            $self->{input}{readline}->can("StifleHistory");
+        $self->{input}{readline}->ReadHistory($self->{histfile}) if
+            $self->{input}{readline}->can("ReadHistory");
     }
 }
 
@@ -134,12 +134,12 @@ sub save_history($)
 {
     my $self = shift;
     if ($self->{histfile} && $self->{opts}{history_save} && 
-	$self->want_term_readline &&
-	$self->{input}{readline}) {
-	$self->{input}{readline}->StifleHistory($self->{histsize}) if
-	    $self->{input}{readline}->can("StifleHistory");
-	$self->{input}{readline}->WriteHistory($self->{histfile}) if
-	    $self->{input}{readline}->can("WriteHistory");
+        $self->want_term_readline &&
+        $self->{input}{readline}) {
+        $self->{input}{readline}->StifleHistory($self->{histsize}) if
+            $self->{input}{readline}->can("StifleHistory");
+        $self->{input}{readline}->WriteHistory($self->{histfile}) if
+            $self->{input}{readline}->can("WriteHistory");
     }
 }
 
@@ -147,7 +147,7 @@ sub save_history($)
 # {
 #     my $self = shift;
 #     if ($self->want_term_readline) {
-#     	$self->save_history;
+#       $self->save_history;
 #     }
 #     Devel::Trepan::Interface::DESTROY($self);
 # }
@@ -177,8 +177,8 @@ sub read_command($;$) {
     my $line = '';
     $prompt .= '>> '; # continuation
     while ('\\' eq substr($last, -1)) { 
-	$line .= substr($last, 0, -1) . "\n";
-	$last = $self->readline($prompt);
+        $line .= substr($last, 0, -1) . "\n";
+        $last = $self->readline($prompt);
     }
     $line .= $last;
     return $line;
@@ -188,10 +188,10 @@ sub readline($;$) {
     my($self, $prompt)  = @_;
     $self->{output}->flush;
     if ($self->want_term_readline) {
-	$self->{input}->readline($prompt);
+        $self->{input}->readline($prompt);
     } else { 
-	$self->{output}->write($prompt) if defined($prompt) && $prompt;
-	$self->{input}->readline;
+        $self->{output}->write($prompt) if defined($prompt) && $prompt;
+        $self->{input}->readline;
     }
 }
 
@@ -226,28 +226,28 @@ unless (caller) {
    if (scalar(@ARGV) > 0 && $intf->is_interactive) {
        my $line = $intf->readline("Type something: ");
        if ($intf->is_input_eof) {
-	   $intf->msg("No input, got EOF\n");
+           $intf->msg("No input, got EOF\n");
        } else {
-	   $intf->msg("You typed: $line");
+           $intf->msg("You typed: $line");
        }
        $intf->msg(sprintf "input EOF is now: %d", $intf->{input}->is_eof);
        unless ($intf->{input}->is_eof) {
-	   $intf->msg("Now we in read a command");
-	   my $line = $intf->read_command("Type a command something: ");
-	   if ($intf->is_input_eof) {
-	       $intf->msg("No input, got EOF");
-	   } else {
-	       $intf->msg("You typed: $line");
-	   }
-	   unless ($intf->is_input_eof) {
-	       $line = $intf->confirm("Are you sure", 0);
-	       chomp($line);
-	       $intf->msg("you typed: ${line}");
-	       $intf->msg(sprintf "eof is now: %d",  $intf->{input}->is_eof);
-	       $line = $intf->confirm("Really sure", 0);
-	       $intf->msg("you typed: $line");
-	       $intf->msg(sprintf "eof is now: %d", $intf->{input}->is_eof);
-	   }
+           $intf->msg("Now we in read a command");
+           my $line = $intf->read_command("Type a command something: ");
+           if ($intf->is_input_eof) {
+               $intf->msg("No input, got EOF");
+           } else {
+               $intf->msg("You typed: $line");
+           }
+           unless ($intf->is_input_eof) {
+               $line = $intf->confirm("Are you sure", 0);
+               chomp($line);
+               $intf->msg("you typed: ${line}");
+               $intf->msg(sprintf "eof is now: %d",  $intf->{input}->is_eof);
+               $line = $intf->confirm("Really sure", 0);
+               $intf->msg("you typed: $line");
+               $intf->msg(sprintf "eof is now: %d", $intf->{input}->is_eof);
+           }
        }
    }
    printf "User interface closed?: %d\n", $intf->is_closed;

@@ -26,8 +26,8 @@ use constant PROGRAM_NAME => $PROGRAM_NAME;
 # Return whether we want Terminal highlighting by default
 sub default_term() {
     ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' || 
-		     (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
-	?  'term' : 0
+                     (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
+        ?  'term' : 0
 }
 
 my $home = $ENV{'HOME'} || glob("~");
@@ -70,50 +70,50 @@ sub process_options($)
     my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
-	 'basename'     => \$opts->{basename},
-	 'batch:s'      => \$opts->{batchfile},
-	 'cd:s'         => \$opts->{initial_dir},
-	 'client'       => \$opts->{client},
-	 'cmddir=s@'    => \$opts->{cmddir},
-	 'command=s@'   => \$opts->{cmdfiles},
-	 'e|exec=s@'    => \$opts->{exec_strs},
-	 'fall-off-end' => \$opts->{fall_off_end},
-	 'help'         => \$help,
-	 'highlight'    => \$opts->{highlight},
-	 'host:s'       => \$opts->{host},
-	 'man'          => \$man,
-	 'no-highlight' => sub { $opts->{highlight} = 0},
-	 'no-readline' => sub { $opts->{readline} = 0},
-	 'nx'           => \$opts->{nx},
-	 'port:n'       => \$opts->{port},
-	 'post-mortem'  => \$opts->{post_mortem},
-	 'readline'     => \$opts->{readline},
-	 'server'       => \$opts->{server},
-	 'testing:s'    => \$opts->{testing},
-	 'version'      => \$show_version,
-	 'x|trace'      => \$opts->{traceprint},
-	);
+         'basename'     => \$opts->{basename},
+         'batch:s'      => \$opts->{batchfile},
+         'cd:s'         => \$opts->{initial_dir},
+         'client'       => \$opts->{client},
+         'cmddir=s@'    => \$opts->{cmddir},
+         'command=s@'   => \$opts->{cmdfiles},
+         'e|exec=s@'    => \$opts->{exec_strs},
+         'fall-off-end' => \$opts->{fall_off_end},
+         'help'         => \$help,
+         'highlight'    => \$opts->{highlight},
+         'host:s'       => \$opts->{host},
+         'man'          => \$man,
+         'no-highlight' => sub { $opts->{highlight} = 0},
+         'no-readline' => sub { $opts->{readline} = 0},
+         'nx'           => \$opts->{nx},
+         'port:n'       => \$opts->{port},
+         'post-mortem'  => \$opts->{post_mortem},
+         'readline'     => \$opts->{readline},
+         'server'       => \$opts->{server},
+         'testing:s'    => \$opts->{testing},
+         'version'      => \$show_version,
+         'x|trace'      => \$opts->{traceprint},
+        );
     
     pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__), 
-	      -exitstatus => 1) if $help;
+              -exitstatus => 1) if $help;
     pod2usage(-exitstatus => 10, -verbose => 2,
-	      -input => pod_where({-inc => 1}, __PACKAGE__)) if $man;
+              -input => pod_where({-inc => 1}, __PACKAGE__)) if $man;
     show_version() if $show_version;
     chdir $opts->{initial_dir} || die "Can't chdir to $opts->{initial_dir}" if
-	defined($opts->{initial_dir});
+        defined($opts->{initial_dir});
     my $batch_filename = $opts->{testing};
     $batch_filename = $opts->{batchfile} unless defined $batch_filename;
     if ($batch_filename) {
-	if (scalar(@{$opts->{cmdfiles}}) != 0) {
-	    printf(STDERR "--batch option disables command files: %s\n", 
-		   join(', ', @{$opts->{cmdfiles}}));
-	    $opts->{cmdfiles} = [];
-	}
-	$opts->{nx} = 1;
+        if (scalar(@{$opts->{cmdfiles}}) != 0) {
+            printf(STDERR "--batch option disables command files: %s\n", 
+                   join(', ', @{$opts->{cmdfiles}}));
+            $opts->{cmdfiles} = [];
+        }
+        $opts->{nx} = 1;
     }
     if ($opts->{server} and $opts->{client}) {
-	printf STDERR 
-	    "Pick only on from of the --server or --client options\n";
+        printf STDERR 
+            "Pick only on from of the --server or --client options\n";
     }
     $opts;
 }
@@ -126,13 +126,13 @@ sub whence_file($)
 
     # If we have an relative or absolute file name, don't do anything.
     return $prog_script if 
-	File::Spec->file_name_is_absolute($prog_script);
+        File::Spec->file_name_is_absolute($prog_script);
     my $first_char = substr($prog_script, 0, 1);
     return $prog_script if index('./', $first_char) != -1;
 
     for my $dirname (File::Spec->path()) {
-	my $prog_script_try = File::Spec->catfile($dirname, $prog_script);
-	return $prog_script_try if -r $prog_script_try;
+        my $prog_script_try = File::Spec->catfile($dirname, $prog_script);
+        return $prog_script_try if -r $prog_script_try;
     }
     # Failure
     return $prog_script;
@@ -147,42 +147,42 @@ unless (caller) {
     print Dumper($opts), "\n";
     my $pid = fork();
     if ($pid == 0) {
-    	my @argv = qw(--version);
-    	my $opts = process_options(\@argv);
-    	exit 0;
+        my @argv = qw(--version);
+        my $opts = process_options(\@argv);
+        exit 0;
     } else {
-    	waitpid($pid, 0);
-    	print "exit code: ", $?>>8, "\n";
+        waitpid($pid, 0);
+        print "exit code: ", $?>>8, "\n";
     }
     $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--cd /tmp --cmddir /tmp);
-	my $opts = process_options(\@argv);
-	print Dumper($opts), "\n";
-	exit 0;
+        my @argv = qw(--cd /tmp --cmddir /tmp);
+        my $opts = process_options(\@argv);
+        print Dumper($opts), "\n";
+        exit 0;
     } else {
-	waitpid($pid, 0);
-	print "exit code: ", $?>>8, "\n";
+        waitpid($pid, 0);
+        print "exit code: ", $?>>8, "\n";
     }
     exit;
     $pid = fork();
     if ($pid == 0) {
-	my @argv = qw(--cd /bogus);
-	my $opts = process_options(\@argv);
-	exit 0
+        my @argv = qw(--cd /bogus);
+        my $opts = process_options(\@argv);
+        exit 0
     } else {
-	waitpid($pid, 0);
-	print "exit code: ", $?>>8, "\n";
+        waitpid($pid, 0);
+        print "exit code: ", $?>>8, "\n";
     }
     $pid = fork();
     if ($pid == 0) {
-	my @argv = ('--batch', __FILE__);
-	my $opts = process_options(\@argv);
-	print Dumper($opts), "\n";
-	exit 0
+        my @argv = ('--batch', __FILE__);
+        my $opts = process_options(\@argv);
+        print Dumper($opts), "\n";
+        exit 0
     } else {
-	waitpid($pid, 0);
-	print "exit code: ", $?>>8, "\n";
+        waitpid($pid, 0);
+        print "exit code: ", $?>>8, "\n";
     }
 }
 

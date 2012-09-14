@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # Trepan command input validation routines.  A String type is
 # usually passed in as the argument to validation routines.
 
@@ -34,22 +34,22 @@ sub get_an_int($$$)
     my $ret_value = $self->get_int_noerr($arg);
     if (! defined $ret_value) {
         if ($opts->{msg_on_error}) {
-	    $self->errmsg($opts->{msg_on_error});
-	} else {
-	    $self->errmsg("Expecting an integer, got: ${arg}.");
+            $self->errmsg($opts->{msg_on_error});
+        } else {
+            $self->errmsg("Expecting an integer, got: ${arg}.");
         }
         return undef;
     }
     if (defined($opts->{min_value}) and $ret_value < $opts->{min_value}) {
-	my $msg = sprintf("Expecting integer value to be at least %d; got %d.",
-			  $opts->{min_value}, $ret_value);
+        my $msg = sprintf("Expecting integer value to be at least %d; got %d.",
+                          $opts->{min_value}, $ret_value);
         $self->errmsg($msg);
         return undef;
     } elsif (defined($opts->{max_value}) and $ret_value > $opts->{max_value}) {
-	my $msg = sprintf("Expecting integer value to be at most %d; got %d.",
-			  $opts->{max_value}, $ret_value);
+        my $msg = sprintf("Expecting integer value to be at most %d; got %d.",
+                          $opts->{max_value}, $ret_value);
         $self->errmsg($msg);
-	return undef;
+        return undef;
     }
     return $ret_value;
 }
@@ -74,11 +74,11 @@ use Devel::Trepan::Util qw(hash_merge);
 #     my $val = $arg ? $self->get_int_noerr($arg) : $opts->{default};
 #     unless ($val) {
 #         if ($opts->{cmdname}) { 
-# 	    my $msg = sprintf("Command '%s' expects an integer; " +
-# 			      "got: %s.", $opts->{cmdname}, $arg);
-# 	    $self->errmsg($msg);
+#           my $msg = sprintf("Command '%s' expects an integer; " +
+#                             "got: %s.", $opts->{cmdname}, $arg);
+#           $self->errmsg($msg);
 #         } else {
-# 	    $self->errmsg('Expecting a positive integer, got: ${arg}');
+#           $self->errmsg('Expecting a positive integer, got: ${arg}');
 #         }
 #         return undef;
 #       }
@@ -86,27 +86,27 @@ use Devel::Trepan::Util qw(hash_merge);
 #     if ($val < $opts->{min_value}) {
 #         if ($opts->{cmdname}) {
 #           my $msg = sprintf("Command '%s' expects an integer at least" .
-# 			    ' %d; got: %d.', 
-# 			    $opts->{cmdname}, $opts->{min_value}, 
-# 			    $opts->{default});
-# 	  $self->errmsg($msg);
-# 	} else {
-# 	    my $msg = sprintf("Expecting a positive integer at least" .
-# 			      ' %d; got: %d', 
-# 			      $opts->{min_value}, $opts->{default});  
-# 	    $self->errmsg($msg);
+#                           ' %d; got: %d.', 
+#                           $opts->{cmdname}, $opts->{min_value}, 
+#                           $opts->{default});
+#         $self->errmsg($msg);
+#       } else {
+#           my $msg = sprintf("Expecting a positive integer at least" .
+#                             ' %d; got: %d', 
+#                             $opts->{min_value}, $opts->{default});  
+#           $self->errmsg($msg);
 #         }
 #         return undef;
-# 	elsif ($self->opts{max_value} and $val > $self->opts{max_value}) {
-# 	    if ($self->opts{cmdname}) {
-# 		my $msg = sprintf("Command '%s' expects an integer at most" .
-# 				  ' %d; got: %d', $opts->{cmdname},
-# 				  $opts->{max_value}, $val);
-# 		$self->errmsg($msg);
-# 	    }
+#       elsif ($self->opts{max_value} and $val > $self->opts{max_value}) {
+#           if ($self->opts{cmdname}) {
+#               my $msg = sprintf("Command '%s' expects an integer at most" .
+#                                 ' %d; got: %d', $opts->{cmdname},
+#                                 $opts->{max_value}, $val);
+#               $self->errmsg($msg);
+#           }
 #         } else {
-# 	    my $msg = sprintf("Expecting an integer at most %d; got: %d",
-# 			      $opts->{:max_value}, $val);
+#           my $msg = sprintf("Expecting an integer at most %d; got: %d",
+#                             $opts->{:max_value}, $val);
 #           $self->errmsg($msg);
 #         }
 #         return undef;
@@ -127,13 +127,13 @@ sub get_int_noerr($$)
 {
     my ($self, $arg) = @_;
     my $val = eval { 
-	no warnings 'all';
-	eval($arg);
+        no warnings 'all';
+        eval($arg);
     };
     if (defined $val) {
-	return $val =~ /^[+-]?\d+$/ ? $val : undef;
+        return $val =~ /^[+-]?\d+$/ ? $val : undef;
     } else {
-	return undef;
+        return undef;
     }
 }
 
@@ -265,19 +265,19 @@ sub get_onoff($$;$$)
     $print_error = 1 unless defined $print_error;
     unless (defined $arg) {
         unless (defined $default) {
-	    if ($print_error) {
-		$self->errmsg("Expecting 'on', 1, 'off', or 0. Got nothing.");
-		return undef;
-	    }
-	}
-	return $default
+            if ($print_error) {
+                $self->errmsg("Expecting 'on', 1, 'off', or 0. Got nothing.");
+                return undef;
+            }
+        }
+        return $default
     }
     my $darg = lc $arg;
     return 1 if ($arg eq '1') || ($darg eq 'on');
     return 0 if ($arg eq '0') || ($darg eq'off');
 
     $self->errmsg("Expecting 'on', 1, 'off', or 0. Got: ${arg}.") if
-	$print_error;
+        $print_error;
     return undef;
 }
 
@@ -309,46 +309,46 @@ sub parse_position($$;$)
     $validate_line_num = 0 unless defined $validate_line_num;
 
     if (0 == $size) {
-	no warnings 'once';
-	return ($DB::filename, $DB::line, undef, 0, ());
+        no warnings 'once';
+        return ($DB::filename, $DB::line, undef, 0, ());
     }
     my ($filename, $line_num, $fn);
     my $first_arg = shift @args;
     if ($first_arg =~ /^\d+$/) {
-	$line_num = $first_arg;
-	$filename = $DB::filename;
-	$gobble_count = 1;
-	$fn = undef;
+        $line_num = $first_arg;
+        $filename = $DB::filename;
+        $gobble_count = 1;
+        $fn = undef;
     } else {
-	($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
-	unless ($line_num) { 
-	    $filename = $first_arg;
-	    my $mapped_filename = DB::LineCache::map_file($filename);
-	    if (-r $mapped_filename) {
-		if (scalar @args == 0) {
-		    $line_num = 1;
-		} else {
-		    $line_num = shift @args;
-		}
-		unless ($line_num =~ /\d+/) {
-		    $self->errmsg("Got filename $first_arg, " . 
-				  "expecting $line_num to a line number");
-		    return ($filename, undef, undef, 0, @args);
-		}
-	    } else {
-		$self->errmsg("Expecting $first_arg to be a file " . 
-			      "or function name");
-		return ($filename, undef, $fn, 0, @args);
-	    }
-	}
-	$gobble_count = 1;
+        ($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
+        unless ($line_num) { 
+            $filename = $first_arg;
+            my $mapped_filename = DB::LineCache::map_file($filename);
+            if (-r $mapped_filename) {
+                if (scalar @args == 0) {
+                    $line_num = 1;
+                } else {
+                    $line_num = shift @args;
+                }
+                unless ($line_num =~ /\d+/) {
+                    $self->errmsg("Got filename $first_arg, " . 
+                                  "expecting $line_num to a line number");
+                    return ($filename, undef, undef, 0, @args);
+                }
+            } else {
+                $self->errmsg("Expecting $first_arg to be a file " . 
+                              "or function name");
+                return ($filename, undef, $fn, 0, @args);
+            }
+        }
+        $gobble_count = 1;
     }
     if ($validate_line_num) {
-	local(*DB::dbline) = "::_<'$filename" ;
-	if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
-	    $self->errmsg("Line $line_num of file $filename not a stopping line");
-	    return ($filename, undef, $fn, 0, @args);
-	}
+        local(*DB::dbline) = "::_<'$filename" ;
+        if (!defined($DB::dbline[$line_num]) || $DB::dbline[$line_num] == 0) {
+            $self->errmsg("Line $line_num of file $filename not a stopping line");
+            return ($filename, undef, $fn, 0, @args);
+        }
     }
     return ($filename, $line_num, $fn, $gobble_count, @args);
 }
@@ -380,13 +380,13 @@ unless (caller) {
     require Devel::Trepan::DB;
     my @onoff = qw(1 0 on off);
     for my $val (@onoff) {
-	printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
+        printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
     }
     
     for my $val (qw(1 1E bad 1+1 -5)) {
-	my $result = get_int_noerr('bogus', $val);
-	$result = '<undef>' unless defined $result;
-	print "get_int_noerr(${val}) = $result\n";
+        my $result = get_int_noerr('bogus', $val);
+        $result = '<undef>' unless defined $result;
+        print "get_int_noerr(${val}) = $result\n";
     }
     
     no warnings 'redefine';
@@ -400,18 +400,18 @@ unless (caller) {
 
     local @position = ();
     sub print_position() {
-	my @call_values = caller(0);
-	for my $arg (@position) {
-	    print defined($arg) ? $arg : 'undef';
-	    print "\n";
-	}
-	print "\n";
-	return @call_values;
+        my @call_values = caller(0);
+        for my $arg (@position) {
+            print defined($arg) ? $arg : 'undef';
+            print "\n";
+        }
+        print "\n";
+        return @call_values;
     }
     my @call_values = foo();
     
     $DB::package = 'main';
-	@position = $proc->parse_position([__FILE__, __LINE__], 0);
+        @position = $proc->parse_position([__FILE__, __LINE__], 0);
     print_position;
     @position = $proc->parse_position([__LINE__], 0);
     print_position;

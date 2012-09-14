@@ -19,13 +19,13 @@ use vars qw($HAVE_TEXT_COLOR $HAVE_TEXT);
 
 BEGIN {
     $HAVE_TEXT_COLOR = 
-	eval { 
-	       require Term::ANSIColor; 
-	       require Pod::Text::Color;
+        eval { 
+               require Term::ANSIColor; 
+               require Pod::Text::Color;
     } ? 1 : 0;
 
     $HAVE_TEXT   = eval {
-	require Pod::Text;
+        require Pod::Text;
     } ? 1 : 0;
 }
 
@@ -39,9 +39,9 @@ sub pod2string($;$$)
     # Figure out what formatter we're going to use.
     my $formatter = 'Pod::Text';
     if ($color && $HAVE_TEXT_COLOR) {
-	$formatter = 'Pod::Text::Color';
+        $formatter = 'Pod::Text::Color';
     } else {
-	$formatter = 'Pod::Text';
+        $formatter = 'Pod::Text';
     }
 
     my $p2t = $formatter->new(width => $width, indent => 2);
@@ -61,9 +61,9 @@ sub help2podstring($;$$)
     # Figure out what formatter we're going to use.
     my $formatter = 'Pod::Text';
     if ($color && $HAVE_TEXT_COLOR) {
-	$formatter = 'Pod::Text::Color';
+        $formatter = 'Pod::Text::Color';
     } else {
-	$formatter = 'Pod::Text';
+        $formatter = 'Pod::Text';
     }
 
     my $p2t = $formatter->new(width => $width, indent => 2);
@@ -72,9 +72,9 @@ sub help2podstring($;$$)
     open(my $in_fh, '<', \$input_string);
 
     $input_string = "=pod\n\n$input_string" unless 
-	"=pod\n" eq substr($input_string, 0, 4);
+        "=pod\n" eq substr($input_string, 0, 4);
     $input_string .= "\n=cut\n" unless 
-	"\n=cut\n" eq substr($input_string, -6);
+        "\n=cut\n" eq substr($input_string, -6);
     $p2t->parse_from_file($in_fh, $out_fh);
     return $output_string;
 }

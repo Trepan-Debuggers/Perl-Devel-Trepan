@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 # A base class for a debugger interface.
 
@@ -29,17 +29,17 @@ sub new {
     my($class, $inp, $out, $opts)  = @_;
     $opts ||= {};
     my $input_opts = {
-	readline => 0
+        readline => 0
     };
 
     my $self = {
-	histfile      => undef,
-	history_save  => 0,
-	histsize      => undef,
-	line_edit     => $opts->{line_edit},
-	input         => $inp || Devel::Trepan::IO::Input->new(undef, $input_opts),
-	opts          => $opts,
-	output        => $out || Devel::Trepan::IO::Output->new
+        histfile      => undef,
+        history_save  => 0,
+        histsize      => undef,
+        line_edit     => $opts->{line_edit},
+        input         => $inp || Devel::Trepan::IO::Input->new(undef, $input_opts),
+        opts          => $opts,
+        output        => $out || Devel::Trepan::IO::Output->new
     };
     bless $self, $class;
     $self;
@@ -51,10 +51,10 @@ sub add_history($$) {}
 sub close($) {
     my($self) = shift;
     eval {
-	$self->{input}->close if
-	    defined($self->{input}) && !$self->{input}->is_closed;
-	$self->{output}->close if
-	    defined($self->{output}) && !$self->{output}->is_closed;
+        $self->{input}->close if
+            defined($self->{input}) && !$self->{input}->is_closed;
+        $self->{output}->close if
+            defined($self->{output}) && !$self->{output}->is_closed;
     };
 }
 
@@ -70,12 +70,12 @@ sub errmsg($;$$) {
     my($self, $str, $prefix) = @_;
     $prefix = '** ' unless defined $prefix;
     if (ref($str) eq 'ARRAY') {
-    	foreach my $s (@$str) {
-    	    $self->errmsg($s);
-    	}
+        foreach my $s (@$str) {
+            $self->errmsg($s);
+        }
     } else {
         foreach my $s (split /\n/, $str) {
-	    $self->msg(sprintf("%s%s" , $prefix, $s));
+            $self->msg(sprintf("%s%s" , $prefix, $s));
         }
     }
 }
@@ -99,9 +99,9 @@ sub is_input_eof($) {
 sub msg($$) {
     my($self, $str) = @_;
     # if (str.is_a?(Array)) {
-    # 	foreach my $s (@$str) {
-    # 	    errmsg($s);
-    # 	}
+    #   foreach my $s (@$str) {
+    #       errmsg($s);
+    #   }
     # } else {
         $self->{output}->writeline($str);
     # }
@@ -136,17 +136,17 @@ sub save_history($$) {}
 #sub DESTROY {
 #    my $self = shift;
 #    if ($self->{output} && defined($self->{output}) && ! $self->{output}->is_closed) {
-#	eval {
-#	    $self->msg(sprintf("%sThat's all, folks...",
-#			       (defined($Devel::Trepan::PROGRAM) ? 
-#				"${Devel::Trepan::PROGRAM}: " : '')));
-#	};
+#       eval {
+#           $self->msg(sprintf("%sThat's all, folks...",
+#                              (defined($Devel::Trepan::PROGRAM) ? 
+#                               "${Devel::Trepan::PROGRAM}: " : '')));
+#       };
 #    }
 #    $self->close;
 #}
 
 # Demo
-if (__FILE__ eq $0) {
+unless (caller) {
     my $interface = Devel::Trepan::Interface->new;
 }
 

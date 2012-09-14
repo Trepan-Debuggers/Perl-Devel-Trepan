@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -14,8 +14,11 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = <<"HELP";
-Set to run a 'list' command each time we enter the debugger
+our $HELP         = <<'HELP';
+=pod
+
+Set to run a C<list> command each time we enter the debugger.
+=cut
 HELP
 
 our $MIN_ABBREV   = length('li');

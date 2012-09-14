@@ -11,7 +11,14 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('ma');
-our $HELP   = 'Set display attributes';
+our $SHORT_HELP = 'Set display attributes';
+our $HELP = <<'HELP';
+=pod
+
+Set display attributes.
+=cut
+HELP
+
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 unless (caller) { 

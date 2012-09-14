@@ -14,7 +14,14 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = "Debug macro expansion";
+our $SHORT_HELP   = 'Debug macro expansion';
+our $HELP         = <<'HELP';
+=pod
+
+Debug macro expansion.
+=cut
+HELP
+
 our $MIN_ABBREV   = length('ma');
 use constant MAX_ARGS => 1;
  

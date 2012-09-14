@@ -11,22 +11,28 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "set different [on|off|nostack]
+our $HELP = <<'HELP';
+=pod
 
-Set to make sure 'next' or 'step' moves to a new position.
+set different [on|off|nostack]
+
+Set to make sure C<next> or C<step> moves to a new position.
 
 Each line often may contain many possible stopping points. In a
 debugger it is sometimes desirable to continue but stop only when the
 position next changes.
 
-Setting 'different' to on will cause each 'step' or 'next' command to
+Setting C<different> to on will cause each C<step> or C<next> command to
 stop at a different position.
 
 Note though that the notion of different does take into account stack
 nesting. 
 
-See also 'step', 'next' which have suffixes '+' and '-' which
-override this setting.";
+See also C<step>, C<next> which have suffixes C<+> and C<-> which
+override this setting.
+=cut
+HELP
+
 our $MIN_ABBREV = length('dif');
 our $SHORT_HELP = "Set to make sure 'next/step' move to a new position.";
 

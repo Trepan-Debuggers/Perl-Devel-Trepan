@@ -14,9 +14,15 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = "Debug exceptions handled by debugger";
+our $SHORT_HELP   = "Debug exceptions handled by debugger";
 our $MIN_ABBREV   = length('ex');
 use constant MAX_ARGS => 1;
+our $HELP         = <<'HELP';
+=pod
+
+Debug exceptions handled by debugger.
+=cut
+HELP
  
 unless (caller) {
   # Demo it.

@@ -63,40 +63,40 @@ sub run($$)
     my ($filename, $line_number);
     my $count = scalar @$args;
     if (1 == $count) {
-	if ($proc->{terminated}) {
-	    $proc->msg_need_running("implicit edit file and line");
-	    return;
-	}
-	$filename     = $self->{proc}->filename;
-	$line_number  = $self->{proc}->line;
+        if ($proc->{terminated}) {
+            $proc->msg_need_running("implicit edit file and line");
+            return;
+        }
+        $filename     = $self->{proc}->filename;
+        $line_number  = $self->{proc}->line;
     } elsif (2 == $count) {
-	$line_number = $self->{proc}->get_int_noerr($args->[1]);
-	if (defined $line_number) {
-	    if ($proc->{terminated}) {
-		$proc->msg_need_running("implicit edit file");
-		return;
-	    }
-	    $filename = $self->{proc}->filename;
-	} else {
-	    $filename = $args->[1];
-	    $line_number = 1;
-	}
+        $line_number = $self->{proc}->get_int_noerr($args->[1]);
+        if (defined $line_number) {
+            if ($proc->{terminated}) {
+                $proc->msg_need_running("implicit edit file");
+                return;
+            }
+            $filename = $self->{proc}->filename;
+        } else {
+            $filename = $args->[1];
+            $line_number = 1;
+        }
     } elsif (3 == $count) {
-	($line_number, $filename) =  ($args->[2], $args->[1]);
+        ($line_number, $filename) =  ($args->[2], $args->[1]);
     } else {
-	$self->errmsg("edit needs at most 2 args.");
-	return;
+        $self->errmsg("edit needs at most 2 args.");
+        return;
     }
     my $editor = $ENV{'EDITOR'} || '/bin/ex';
     if ( -r $filename ) {
-	use File::Basename;
-	$filename = basename($filename) if $self->{proc}{settings}{basename};
-	my @edit_cmd = ($editor, "+$line_number", $filename);
-	$self->{proc}->msg(sprintf "Running: %s...", join(' ', @edit_cmd));
-	system(@edit_cmd);
-	$self->{proc}->msg("Warning: return code was $?") if $? != 0;
+        use File::Basename;
+        $filename = basename($filename) if $self->{proc}{settings}{basename};
+        my @edit_cmd = ($editor, "+$line_number", $filename);
+        $self->{proc}->msg(sprintf "Running: %s...", join(' ', @edit_cmd));
+        system(@edit_cmd);
+        $self->{proc}->msg("Warning: return code was $?") if $? != 0;
     } else {
-	$self->errmsg("File \"${filename}\" is not readable.");
+        $self->errmsg("File \"${filename}\" is not readable.");
     }
 }
 
@@ -105,14 +105,14 @@ unless (caller) {
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc);
     sub create_frame() {
-    	my ($pkg, $file, $line, $fn) = caller(0);
-	return [
-	    {
-		 file      => $file,
-		 fn        => $fn,
-		 line      => $line,
-		 pkg       => $pkg,
-	    }];
+        my ($pkg, $file, $line, $fn) = caller(0);
+        return [
+            {
+                 file      => $file,
+                 fn        => $fn,
+                 line      => $line,
+                 pkg       => $pkg,
+            }];
     }
     my $frame_ary = create_frame();
     $proc->frame_setup($frame_ary);

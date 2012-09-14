@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # A base class for debugger subcommands.
 #
 use Exporter;
@@ -61,16 +61,16 @@ sub new($$$)
     # So this is a workaround.
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::Subcmd::";
     for my $field (@SUBCMD_VARS) {
-	my $sigil = substr($field, 0, 1);
-	my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
-	if ($sigil eq '$') {
-	    $self->{lc $new_field} = 
-		eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
-	} elsif ($sigil eq '@') {
-	    $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
-	} else {
-	    die "Woah - bad sigil: $sigil";
-	}
+        my $sigil = substr($field, 0, 1);
+        my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
+        if ($sigil eq '$') {
+            $self->{lc $new_field} = 
+                eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
+        } elsif ($sigil eq '@') {
+            $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
+        } else {
+            die "Woah - bad sigil: $sigil";
+        }
     }
     # Done after above since $NAME is in @SUBCMD_VARS;
     $self->{name} = $name;
@@ -102,16 +102,16 @@ sub run_set_int($$$;$$)
 {
     my ($self, $arg, $msg_on_error, $min_value, $max_value) = @_;
     if ($arg =~/^\s*$/) {
-    	$self->{proc}->errmsg('You need to supply a number.');
-    	return undef;
+        $self->{proc}->errmsg('You need to supply a number.');
+        return undef;
     }
     my $val = $self->{proc}->get_an_int($arg, 
-					{max_value => $max_value,
-					 min_value => $min_value, 
-					 msg_on_error => $msg_on_error
-					});
+                                        {max_value => $max_value,
+                                         min_value => $min_value, 
+                                         msg_on_error => $msg_on_error
+                                        });
     if (defined ($val)) {
-    	$self->{settings}{subcmd_setting_key} = $val;
+        $self->{settings}{subcmd_setting_key} = $val;
         $self->run_show_int();
     }
 }
@@ -132,9 +132,9 @@ sub run_show_int($;$)
     my ($self, $what) = @_;
     my $val = $self->{settings}{$self->subcmd_setting_key()};
     unless ($what) {
-	my @what = @$self->{prefix};
-	pop @what;
-	$what = join(' ', @what);
+        my @what = @$self->{prefix};
+        pop @what;
+        $what = join(' ', @what);
     }
     $self->msg(sprintf "%s is %d.", $what, $val);
 }
@@ -186,11 +186,11 @@ sub show_onoff($$)
 { 
     my ($self, $bool) = @_;
     if (!defined($bool)) {
-	return 'unset';
+        return 'unset';
     } elsif ($bool) {
-	return 'on';
+        return 'on';
     } else {
-	return 'off'
+        return 'off'
     }
 }
 
@@ -269,7 +269,7 @@ sub run($) {
     if ($self->{short_help}) {
         $doc = $self->{short_help};
     } else {
-	my $len = length($self->{help}) - 6;
+        my $len = length($self->{help}) - 6;
         $doc = ucfirst substr($self->{help}, 5, $len);
     }
     $self->run_show_int($doc);
@@ -282,7 +282,7 @@ if (__FILE__ eq $0) {
     my %cmds = %{$proc->{commands}};
     print join(', ', keys %cmds), "\n";
     my $subcmd = 
-	Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
+        Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
     print join(', ', keys %{$subcmd->{settings}}), "\n";
     print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";
     $subcmd->run_set_int($proc, 'Just a test');

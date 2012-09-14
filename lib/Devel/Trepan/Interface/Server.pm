@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine'; 
 use rlib '../../..';
@@ -42,13 +42,13 @@ sub new
         # }
     }
     my $self = {
-	# For Compatability 
-    	output => $inout,
-    	inout  => $inout,
-    	input  => $inout,
-    	interactive => 1, # Or at least so we think initially
+        # For Compatability 
+        output => $inout,
+        inout  => $inout,
+        input  => $inout,
+        interactive => 1, # Or at least so we think initially
 
-	logger => $connection_opts->{logger}
+        logger => $connection_opts->{logger}
     };
     bless $self, $class;
     return $self;
@@ -59,8 +59,8 @@ sub close($)
 {
     my ($self) = @_;
     if ($self->{inout} && $self->{inout}->is_connected) {
-	$self->{inout}->write(QUIT . 'bye');
-	$self->{inout}->close;
+        $self->{inout}->write(QUIT . 'bye');
+        $self->{inout}->close;
     }
 }
   
@@ -90,22 +90,22 @@ sub confirm($;$$)
 
     my $reply;
     while (1) {
-	# begin
+        # begin
         $self->write_confirm($prompt, $default);
-	$reply = $self->readline;
-	chomp($reply);
-	if (defined($reply)) {
-	    ($reply = lc(unpack("A*", $reply))) =~ s/^\s+//;
-	} else {
-	    return $default;
-	}
-	if (grep(/^${reply}$/, YES)) {
-	    return 1;
-	} elsif (grep(/^${reply}$/, NO)) {
-	    return 0;
-	} else {
-	    $self->msg("Please answer 'yes' or 'no'. Try again.");
-	}
+        $reply = $self->readline;
+        chomp($reply);
+        if (defined($reply)) {
+            ($reply = lc(unpack("A*", $reply))) =~ s/^\s+//;
+        } else {
+            return $default;
+        }
+        if (grep(/^${reply}$/, YES)) {
+            return 1;
+        } elsif (grep(/^${reply}$/, NO)) {
+            return 0;
+        } else {
+            $self->msg("Please answer 'yes' or 'no'. Try again.");
+        }
     }
     return $default;
 }
@@ -174,19 +174,19 @@ sub readline($;$)
     # my ($self, $prompt, $add_to_history) = @_;
     # $add_to_history = 1;
     if ($prompt) {
-	$self->write_prompt($prompt);
+        $self->write_prompt($prompt);
     }
     my $coded_line;
     eval {
-	$coded_line = $self->{inout}->read_msg();
+        $coded_line = $self->{inout}->read_msg();
     };
     if ($EVAL_ERROR) {
-	print {$self->{logger}} "$EVAL_ERROR\n" if $self->{logger};
-	$self->errmsg("Server communication protocol error, resyncing...");
-	return ('#');
+        print {$self->{logger}} "$EVAL_ERROR\n" if $self->{logger};
+        $self->errmsg("Server communication protocol error, resyncing...");
+        return ('#');
     } else {
-	my $read_ctrl = substr($coded_line,0,1);
-	substr($coded_line, 1);
+        my $read_ctrl = substr($coded_line,0,1);
+        substr($coded_line, 1);
     }
 }
 

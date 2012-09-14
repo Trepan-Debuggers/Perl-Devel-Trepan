@@ -53,7 +53,7 @@ sub run($$)
     my $proc = $self->{proc};
     my @args = @$args; shift @args; shift @args;
     foreach my $file_or_dir (@args) {
-	$proc->load_debugger_commands($file_or_dir);
+        $proc->load_debugger_commands($file_or_dir);
     }
 }
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 # Standalone routine to invoke a Perl program under the debugger.
 
 # The usual boilerplate...
@@ -23,7 +24,7 @@ my $opts = Devel::Trepan::Options::process_options(\@ARGV);
 
 if ($opts->{client}) {
     Devel::Trepan::Client::start_client({host=>$opts->{host}, 
-					 port=>$opts->{port}});
+                                         port=>$opts->{port}});
     exit;
 }
 
@@ -32,11 +33,11 @@ my @exec_strs_with_e = map {('-e', qq{'$_'})} @exec_strs;
 my $cmd;
 if (scalar @exec_strs) {
     $cmd = "$EXECUTABLE_NAME -c " . join(' ', @exec_strs_with_e) . 
-	join(' ', @ARGV) . " 2>&1";
+        join(' ', @ARGV) . " 2>&1";
     @exec_strs_with_e = map {('-e', qq{$_})} @exec_strs;
 } else {
     die "You need a Perl program to run or pass an string to eval" 
-	unless @ARGV;
+        unless @ARGV;
 
     # Resolve program name if it is not readable
     $ARGV[0] = whence_file($ARGV[0]) unless -r $ARGV[0];
@@ -56,7 +57,7 @@ $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # doing something...
 
 my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan', 
-	    @exec_strs_with_e, @ARGV);
+            @exec_strs_with_e, @ARGV);
 #print Dumper(\@ARGS), "\n";
 if ($OSNAME eq 'MSWin32') {
     # I don't understand why but Strawberry Perl has trouble with exec.

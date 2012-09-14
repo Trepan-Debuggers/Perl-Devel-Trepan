@@ -47,10 +47,10 @@ sub run($$)
     $count_str = 1 unless defined $count_str;
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
-	'msg_on_error' => 
-	    "The '${NAME}' command requires a frame number. Got: ${count_str}",
-	min_value => $low, 
-	max_value => $high
+        'msg_on_error' => 
+            "The '${NAME}' command requires a frame number. Got: ${count_str}",
+        min_value => $low, 
+        max_value => $high
     };
     my $count = $proc->get_an_int($count_str, $opts);
     return unless defined $count;

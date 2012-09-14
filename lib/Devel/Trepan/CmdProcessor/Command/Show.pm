@@ -41,10 +41,10 @@ sub run($$)
     my ($self, $args) = @_;
     my $first;
     if (scalar @$args > 1) {
-	$first = lc $args->[1];
-	my $alen = length('auto');
-	splice(@$args, 1, 2, ('auto', substr($first, $alen))) if
-	    index($first, 'auto') == 0 && length($first) > $alen;
+        $first = lc $args->[1];
+        my $alen = length('auto');
+        splice(@$args, 1, 2, ('auto', substr($first, $alen))) if
+            index($first, 'auto') == 0 && length($first) > $alen;
     }
     $self->SUPER::run($args);
 }

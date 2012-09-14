@@ -36,46 +36,46 @@ sub run($$)
 
     my $arg_count = scalar @args;
     if ($arg_count == 0) {
-	$line = $frame->{line};
+        $line = $frame->{line};
     } else {
-	$first_arg = $args[0];
-	if ($first_arg =~ /\d+/) {
-	    $line = $first_arg;
-	} else {
-	    my @matches = $proc->{dbgr}->subs($first_arg);
-	    unless (scalar(@matches)) {
-		# Try with current package name
-		$first_arg = $proc->{frame}{pkg} . '::' . $first_arg;
-		@matches = $proc->{dbgr}->subs($first_arg);
-	    }
-	    if (scalar(@matches) == 1) {
-		$filename = $matches[0][0];
-		$line     = $matches[0][1];
-		$end_line = $matches[0][2];
-	    } else {
-		$proc->msg("Expecting a line number or function; got ${args[0]}");
-		return;
-	    }
-	}
+        $first_arg = $args[0];
+        if ($first_arg =~ /\d+/) {
+            $line = $first_arg;
+        } else {
+            my @matches = $proc->{dbgr}->subs($first_arg);
+            unless (scalar(@matches)) {
+                # Try with current package name
+                $first_arg = $proc->{frame}{pkg} . '::' . $first_arg;
+                @matches = $proc->{dbgr}->subs($first_arg);
+            }
+            if (scalar(@matches) == 1) {
+                $filename = $matches[0][0];
+                $line     = $matches[0][1];
+                $end_line = $matches[0][2];
+            } else {
+                $proc->msg("Expecting a line number or function; got ${args[0]}");
+                return;
+            }
+        }
     }
     my $m;
     my $canonic = $proc->canonic_file($filename);
     if (defined $end_line) {
-	$m = sprintf("Function %s in file %s lines %d..%d", 
-		     $args[0], $canonic, $line, $end_line);
+        $m = sprintf("Function %s in file %s lines %d..%d", 
+                     $args[0], $canonic, $line, $end_line);
     } else {
-	$m = sprintf "Line %d, file %s", $line, $canonic;
+        $m = sprintf "Line %d, file %s", $line, $canonic;
     }
     $proc->msg($m);
     local(*DB::dbline) = "::_<$filename";
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
-	my $cop = 0;
-	$cop = 0 + $DB::dbline[$line];
-	$m = sprintf "COP address: 0x%x.", $cop;
-	$proc->msg($m);
+        my $cop = 0;
+        $cop = 0 + $DB::dbline[$line];
+        $m = sprintf "COP address: 0x%x.", $cop;
+        $proc->msg($m);
     } else {
-	$proc->msg("Line not showing as associated with code\n") 
-	    unless $end_line;
+        $proc->msg("Line not showing as associated with code\n") 
+            unless $end_line;
     }
 }
 

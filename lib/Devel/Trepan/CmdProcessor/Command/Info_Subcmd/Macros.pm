@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
@@ -50,25 +50,25 @@ sub run($$) {
     my $proc = $self->{proc};
     my @args = @$args;
     if (scalar(@args) > 2) {
-    	shift @args; shift @args;
-    	for my $macro_name (@args) {
-    	    if (exists $proc->{macros}{$macro_name}) {
-    		my $msg = sprintf("%s: %s", $macro_name, 
-				  $proc->{macros}{$macro_name}->[1]);
-    		$proc->msg($msg);
-    	    } else {
-    		$proc->msg("$macro_name is not a defined macro");
-    	    }
-    	}
+        shift @args; shift @args;
+        for my $macro_name (@args) {
+            if (exists $proc->{macros}{$macro_name}) {
+                my $msg = sprintf("%s: %s", $macro_name, 
+                                  $proc->{macros}{$macro_name}->[1]);
+                $proc->msg($msg);
+            } else {
+                $proc->msg("$macro_name is not a defined macro");
+            }
+        }
     } else {
-	my @macros = keys %{$proc->{macros}};
-	if (scalar @macros == 0) {
-	    $proc->msg("No macros defined.");
-	} else {
-	    $proc->section("List of macro names currently defined:");
-	    my @cmds = sort @macros;
-	    $proc->msg($self->{cmd}->columnize_commands(\@cmds));
-	}
+        my @macros = keys %{$proc->{macros}};
+        if (scalar @macros == 0) {
+            $proc->msg("No macros defined.");
+        } else {
+            $proc->section("List of macro names currently defined:");
+            my @cmds = sort @macros;
+            $proc->msg($self->{cmd}->columnize_commands(\@cmds));
+        }
    }
 }
 

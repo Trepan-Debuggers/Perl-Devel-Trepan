@@ -45,12 +45,12 @@ sub run($$)
     my $evaltype = $args->[3];
     my @result = grep($_ eq $evaltype, @DISPLAY_TYPES);
     if (1 == scalar @result) {
-	my $key = $self->{subcmd_setting_key};
-	$proc->{settings}{$key} = $evaltype;
+        my $key = $self->{subcmd_setting_key};
+        $proc->{settings}{$key} = $evaltype;
     } else {
-	my $or_list = join(', or ', map{"'$_'"} @DISPLAY_TYPES); 
-	$proc->errmsg("Expecting either $or_list; got ${evaltype}");
-	return;
+        my $or_list = join(', or ', map{"'$_'"} @DISPLAY_TYPES); 
+        $proc->errmsg("Expecting either $or_list; got ${evaltype}");
+        return;
     }
     $proc->{commands}{show}->run(['show', 'display', 'eval']);
 }

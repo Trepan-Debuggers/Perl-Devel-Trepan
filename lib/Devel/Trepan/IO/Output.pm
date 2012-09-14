@@ -1,4 +1,4 @@
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # classes to support communication to and from the debugger.  This
 # communcation might be to/from another process or another computer.
 # And reading may be from a debugger command script.
@@ -27,13 +27,13 @@ sub new($;$$) {
     my($class, $output, $opts) = @_;
     $opts ||= {};
     unless ($output) {
-	open STDOUT_DUP, ">&", STDOUT;
-	$output = *STDOUT_DUP;
+        open STDOUT_DUP, ">&", STDOUT;
+        $output = *STDOUT_DUP;
     };
     my $self = {
-	flush_after_write => 0,
-	output            => $output,
-	eof               => 0
+        flush_after_write => 0,
+        output            => $output,
+        eof               => 0
     };
     bless $self, $class;
     return $self;

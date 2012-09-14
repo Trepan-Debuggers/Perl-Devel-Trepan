@@ -43,21 +43,21 @@ sub run($$) {
     my @args = @$args; 
 
     if (scalar @args == 1) {
-	if ($proc->confirm('Delete all displays?', 0)) {
-	    $proc->{displays}->reset;
-	    return;
-	}
+        if ($proc->confirm('Delete all displays?', 0)) {
+            $proc->{displays}->reset;
+            return;
+        }
     }
     shift @args;
     for my $num_str (@args) {
-	my $opts = {msg_on_error => sprintf('%s must be a display number', $num_str)};
-	my $i = $proc->get_an_int($num_str);
-	if ($i) {
-	    unless($proc->{displays}->delete($i)) {
-		$proc->errmsg("No display number $i");
-		return;
-	    }
-	}
+        my $opts = {msg_on_error => sprintf('%s must be a display number', $num_str)};
+        my $i = $proc->get_an_int($num_str);
+        if ($i) {
+            unless($proc->{displays}->delete($i)) {
+                $proc->errmsg("No display number $i");
+                return;
+            }
+        }
     }
 }
         

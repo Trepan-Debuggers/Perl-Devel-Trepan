@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
@@ -29,7 +29,7 @@ sub complete($$)
     my $proc = $self->{proc};
     my @candidates = keys %{$proc->{aliases}};
     my @matches = 
-	Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
+        Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     sort @matches;
 }    
 
@@ -38,24 +38,24 @@ sub run($$) {
     my $proc = $self->{proc};
     my @args = @$args;
     if (scalar(@args) > 2) {
-    	shift @args; shift @args;
-    	for my $alias_name (@args) {
-    	    if (exists $proc->{aliases}{$alias_name}) {
-    		my $msg = sprintf "%s: %s", $alias_name, $proc->{aliases}{$alias_name};
-    		$proc->msg($msg);
-    	    } else {
-    		$proc->msg("$alias_name is not a defined alias");
-    	    }
-    	}
+        shift @args; shift @args;
+        for my $alias_name (@args) {
+            if (exists $proc->{aliases}{$alias_name}) {
+                my $msg = sprintf "%s: %s", $alias_name, $proc->{aliases}{$alias_name};
+                $proc->msg($msg);
+            } else {
+                $proc->msg("$alias_name is not a defined alias");
+            }
+        }
     } else {
-	my @aliases = keys %{$proc->{aliases}};
-	if (scalar @aliases == 0) {
-	    $proc->msg("No aliases defined.");
-	} else {
-	    $proc->section("List of alias names currently defined:");
-	    my @cmds = sort @aliases;
-	    $proc->msg($self->{cmd}->columnize_commands(\@cmds));
-	}
+        my @aliases = keys %{$proc->{aliases}};
+        if (scalar @aliases == 0) {
+            $proc->msg("No aliases defined.");
+        } else {
+            $proc->section("List of alias names currently defined:");
+            my @cmds = sort @aliases;
+            $proc->msg($self->{cmd}->columnize_commands(\@cmds));
+        }
    }
 }
 

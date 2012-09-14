@@ -54,7 +54,7 @@ If you wanted to parameterize the argument of the C<finish> command
 you could do that this way:
 
   macro fin+ sub{ \
-		  ['finish', 'step ' . (shift)] \
+                  ['finish', 'step ' . (shift)] \
                 }
 
 Invoking with: 
@@ -85,12 +85,12 @@ sub run($$) {
     $cmd_argstr =~ s/^\s+//;
     my $fn = eval($cmd_argstr);
     if ($EVAL_ERROR) { 
-	$proc->errmsg($EVAL_ERROR)
+        $proc->errmsg($EVAL_ERROR)
     } elsif ($fn && ref($fn) eq 'CODE') {
         $proc->{macros}{$cmd_name} = [$fn, $cmd_argstr];
-	$proc->msg("Macro \"${cmd_name}\" defined.");
+        $proc->msg("Macro \"${cmd_name}\" defined.");
     } else {
-	$proc->errmsg("Expecting an anonymous subroutine");
+        $proc->errmsg("Expecting an anonymous subroutine");
     }
 }
         

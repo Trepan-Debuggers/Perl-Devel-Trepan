@@ -60,19 +60,19 @@ sub run($$)
     my $position_str;
 
     if (scalar @$args == 1) {
-	# Form is: "frame" which means "frame 0"
-	$position_str = '0';
+        # Form is: "frame" which means "frame 0"
+        $position_str = '0';
     } elsif (scalar @$args == 2) {
-	# Form is: "frame position"
-	$position_str = $args->[1];
+        # Form is: "frame position"
+        $position_str = $args->[1];
     }
 
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
-	'msg_on_error' => 
-	    "The '${NAME}' command requires a frame number. Got: ${position_str}",
-	min_value => $low, 
-	max_value => $high
+        'msg_on_error' => 
+            "The '${NAME}' command requires a frame number. Got: ${position_str}",
+        min_value => $low, 
+        max_value => $high
     };
     my $frame_num = $proc->get_an_int($position_str, $opts);
     return unless defined $frame_num;

@@ -87,9 +87,9 @@ sub run($$) {
 
     my $sigmgr = $self->{dbgr}{sigmgr};
     if ($sigmgr->action($proc->{cmd_argstr}) &&
-	scalar(@{$args}) > 2) {
-	# Show results of recent change
-	$sigmgr->info_signal([$args->[1]]);
+        scalar(@{$args}) > 2) {
+        # Show results of recent change
+        $sigmgr->info_signal([$args->[1]]);
     }
 }
 

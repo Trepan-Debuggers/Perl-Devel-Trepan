@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -39,13 +39,13 @@ sub set_var($$$)
     my ($var_name, $ref, $value) = @_;
     my $type = substr($var_name, 1, 1);
     if ('$' eq $type) {
-	${$ref->{$var_name}}  = $value;
+        ${$ref->{$var_name}}  = $value;
     } elsif ('@' eq $type) { 
-	@{$ref->{$var_name}}  = @{$value};
+        @{$ref->{$var_name}}  = @{$value};
     } elsif ('%' eq $type) {
-	%{$ref->{$var_name}}  = %{$value}; 
+        %{$ref->{$var_name}}  = %{$value}; 
     } else {
-	${$ref->{$var_name}}  = $value; 
+        ${$ref->{$var_name}}  = $value; 
     }
 }
 
@@ -69,11 +69,11 @@ sub run($$)
     my $my_hash  = peek_my($diff + $proc->{frame_index} + 4);
 
     if (exists($my_hash->{$var_name})) {
-	set_var($var_name, $my_hash, $value);
+        set_var($var_name, $my_hash, $value);
     } elsif (exists($our_hash->{$var_name})) {
-	set_var($var_name, $my_hash, $value);
+        set_var($var_name, $my_hash, $value);
     } else {
-	$proc->errmsg("Can't find $var_name as a 'my' or 'our' variable");
+        $proc->errmsg("Can't find $var_name as a 'my' or 'our' variable");
     }
 }
 

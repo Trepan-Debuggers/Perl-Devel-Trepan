@@ -45,16 +45,16 @@ sub run($$) {
     my @args = @$args; 
 
     if (scalar @args == 1) {
-	if ($proc->confirm('Delete all breakpoints?', 0)) {
-	    $proc->{brkpts}->reset;
-	    return;
-	}
+        if ($proc->confirm('Delete all breakpoints?', 0)) {
+            $proc->{brkpts}->reset;
+            return;
+        }
     }
     shift @args;
     for my $num_str (@args) {
-	my $bp_num = $proc->get_an_int($num_str);
-	my $success = $proc->{brkpts}->delete($bp_num) if $bp_num;
-	$proc->msg("Deleted breakpoint $bp_num") if $success;
+        my $bp_num = $proc->get_an_int($num_str);
+        my $success = $proc->{brkpts}->delete($bp_num) if $bp_num;
+        $proc->msg("Deleted breakpoint $bp_num") if $success;
     }
 }
         

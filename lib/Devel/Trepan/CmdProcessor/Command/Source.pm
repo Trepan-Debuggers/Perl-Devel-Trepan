@@ -85,9 +85,9 @@ sub parse_options($$)
     my $result = &GetOptionsFromArray($args,
           '--continue' => \$opts->{cont},
           '--verbose'  => \$opts->{verbose},
-	  '--no'       => \$opts->{no},
+          '--no'       => \$opts->{no},
           '--yes'      => sub { $opts->{no} = 0; }
-	);
+        );
     $opts;
 }
 
@@ -99,25 +99,25 @@ sub run($$)
     my $options = parse_options($self, \@args);
     my $intf = $self->{proc}{interfaces};
     my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new : 
-	$intf->[-1]{output};
+        $intf->[-1]{output};
 
     my $filename = $args->[-1];
     
     my $expanded_filename = abs_path(glob($filename));
     unless (defined $expanded_filename && -f $expanded_filename) {
-	my $mess = sprintf("Debugger command file '%s' is not found", $filename);
-	$self->errmsg($mess);
-	return 0;
+        my $mess = sprintf("Debugger command file '%s' is not found", $filename);
+        $self->errmsg($mess);
+        return 0;
     }
     unless(-r $expanded_filename) {
-	my $mess = sprintf("Debugger command file '%s' (%s) is not a readable file", $filename, $expanded_filename);
-	$self->errmsg($mess);
-	return 0;
+        my $mess = sprintf("Debugger command file '%s' (%s) is not a readable file", $filename, $expanded_filename);
+        $self->errmsg($mess);
+        return 0;
     }
     
     # Push a new debugger interface.
     my $script_intf = Devel::Trepan::Interface::Script->new($expanded_filename, 
-							    $output, $options);
+                                                            $output, $options);
     push @{$intf}, $script_intf;
 }
 

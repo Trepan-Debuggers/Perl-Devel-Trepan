@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -27,8 +27,8 @@ sub run($$)
     shift @args; shift @args; shift @args;
     my $num_str = join(' ', @args);
     $self->run_set_int($num_str, 
-		       "The '$self->{cmd_str}' command requires a line width", 
-		       0);
+                       "The '$self->{cmd_str}' command requires a line width", 
+                       0);
 }
 
 unless (caller) {

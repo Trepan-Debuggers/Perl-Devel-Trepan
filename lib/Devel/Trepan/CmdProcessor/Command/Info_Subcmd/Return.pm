@@ -32,19 +32,19 @@ sub run($$)
     my $proc = $self->{proc};
 
     unless ($DB::event eq 'return') {
-	$proc->errmsg("We are not stopped at a return");
-	return;
+        $proc->errmsg("We are not stopped at a return");
+        return;
     }
     my $ret_type = $proc->{dbgr}->return_type();
     if ('undef' eq $ret_type) {
-	$proc->msg("Return value for $DB::_[0] is <undef>");
+        $proc->msg("Return value for $DB::_[0] is <undef>");
     } elsif ('array' eq $ret_type) {
-	$proc->msg("Return array value for $DB::_[0] is:");
-	my @ret = $proc->{dbgr}->return_value();
-	$proc->msg(Dumper(@ret));
+        $proc->msg("Return array value for $DB::_[0] is:");
+        my @ret = $proc->{dbgr}->return_value();
+        $proc->msg(Dumper(@ret));
     } elsif ('scalar' eq $ret_type) {
-	my $ret = $proc->{dbgr}->return_value() || 'undef';
-	$proc->msg("Return value for $DB::_[0] is: $ret");
+        my $ret = $proc->{dbgr}->return_value() || 'undef';
+        $proc->msg("Return value for $DB::_[0] is: $ret");
     }
 }
 

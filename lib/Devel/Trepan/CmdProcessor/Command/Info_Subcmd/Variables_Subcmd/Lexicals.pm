@@ -56,24 +56,24 @@ sub run($$)
     my @ARGS = @{$args};
     @ARGS = splice(@ARGS, scalar(@CMD));
     if (scalar(@ARGS == 0)) {
-	$self->process_args(\@ARGS, $my_hash, 'my');
-	$self->process_args(\@ARGS, $our_hash, 'our');
+        $self->process_args(\@ARGS, $my_hash, 'my');
+        $self->process_args(\@ARGS, $our_hash, 'our');
     } else {
-	if ($ARGS[0] eq '-v') {
-	    $self->process_args(['-v'], $my_hash, 'my');
-	    $self->process_args(['-v'], $our_hash, 'our');
-	} else {
-	    my $proc = $self->{proc};
-	    for my $name (@ARGS) {
-		if (exists($my_hash->{$name})) {
-		    Devel::Trepan::CmdProcessor::Command::Info::Variables::My::show_var($proc, $name, $my_hash->{$name});
-		} elsif (exists($our_hash->{$name})) {
-		    Devel::Trepan::CmdProcessor::Command::Info::Variables::My::show_var($proc, $name, $our_hash->{$name});
-		} else {
-		    $proc->errmsg("No 'my' or 'our' variable $name found at this level");
-		}
-	    }
-	}
+        if ($ARGS[0] eq '-v') {
+            $self->process_args(['-v'], $my_hash, 'my');
+            $self->process_args(['-v'], $our_hash, 'our');
+        } else {
+            my $proc = $self->{proc};
+            for my $name (@ARGS) {
+                if (exists($my_hash->{$name})) {
+                    Devel::Trepan::CmdProcessor::Command::Info::Variables::My::show_var($proc, $name, $my_hash->{$name});
+                } elsif (exists($our_hash->{$name})) {
+                    Devel::Trepan::CmdProcessor::Command::Info::Variables::My::show_var($proc, $name, $our_hash->{$name});
+                } else {
+                    $proc->errmsg("No 'my' or 'our' variable $name found at this level");
+                }
+            }
+        }
     }
 }
 

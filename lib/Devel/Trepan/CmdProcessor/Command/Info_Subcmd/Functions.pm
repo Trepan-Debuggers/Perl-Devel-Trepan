@@ -48,33 +48,33 @@ sub run($$)
     my $regexp = undef;
 
     if (@$args == 3) {
-    	$regexp = $args->[2];
+        $regexp = $args->[2];
     }
 
     my @functions = sort keys %DB::sub;
     @functions = grep /$regexp/, @functions if defined $regexp;
     if (scalar @functions) {
-	my %FILES = ();
-	for my $function (@functions) {
-	    my $file_range = $DB::sub{$function};
-	    if ($file_range =~ /^(.+):(\d+-\d+)/) {
-		my ($filename, $range) = ($1, $2);
-		$FILES{$filename} ||= []; 
-		push @{$FILES{$filename}}, [$function, $range];
-	    } else {
-		$FILES{$file_range} ||= []; 
-		push @{$FILES{$file_range}}, [$function];
-	    }
-	}
-	# FIXME: make output more like gdb's.
-	for my $filename (sort keys %FILES) {
-	    $proc->section($filename);
-	    for my $entry (@{$FILES{$filename}}) {
-		$proc->msg("\t" . join(' is at ', @$entry));
-	    }
-	}
+        my %FILES = ();
+        for my $function (@functions) {
+            my $file_range = $DB::sub{$function};
+            if ($file_range =~ /^(.+):(\d+-\d+)/) {
+                my ($filename, $range) = ($1, $2);
+                $FILES{$filename} ||= []; 
+                push @{$FILES{$filename}}, [$function, $range];
+            } else {
+                $FILES{$file_range} ||= []; 
+                push @{$FILES{$file_range}}, [$function];
+            }
+        }
+        # FIXME: make output more like gdb's.
+        for my $filename (sort keys %FILES) {
+            $proc->section($filename);
+            for my $entry (@{$FILES{$filename}}) {
+                $proc->msg("\t" . join(' is at ', @$entry));
+            }
+        }
     } else {
-	$proc->msg("No matching functions");
+        $proc->msg("No matching functions");
     }
 }
 

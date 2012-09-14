@@ -31,8 +31,8 @@ unless (caller) {
     print $cmd->{help}, "\n";
     print "min args: ", $cmd->MIN_ARGS, "\n";
     for my $arg ('ev', 'op', 'foo') {
-	my @aref = $cmd->complete_token_with_next($arg);
-	printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
+        my @aref = $cmd->complete_token_with_next($arg);
+        printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
     }
 
     print join(' ', @{$cmd->{prefix}}), "\n"; 

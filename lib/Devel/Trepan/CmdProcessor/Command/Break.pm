@@ -54,7 +54,7 @@ sub complete($$)
     my ($self, $prefix) = @_;
     my $filename = $self->{proc}->filename;
     my @completions = sort(('.', DB::LineCache::file_list, DB::subs,
-			    DB::LineCache::trace_line_numbers($filename)));
+                            DB::LineCache::trace_line_numbers($filename)));
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
@@ -69,84 +69,84 @@ sub run($$) {
     my $bp;
     my $arg_count = scalar @args;
     if ($arg_count == 0) {
-	$bp = $self->{dbgr}->set_break($DB::filename, $DB::lineno);
+        $bp = $self->{dbgr}->set_break($DB::filename, $DB::lineno);
     } else {
-	my ($filename, $line_or_fn, $condition);
-	if ($arg_count > 2) {
-	    if ($args[0] eq 'if') {
-		$line_or_fn = $DB::lineno;
-		$filename = $DB::filename;
-		unshift @args, $line_or_fn;
-	    } else  {
-		$filename = $args[0];
-		if ($args[1] =~ /\d+/) {
-		    $line_or_fn = $args[1];
-		    shift @args;
-		} elsif ($args[1] eq 'if') {
-		    $line_or_fn = $args[0];
-		} else {
-		    $line_or_fn = $args[0];
-		}
-	    }
-	} else {
-	    # $arg_count == 1. 
-	    $line_or_fn = $args[0];
-	    if ($line_or_fn =~ /^\d+/) {
-		$filename = $DB::filename;
-	    } else {
-		my @matches = $self->{dbgr}->subs($args[0]);
-		if (scalar(@matches) == 1) {
-		    $filename = $matches[0][0];
-		} else {
-		    my $canonic_name = DB::LineCache::map_file($args[0]);
-		    if (DB::LineCache::is_cached($canonic_name)) {
-			$filename = $canonic_name;
-		    }
-		}
-	    }
-	    if ($arg_count == 2 && $args[1] =~ /\d+/) {
-		$line_or_fn = $args[1];
-		shift @args;
-	    }
-	}
-	shift @args;
-	if (scalar @args) {
-	    if ($args[0] eq 'if') {
-		shift @args;
-		$condition = join(' ', @args);
-	    } else {
-		$proc->errmsg("Expecting 'if' to start breakpoint condition;" . 
-			      " got ${args[0]}");
-	    }
-	}
-	my $msg = $self->{dbgr}->break_invalid($filename, $line_or_fn);
-	my $force = 0;
-	if ($msg) {
-	    if ($msg =~ /not known to be a trace line/) {
-		$proc->errmsg($msg);
-		$proc->msg("Use 'info file $filename brkpts' to see breakpoints I know about");
-		$force = $self->{proc}->confirm('Set breakpoint anyway?', 0);
-		return unless $force;
-	    }
-	}
-	$bp = $self->{dbgr}->set_break($filename, $line_or_fn, 
-				       $condition, undef, undef, undef, $force);
+        my ($filename, $line_or_fn, $condition);
+        if ($arg_count > 2) {
+            if ($args[0] eq 'if') {
+                $line_or_fn = $DB::lineno;
+                $filename = $DB::filename;
+                unshift @args, $line_or_fn;
+            } else  {
+                $filename = $args[0];
+                if ($args[1] =~ /\d+/) {
+                    $line_or_fn = $args[1];
+                    shift @args;
+                } elsif ($args[1] eq 'if') {
+                    $line_or_fn = $args[0];
+                } else {
+                    $line_or_fn = $args[0];
+                }
+            }
+        } else {
+            # $arg_count == 1. 
+            $line_or_fn = $args[0];
+            if ($line_or_fn =~ /^\d+/) {
+                $filename = $DB::filename;
+            } else {
+                my @matches = $self->{dbgr}->subs($args[0]);
+                if (scalar(@matches) == 1) {
+                    $filename = $matches[0][0];
+                } else {
+                    my $canonic_name = DB::LineCache::map_file($args[0]);
+                    if (DB::LineCache::is_cached($canonic_name)) {
+                        $filename = $canonic_name;
+                    }
+                }
+            }
+            if ($arg_count == 2 && $args[1] =~ /\d+/) {
+                $line_or_fn = $args[1];
+                shift @args;
+            }
+        }
+        shift @args;
+        if (scalar @args) {
+            if ($args[0] eq 'if') {
+                shift @args;
+                $condition = join(' ', @args);
+            } else {
+                $proc->errmsg("Expecting 'if' to start breakpoint condition;" . 
+                              " got ${args[0]}");
+            }
+        }
+        my $msg = $self->{dbgr}->break_invalid($filename, $line_or_fn);
+        my $force = 0;
+        if ($msg) {
+            if ($msg =~ /not known to be a trace line/) {
+                $proc->errmsg($msg);
+                $proc->msg("Use 'info file $filename brkpts' to see breakpoints I know about");
+                $force = $self->{proc}->confirm('Set breakpoint anyway?', 0);
+                return unless $force;
+            }
+        }
+        $bp = $self->{dbgr}->set_break($filename, $line_or_fn, 
+                                       $condition, undef, undef, undef, $force);
     }
     if (defined($bp)) {
-	    my $prefix = $bp->type eq 'tbrkpt' ? 
-		'Temporary breakpoint' : 'Breakpoint' ;
-	    my $id = $bp->id;
-	    my $filename = $proc->canonic_file($bp->filename);
-	    my $line_num = $bp->line_num;
-	    $proc->{brkpts}->add($bp);
-	    $proc->msg("$prefix $id set in $filename at line $line_num");
-	    # Warn if we are setting a breakpoint on a line that starts
-	    # "use.."
-	    my $text = DB::LineCache::getline($bp->filename, $line_num, 
-					      {output => 'plain'});
-	    if (defined($text) && $text =~ /^\s*use\s+/) {
-		$proc->msg("Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.");
-	    }
+            my $prefix = $bp->type eq 'tbrkpt' ? 
+                'Temporary breakpoint' : 'Breakpoint' ;
+            my $id = $bp->id;
+            my $filename = $proc->canonic_file($bp->filename);
+            my $line_num = $bp->line_num;
+            $proc->{brkpts}->add($bp);
+            $proc->msg("$prefix $id set in $filename at line $line_num");
+            # Warn if we are setting a breakpoint on a line that starts
+            # "use.."
+            my $text = DB::LineCache::getline($bp->filename, $line_num, 
+                                              {output => 'plain'});
+            if (defined($text) && $text =~ /^\s*use\s+/) {
+                $proc->msg("Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.");
+            }
     }
 }
 
@@ -156,17 +156,17 @@ unless (caller) {
     require Devel::Trepan::Core;
     my $db = Devel::Trepan::Core->new;
     my $intf = Devel::Trepan::Interface::User->new(undef, undef, 
-						   {readline => 0});
+                                                   {readline => 0});
     my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
     $proc->{stack_size} = 0;
     my $cmd = __PACKAGE__->new($proc);
 
     eval { 
       sub db_setup() {
-	  no warnings 'once';
-	  $DB::caller = [caller];
-	  ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine) 
-	      = @{$DB::caller};
+          no warnings 'once';
+          $DB::caller = [caller];
+          ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine) 
+              = @{$DB::caller};
       }
     };
     db_setup();

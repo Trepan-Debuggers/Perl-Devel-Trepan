@@ -55,25 +55,25 @@ sub run($$) {
     return unless defined($bpnum);
     my $bp = $proc->{brkpts}->find($bpnum);
     unless ($bp) { 
-	$proc->errmsg("No breakpoint number $bpnum");
-	return;
+        $proc->errmsg("No breakpoint number $bpnum");
+        return;
     }
     
     my $condition;
     if (scalar @{$args} > 2) {
-	my @args = @{$args};
-	shift @args; shift @args;
-	$condition = join(' ', @args);
+        my @args = @{$args};
+        shift @args; shift @args;
+        $condition = join(' ', @args);
         my $msg = &DB::eval_not_ok($condition);
-	if ($msg) {
-	    $proc->errmsg("Invalid condition: $condition");
-	    chomp $msg;
-	    $proc->errmsg($msg);
-	    return
-	}
+        if ($msg) {
+            $proc->errmsg("Invalid condition: $condition");
+            chomp $msg;
+            $proc->errmsg($msg);
+            return
+        }
     } else {
-	$condition = '1';
-	$proc->msg('Breakpoint $bp->id is now unconditional.');
+        $condition = '1';
+        $proc->msg('Breakpoint $bp->id is now unconditional.');
     }
     $bp->condition($condition);
 }

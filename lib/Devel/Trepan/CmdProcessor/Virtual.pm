@@ -19,9 +19,9 @@ sub new($$;$) {
     my ($class, $interfaces, $settings) = @_;
     $settings ||= {};
     my $self = {
-	class      => $class,
-	interfaces => $interfaces,
-	settings   => $settings,
+        class      => $class,
+        interfaces => $interfaces,
+        settings   => $settings,
     };
     bless ($self, $class);
     return $self;

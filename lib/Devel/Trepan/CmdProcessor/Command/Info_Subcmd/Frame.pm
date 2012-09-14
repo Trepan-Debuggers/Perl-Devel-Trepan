@@ -47,18 +47,18 @@ sub run($$)
     my ($frame, $frame_num);
 
     if (@$args == 3) {
-	my ($low, $high) = $proc->frame_low_high(0);
-    	my $opts = {
-	    min_value => $low, 
-	    max_value => $high
-    	};
-    	$frame_num = $proc->get_an_int($args->[2], $opts);
-    	return unless defined $frame_num;
-	$frame_num += $proc->{stack_size} if $frame_num < 0;
-	$frame     = $proc->{frames}[$frame_num];
+        my ($low, $high) = $proc->frame_low_high(0);
+        my $opts = {
+            min_value => $low, 
+            max_value => $high
+        };
+        $frame_num = $proc->get_an_int($args->[2], $opts);
+        return unless defined $frame_num;
+        $frame_num += $proc->{stack_size} if $frame_num < 0;
+        $frame     = $proc->{frames}[$frame_num];
     } else {
-	$frame_num = $proc->{frame_index};
-	$frame     = $proc->{frame};
+        $frame_num = $proc->{frame_index};
+        $frame     = $proc->{frame};
     }
 
     my $is_last = $frame_num == $proc->{stack_size}-1;
@@ -67,22 +67,22 @@ sub run($$)
     my @titles = qw(package function file line);
     my $i=-1;
     for my $field (qw(pkg fn file line)) {
-	$i++;
-	next unless exists $frame->{$field} && $frame->{$field};
-	next if $field eq 'fn' && $is_last;
-	$m = "  ${titles[$i]}: " . $frame->{$field};
-	$proc->msg($m);
+        $i++;
+        next unless exists $frame->{$field} && $frame->{$field};
+        next if $field eq 'fn' && $is_last;
+        $m = "  ${titles[$i]}: " . $frame->{$field};
+        $proc->msg($m);
     }
     return if $is_last;
     for my $field (qw(wantarray is_require)) {
-	next unless $frame->{$field};
-	$m = "  ${field}: " . $frame->{$field};
-	$proc->msg($m);
+        next unless $frame->{$field};
+        $m = "  ${field}: " . $frame->{$field};
+        $proc->msg($m);
     }
     my $args_ary = $frame->{args};
     if ($args_ary) {
-	$m = sprintf "  args: %s", join(', ', @$args_ary);
-	$proc->msg($m);
+        $m = sprintf "  args: %s", join(', ', @$args_ary);
+        $proc->msg($m);
     }
 }
 

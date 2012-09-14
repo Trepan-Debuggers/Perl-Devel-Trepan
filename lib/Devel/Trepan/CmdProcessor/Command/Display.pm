@@ -54,13 +54,13 @@ sub run($$) {
 
     $display = join(' ', @args);
     unless (is_valid_condition($display)) {
-	$proc->errmsg("Invalid display: $display");
-	return
+        $proc->errmsg("Invalid display: $display");
+        return
     }
     my $disp = $proc->{displays}->add($display);
     if ($disp) {
-	my $mess = sprintf("Display %d set", $disp->number);
-	$proc->msg($mess);
+        my $mess = sprintf("Display %d set", $disp->number);
+        $proc->msg($mess);
     }
 }
 

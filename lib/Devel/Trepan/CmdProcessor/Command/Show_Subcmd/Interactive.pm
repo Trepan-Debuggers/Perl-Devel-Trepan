@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -21,14 +21,14 @@ sub run($$)
     my $intf = $proc->{interfaces}->[-1];
     my $bool =  $intf->is_interactive();
     my $msg = sprintf("Debugger's interactive mode is %s.",  
-		      $self->show_onoff($bool));
+                      $self->show_onoff($bool));
     $proc->msg($msg);
     if ($bool) {
-	$bool = $intf->{input}->can("have_term_readline") && 
-	    $intf->{input}->have_term_readline();
-	$msg = sprintf("Terminal Readline capability is %s.",  
-		       $self->show_onoff(!!$bool));
-	$proc->msg($msg);
+        $bool = $intf->{input}->can("have_term_readline") && 
+            $intf->{input}->have_term_readline();
+        $msg = sprintf("Terminal Readline capability is %s.",  
+                       $self->show_onoff(!!$bool));
+        $proc->msg($msg);
     }
 }
 

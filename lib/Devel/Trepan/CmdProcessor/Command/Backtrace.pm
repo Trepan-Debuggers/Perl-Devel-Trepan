@@ -52,19 +52,19 @@ sub run($$)
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $opts = {
-	basename    => $proc->{settings}{basename},
-	current_pos => $proc->{frame_index},
-	maxstack    => $proc->{settings}{maxstack},
-	maxwidth    => $proc->{settings}{maxwidth},
+        basename    => $proc->{settings}{basename},
+        current_pos => $proc->{frame_index},
+        maxstack    => $proc->{settings}{maxstack},
+        maxwidth    => $proc->{settings}{maxwidth},
     };
     my $stack_size = $proc->{stack_size};
     my $count = $stack_size;
     if (scalar @$args > 1) {
         $count = 
-	    $proc->get_an_int($args->[1], 
-			      {cmdname   => $self->name,
-			       min_value => 1});
-	return unless defined $count;
+            $proc->get_an_int($args->[1], 
+                              {cmdname   => $self->name,
+                               min_value => 1});
+        return unless defined $count;
     }
     $opts->{count} = $count;
     my @frames = $self->{dbgr}->backtrace($count-1);

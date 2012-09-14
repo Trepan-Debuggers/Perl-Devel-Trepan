@@ -35,22 +35,22 @@ sub run($$)
     my @args = @$args;
     shift @args;
     unless ($DB::event eq 'return') {
-	$proc->errmsg("We are not stopped at a return");
-	return;
+        $proc->errmsg("We are not stopped at a return");
+        return;
     }
     my $ret_type = $proc->{dbgr}->return_type();
     if ('undef' eq $ret_type) {
-	$proc->msg("Return value is <undef>");
+        $proc->msg("Return value is <undef>");
     } elsif ('array' eq $ret_type) {
-	# Not quite right, but we'll use this for now.
-	my @new_value = eval(join(' ', @args));
-	@DB::return_value = @new_value;
-	$proc->msg("Return array value set to:");
-	$proc->msg(Dumper(@new_value));
+        # Not quite right, but we'll use this for now.
+        my @new_value = eval(join(' ', @args));
+        @DB::return_value = @new_value;
+        $proc->msg("Return array value set to:");
+        $proc->msg(Dumper(@new_value));
     } elsif ('scalar' eq $ret_type) {
-	my $new_value = eval(join(' ', @args));
-	$DB::return_value = $new_value;
-	$proc->msg("Return value set to: $new_value");
+        my $new_value = eval(join(' ', @args));
+        $DB::return_value = $new_value;
+        $proc->msg("Return value set to: $new_value");
     }
 }
 

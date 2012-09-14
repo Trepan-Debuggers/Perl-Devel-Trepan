@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -31,13 +31,13 @@ sub run($$)
     $self->SUPER::run($args);
     my $proc = $self->{proc};
     if ( $proc->{settings}{traceprint} ) {
-	$proc->{skip_count} = -1;  # -1 is like infinite skipping.
-	$proc->{unconditional_prehooks}->insert_if_new(10, 
-						       $proc->{trace_hook}[0],
-						       $proc->{trace_hook}[1]
-	    );
+        $proc->{skip_count} = -1;  # -1 is like infinite skipping.
+        $proc->{unconditional_prehooks}->insert_if_new(10, 
+                                                       $proc->{trace_hook}[0],
+                                                       $proc->{trace_hook}[1]
+            );
     } else {
-	$proc->{unconditional_prehooks}->delete_by_name('trace');
+        $proc->{unconditional_prehooks}->delete_by_name('trace');
     }
 }
 

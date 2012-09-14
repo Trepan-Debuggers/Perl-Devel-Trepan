@@ -69,31 +69,31 @@ sub run($$) {
     my $unconditional = substr($args->[0], -1, 1) eq '!';
     my $sig;
     if (scalar(@$args) > 1) {
-	$sig = uc($args->[1]);
-	unless ( ($sig =~ /[+-]?\d+/) || exists $SIG{$sig} ) { 
-	    $self->errmsg("Signal name '${sig}' is not a signal I know about.");
-	    return;
-	}
+        $sig = uc($args->[1]);
+        unless ( ($sig =~ /[+-]?\d+/) || exists $SIG{$sig} ) { 
+            $self->errmsg("Signal name '${sig}' is not a signal I know about.");
+            return;
+        }
     } else {
-	if ($unconditional || $self->{proc}->confirm('Really quit?', 0)) {
-	    $sig = 'KILL';
-	} else {
-	    $self->msg('Kill not confirmed.');
-	    return;
-	}
+        if ($unconditional || $self->{proc}->confirm('Really quit?', 0)) {
+            $sig = 'KILL';
+        } else {
+            $self->msg('Kill not confirmed.');
+            return;
+        }
     }
     if (kill(0, $$)) {
-	# Force finalization on interface.
-	$self->{proc}{interfaces} = [] if 
-	    'KILL' eq $sig || 9 eq $sig || -9 eq $sig;
-	if (kill($sig, $$)) {
-	    $self->msg("kill ${sig} successfully sent to process $$");
-	} else {
-	    $self->errmsg("Kill ${sig} to process $$ not accepted: $!")
-	}
+        # Force finalization on interface.
+        $self->{proc}{interfaces} = [] if 
+            'KILL' eq $sig || 9 eq $sig || -9 eq $sig;
+        if (kill($sig, $$)) {
+            $self->msg("kill ${sig} successfully sent to process $$");
+        } else {
+            $self->errmsg("Kill ${sig} to process $$ not accepted: $!")
+        }
     } else {
-	$self->errmsg(["Unable kill ${sig} to process $$",
-		       "Different uid and not super-user?"]);
+        $self->errmsg(["Unable kill ${sig} to process $$",
+                       "Different uid and not super-user?"]);
     }
 }
 
@@ -105,7 +105,7 @@ unless (caller()) {
     print join(', ', @{$cmd->{aliases}}), "\n";
     print "min args: ", eval('$' . __PACKAGE__ . "::MIN_ARGS"), "\n";
     for my $arg ('hu', 'HU', '', 1, '-9') {
-	printf "complete($arg) => %s\n", join(", ", $cmd->complete($arg));
+        printf "complete($arg) => %s\n", join(", ", $cmd->complete($arg));
     }
     for my $arg (qw(fooo 100 1 -1 HUP -9)) {
       print "$NAME ${arg}\n";

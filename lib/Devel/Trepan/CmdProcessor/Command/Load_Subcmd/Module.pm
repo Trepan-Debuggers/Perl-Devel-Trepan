@@ -56,19 +56,19 @@ sub run($$)
     my $proc = $self->{proc};
     my @args = @$args; shift @args; shift @args;
     foreach my $module (@args) {
-	$module .= '.pm' unless -r $module || substr($module,-3,3) eq '.pm';
-	if (-r $module) {
-	    my $rc = do $module;
-	    unless ($rc) {
-		if ($@) {
-		    $self->errmsg("Trouble reading ${module}: $@");
-		} else {
-		    $self->errmsg("Perl module ${module} gave invalid return");
-		}
-	    }
-	} else {
-	    $self->errmsg("Can't find Perl module file $module");
-	}
+        $module .= '.pm' unless -r $module || substr($module,-3,3) eq '.pm';
+        if (-r $module) {
+            my $rc = do $module;
+            unless ($rc) {
+                if ($@) {
+                    $self->errmsg("Trouble reading ${module}: $@");
+                } else {
+                    $self->errmsg("Perl module ${module} gave invalid return");
+                }
+            }
+        } else {
+            $self->errmsg("Can't find Perl module file $module");
+        }
     }
 }
 

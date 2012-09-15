@@ -1,5 +1,10 @@
 2012-09-15  Rocky Bernstein <rocky@cpan.org>
 
+	* ChangeLog, Changes, META.json, META.yml: I said get ready for
+	release
+
+2012-09-15  Rocky Bernstein <rocky@cpan.org>
+
 	* lib/Devel/Trepan.pm, t/20test-break.t: Get ready for 0.36 release.
 
 

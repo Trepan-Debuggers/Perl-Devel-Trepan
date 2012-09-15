@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.36';
+use version; $VERSION = '0.36_01';
 use Exporter;
 
 use Devel::Trepan::Core;
@@ -336,7 +336,7 @@ L</"Recursively Debug into Perl code">
 
 =head4 Evaluate Perl code (eval)
 
-eval[@$][?] [I<Perl-code>]
+B<eval>[B<@$>][B<?>] [I<Perl-code>]
 
 Run I<Perl-code> in the context of the current frame.
 
@@ -368,7 +368,7 @@ I<Examples:>
 See also C<set auto eval> to treat unrecognized debugger commands as
 Perl code.
 
-=head4 Recursively Debug into Perl code
+=head4 Recursively Debug into Perl code (debug)
 
 B<debug> I<Perl-code>
 
@@ -483,7 +483,7 @@ all breakpoints, give no arguments.
 See also the C<clear> command which clears breakpoints by line number
 and C<info break> to get a list of breakpoint numbers.
 
-=head4 Enable some breakpoints
+=head4 Enable some breakpoints (enable)
 
 B<enable> I<num> [I<num> ...]
     
@@ -552,7 +552,7 @@ I<Examples:>
 
 =item *
 
-L</"Print a backtrace (backtrace)">
+L</"Print all or parts of the call stack (backtrace)">
 
 =item *
 

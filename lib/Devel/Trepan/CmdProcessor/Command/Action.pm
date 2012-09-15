@@ -16,11 +16,10 @@ use constant CATEGORY   => 'breakpoints';
 use constant NEED_STACK => 0;
 use constant MIN_ARGS  => 2;      # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
-EOE
-}
-
 use constant SHORT_HELP => 
     'Set an action to be done before the line is executed.';
+EOE
+}
 
 use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent

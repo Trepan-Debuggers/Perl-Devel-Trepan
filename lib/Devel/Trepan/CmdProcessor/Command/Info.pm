@@ -31,7 +31,8 @@ Generic command for showing things about the program being debugged.
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.
 
-Type C<info> for a list of "info" subcommands and what they do.
+Type C<info> for a list of subcommands and what they do.
+
 Type C<help info *> for a list of C<info> subcommands.
 =cut
 HELP

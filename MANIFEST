@@ -69,6 +69,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Kill.pm
 lib/Devel/Trepan/CmdProcessor/Command/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Load.pm
 lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm
+lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm
 lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Next.pm
 lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
@@ -198,6 +199,7 @@ t/10test-cmd-macro.t
 t/10test-complete.t
 t/10test-condition.t
 t/10test-db-brkpt.t
+t/10test-db-eval.t
 t/10test-intf-script.t
 t/10test-intf-user.t
 t/10test-io-output.t
@@ -206,6 +208,7 @@ t/10test-io-tcppack.t
 t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t
+t/10test-pod2text.t
 t/10test-position.t
 t/10test-proc-default.t
 t/10test-proc-hook.t

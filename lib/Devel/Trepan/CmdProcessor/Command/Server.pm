@@ -46,7 +46,7 @@ HELP
 # Note that the command startup file ${Devel::Trepan::CMD_INITFILE_BASE} is read automatically
 # via a ${NAME} command the debugger is started.
 
-use constant DEFAULT_OPTIONS => {
+my $DEFAULT_OPTIONS = {
     port => 1954,
     host => '127.0.0.1',
 };
@@ -63,12 +63,12 @@ sub parse_options($$)
 {
     my ($self, $args) = @_;
     my $seen_yes_no = 0;
-    my $opts = DEFAULT_OPTIONS;
+    my %opts = %{$DEFAULT_OPTIONS};
     my $result = &GetOptionsFromArray($args,
-          'port:n' => \$opts->{port},
-          'host:s' => \$opts->{host},
+          'port:n' => \$opts{port},
+          'host:s' => \$opts{host},
         );
-    $opts;
+    \%opts;
 }
 
 sub run($$)

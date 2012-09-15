@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 use strict;
-use warnings;
 use rlib '../lib';
 
 use Test::More;
+use warnings; no warnings 'redefine';
 note( "Testing Devel::Trepan::BrkptMgr" );
 
 use Devel::Trepan::DB::Breakpoint;

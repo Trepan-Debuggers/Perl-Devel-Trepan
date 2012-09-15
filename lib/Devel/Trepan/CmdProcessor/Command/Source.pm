@@ -62,7 +62,7 @@ HELP
 # Note that the command startup file ${Devel::Trepan::CMD_INITFILE_BASE} is read automatically
 # via a ${NAME} command the debugger is started.
 
-use constant DEFAULT_OPTIONS => {
+my $DEFAULT_OPTIONS = {
     abort_on_error => 0,
     confirm_val => 0,
     quiet => 0,
@@ -81,14 +81,14 @@ sub parse_options($$)
 {
     my ($self, $args) = @_;
     my $seen_yes_no = 0;
-    my $opts = DEFAULT_OPTIONS;
+    my %opts = %$DEFAULT_OPTIONS;
     my $result = &GetOptionsFromArray($args,
-          '--continue' => \$opts->{cont},
-          '--verbose'  => \$opts->{verbose},
-          '--no'       => \$opts->{no},
-          '--yes'      => sub { $opts->{no} = 0; }
+          '--continue' => \$opts{cont},
+          '--verbose'  => \$opts{verbose},
+          '--no'       => \$opts{no},
+          '--yes'      => sub { $opts{no} = 0; }
         );
-    $opts;
+    \%opts;
 }
 
 sub run($$)

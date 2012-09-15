@@ -9,7 +9,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-use constant SHORT_HELP => 'Load or something Perlis'; 
+use constant SHORT_HELP => 'Load or something Perlish'; 
 use constant CATEGORY => 'status';
 use constant MIN_ARGS   => 0;  # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
@@ -31,8 +31,10 @@ Generic command for loading or reloading.
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.
 
-Type C<info> for a list of "load" subcommands and what they do.
-Type C<help load *> for a list of C<load> subcommands.
+Type C<help load *> for a just list of C<load> subcommands.
+
+Type C<load> for a list of subcommands and what they do.
+
 =cut
 HELP
 

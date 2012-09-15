@@ -9,6 +9,10 @@ Revision history for Devel-Trepan
   a Devel::Trepan manual 
 - If Devel::Callsite is installed we can show a more exact location of 
   where we are. 
+- Add debugger command 'load command' to force loading or reloading a 
+  debugger command file
+- Add debugger command 'load module' to foce loading or reloading a
+  Perl module
 - Continuation of a command now allowed if you end a line with '\'
   This should make writing macros for example easier and may help 
   in eval

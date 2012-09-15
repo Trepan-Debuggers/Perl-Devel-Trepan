@@ -67,11 +67,11 @@ sub load_debugger_commands($$)
     return 1;
   }
 
-sub load_debugger_command($$) 
+sub load_debugger_command($$;$) 
 {
-    my ($self, $command_file) = @_;
+    my ($self, $command_file, $force) = @_;
     return unless -r $command_file;
-    my $rc = eval "require '$command_file' || 1" || 1;
+    my $rc = do $command_file;
     if ($rc eq 'Skip me!') {
         ;
     } elsif ($rc) {
@@ -79,7 +79,7 @@ sub load_debugger_command($$)
         my $name = basename($command_file, '.pm');
         $self->setup_command($name);
     } else {
-        $self->errmsg("Trouble reading $command_file $@");
+        $self->errmsg("Trouble reading ${command_file}: $@");
     }
 }
 

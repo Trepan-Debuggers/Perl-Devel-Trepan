@@ -24,7 +24,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.35
+    version: 0.36
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -127,9 +127,6 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Info::Variables:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm
     version: 0
-  Devel::Trepan::CmdProcessor::Command::Info::Variables::Dump:
-    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Dump.pm
-    version: 0
   Devel::Trepan::CmdProcessor::Command::Info::Variables::Lexicals:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/Lexicals.pm
     version: 0
@@ -147,6 +144,15 @@ provides:
     version: 0
   Devel::Trepan::CmdProcessor::Command::List:
     file: lib/Devel/Trepan/CmdProcessor/Command/List.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Load:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Load.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Load::Command:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Load::Module:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Macro:
     file: lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
@@ -202,11 +208,11 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Set::Display:
     file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm
     version: 0
-  Devel::Trepan::CmdProcessor::Command::Set::Display::COP:
-    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP.pm
-    version: 0
   Devel::Trepan::CmdProcessor::Command::Set::Display::Eval:
     file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eval.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Set::Display::OP:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Set::Highlight:
     file: lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm
@@ -292,11 +298,11 @@ provides:
   Devel::Trepan::CmdProcessor::Command::Show::Display:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm
     version: 0
-  Devel::Trepan::CmdProcessor::Command::Show::Display::COP:
-    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/COP.pm
-    version: 0
   Devel::Trepan::CmdProcessor::Command::Show::Display::Eval:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Eval.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Show::Display::OP:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Show::Highlight:
     file: lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm
@@ -450,7 +456,10 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: 0.35
+    version: 0
+  Devel::Trepan::Pod2Text:
+    file: lib/Devel/Trepan/Pod2Text.pm
+    version: 0
   Devel::Trepan::SigHandler:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
@@ -458,7 +467,7 @@ provides:
     file: lib/Devel/Trepan/SigHandler.pm
     version: 0
   Devel::Trepan::Terminated:
-    file: lib/Devel/Trepan/DB.pm
+    file: lib/Devel/Trepan/Terminated.pm
     version: 0
   Devel::Trepan::Util:
     file: lib/Devel/Trepan/Util.pm
@@ -474,7 +483,9 @@ provides:
     version: 0
 recommends:
   Data::Printer: 0
+  Devel::Callsite: 0
   Eval::WithLexicals: 0
+  Pod::Text::Color: 0
   Term::ReadKey: 0
   Term::ReadLine::Perl: 0
 requires:
@@ -483,6 +494,7 @@ requires:
   Digest::SHA: 0
   Getopt::Long: 2.36
   PadWalker: 0
+  Pod::Text: 0
   Syntax::Highlight::Perl::Improved: 0
   perl: 5.008008
   rlib: 0.02
@@ -491,4 +503,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.35
+version: 0.36

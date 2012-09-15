@@ -1,7 +1,549 @@
+2012-09-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, t/20test-break.t: Get ready for 0.36 release.
+
+
+2012-09-15  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Server.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm, t/10test-brkptmgr.t: Add
+	debugger commands 'load command' and 'load macro'.
+	CmdProcessor/Load.pm: use 'do' instead of eval `cat ...` to do a
+	more agressive loading.
+
+2012-09-14  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Edit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Enable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Lexicals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm, lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Macro.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
+	m, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/List.pm
+	,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.p
+	m, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print
+	.pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Aliases.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Interactive.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Up.pm,
+	lib/Devel/Trepan/CmdProcessor/Virtual.pm,
+	lib/Devel/Trepan/IO/Output.pm, lib/Devel/Trepan/Interface/Server.pm: 
+	Untabify
+
+2012-09-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/BrkptMgr.pm, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Msg.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm,
+	lib/Devel/Trepan/CmdProcessor/Validate.pm,
+	lib/Devel/Trepan/Complete.pm, lib/Devel/Trepan/Condition.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm, lib/Devel/Trepan/DB/Colors.pm,
+	lib/Devel/Trepan/DB/Display.pm, lib/Devel/Trepan/DB/Eval.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/DB/Sub.pm,
+	lib/Devel/Trepan/IO.pm, lib/Devel/Trepan/IO/Input.pm,
+	lib/Devel/Trepan/IO/StringArray.pm,
+	lib/Devel/Trepan/IO/TCPClient.pm, lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Interface.pm,
+	lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Script.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm,
+	lib/Devel/Trepan/Pod2Text.pm, lib/Devel/Trepan/Position.pm,
+	lib/Devel/Trepan/SigHandler.pm, lib/Devel/Trepan/Util.pm,
+	lib/Devel/Trepan/WatchMgr.pm: Untabify source code.
+
+2012-09-14  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Excep
+	t.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Skip.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm: More
+	podification
+
+2012-09-12  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm: Add
+	command to allow loading a debugger command or command directory.
+
+2012-09-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm: Sync with Trepan.pod
+
+
+2012-09-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm: Work on documentation
+	more.
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm: See above
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: I said, COP -> OP
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: More of the same
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm: More pod
+	documentation. Will this never end?
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm: 
+	Add demo code.
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Continue.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Enable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm: Go over command pod help yet again.
+
+2012-09-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/CO
+	P.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP
+	.pm: show display cop ->  show display op. Demo code in subcommands.
+	More help podification.
+
+2012-09-10  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm, lib/Devel/Trepan/DB.pm: 
+	"set display cop" -> "set display op". And use Devel::Callsite
+
+2012-09-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Server.pm: Fix pod errors.
+
+2012-09-09  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, Changes, lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Lexicals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Our.pm, lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/DB.pm, t/data/alias.right: Use Devel::Callsite if
+	available to figure out current OP location. More help text
+	podification. Trim newline in help showing help text. Untabify more
+	source files.
+
+2012-09-09  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm: Start
+	help podification of "info" commands
+
+2012-09-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm: Help Podification.
+
+2012-09-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Server.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm: Finish command
+	podification. 1st round.
+
+2012-09-06  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/CmdProcessor/Command/Finish.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm: More help
+	podification
+
+2012-09-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Macro.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Up.pm, t/10test-cmd-macro.t,
+	t/data/alias.right: Add unit test for Macro. Podify help more.
+
+2012-09-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/Condition.pm, lib/Devel/Trepan/DB/Eval.pm,
+	t/10test-db-eval.t: Try a better from of syntax checking. Many
+	thanks to cpansprout for the suggestion.
+
+2012-09-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Next.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm: More modify and
+	untabify
+
+2012-09-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/data/debug.right: Tidy eval code
+	more. More to come...
+
+2012-09-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Macro.pm: One more podify
+
+2012-09-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/10test-db-eval.t: Towards trying to
+	clean up torturous eval logic.
+
+2012-09-03  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Continue.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Edit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Enable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/Pod2Text.pm: More Podification. Adminstrivia.
+
+2012-09-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm: More help podification
+
+2012-09-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm,
+	lib/Devel/Trepan/Pod2Text.pm, t/10test-pod2text.t,
+	t/data/alias.cmd, t/data/alias.right: Start podifying help text.
+
+2012-09-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm, t/20test-debug.t,
+	t/20test-eval.t, t/data/debug.right, t/data/eval2.right: Had wrong
+	order of what got remapped into what.
+
+2012-09-02  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm, t/10test-cmd-complete.t: 
+	Command completion of "help syntax" now works.
+
+2012-09-02  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm: More help text.
+
+2012-09-02  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/filename.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/location.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Dump.pm, lib/Devel/Trepan/Complete.pm, lib/Devel/Trepan/Pod2Text.pm: 
+	Start the slow conversion of help to POD.
+
+2012-09-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, MANIFEST, lib/Devel/Trepan/Pod2Text.pm,
+	lib/Devel/Trepan/Terminated.pm, t/10test-db-eval.t,
+	t/10test-pod2text.t: Start ability to run pod2text which we'll use
+	in help. More tets.
+
+2012-09-02  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/data/eval.cmd, t/data/eval.right: 
+	Reinstate % sigil in eval to store result as a hash.
+
+2012-09-01  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Pass
+	fix_file_and_line as an option to eval_with_return rather than as a
+	global DB namespace variable. Untabify.
+
+2012-09-01  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-trepanpl-opts.t: Make sure to remove temporary file.
+
+2012-09-01  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm,
+	lib/Devel/Trepan/Util.pm: Put Devel::Trepan::Terminated its own
+	file. usrctxt -> namespace_package and reduce its globalness.
+	Util.pm: note > and ; as a sigil
+
+2012-09-01  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, t/10test-db-eval.t: Start DB::Eval unit
+	test.
+
+2012-08-31  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/eval.cmd, t/data/eval.right: Add check to make sure we
+	strip of location in eval and autoeval
+
+2012-08-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: More eval
+	cleanup. This time respect hiding location of eval string sometimes.
+
+
+2012-08-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Another round
+	at trying to clean up DB::Eval.pm. Probably even more later.
+
+2012-08-30  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: Simplify this release_status thing.
+
+2012-08-29  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Options.pm: DRY code.
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-sig.t: Clean up signal file. Also note that there's a bug
+	here that needs fixing.
+
+2012-08-28  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Macro.pm: Update macro help
+	example w/o warning on perl5.8.9 and new continuation backslash for
+	readability
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt,
+	lib/Devel/Trepan/Interface/Script.pm,
+	lib/Devel/Trepan/Interface/User.pm, t/data/autolist.cmd,
+	t/data/step.cmd: Add continuation lines via \ at the end of the line
+
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Bump
+	release and small Trepan.pm pod changes
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm, t/data/watch1.right,
+	t/data/watch2.right: Finish changes from commit 84068d0
+
+2012-08-28  R. Bernstein <rockyb@rubyforge.org>
+
+	Merge pull request #14 from kevindawson/master  tweak to watch
+	layout
+
+2012-08-28  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm: One more time over
+	kill examples
+
+2012-08-28  R. Bernstein <rockyb@rubyforge.org>
+
+	Merge pull request #15 from MidLifeXis/master  Docfix: change
+	order of examples to make comments accurate
+
+2012-08-28  Brian Wightman <MidLifeXis@wightmanfam.org>
+
+	* lib/Devel/Trepan.pm: Change order of examples to make comments
+	accurate  Order of examples made the comments on those examples
+	incorrect.
+
+2012-08-28  bowtie <bowtie@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Watch.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm: tweak to watch layout
+
 2012-08-27  Rocky Bernstein <rocky@cpan.org>
 
-	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Options.pm: Get
-	ready for 0.35 release.
+	* Build.PL, META.json, META.yml: Change status to stable
+
+2012-08-27  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Options.pm: Get ready for 0.35 release.
 
 2012-08-27  Rocky Bernstein <rocky@cpan.org>
 

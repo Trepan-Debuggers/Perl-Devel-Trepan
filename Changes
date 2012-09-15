@@ -1,6 +1,6 @@
 Revision history for Devel-Trepan
 
-0.36 - 
+0.36 - Sep 15, 2012
 
 - Allow color in Data::Printer output
 - Help strings are now in pod format and we run pod2text to give help. 

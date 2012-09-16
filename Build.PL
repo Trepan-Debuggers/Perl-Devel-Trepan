@@ -20,9 +20,9 @@ use Module::Build;
 use Config;
 use File::Basename;
 use File::Spec;
-
 my $dirname = dirname(__FILE__);
-do File::Spec->catfile(($dirname, qw(lib Devel Trepan.pm)));
+use rlib 'lib';
+use Devel::Trepan;
 
 my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
 
@@ -50,6 +50,7 @@ my $builder = Module::Build->new(
 			      
     },
     build_requires => {
+        'rlib'                              => '0.02',
         # 'String::Diff'        => 0,
     },
     test_requires => {

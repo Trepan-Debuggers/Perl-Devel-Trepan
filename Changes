@@ -1,5 +1,8 @@
 Revision history for Devel-Trepan
 
+0.37 - Sep 16, 2012
+- Fix some CPAN Tester failures and pod formatting.
+
 0.36 - Sep 15, 2012
 
 - Allow color in Data::Printer output

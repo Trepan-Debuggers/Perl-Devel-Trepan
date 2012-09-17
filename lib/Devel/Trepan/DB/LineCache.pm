@@ -50,7 +50,7 @@ source lines.
  use DB::LineCache;
  $lines = DB::LineCache::getlines('/tmp/myperl.pl')
  # The following lines have same effect as the above.
- $: << '/tmp'
+ unshift @INC, '/tmp';
  Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
 
  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
@@ -105,6 +105,12 @@ my @tempfiles;
 =pod
 
 =head1 SUBROUTINES
+
+I<Note:> in what follows we use I<$file_or_script> to refer to either
+a filename which generally should be a Perl file, or a psuedo-file
+name that is created in an I<eval()> string. Often, the filename does
+not have to be fully qualified. In some cases I<@INC> will be used to
+find the file.
 
 =cut
 
@@ -210,12 +216,12 @@ B<checkcache()> => I<list-of-filenames>
 
 B<checkcache(I<$filename> [, $opts])> => I<list-of-filenames>
 
-Discard cache entries that are out of date. If I<$filename>is C<undef>,
+Discard cache entries that are out of date. If I<$filename>is I<undef>,
 all entries in the file cache are checked.
 
-If we don't have stat information about a file, it will be
-kept. Return a list of invalidated filenames. C<undef> is returned if
-a filename was given but not found cached.
+If we did not previously have I<stat()> information about a file, it
+will be added. Return a list of invalidated filenames. I<undef> is
+returned if a filename was given but not found cached.
 
 =cut 
 
@@ -262,9 +268,9 @@ sub checkcache(;$$)
 
 =head2 cache_script
 
-B<cache_script(I<$script> [, I<$opts>]) > => $script
+B<cache_script(I<$script> [, I<$opts>]) > => I<script>
 
-Cache script if it's not already cached.
+Cache psuedo eval-string for a pseudo eval-string if it's not already cached.
 
 =cut 
 
@@ -304,8 +310,8 @@ B<cache(I<$file_or_script> [, I<$reload_on_change>, $opts]) > => I<filename>
 
 Cache I<$filename_or_script> if it's not already cached.
 
-Return the expanded filename for C<$file_or_script> if it is in the
-cache or C<undef> if we can't find it.
+Return the expanded filename for I<$file_or_script> if it is in the
+cache or I<undef> if we can't find it.
 
 =cut
 
@@ -332,7 +338,7 @@ sub cache_file($;$$)
 
 B<cache(I<$file_or_script>)> => I<boolean>
 
-Return true if C<$file_or_script> is cached.
+Return true if I<$file_or_script> is cached.
 
 =cut
 
@@ -370,15 +376,8 @@ sub file_list()
 B<getline($file_or_script, $line_number [, $opts])> => I<string>
 
 Get line I<$line_number> from I<$file_script>. Return I<undef> if
-there was a problem. If a file named I<$filename> is not found, the
-function will look for it in the C<$:> array.
-
-B<Examples:>
-
- $lines = LineCache::getline('/tmp/myfile.rb')
- # Same as above
- $: << '/tmp'
- $lines = LineCache.getlines('myfile.rb')
+there was a problem. If a file named I<$file_or_script> is not found, the
+function will look for it in the I<@INC> array.
 
 =cut
 
@@ -418,11 +417,18 @@ sub getline($$;$)
 
 =head2 getlines
 
-I<getlines($filename, [$opts])> => I<string>
+B<getlines($filename, [$opts])> => I<string>
 
 Read lines of I<$filename> and cache the results. However
 if I<$filename> was previously cached use the results from the
 cache. Return I<undef> if we can't get lines.
+
+B<Examples:>
+
+ $lines = LineCache::getline('/tmp/myfile.pl')
+ # Same as above
+ push @INC, '/tmp';
+ $lines = LineCache.getlines('myfile.pl')
 
 =cut
 
@@ -478,6 +484,18 @@ sub getlines($;$)
     }
 }
 
+=pod
+
+=head2 highlight_string
+
+B<highlight_string($string)> => I<marked-up-string>
+
+Add syntax-formatting characters via
+L<Syntax::Highlight::Pel::Improved> to I<string> according to table
+given in L<Devel::Trepan::DB::Colors>.
+
+=cut
+
 sub highlight_string($)
 {
     my ($string) = shift;
@@ -517,9 +535,10 @@ sub remap_file($$)
 
 I<remap_dbline_to_file()>
 
-When we run trepan.pl -e ... or perl -d:Trepan -e ...  we have data
-in internal "line" array @DB::dbline but no external file. Here we will
-create a temporary file and store the data in that.
+When we run C<trepan.pl -e> ... or C<perl -d:Trepan -e ...> we have
+data in internal an "line" array I<@DB::dbline> but no external
+file. Here, we will create a temporary file and store the data in
+that.
 
 =cut
 
@@ -556,7 +575,20 @@ sub remap_file_lines($$$$)
 
 I<sha1($filename)> => I<string>
 
-Return SHA1 of <$filename>.
+Return SHA1 for I<$filename>.
+
+B<Example>:
+
+In file "/tmp/foo.pl": 
+
+  use Devel::Trepan::DB::LineCache;
+  DB::LineCache::cache(__FILE__);
+  printf "SHA1 of %s is:\n%s\n", __FILE__, DB::LineCache::sha1(__FILE__);
+
+gives: 
+
+  SHA1 of /tmp/foo.pl is:
+  719b1aa8d559e64bd0de70b325beff79beac32f5
 
 =cut 
 
@@ -585,6 +617,18 @@ I<size($filename_or_script)> => I<string>
 
 Return the number of lines in I<$filename_or_script>.
 
+B<Example>:
+
+In file "/tmp/foo.pl": 
+
+  use Devel::Trepan::DB::LineCache;
+  DB::LineCache::cache(__FILE__);
+  printf "%s has %d lines\n", __FILE__,  DB::LineCache::size(__FILE__);
+
+gives: 
+
+  /tmp/foo.pl has 3 lines
+
 =cut 
 
 sub size($)
@@ -606,6 +650,24 @@ B<stat(I<$filename>)> => I<stat-info>
 
 Return file I<stat()> info in the cache for I<$filename>.
 
+B<Example>:
+
+In file "/tmp/foo.pl": 
+
+  use Devel::Trepan::DB::LineCache;
+  DB::LineCache::cache(__FILE__);
+  printf("stat() info for %s is:
+  dev    ino      mode nlink  uid  gid rdev size atime      ctime ...
+  %4d  %8d %7o %3d %4d %4d %4d %4d %d %d",
+         __FILE__, 
+         @{DB::LineCache::stat(__FILE__)});
+
+gives: 
+
+  stat() info for /tmp/foo.pl is:
+  dev    ino      mode nlink  uid  gid rdev size atime      ctime ...
+  2056   5242974  100664   1 1000 1000    0  266 1347890102 1347890101
+
 =cut
 
 sub DB::LineCache::stat($)
@@ -619,8 +681,7 @@ sub DB::LineCache::stat($)
 
 =head2 trace_line_numbers
 
-I<trace_line_numbers($filename [, $reload_on_change])>
-=> I<list-of-numbers>
+I<trace_line_numbers($filename [, $reload_on_change])> => I<list-of-numbers>
 
 Return an array of breakpoints in $I<filename>.
 
@@ -696,6 +757,17 @@ sub map_file_line($$)
     return ($file, $line);
 }
 
+=pod
+
+=head2 filename_is_eval
+
+B<filename_is_eval($filename)> => I<boolean>
+
+Return I<true> if $filename matches one of the pseudo-filename strings
+that get created for by I<eval()>. 
+
+=cut
+
 sub filename_is_eval($)
 {
     my $filename = shift;
@@ -709,9 +781,9 @@ sub filename_is_eval($)
 
 B<update_script_cache($script, $opts)> => I<boolean>
 
-update a cache entry.  If something is wrong, return I<undef>. Return
-I<true> if the cache was updated and false if not. 
-Return I<true> if I<$line_num> is a trace line number of I<$filename>.
+Update a cache entry for an pseudo eval-string file name. If something
+is wrong, return I<undef>. Return I<true> if the cache was updated and
+I<false> if not.
 
 =cut
 
@@ -746,7 +818,18 @@ sub update_script_cache($$)
     return 1;
   }
 
-sub read_file($)
+=pod
+
+=head2 readlines
+
+B<readlines($filename)> => I<list of strings>
+
+Return a a list of strings for I<$filename>. If we can't read
+I<$filename> retun I<undef>. Each line will have a "\n" at the end.
+
+=cut 
+
+sub readlines($)
 {
     my $path = shift;
     if (-r $path) {
@@ -768,7 +851,7 @@ B<update_cache($filename, [, $opts]>
 
 Update a cache entry.  If something's wrong, return I<undef>. Return
 I<true> if the cache was updated and I<false> if not.  If
-I<$opts-E<gt>{use_perl_d_file}> is I<true>, use that as the source for the
+$I<$opts-E<gt>{use_perl_d_file}> is I<true>, use that as the source for the
 lines of the file.
 
 =cut 
@@ -814,7 +897,7 @@ sub update_cache($;$)
             # $incomplete records if there was a mismatch.
             my $incomplete = 0;
             if (-r $path) {
-                my @lines_check = read_file($path);
+                my @lines_check = readlines($path);
                 my @lines = @$raw_lines;
                 for (my $i=1; $i<=$#lines; $i++) {
                     if (defined $raw_lines->[$i]) {
@@ -865,7 +948,7 @@ sub update_cache($;$)
         return 0 unless defined $stat;
     }
     if ( -r $path ) { 
-        my @lines = read_file($path);
+        my @lines = readlines($path);
         $lines_href = {plain => \@lines};
         if ($opts->{output}) {
             my $highlight_lines = highlight_string(join('', @lines));

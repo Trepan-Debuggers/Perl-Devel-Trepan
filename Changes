@@ -1,5 +1,10 @@
 Revision history for Devel-Trepan
 
+0.39 - Sep 17, 2012
+
+- Rerelease to fix yet another problem with Build.PL 
+- Improve POD documentation for DB::LineCache
+
 0.38 - Sep 16, 2012
 - add option max_continue on DB::LineCache to use heuristic to look end
   of a Perl statement

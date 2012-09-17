@@ -1,5 +1,8 @@
 Revision history for Devel-Trepan
 
+0.40 - Sep 17, 2012
+- Rerelease to fix yet another problem with Build.PL 
+
 0.39 - Sep 17, 2012
 
 - Rerelease to fix yet another problem with Build.PL 

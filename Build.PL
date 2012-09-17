@@ -21,11 +21,7 @@ use Config;
 use File::Basename;
 use File::Spec;
 
-our $dirname;
-BEGIN {
-    $dirname = dirname(__FILE__);
-};
-unshift @INC, $dirname;
+use lib File::Spec->catfile(dirname(__FILE__), 'lib');
 use Devel::Trepan;
 
 my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';

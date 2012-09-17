@@ -1,5 +1,11 @@
 Revision history for Devel-Trepan
 
+0.38 - Sep 16, 2012
+- add option max_continue on DB::LineCache to use heuristic to look end
+  of a Perl statement
+- Work on Pod formatting of DB::LineCache
+- Reduce "incomplete" testing because smokers can't deal with rlib in Build.PL
+
 0.37 - Sep 16, 2012
 - Fix some CPAN Tester failures and pod formatting.
 

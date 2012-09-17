@@ -3,6 +3,34 @@
 #   Copyright (C) 2011, 2012 Rocky Bernstein <rockyb@cpan.org>
 #
 #
+use Digest::SHA;
+
+use version; $VERSION = '0.1.1';
+
+package DB;
+
+# FIXME: Figure out where to put this
+# *pod
+# 
+# I<eval_ok($code)> => I<boolean>
+#
+# Evaluate I<$code> and return true if there's no error.
+# *cut
+sub eval_ok ($) 
+{
+    my $code = shift;
+    no strict; no warnings;
+    $DB::namespace_package = 'package main' unless $DB::namespace_package;
+    my $wrapped = "$DB::namespace_package; sub { $code }";
+    eval $wrapped;
+    # print $@, "\n" if $@;
+    return !$@;
+}
+
+package DB::LineCache;
+
+=pod
+
 =head1 NAME DB::LineCache
 
 DB::LineCache - package to read and cache lines of a Perl program. 
@@ -19,45 +47,20 @@ The routines here may be is useful when a small random sets of lines
 are read from a single file, in particular in a debugger to show
 source lines.
 
-  use DB::LineCache;
-  $lines = DB::LineCache::getlines('/tmp/myperl.pl')
-  # The following lines have same effect as the above.
-  $: << '/tmp'
-  Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
+ use DB::LineCache;
+ $lines = DB::LineCache::getlines('/tmp/myperl.pl')
+ # The following lines have same effect as the above.
+ $: << '/tmp'
+ Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
 
-  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
-  # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
+ $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
+ # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
 
-  DB::LineCache::clear_file_cache
-  DB::LineCache::update_cache   # Check for modifications of all cached files.
+ DB::LineCache::clear_file_cache
+ DB::LineCache::update_cache   # Check for modifications of all cached files.
 
 =cut
 
-use Digest::SHA;
-
-use version; $VERSION = '0.1.1';
-
-package DB;
-# =pod
-# 
-# I<eval_ok($code)> => I<boolean>
-#
-# Evaluate I<$code> and return true if there's no error.
-# =cut
-sub eval_ok ($) 
-{
-    my $code = shift;
-    no strict; no warnings;
-    $DB::namespace_package = 'package main' unless $DB::namespace_package;
-    my $wrapped = "$DB::namespace_package; sub { $code }";
-    eval $wrapped;
-    # print $@, "\n" if $@;
-    return !$@;
-}
-
-
-# A package to read and cache lines of a Perl program. 
-package DB::LineCache;
 use English qw( -no_match_vars );
 use vars qw(%file_cache %script_cache);
 
@@ -99,6 +102,12 @@ my %file2file_remap_lines;
 my %script2file;
 my @tempfiles;
 
+=pod
+
+=head1 SUBROUTINES
+
+=cut
+
 sub remove_temps() 
 {
     for my $filename (values %script2file) {
@@ -114,8 +123,20 @@ END {
     remove_temps 
 };
 
-  
-# Clear the file cache entirely.
+=pod
+
+=head2 clear_file_cache
+
+B<clear_file_cache()>
+
+B<clear_file_cache(I<$filename>)>
+
+
+Clear the file cache of I<$filename>. If I<$filename>
+is not given, clear all files in the cache.
+
+=cut
+
 sub clear_file_cache(;$)
 {
     if (scalar @_ == 1) {
@@ -130,9 +151,18 @@ sub clear_file_cache(;$)
     }
 }
 
-# Remove syntax-formatted lines in the cache. Use this when you change
-# the Syntax::Highlight::Perl colors and want to redo how files may
-# have previously been syntax marked.
+=pod
+
+=head2 clear_file_format_cache
+
+B<clear_file_format_cache()>
+
+Remove syntax-formatted lines in the cache. Use this when you change
+the L<Syntax::Highlight::Perl> colors and want to redo how files may
+have previously been syntax marked.
+
+=cut
+
 sub clear_file_format_cache() 
 {
     while (my ($fname, $cache_info) = each %file_cache) {
@@ -144,22 +174,51 @@ sub clear_file_format_cache()
     }
 }
 
-# Clear the script cache entirely.
+=pod
+
+=head2 clear_script_cache
+
+B<clear_script_cache()>
+
+Clear the script cache entirely.
+
+=cut
+
 sub clear_script_cache() {
     %script_cache = {};
 }
 
-# Return an array of cached file names
+=pod
+
+=head2 cached_files
+
+B<cached_files()> => I<list of files>
+
+Return an array of cached file names
+
+=cut
+
 sub cached_files() {
     keys %file_cache;
 }
 
-# Discard cache entries that are out of date. If +filename+ is +undef+
-# all entries in the file cache +@@file_cache+ are checked.
-# If we don't have stat information about a file, which can happen
-# if the file was read from $__SCRIPT_LINES but no corresponding file
-# is found, it will be kept. Return a list of invalidated filenames.
-# undef is returned if a filename was given but not found cached.
+=pod
+
+=head2 checkcache
+
+B<checkcache()> => I<list-of-filenames>
+
+B<checkcache(I<$filename> [, $opts])> => I<list-of-filenames>
+
+Discard cache entries that are out of date. If I<$filename>is C<undef>,
+all entries in the file cache are checked.
+
+If we don't have stat information about a file, it will be
+kept. Return a list of invalidated filenames. C<undef> is returned if
+a filename was given but not found cached.
+
+=cut 
+
 sub checkcache(;$$)
 {
     my ($filename, $opts) = @_;
@@ -199,7 +258,16 @@ sub checkcache(;$$)
     return @result;
 }
 
-# Cache script if it's not already cached.
+=pod
+
+=head2 cache_script
+
+B<cache_script(I<$script> [, I<$opts>]) > => $script
+
+Cache script if it's not already cached.
+
+=cut 
+
 sub cache_script($;$) 
 {
     my ($script, $opts) = @_;
@@ -209,18 +277,38 @@ sub cache_script($;$)
     $script;
 }
 
-# Cache file name or script object if it's not already cached.
-# Return the expanded filename for it in the cache if a filename,
-# or the script, or undef if we can't find the file.
+=pod
+
+=head2 cache
+
+B<cache(I<$file_or_script> [, I<$reload_on_change>]) > => I<filename>
+
+Cache file name or script object if it's not already cached.
+
+Return the expanded filename for it in the cache if a filename,
+or the script, or C<undef> if we can't find the file.
+
+=cut 
+
 sub cache($;$)
 {
     my ($file_or_script, $reload_on_change) = @_;
     cache_file($file_or_script, $reload_on_change)
 }
 
-# Cache filename if it's not already cached.
-# Return the expanded filename for it in the cache
-# or undef if we can't find the file.
+=pod
+
+=head2 cache_file
+
+B<cache(I<$file_or_script> [, I<$reload_on_change>, $opts]) > => I<filename>
+
+Cache I<$filename_or_script> if it's not already cached.
+
+Return the expanded filename for C<$file_or_script> if it is in the
+cache or C<undef> if we can't find it.
+
+=cut
+
 sub cache_file($;$$) 
 {
     my ($filename, $reload_on_change, $opts) = @_;
@@ -238,7 +326,16 @@ sub cache_file($;$$)
     }
 }
 
-# Return true if file_or_script is cached.
+=pod
+
+=head2 is_cached
+
+B<cache(I<$file_or_script>)> => I<boolean>
+
+Return true if C<$file_or_script> is cached.
+
+=cut
+
 sub is_cached($)
 { 
     my $file_or_script = shift;
@@ -266,20 +363,25 @@ sub file_list()
     sort((cached_files(), keys(%file2file_remap)));
 }
 
-# =pod
+=pod
 
-# Get line C<line_number> from file named C<filename>. Return I<undef> if
-# there was a problem. If a file named filename is not found, the
-# function will look for it in the $: array.
-# 
-# Examples:
-# 
-#  $lines = LineCache::getline('/tmp/myfile.rb')
-#  # Same as above
-#  $: << '/tmp'
-#  $lines = LineCache.getlines('myfile.rb')
-#
-# =cut
+=head2 getline
+
+B<getline($file_or_script, $line_number [, $opts])> => I<string>
+
+Get line I<$line_number> from I<$file_script>. Return I<undef> if
+there was a problem. If a file named I<$filename> is not found, the
+function will look for it in the C<$:> array.
+
+B<Examples:>
+
+ $lines = LineCache::getline('/tmp/myfile.rb')
+ # Same as above
+ $: << '/tmp'
+ $lines = LineCache.getlines('myfile.rb')
+
+=cut
+
 sub getline($$;$)
 {
     my ($file_or_script, $line_number, $opts) = @_;
@@ -312,15 +414,17 @@ sub getline($$;$)
     }
 }
 
-# =pod
-#
-# I<getlines($filename, [$opts]) => $string
-#
-# Read lines of I<$filename> and cache the results. However
-# if I<$filename> was previously cached use the results from the
-# cache. Return I<undef> if we can't get lines.
-#
-#=cut
+=pod
+
+=head2 getlines
+
+I<getlines($filename, [$opts])> => I<string>
+
+Read lines of I<$filename> and cache the results. However
+if I<$filename> was previously cached use the results from the
+cache. Return I<undef> if we can't get lines.
+
+=cut
 
 sub getlines($;$);
 sub getlines($;$)
@@ -382,13 +486,16 @@ sub highlight_string($)
     $string;
   }
 
-# =pod
-#
-# I<path($filename)
-#
-# Return full filename path for C<$filename>.
-#
-# =cut
+=pod
+
+=head2 path
+
+B<path($filename)> => I<string>
+
+Return full filename path for I<$filename>.
+
+=cut
+
 sub path($)
 {
     my $filename = shift;
@@ -404,14 +511,18 @@ sub remap_file($$)
     cache_file($to_file);
 }
 
-# =pod
-#
-# I<remap_dbline_to_file()>
-#
-# When we run trepan.pl -e ... or perl -d:Trepan -e ...  we have data
-# in internal "line" array @DB::dbline but no external file. Here we will
-# create a temporary file and store the data in that.
-# =cut
+=pod
+
+=head2 remap_dbline_to_file
+
+I<remap_dbline_to_file()>
+
+When we run trepan.pl -e ... or perl -d:Trepan -e ...  we have data
+in internal "line" array @DB::dbline but no external file. Here we will
+create a temporary file and store the data in that.
+
+=cut
+
 sub remap_dbline_to_file()
 { 
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
@@ -439,12 +550,16 @@ sub remap_file_lines($$$$)
     push @$ary_ref, [$from_file, @range, $start];
 }
 
-# =pod
-# 
-# I<sha1($filename)> => I<string>
-#
-# Return SHA1 of <$filename>.
-# =cut 
+=pod
+
+=head2 sha1
+
+I<sha1($filename)> => I<string>
+
+Return SHA1 of <$filename>.
+
+=cut 
+
 sub DB::LineCache::sha1($)
 {
     my $filename = shift;
@@ -462,12 +577,16 @@ sub DB::LineCache::sha1($)
     $sha1->hexdigest;
   }
       
-# =pod
-# 
-# I<size($filename_or_script)> => I<string>
-#
-# Return the number of lines in I<$filename_or_script>.
-# =cut 
+=pod
+
+=head2 size
+
+I<size($filename_or_script)> => I<string>
+
+Return the number of lines in I<$filename_or_script>.
+
+=cut 
+
 sub size($)
 {
     my $file_or_script = shift;
@@ -479,7 +598,16 @@ sub size($)
     scalar @{$lines_href->{plain}};
 }
 
-# Return File.stat in the cache for filename.
+=pod
+
+=head2 stat
+
+B<stat(I<$filename>)> => I<stat-info>
+
+Return file I<stat()> info in the cache for I<$filename>.
+
+=cut
+
 sub DB::LineCache::stat($)
 { 
     my $filename = shift;
@@ -487,7 +615,17 @@ sub DB::LineCache::stat($)
     $file_cache{$filename}{stat};
 }
 
-# Return an array of breakpoints in filename.
+=pod
+
+=head2 trace_line_numbers
+
+I<trace_line_numbers($filename [, $reload_on_change])>
+=> I<list-of-numbers>
+
+Return an array of breakpoints in $I<filename>.
+
+=cut 
+
 sub trace_line_numbers($;$)
 {
     my ($filename, $reload_on_change) = @_;
@@ -496,7 +634,16 @@ sub trace_line_numbers($;$)
     return sort {$a <=> $b} keys %{$file_cache{$filename}{trace_nums}};
   }
     
-# Return 1 if $line_num is a trace line number of $file.
+=pod
+
+=head2 is_trace_line
+
+B<is_trace_line($filename, $line_num [,$reload_on_change])> => I<boolean>
+
+Return I<true> if I<$line_num> is a trace line number of I<$filename>.
+
+=cut
+
 sub is_trace_line($$;$)
 {
     my ($filename, $line_num, $reload_on_change) = @_;
@@ -556,8 +703,18 @@ sub filename_is_eval($)
     return !!($filename =~ /^\(eval \d+\)|-e$/);
 }
 
-# UPDATE a cache entry.  If something is wrong, return undef. Return
-# 1 if the cache was updated and false if not. 
+=pod
+
+=head2 update_script_cache
+
+B<update_script_cache($script, $opts)> => I<boolean>
+
+update a cache entry.  If something is wrong, return I<undef>. Return
+I<true> if the cache was updated and false if not. 
+Return I<true> if I<$line_num> is a trace line number of I<$filename>.
+
+=cut
+
 sub update_script_cache($$)
 {
     my ($script, $opts) = @_;
@@ -603,9 +760,19 @@ sub read_file($)
     }
 }
 
-# Update a cache entry.  If something's wrong, return undef. Return 1
-# if the cache was updated and false if not.  If use_perl_d_file is 1,
-# use that as the source for the lines of the file
+=pod
+
+=head2 update_cache
+
+B<update_cache($filename, [, $opts]> 
+
+Update a cache entry.  If something's wrong, return I<undef>. Return
+I<true> if the cache was updated and I<false> if not.  If
+I<$opts-E<gt>{use_perl_d_file}> is I<true>, use that as the source for the
+lines of the file.
+
+=cut 
+
 sub update_cache($;$) 
 {
     my ($filename, $opts) = @_;

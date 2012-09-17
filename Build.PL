@@ -25,7 +25,7 @@ our $dirname;
 BEGIN {
     $dirname = dirname(__FILE__);
 };
-use lib $dirname;
+unshift @INC, $dirname;
 use Devel::Trepan;
 
 my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';

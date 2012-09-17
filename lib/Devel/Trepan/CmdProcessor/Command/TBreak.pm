@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-tbreak [I<location>]
+B<tbreak> [I<location>]
 
 Set a one-time breakpoint. The breakpoint is removed after it is hit.
 If no location is given use the current stopping point.

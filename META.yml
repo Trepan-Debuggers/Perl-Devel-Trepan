@@ -2,7 +2,8 @@
 abstract: "Modular Perl Debugger (akin to Ruby \"Trepanning\" Debuggers)."
 author:
   - 'Rocky Bernstein <rocky@cpan.org>'
-build_requires: {}
+build_requires:
+  rlib: 0.02
 configure_requires:
   Module::Build: 0.32
 dynamic_config: 1
@@ -24,7 +25,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.36
+    version: 0.37_01
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -456,7 +457,7 @@ provides:
     version: 0
   Devel::Trepan::Options:
     file: lib/Devel/Trepan/Options.pm
-    version: 0
+    version: 0.37
   Devel::Trepan::Pod2Text:
     file: lib/Devel/Trepan/Pod2Text.pm
     version: 0
@@ -485,7 +486,7 @@ recommends:
   Data::Printer: 0
   Devel::Callsite: 0
   Eval::WithLexicals: 0
-  Pod::Text::Color: 0
+  Pod::Text::Color: 2.06
   Term::ReadKey: 0
   Term::ReadLine::Perl: 0
 requires:
@@ -494,7 +495,7 @@ requires:
   Digest::SHA: 0
   Getopt::Long: 2.36
   PadWalker: 0
-  Pod::Text: 0
+  Pod::Text: 3.13
   Syntax::Highlight::Perl::Improved: 0
   perl: 5.008008
   rlib: 0.02
@@ -503,4 +504,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.36
+version: 0.37_01

@@ -29,7 +29,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-kill[!] [I<signal-number>|I<signal-name>]
+B<kill>[B<!>] [I<signal-number>|I<signal-name>]
 
 Kill execution of program being debugged.
 

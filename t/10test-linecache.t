@@ -40,6 +40,14 @@ DB::LineCache::remap_file('another_name', __FILE__);
 my $another_line = DB::LineCache::getline('another_name', $line_number);
 is($another_line, $expected_line, "Test getline via remap_file");
 
+$expected_line = "\$line = DB::LineCache::getline(__FILE__, __LINE__,
+    {max_continue => 4}
+    );";
+$line = DB::LineCache::getline(__FILE__, __LINE__,
+    {max_continue => 4}
+    );
+is($line, $expected_line, "Test multi-spanning getline line");
+
 # printf "Files cached: %s\n", join(', ', DB::LineCache::cached_files);
 # DB::LineCache::update_cache(__FILE__);
 ## DB::LineCache::checkcache(__FILE__);

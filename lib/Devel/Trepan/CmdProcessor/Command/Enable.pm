@@ -32,7 +32,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-enable I<num> [I<num> ...]
+B<enable> I<num> [I<num> ...]
     
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.

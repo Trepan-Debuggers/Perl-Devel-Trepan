@@ -26,7 +26,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-eval[@$][?] [I<Perl-code>]
+B<eval>[B<@$>][B<?>] [I<Perl-code>]
 
 Run I<Perl-code> in the context of the current frame.
 

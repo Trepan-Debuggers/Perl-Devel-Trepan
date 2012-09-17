@@ -1,4 +1,5 @@
 $var = '
+# This line is not a comment of the above $var assignment
 $x = 2;
 $y = 3;
 $z = 4';

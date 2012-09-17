@@ -25,7 +25,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-quit[!] [unconditionally] [I<exit-code>] 
+B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 
 Gently exit the debugger and debugged program.
 

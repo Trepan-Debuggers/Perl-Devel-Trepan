@@ -20,8 +20,12 @@ use Module::Build;
 use Config;
 use File::Basename;
 use File::Spec;
-my $dirname = dirname(__FILE__);
-use rlib 'lib';
+
+our $dirname;
+BEGIN {
+    $dirname = dirname(__FILE__);
+};
+use lib $dirname;
 use Devel::Trepan;
 
 my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
@@ -39,41 +43,40 @@ my $builder = Module::Build->new(
     release_status      => $release_status,
 
     meta_merge => {
-	resources => {
-	    bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
-	    repository  => 'http://github.com/rocky/Perl-Devel-Trepan'
-	}
+        resources => {
+            bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
+            repository  => 'http://github.com/rocky/Perl-Devel-Trepan'
+        }
     },    
 
     configure_requires  => { 
-	'Module::Build' => '0.32',
-			      
+        'Module::Build' => '0.32',
+                              
     },
     build_requires => {
-        'rlib'                              => '0.02',
         # 'String::Diff'        => 0,
     },
     test_requires => {
         'Test::More'                        => '0.81',
     },
     recommends => {
-	'Data::Printer'                     => 0,
-	'Devel::Callsite'                   => 0,
-	'Eval::WithLexicals'                => 0,
-	'Pod::Text::Color'                  => 2.06,
-	'Term::ReadKey'                     => 0,
-	'Term::ReadLine::Perl'              => 0,
+        'Data::Printer'                     => 0,
+        'Devel::Callsite'                   => 0,
+        'Eval::WithLexicals'                => 0,
+        'Pod::Text::Color'                  => 2.06,
+        'Term::ReadKey'                     => 0,
+        'Term::ReadLine::Perl'              => 0,
     },
 
     requires => {
-	'perl'                              => '5.008008',
-	'Array::Columnize'                  => '1.01',
-	# 'Capture::Tiny'                     => 0,
- 	'Data::Dumper'                      => 0,
-	'Getopt::Long'                      => '2.36',
+        'perl'                              => '5.008008',
+        'Array::Columnize'                  => '1.01',
+        # 'Capture::Tiny'                     => 0,
+        'Data::Dumper'                      => 0,
+        'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
-	'Pod::Text'                         => 3.13,
+        'Pod::Text'                         => 3.13,
         'Syntax::Highlight::Perl::Improved' => 0,
         'rlib'                              => '0.02',
         'version'                           => 0,

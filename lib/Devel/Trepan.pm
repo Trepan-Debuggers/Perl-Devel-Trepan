@@ -8,7 +8,7 @@ package Devel::Trepan;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.37';
+use version; $VERSION = '0.37_01';
 use Exporter;
 
 use Devel::Trepan::Core;
@@ -272,7 +272,7 @@ B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 Gently exit the debugger and debugged program.
 
 The program being debugged is exited via I<exit()> which runs the Kernel
-at_exit finalizers. If a return code is given, that is the return code
+I<at_exit> finalizers. If a return code is given, that is the return code
 passed to I<exit()> - presumably the return code that will be passed back
 to the OS. If no exit code is given, 0 is used.
 
@@ -568,7 +568,7 @@ L</"Move to a less recent frame (down)">
 
 =back
 
-=head4 Print a backtrace (backtrace)
+=head4 Print call stack (backtrace)
 
 B<backtrace> [I<count>]
 

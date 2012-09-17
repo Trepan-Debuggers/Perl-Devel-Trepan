@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod 
 
-break [I<location>] [if I<condition>]
+B<break> [I<location>] [B<if> I<condition>]
 
 Set a breakpoint. If I<location> is given use the current stopping
 point. An optional condition may be given.

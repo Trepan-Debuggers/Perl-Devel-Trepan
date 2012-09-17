@@ -2,6 +2,7 @@
 ++
 -- main::(eval.pl:1)
 $var = '
+# This line is not a comment of the above $var assignment
 $x = 2;
 $y = 3;
 $z = 4';
@@ -9,48 +10,44 @@ Eval result display style is dumper.
 set auto eval is on.
 eval.pl [1-10]
   1  ->	$var = '
-  2    	$x = 2;
-  3    	$y = 3;
-  4    	$z = 4';
-  5    	eval $var;
-  6    	$eval_sub='
-  7    	sub five() {
-  8    	    my @args = @_;
-  9    	    print "ho\n";
- 10    	    5;
--- main::(eval.pl:5)
+  2    	# This line is not a comment of the above $var assignment
+  3    	$x = 2;
+  4    	$y = 3;
+  5    	$z = 4';
+  6    	eval $var;
+  7    	$eval_sub='
+  8    	sub five() {
+  9    	    my @args = @_;
+ 10    	    print "ho\n";
+-- main::(eval.pl:6)
 eval $var;
 $DB::D[0] = 1
-eval.pl [1-10]
-  1    	$var = '
-  2    	$x = 2;
-  3    	$y = 3;
-  4    	$z = 4';
-  5  ->	eval $var;
-  6    	$eval_sub='
-  7    	sub five() {
-  8    	    my @args = @_;
-  9    	    print "ho\n";
- 10    	    5;
+eval.pl [2-11]
+  2    	# This line is not a comment of the above $var assignment
+  3    	$x = 2;
+  4    	$y = 3;
+  5    	$z = 4';
+  6  ->	eval $var;
+  7    	$eval_sub='
+  8    	sub five() {
+  9    	    my @args = @_;
+ 10    	    print "ho\n";
+ 11    	    5;
 $DB::D[1] = 1
--- main::((eval 1955)[eval.pl:10]:2 remapped bogus.pl:2)
-
-$x = 2;
-$y = 3;
-$z = 4
 -- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
-$x = 2;
-$y = 3;
-$z = 4
+# This line is not a comment of the above $var assignment
 -- main::((eval 1955)[eval.pl:10]:4 remapped bogus.pl:4)
+$x = 2;
+-- main::((eval 1955)[eval.pl:10]:5 remapped bogus.pl:5)
 $y = 3;
-$z = 4
--- main::(eval.pl:6)
+-- main::(eval.pl:7)
 $eval_sub='
-eval $eval_sub;
 -- main::(eval.pl:13)
+eval $eval_sub;
+-- main::(eval.pl:14)
 $y = five();
 -- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
+}
 --> #0 @ = main::five() in 
-	file `(eval 1000)[eval.pl:12]' at line 3
-    #1 file `eval.pl' at line 13
+	file `(eval 1000)[eval.pl:13]' at line 3
+    #1 file `eval.pl' at line 14

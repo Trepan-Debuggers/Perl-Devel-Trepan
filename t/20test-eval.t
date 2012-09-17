@@ -44,8 +44,8 @@ $opts = {
                 } else {
                     s/\((?:.+\/)?(.+\:\d+)\)/($1)/;
                 }
-            } elsif (/`\(eval \d+\)\[.+:12\]'/) {
-                s/`\(eval \d+\)\[.+:12\]'/`(eval 1000)[eval.pl:12]'/;
+            } elsif (/`\(eval \d+\)\[.+:13\]'/) {
+                s/`\(eval \d+\)\[.+:13\]'/`(eval 1000)[eval.pl:13]'/;
             } elsif (/^sub five/) {
                 # Perl 5.10.0 doesn't show "sub five() {"
 		$skip = 3;

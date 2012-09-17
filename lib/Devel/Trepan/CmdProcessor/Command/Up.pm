@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-up [I<count>]
+B<up> [I<count>]
 
 Move the current frame up in the stack trace (to an older frame). 0 is
 the most recent frame. If no count is given, move up 1.

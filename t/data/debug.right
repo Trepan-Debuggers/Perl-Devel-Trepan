@@ -8,7 +8,6 @@ Eval result display style is dumper.
 $DB::D[0] = <undef>
 -- main::((eval 1955)[Eval.pm:73]:6 remapped bogus.pl:6)
 $DB::in_debugger=0;
-gcd(1,1)
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)
@@ -27,7 +26,6 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 $DB::D[3] = <undef>
 -- main::((eval 1955)[Eval.pm:73]:6 remapped bogus.pl:6)
 $DB::in_debugger=0;
-gcd(1,1)
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)

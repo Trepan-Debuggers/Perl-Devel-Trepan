@@ -107,7 +107,7 @@ sub eval_with_return {
 sub eval_not_ok ($) 
 {
     my $code = shift;
-    my $wrapped = sprintf "$DB::namespace_package; sub { $code }";
+    my $wrapped = "$DB::namespace_package; sub { $code }";
     no strict;
     eval $wrapped;
     if ($@) {

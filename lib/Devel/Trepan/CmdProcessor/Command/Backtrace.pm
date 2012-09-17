@@ -24,7 +24,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-backtrace [I<count>]
+B<backtrace> [I<count>]
 
 Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries. 

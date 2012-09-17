@@ -26,7 +26,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-delete [I<bp-number> [I<bp-number>...]]  
+B<delete> [I<bp-number> [I<bp-number>...]]  
 
 Delete some breakpoints.
 

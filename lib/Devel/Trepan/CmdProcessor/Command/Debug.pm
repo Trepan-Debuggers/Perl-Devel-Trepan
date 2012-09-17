@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-debug I<Perl-code>
+B<debug> I<Perl-code>
 
 Recursively debug I<Perl-code>.
 

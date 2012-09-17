@@ -1,6 +1,5 @@
 -- main::(my.pl:3)
 my $a = 100;
-sub bar($) {
 Eval result display style is dumper.
 set auto eval is on.
 *** No 'my' variable $a found at this level

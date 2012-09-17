@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-condition I<bp-number> I<Perl-expression>
+B<condition> I<bp-number> I<Perl-expression>
 
 I<bp-number> is a breakpoint number.  I<Perl-expresion> is a Perl
 expression which must evaluate to true before the breakpoint is

@@ -37,6 +37,25 @@ use Digest::SHA;
 
 use version; $VERSION = '0.1.1';
 
+package DB;
+# =pod
+# 
+# I<eval_ok($code)> => I<boolean>
+#
+# Evaluate I<$code> and return true if there's no error.
+# =cut
+sub eval_ok ($) 
+{
+    my $code = shift;
+    no strict; no warnings;
+    $DB::namespace_package = 'package main' unless $DB::namespace_package;
+    my $wrapped = "$DB::namespace_package; sub { $code }";
+    eval $wrapped;
+    # print $@, "\n" if $@;
+    return !$@;
+}
+
+
 # A package to read and cache lines of a Perl program. 
 package DB::LineCache;
 use English qw( -no_match_vars );
@@ -247,7 +266,9 @@ sub file_list()
     sort((cached_files(), keys(%file2file_remap)));
 }
 
-# Get line +line_number+ from file named +filename+. Return undef if
+# =pod
+
+# Get line C<line_number> from file named C<filename>. Return I<undef> if
 # there was a problem. If a file named filename is not found, the
 # function will look for it in the $: array.
 # 
@@ -258,6 +279,7 @@ sub file_list()
 #  $: << '/tmp'
 #  $lines = LineCache.getlines('myfile.rb')
 #
+# =cut
 sub getline($$;$)
 {
     my ($file_or_script, $line_number, $opts) = @_;
@@ -266,9 +288,23 @@ sub getline($$;$)
     my $filename = map_file($file_or_script);
     ($filename, $line_number) = map_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
-    if (defined $lines && @$lines && $line_number > 0 && 
-        $line_number <= scalar @$lines) {
-        my $line = $lines->[$line_number-1];
+    # Adjust for 0-origin arrays vs 1 origin line numbers
+    my $max_index = scalar(@$lines) - 1;
+    my $index = $line_number - 1;
+    if (defined $lines && @$lines && $index >= 0 && $index <= $max_index) {
+        my $max_continue = $opts->{max_continue} || 1;
+        my $line = $lines->[$index];
+        return undef unless defined $line;
+        if ($max_continue > 1) {
+            my $plain_lines = getlines($filename, {output => 'plain'});
+            # FIXME: should cache results
+            my $sep = ($plain_lines eq $lines) ? '' : "\n";
+            my $plain_line = $plain_lines->[$index];
+            while (--$max_continue && !DB::eval_ok($plain_line)) {
+                $line .= ($sep . $lines->[++$index]);
+                $plain_line .= $plain_lines->[$index];
+            }
+        }
         chomp $line if defined $line;
         return $line;
     } else {
@@ -276,9 +312,16 @@ sub getline($$;$)
     }
 }
 
-# Read lines of +filename+ and cache the results. However +filename+ was
-# previously cached use the results from the cache. Return undef
-# if we can't get lines
+# =pod
+#
+# I<getlines($filename, [$opts]) => $string
+#
+# Read lines of I<$filename> and cache the results. However
+# if I<$filename> was previously cached use the results from the
+# cache. Return I<undef> if we can't get lines.
+#
+#=cut
+
 sub getlines($;$);
 sub getlines($;$)
 {
@@ -339,7 +382,13 @@ sub highlight_string($)
     $string;
   }
 
- # Return full filename path for filename
+# =pod
+#
+# I<path($filename)
+#
+# Return full filename path for C<$filename>.
+#
+# =cut
 sub path($)
 {
     my $filename = shift;
@@ -355,9 +404,14 @@ sub remap_file($$)
     cache_file($to_file);
 }
 
+# =pod
+#
+# I<remap_dbline_to_file()>
+#
 # When we run trepan.pl -e ... or perl -d:Trepan -e ...  we have data
 # in internal "line" array @DB::dbline but no external file. Here we will
 # create a temporary file and store the data in that.
+# =cut
 sub remap_dbline_to_file()
 { 
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
@@ -384,8 +438,13 @@ sub remap_file_lines($$$$)
     # they intersect or one encompasses another.
     push @$ary_ref, [$from_file, @range, $start];
 }
-  
-# Return SHA1 of filename.
+
+# =pod
+# 
+# I<sha1($filename)> => I<string>
+#
+# Return SHA1 of <$filename>.
+# =cut 
 sub DB::LineCache::sha1($)
 {
     my $filename = shift;
@@ -403,7 +462,12 @@ sub DB::LineCache::sha1($)
     $sha1->hexdigest;
   }
       
-# Return the number of lines in filename
+# =pod
+# 
+# I<size($filename_or_script)> => I<string>
+#
+# Return the number of lines in I<$filename_or_script>.
+# =cut 
 sub size($)
 {
     my $file_or_script = shift;
@@ -719,15 +783,26 @@ unless (caller) {
           filename_is_eval(__FILE__);";
     printf("filename_is_eval: %s, %d\n", __FILE__, filename_is_eval(__FILE__));
     printf("filename_is_eval: %s, %d\n", '-e', filename_is_eval('-e'));
-    exit;
+
+    #$DB::filename = 'bogus';
+    #eval {
+    #   print '+++', is_cached_script(__FILE__), "\n";
+    #};
 
     $lines_aref = getlines(__FILE__, {output=>'term'});
-    print("trace nums again: ", join(', ',
-                               trace_line_numbers(__FILE__)),
-          "\n");
-    $DB::filename = 'bogus';
-    eval "update_script_cache(__FILE__, {}); 
-          print '+++', is_cached_script(__FILE__), \"\\n\"";
+    # print("trace nums again: ", join(', ',
+    #                            trace_line_numbers(__FILE__)),
+    #       "\n");
+    $line = getline(__FILE__, __LINE__,
+                    {output=>'term',
+                     max_continue => 6});
+    print '-' x 30, "\n";
+    print "$line\n";
+    $line = getline(__FILE__, __LINE__,
+                    {output=>'plain',
+                     max_continue => 5});
+    print '-' x 30, "\n";
+    print "$line\n";
 }
 
 1;

@@ -34,7 +34,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-disable I<bp-number> [I<bp-number> ...]
+B<disable> I<bp-number> [I<bp-number> ...]
     
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints

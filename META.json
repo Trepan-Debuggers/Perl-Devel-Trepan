@@ -14,6 +14,11 @@
    },
    "name" : "Devel-Trepan",
    "prereqs" : {
+      "build" : {
+         "requires" : {
+            "rlib" : "0.02"
+         }
+      },
       "configure" : {
          "requires" : {
             "Module::Build" : "0.32"
@@ -24,7 +29,7 @@
             "Data::Printer" : "0",
             "Devel::Callsite" : "0",
             "Eval::WithLexicals" : "0",
-            "Pod::Text::Color" : "0",
+            "Pod::Text::Color" : "2.06",
             "Term::ReadKey" : "0",
             "Term::ReadLine::Perl" : "0"
          },
@@ -34,7 +39,7 @@
             "Digest::SHA" : "0",
             "Getopt::Long" : "2.36",
             "PadWalker" : "0",
-            "Pod::Text" : "0",
+            "Pod::Text" : "3.13",
             "Syntax::Highlight::Perl::Improved" : "0",
             "perl" : "5.008008",
             "rlib" : "0.02",
@@ -57,7 +62,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.36"
+         "version" : "0.37_01"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -633,7 +638,7 @@
       },
       "Devel::Trepan::Options" : {
          "file" : "lib/Devel/Trepan/Options.pm",
-         "version" : 0
+         "version" : "0.37"
       },
       "Devel::Trepan::Pod2Text" : {
          "file" : "lib/Devel/Trepan/Pod2Text.pm",
@@ -668,7 +673,7 @@
          "version" : 0
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
@@ -680,5 +685,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.36"
+   "version" : "0.37_01"
 }

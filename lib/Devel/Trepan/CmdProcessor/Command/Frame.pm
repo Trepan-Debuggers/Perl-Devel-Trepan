@@ -25,7 +25,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-frame [I<frame-number>]
+B<frame> [I<frame-number>]
 
 Change the current frame to frame I<frame-number> if specified, or the
 most-recent frame, 0, if no frame number specified.

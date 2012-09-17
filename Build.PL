@@ -21,10 +21,12 @@ use Config;
 use File::Basename;
 use File::Spec;
 
-use lib File::Spec->catfile(dirname(__FILE__), 'lib');
-use Devel::Trepan;
+my $lib = File::Spec->catfile(dirname(__FILE__), 'lib');
+unshift @INC, $lib;
+require Devel::Trepan;
 
 my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
+# print "$Devel::Trepan::VERSION $release_status\n";
 
 my $builder = Module::Build->new( 
     module_name         => 'Devel::Trepan',

@@ -49,9 +49,14 @@ source lines.
 
  use DB::LineCache;
  $lines = DB::LineCache::getlines('/tmp/myperl.pl')
+
  # The following lines have same effect as the above.
  unshift @INC, '/tmp';
- Dir.chdir('/tmp') {$lines = DB::LineCache::getlines('myperl.pl')
+ $lines = DB::LineCache::getlines('myperl.pl');
+ shift @INC;
+ 
+ chdir '/tmp';  
+ $lines = DB::LineCache::getlines('myperl.pl')
 
  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
  # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
@@ -292,7 +297,7 @@ B<cache(I<$file_or_script> [, I<$reload_on_change>]) > => I<filename>
 Cache file name or script object if it's not already cached.
 
 Return the expanded filename for it in the cache if a filename,
-or the script, or C<undef> if we can't find the file.
+or the script, or I<undef> if we can't find the file.
 
 =cut 
 
@@ -579,7 +584,7 @@ Return SHA1 for I<$filename>.
 
 B<Example>:
 
-In file "/tmp/foo.pl": 
+In file C</tmp/foo.pl>: 
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
@@ -619,7 +624,7 @@ Return the number of lines in I<$filename_or_script>.
 
 B<Example>:
 
-In file "/tmp/foo.pl": 
+In file C</tmp/foo.pl>: 
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
@@ -652,7 +657,7 @@ Return file I<stat()> info in the cache for I<$filename>.
 
 B<Example>:
 
-In file "/tmp/foo.pl": 
+In file C</tmp/foo.pl>: 
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
@@ -681,9 +686,11 @@ sub DB::LineCache::stat($)
 
 =head2 trace_line_numbers
 
-I<trace_line_numbers($filename [, $reload_on_change])> => I<list-of-numbers>
+B<trace_line_numbers($filename [, $reload_on_change])> => I<list-of-numbers>
 
-Return an array of breakpoints in $I<filename>.
+Return an array of line numbers in (control opcodes) COP in
+$I<filename>.  These line numbers are the places where a breakpoint
+might be set in a debugger.
 
 =cut 
 

@@ -273,8 +273,8 @@ sub run($$)
                 chomp $help_text; chomp $help_text;
                 $self->msg($help_text) ;
                 if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
-                    my $aliases_str = join(', ', @{$cmd_obj->{aliases}});
-                    $self->msg("Aliases: $aliases_str");
+                    $self->section("\n  Aliases:");
+		    $self->msg($self->columnize_commands($cmd_obj->{aliases}));
                 }
              }
         # } elsif ($self->{proc}{macros}{$cmd_name}) {

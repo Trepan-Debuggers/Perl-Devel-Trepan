@@ -160,12 +160,21 @@ L</"Examining the call stack">
 
 =item * 
 
+L</"Support facilities">
+
+=item * 
+
 L</"Syntax of debugger commands">
 
 =back 
 
 
 =head3 Commands involving running the program
+
+The commands in the section involve controlling execution of the
+program, either by kinds of stepping (step into, step over, step out)
+restarting or termintating the program altogether. However setting
+breakpoints is in L</Making the program stop at certain points>.
 
 =over 
 
@@ -187,7 +196,7 @@ L</"Step out (finish)">
 
 =item *
 
-L</"Terminate gently (quit)">
+L</"Gently exit debugged program (quit)">
 
 =item * 
 
@@ -265,18 +274,18 @@ B<finish>
 Continue execution until the program is about to leave the current
 function. Sometimes this is called 'step out'.
 
-=head4 Terminate gently (quit)
+=head4 Gently exit debugged program (quit)
 
 B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 
 Gently exit the debugger and debugged program.
 
-The program being debugged is exited via I<exit()> which runs the Kernel
-I<at_exit> finalizers. If a return code is given, that is the return code
-passed to I<exit()> - presumably the return code that will be passed back
-to the OS. If no exit code is given, 0 is used.
+The program being debugged is exited via I<exit()> which runs the
+Kernel I<at_exit()> finalizers. If a return code is given, that is the
+return code passed to I<exit()> - presumably the return code that will
+be passed back to the OS. If no exit code is given, 0 is used.
 
-I<Examples:> 
+B<Examples:>
 
  quit                 # quit prompting if we are interactive
  quit unconditionally # quit without prompting
@@ -284,8 +293,8 @@ I<Examples:>
  quit 0               # same as "quit"
  quit! 1              # unconditional quit setting exit code 1
 
-See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill> and
-C<set confirm>.
+See also C<set confirm> and
+L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.  
 
 =head4 Hard termination (kill)
 
@@ -383,6 +392,18 @@ I<Examples:>
  debug $x=1; $y=2;    # Kind of pointless, but doable.
 
 =head3 Making the program stop at certain points
+
+A I<Breakpoint> is a way to have the program stop at a pre-determined
+location. A breakpoint can be perminant or one-time. A one-time
+breakpoint is removed as soon as it is hit. In a sense, stepping is
+like setting one-time breakpoints. Breakpoints can also be disabled
+which allows you to temporarily ignore stopping at that breakpoint
+while it is disabled. Finally one can control conditions under which a
+breakpoint is enacted upon. 
+
+Another way to force a stop is to watch to see if the value of an
+expression changes. Often that expression is simply examinging a
+variable's value. 
 
 =over
 
@@ -548,6 +569,22 @@ I<Examples:>
 
 =head3 Examining the call stack
 
+The commands in this section show the call stack and let set a
+reference for the default call stack which other commands like C<list>
+or C<break> use as a position when one is not specified.
+
+The most recent call stack entry is 0. Except for the relative motion
+commands C<up> and C<down>, you can refer to the oldest or top-level
+stack entry with -1 and negative numbers refer to the stack from the
+other end.
+
+Beware that in contrast to debuggers in other programming languages,
+Perl really doesn't have an easy way for one to evaluate statements
+and expressions other than at the most recent call stack.  There are
+ways to see lexical variables I<my> and I<our>, however localized
+variables which can hide global variables and other lexicals variables
+can be problematic.
+
 =over
 
 =item *
@@ -568,7 +605,7 @@ L</"Move to a less recent frame (down)">
 
 =back
 
-=head4 Print call stack (backtrace)
+=head4 Print all or parts of the call stack (backtrace)
 
 B<backtrace> [I<count>]
 
@@ -617,6 +654,154 @@ B<down> [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.
+
+=head3 Support facilities
+
+=over
+
+=item *
+
+L</"Define an alias (alias)">
+
+=item *
+
+L</"Remove an alias (unalias)">
+
+=item *
+
+L</"Define a macro (macro)">
+
+=item *
+
+L</"Allow remote connections (server)">
+
+=item *
+
+L</"Run debugger commands from a file (source)">
+
+=back
+
+=head4 Define an alias
+
+B<alias> I<alias> I<command>
+
+Add alias I<alias> for a debugger command I<command>.  
+
+Add an alias when you want to use a command abbreviation for a command
+that would otherwise be ambigous. For example, by default we make C<s>
+be an alias of C<step> to force it to be used. Without the alias, C<s>
+might be C<step>, C<show>, or C<set>, among others.
+
+B<Examples:>
+
+ alias cat list   # "cat file.pl" is the same as "list file.pl"
+ alias s   step   # "s" is now an alias for "step".
+                  # The above examples done by default.
+
+For more complex definitions, see C<macro>.
+See also C<unalias> and C<show alias>.
+
+=head4 Remove an unalias
+
+B<unalias> I<alias1> [I<alias2> ...]
+
+Remove alias I<alias1> and so on.
+
+B<Example:>
+
+ unalias s  # Remove 's' as an alias for 'step'
+
+See also C<alias>.
+
+
+=head4 Define a debugger macro
+
+B<macro> I<macro-name> B<sub {> ... B<}>
+
+Define I<macro-name> as a debugger macro. Debugger macros get a list of
+arguments which you supply without parenthesis or commas. See below
+for an example.
+
+The macro (really a Perl anonymous subroutine) should return either a
+string or an array reference to a list of strings. The string in both
+cases are strings of debugger commands.  If the return is a string,
+that gets tokenized by a simple C<split(/ /, $string)>.  Note that
+macro processing is done right after splitting on C<;;> so if the macro
+returns a string containing C<;;> this will not be handled on the
+string returned.
+
+If instead, a reference to a list of strings is returned, then the
+first string is shifted from the array and executed. The remaining
+strings are pushed onto the command queue. In contrast to the first
+string, subsequent strings can contain other macros. Any C<;;> in those
+strings will be split into separate commands.
+
+B<Examples:>
+
+The below creates a macro called I<fin+> which issues two commands
+C<finish> followed by C<step>:
+
+ macro fin+ sub{ ['finish', 'step']}
+
+If you wanted to parameterize the argument of the C<finish> command
+you could do it this way:
+
+  macro fin+ sub{ \
+                  ['finish', 'step ' . (shift)] \
+                }
+
+Invoking with: 
+
+  fin+ 3
+
+would expand to C<["finish", "step 3"]>
+
+If you were to add another parameter, note that the invocation is like
+you use for other debugger commands, no commas or parenthesis. That is:
+
+ fin+ 3 2
+
+rather than C<fin+(3,2)> or C<fin+ 3, 2>.
+
+See also C<info macro>.
+
+=head4 Gently exit debugged program (quit)
+
+B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
+
+=head4 Allow remote debugger connections (server)
+
+B<server> [I<options>]
+
+options: 
+
+    -p | --port NUMBER
+    -a | --address
+
+Suspends interactive debugger session and puts debugger in server mode
+which opens a socket for debugger connections
+
+=head4 Run debugger commands from a file (source)
+
+B<source> [I<options>] I<file>
+
+options: 
+
+    -q | --quiet | --no-quiet
+    -c | --continue | --no-continue
+    -Y | --yes | -N | --no
+    -v | --verbose | --no-verbose
+
+Read debugger commands from a file named I<file>.  Optional C<-v> switch
+causes each command in FILE to be echoed as it is executed.  Option C<-Y>
+sets the default value in any confirmation command to be 'yes' and C<-N>
+sets the default value to 'no'.
+
+Option C<-q> will turn off any debugger output that normally occurs in
+the running of the program.
+
+An error in any command terminates execution of the command file
+unless option C<-c> or C<--continue> is given.
 
 =head3 Syntax of debugger commands
 

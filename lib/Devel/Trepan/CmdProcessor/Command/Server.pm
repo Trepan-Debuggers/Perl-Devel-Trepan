@@ -16,7 +16,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Allow remote connections';
+use constant SHORT_HELP => 'Allow remote debugger connections';
 use constant MIN_ARGS   => 0;     # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
 EOE
@@ -28,17 +28,19 @@ use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
 $NAME = set_name();
-$HELP = <<"HELP";
+$HELP = <<'HELP';
 =pod
 
-server [I<options>]
+B<server> [I<options>]
 
 options: 
 
     -p | --port NUMBER
     -a | --address
 
-Put debugger in server mode which opens a socket for debugger connections
+Suspends interactive debugger session and puts debugger in server mode
+which opens a socket for debugger connections
+
 =cut
 HELP
 

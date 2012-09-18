@@ -20,7 +20,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
 use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Read and run debugger commands from a file';
+use constant SHORT_HELP => 'Run debugger commands from a file';
 use constant MIN_ARGS   => 1;     # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
 use constant NEED_STACK => 0;
@@ -36,7 +36,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod 
 
-source [I<options>] I<file>
+B<source> [I<options>] I<file>
 
 options: 
 

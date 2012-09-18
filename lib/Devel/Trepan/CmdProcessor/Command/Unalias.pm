@@ -24,9 +24,13 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-unalias I<alias>
+B<unalias> I<alias1> [I<alias2> ...]
 
-Remove alias I<alias>
+Remove alias I<alias1> and so on.
+
+B<Example:>
+
+ unalias s  # Remove 's' as an alias for 'step'
 
 See also C<alias>.
 =cut

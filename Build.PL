@@ -56,6 +56,7 @@ my $builder = Module::Build->new(
     },
     test_requires => {
         'Test::More'                        => '0.81',
+        'rlib'                              => '0.02',
     },
     recommends => {
         'Data::Printer'                     => 0,
@@ -75,7 +76,7 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Pod::Text'                         => 3.13,
-        'Syntax::Highlight::Perl::Improved' => 0,
+        'Syntax::Highlight::Perl::Improved' => 1.01,
         'rlib'                              => '0.02',
         'version'                           => 0,
     },

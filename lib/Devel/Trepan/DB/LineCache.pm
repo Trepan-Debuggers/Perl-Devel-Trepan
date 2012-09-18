@@ -343,7 +343,7 @@ sub cache_file($;$$)
 
 B<cache(I<$file_or_script>)> => I<boolean>
 
-Return true if I<$file_or_script> is cached.
+Return I<true> if I<$file_or_script> is cached.
 
 =cut
 
@@ -496,7 +496,7 @@ sub getlines($;$)
 B<highlight_string($string)> => I<marked-up-string>
 
 Add syntax-formatting characters via
-L<Syntax::Highlight::Pel::Improved> to I<string> according to table
+L<Syntax::Highlight::Pel::Improved> to I<marked-up-string> according to table
 given in L<Devel::Trepan::DB::Colors>.
 
 =cut
@@ -526,6 +526,29 @@ sub path($)
     return undef unless exists $file_cache{$filename};
     $file_cache{$filename}->path();
 }
+
+=pod
+
+=head2 remap_file
+
+B<remap_file($from_file, $to_file)> => $to_file
+
+Set to make any lookups retriving lines from of I<$from_file> refer to
+I<$to_file>.
+
+B<Example>:
+
+Running: 
+
+  use Devel::Trepan::DB::LineCache;
+  DB::LineCache::remap_file('another_name', __FILE__);
+  print DB::LineCache::getline('another_name', __LINE__), "\n";
+
+gives: 
+
+  print DB::LineCache::getline('another_name', __LINE__), "\n";
+
+=cut
 
 sub remap_file($$)
 { 
@@ -692,6 +715,11 @@ Return an array of line numbers in (control opcodes) COP in
 $I<filename>.  These line numbers are the places where a breakpoint
 might be set in a debugger.
 
+We get this information from the Perl run-time, so that should have
+been set up for this to take effect. See L<B::CodeLines> for a way to
+get this information, basically by running an Perl invocation that has
+this set up.
+
 =cut 
 
 sub trace_line_numbers($;$)
@@ -710,6 +738,9 @@ B<is_trace_line($filename, $line_num [,$reload_on_change])> => I<boolean>
 
 Return I<true> if I<$line_num> is a trace line number of I<$filename>.
 
+See the comment in L<trace_line_numbers> regarding run-time setup that
+needs to take place for this to work.
+
 =cut
 
 sub is_trace_line($$;$)
@@ -720,13 +751,37 @@ sub is_trace_line($$;$)
     return !!$file_cache{$filename}{trace_nums}{$line_num};
   }
     
+=pod
+
+=head2 map_file
+
+B<map_file($filename)> => string
+
+A previous invocation of I<remap_file()> could have mapped
+I<$filename> into something else. If that is the case we return the
+name that I<$filename> was mapped into. Otherwise we return I<$filename>
+
+=cut
+
 sub map_file($)
 { 
-    my $file = shift;
-    return undef unless defined($file);
-    $file2file_remap{$file} ? $file2file_remap{$file} : $file
+    my $filename = shift;
+    return undef unless defined($filename);
+    $file2file_remap{$filename} ? $file2file_remap{$filename} : $filename
   }
 
+=pod
+
+=head2 map_script
+
+B<map_script($script)> => string
+
+A previous invocation of I<remap_file()> could have mapped I<$script>
+(a pseudo-file name that I<eval()> uses) into something else. If that
+is the case we return the name that I<$script> was mapped
+into. Otherwise we return I<$script>
+
+=cut
 use File::Temp qw(tempfile);
 sub map_script($$)
 {

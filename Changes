@@ -1,5 +1,14 @@
 Revision history for Devel-Trepan
 
+0.42 - Sep 18, 2012
+- Botched 0.41 release
+
+0.41 - Sep 18, 2012
+- release to asssist pending Devel::Trepan::Disassemble and to see if we
+  can resolve a rlib weirdness.
+- More doc changes
+- Add color setting for black
+
 0.40 - Sep 17, 2012
 - Rerelease to fix yet another problem with Build.PL 
 

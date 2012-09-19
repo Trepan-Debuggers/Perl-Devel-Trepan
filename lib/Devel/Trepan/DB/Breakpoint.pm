@@ -217,7 +217,9 @@ sub set_tbreak {
 sub delete_bp($$) {
     my ($s, $bp) = @_;
     my $i = $bp->line_num;
-    local *dbline   = $main::{ '_<' . $bp->filename };
+    my $file_key = '_<' . $bp->filename;
+    return unless exists $main::{ $file_key };
+    local *dbline   = $main::{ $file_key };
     if (defined $DB::dbline{$i}) {
         my $brkpts = $DB::dbline{$i};
         my $count = 0;

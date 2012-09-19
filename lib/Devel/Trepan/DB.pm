@@ -23,7 +23,8 @@ use vars qw($running $caller
             $fall_off_on_end
             $stop @clients $ready $tid @saved
             $init_dollar0 $OS_STARTUP_DIR
-            $HAVE_DEVEL_CALLSITE);
+            $OP_addr
+            %HAVE_MODULE);
 
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Breakpoint;
@@ -137,7 +138,7 @@ BEGIN {
     # No extry/exit tracing.
     $frame = 0;
 
-    $HAVE_DEVEL_CALLSITE = eval("use Devel::Callsite; 1") ? 1 : 0;
+    $HAVE_MODULE{'Devel::Callsite'} = eval("use Devel::Callsite; 1") ? 1 : 0;
 
 }
 
@@ -179,8 +180,8 @@ sub DB {
 
     local $filename_ini = $filename;
 
-    local $OP_addr = ($HAVE_DEVEL_CALLSITE) 
-        ? Devel::Callsite::callsite() : undef; 
+    local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
+	? Devel::Callsite::callsite() : undef; 
 
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 

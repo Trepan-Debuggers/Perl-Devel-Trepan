@@ -1,23 +1,57 @@
 #!/usr/bin/env perl 
 # Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
-use vars qw($TREPAN_CMDPROC);
+use strict; use warnings;
+
 use rlib '..';
+use Devel::Trepan::Version;
+use Devel::Trepan::Core;
 
 package Devel::Trepan;
-use Devel::Trepan::Version;
-use strict;
-use warnings;
-use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
+
+use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION $TREPAN_CMDPROC);
 use Exporter;
 
-use Devel::Trepan::Core;
+@EXPORT = qw(debugger);
+@ISA = qw(Exporter);
+
 
 use constant PROGRAM => 'trepan.pl';
 use version; $VERSION = $Devel::Trepan::Version::VERSION;
 
 sub show_version() {
     PROGRAM . ", version $Devel::Trepan::VERSION";
+}
+
+# =head2 debugger
+# Allows program to make an explicit call to the debugger. 
+# B<Example:>
+#
+# In your Perl program I<foo.pl>: 
+#
+#    my $x = 1;
+#    Devel::Trepan::debugger;
+#    my $y = 2;  # Above line causes a stop here.
+#
+# Invoke as:
+#
+#   $ trepan.pl foo.pl
+#   -- main::(foo.pl:1)
+#   (trepanpl): continue
+#   (trepanpl): c
+#   :o main::(foo.pl:3)
+#   my $y = 2;
+#
+# This is like C<Enbugger-E<gt>stop> but without L<Enbugger>. However in
+# contrast to Enbugger, in order for this to work you must have
+# previously set up for debugging previously by running trepan.pl.
+#
+# =cut
+
+sub debugger {
+    $DB::in_debugger = 0;
+    $DB::event = 'debugger-call';
+    $DB::signal = 2;
 }
 
 if (__FILE__ eq $0 ) {

@@ -6,6 +6,7 @@ Changes
 example/eval.pl
 example/except-bug1.pl
 example/fns.pl
+example/gcd-dbcall.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl

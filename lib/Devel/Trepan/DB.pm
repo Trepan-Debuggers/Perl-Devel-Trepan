@@ -6,6 +6,8 @@
 
 use rlib '../..';
 
+=pod
+
 =head1 C<DB>
 
 Devel::Trepan customized DB package. Down the line this should be split off
@@ -181,7 +183,7 @@ sub DB {
     local $filename_ini = $filename;
 
     local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
-	? Devel::Callsite::callsite() : undef; 
+        ? Devel::Callsite::callsite() : undef; 
 
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 
@@ -367,7 +369,7 @@ sub DB {
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
     ();
 }
-  
+
 =head1 RESTART SUPPORT
 
 These routines are used to store (and restore) lists of items in environment 
@@ -692,13 +694,10 @@ sub evalcode {
 }
 
 sub ready {
-  my $s = shift;
-  return $ready = 1;
+    my $s = shift;
+    return $ready = 1;
 }
 
-# stubs
-    
-sub stop {}
 sub idle {}
 sub cleanup {}
 sub output {}
@@ -729,13 +728,11 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->step()              # single step
     CLIENT->next()              # step over
     CLIENT->finish()            # stop before finishing the current subroutine
-    CLIENT->backtrace()         # return the call stack description
     CLIENT->ready()             # call when client setup is done
     CLIENT->trace_toggle()      # toggle subroutine call trace mode
     CLIENT->subs([SUBS])        # return subroutine information
     CLIENT->files()             # return list of all files known to DB
     CLIENT->loadfile(FILE,LINE) # load a file and let other clients know
-    CLIENT->line_events()       # return info on lines with actions
     CLIENT->set_break([WHERE],[COND])
     CLIENT->set_tbreak([WHERE])
     CLIENT->clr_breaks([LIST])
@@ -913,10 +910,6 @@ of these methods.
 =item CLIENT->init()
 
 Called after debug API inits itself.
-
-=item CLIENT->stop()
-
-Called when execution stops (w/ args file, line).
 
 =item CLIENT->idle(BOOLEAN, EVENT, ARGS)
 

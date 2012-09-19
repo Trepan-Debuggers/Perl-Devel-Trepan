@@ -5,17 +5,18 @@ use vars qw($TREPAN_CMDPROC);
 use rlib '..';
 
 package Devel::Trepan;
+use Devel::Trepan::Version;
 use strict;
 use warnings;
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.42';
 use Exporter;
 
 use Devel::Trepan::Core;
 
 use constant PROGRAM => 'trepan.pl';
+use version; $VERSION = $Devel::Trepan::Version::VERSION;
 
-sub show_version {
+sub show_version() {
     PROGRAM . ", version $Devel::Trepan::VERSION";
 }
 
@@ -23,6 +24,11 @@ if (__FILE__ eq $0 ) {
     print show_version(), "\n";
 }
 
+unless (caller) {
+    print show_version, "\n";
+    print "Pssst... this is a module. See trepan.pl to invoke.\n"
+}
+no warnings;
 "Just another Perl Debugger";
 __END__
 

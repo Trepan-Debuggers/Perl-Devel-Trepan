@@ -1,3 +1,45 @@
+2012-09-18  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm: Get ready for 0.42 release. Botched
+	0.41 release.
+
+2012-09-18  rocky <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Macro.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Server.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Update doc. Get ready for 0.41
+	release
+
+2012-09-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Colors.pm: Add definition for black. Without
+	it, Improved.pm of Syntax Highlight may report using an undefined
+	value.
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/alias.right: Upate alias test output for last change
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/DB/Colors.pm: Help: Make section head for aliases.
+	SubMgr.pm: remove deprication on Perl 5.17 Colors.pm: use bblue for
+	keywords rather than black.
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: More LineCache.pm pod
+	improvements. Bump version number.
+
 2012-09-17  Rocky Bernstein <rocky@cpan.org>
 
 	* Build.PL, Changes, lib/Devel/Trepan.pm: Release 0.40 to fix yet

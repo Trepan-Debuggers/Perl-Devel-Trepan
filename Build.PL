@@ -23,10 +23,11 @@ use File::Spec;
 
 my $lib = File::Spec->catfile(dirname(__FILE__), 'lib');
 unshift @INC, $lib;
-require Devel::Trepan;
+require Devel::Trepan::Version;
 
-my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
-# print "$Devel::Trepan::VERSION $release_status\n";
+my $release_status = ($Devel::Trepan::Version::VERSION =~ /_/) ? 
+    'testing' : 'stable';
+# print "$Devel::Trepan::Version::VERSION $release_status\n";
 
 my $builder = Module::Build->new( 
     module_name         => 'Devel::Trepan',
@@ -35,7 +36,7 @@ my $builder = Module::Build->new(
     dist_abstract       => 
     'Modular Perl Debugger (akin to Ruby "Trepanning" Debuggers).',
     dist_author         => 'Rocky Bernstein <rocky@cpan.org>',
-    dist_version_from   => 'lib/Devel/Trepan.pm',
+    dist_version_from   => 'lib/Devel/Trepan/Version.pm',
     license             => 'gpl',
     needs_compiler      => 0,
     release_status      => $release_status,
@@ -60,7 +61,7 @@ my $builder = Module::Build->new(
     },
     recommends => {
         'Data::Printer'                     => 0,
-        'Devel::Callsite'                   => 0,
+        'Devel::Callsite'                   => 0.05,
         'Eval::WithLexicals'                => 0,
         'Pod::Text::Color'                  => 2.06,
         'Term::ReadKey'                     => 0,

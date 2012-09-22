@@ -116,7 +116,8 @@ sub awaken($;$) {
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
     my %cmdproc_opts = ();
-    for my $field (qw(basename cmddir highlight readline traceprint)) {
+    for my $field 
+	(qw(basename cmddir highlight readline traceprint)) {
         # print "field $field $opts->{$field}\n";
         $cmdproc_opts{$field} = $opts->{$field};
     }

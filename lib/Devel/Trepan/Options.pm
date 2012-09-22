@@ -8,10 +8,8 @@ use Pod::Find qw(pod_where);
 use File::Spec;
 use rlib '../..';
 
-use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME
-            $HAVE_DATA_PRINT $HAVE_PERLTIDY);
-@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME 
-              $HAVE_DATA_PRINT $HAVE_PERLTIDY);
+use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME);
+@EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME);
 our @ISA;
 
 # Not used, but keeps the CPAN indexer happy
@@ -37,12 +35,12 @@ my $initfile = File::Spec->catfile($home, '.treplrc');
 $DEFAULT_OPTIONS = {
     basename     => 0,
     batchfile    => undef,
-    client       => 0,     # Set 1 if we want to connect to an out-of
-                           # process debugger "server".
-    cmddir       => [],    # Additional directories of debugger commands
-    cmdfiles     => [],    # Files containing debugger commands to 'source'
-    exec_strs    => [],    # Perl strings to evaluate
-    fall_off_end => 0,     # Don't go into debugger on termination? 
+    client       => 0,       # Set 1 if we want to connect to an out-of
+                             # process debugger "server".
+    cmddir       => [],      # Additional directories of debugger commands
+    cmdfiles     => [],      # Files containing debugger commands to 'source'
+    exec_strs    => [],      # Perl strings to evaluate
+    fall_off_end => 0,       # Don't go into debugger on termination? 
     highlight    => default_term(),    
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost', 

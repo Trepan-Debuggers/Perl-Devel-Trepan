@@ -152,6 +152,8 @@ END {
     $DB::ready = 0;
 } 
 
+sub save_vars();
+
 ####
 # this is called by Perl for every statement
 #
@@ -168,7 +170,7 @@ sub DB {
     return unless $ready && !$in_debugger;
     local $in_debugger = 1;
     @DB::_ = @_;
-    &save;
+    save_vars();
 
     # Since DB::DB gets called after every line, we can use caller() to
     # figure out where we last were executing. Sneaky, eh? This works because
@@ -425,9 +427,16 @@ sub get_list {
 #         no compile-time subroutine call allowed before this point           #
 ###############################################################################
 
-use strict;                # this can run only after DB() and sub() are defined
+# this can run only after DB() and sub() are defined
+use strict;
 
-sub save($) {
+# Need this until we replace "save" with "save_vars" in Enbugger/trepan.pm
+sub save { die "Remember to update Enbugger/trepan.pm" };
+
+# Like DB::save from perl5db.pl, but want to use another name to
+# reduce prototype conflict of save $ vs none if we use perl5db.pl to
+# debug Devel::Trepan.
+sub save_vars() {
   @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
              $OUTPUT_FIELD_SEPARATOR, 
              $INPUT_RECORD_SEPARATOR, 

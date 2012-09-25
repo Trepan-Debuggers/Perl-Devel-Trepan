@@ -206,6 +206,7 @@ t/10test-intf-user.t
 t/10test-io-output.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.t
+t/10test-io-tcpserver.t
 t/10test-linecache.t
 t/10test-load.t
 t/10test-options.t

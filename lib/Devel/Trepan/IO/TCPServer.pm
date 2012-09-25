@@ -89,7 +89,10 @@ sub open($;$)
             Type      => SOCK_STREAM,
             Reuse     => 1,
             Listen    => 1  # or SOMAXCONN
+
         );
+    die "Can't open socket host $self->{host}, port $self->{port}\n" unless
+        $self->{server};
     # @server.setsockopt(Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, 5)
     #                   # @opts[:timeout])
     $self->{state} = 'listening';

@@ -1,3 +1,59 @@
+2012-09-25  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/Version.pm: Get ready for 0.43 release.
+
+
+2012-09-25  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Interface/Server.pm, t/10test-io-tcpserver.t: Test
+	to see if IO::Socekt::INET->new succeeds
+
+2012-09-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm: 
+	Don't use a Dafffta::Printer alias. Guard agains
+	Interface::User::readline $last undef which can happen the first
+	time around. Some code cleanup.
+
+2012-09-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: DB::save -> DB::save_vars to reduce
+	overlap with perl5db.pl. Also we weren't respecting the prototype.
+
+2012-09-21  R. Bernstein <rockyb@rubyforge.org>
+
+	Merge pull request #16 from kevindawson/master  Add missing
+	section INSTALLATION
+
+2012-09-21  bowtie <bowtie@cpan.org>
+
+	* README: Add missing section INSTALLATION to README file
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Breakpoint.pm: Silence a warning about trying
+	to assign undef to a glob.
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/gcd-dbcall.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB.pm: Add a non-Enbugger way to call the debugger.
+
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: Small DB.pm tweaks to remove a warning
+	message and allow for optional module growth.
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Try yet again to avoid using rlib and
+	pacifying smokers.
+
 2012-09-18  Rocky Bernstein <rocky@cpan.org>
 
 	* Changes, lib/Devel/Trepan.pm: Get ready for 0.42 release. Botched

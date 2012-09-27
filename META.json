@@ -22,7 +22,7 @@
       "runtime" : {
          "recommends" : {
             "Data::Printer" : "0",
-            "Devel::Callsite" : "0",
+            "Devel::Callsite" : "0.05",
             "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
             "Term::ReadKey" : "0",
@@ -668,7 +668,7 @@
          "version" : 0
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
@@ -680,5 +680,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.42_01"
+   "version" : "0.43"
 }

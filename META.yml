@@ -483,7 +483,7 @@ provides:
     version: 0
 recommends:
   Data::Printer: 0
-  Devel::Callsite: 0
+  Devel::Callsite: 0.05
   Eval::WithLexicals: 0
   Pod::Text::Color: 2.06
   Term::ReadKey: 0
@@ -503,4 +503,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.42_01
+version: 0.43

@@ -74,6 +74,7 @@ my $builder = Module::Build->new(
         # 'Capture::Tiny'                     => 0,
         'Data::Dumper'                      => 0,
         'Getopt::Long'                      => '2.36',
+        'Devel::Trepan::Version'            => 0,
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Pod::Text'                         => 3.13,

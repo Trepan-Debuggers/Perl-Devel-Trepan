@@ -1,5 +1,8 @@
 Revision history for Devel-Trepan
 
+0.44 - Sep 26, 2012
+- Rerelease to try to address a CPAN Indexing failure
+
 0.43 - Sep 25, 2012
 - Bugfix release. See ChangeLog
 

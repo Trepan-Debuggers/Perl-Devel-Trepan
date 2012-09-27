@@ -6,7 +6,7 @@ build_requires: {}
 configure_requires:
   Module::Build: 0.32
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4, CPAN::Meta::Converter version 2.120921'
+generated_by: 'Module::Build version 0.4, CPAN::Meta::Converter version 2.112150'
 license: open_source
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -24,7 +24,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0
+    version: 0.43
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -472,6 +472,9 @@ provides:
   Devel::Trepan::Util:
     file: lib/Devel/Trepan/Util.pm
     version: 0
+  Devel::Trepan::Version:
+    file: lib/Devel/Trepan/Version.pm
+    version: 0.44_01
   Devel::Trepan::WatchMgr:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
@@ -503,4 +506,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.43
+version: 0.44_01

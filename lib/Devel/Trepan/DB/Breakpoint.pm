@@ -78,30 +78,12 @@ sub find_subline($) {
         my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
         if ($from) {
             local *DB::dbline = "::_<$filename";
-            ++$from while $DB::dbline[$from] == 0 && $from < $to;
+	    ++$from while $DB::dbline[$from] && $DB::dbline[$from] == 0 && 
+		$from < $to;
             return ($filename, $fn_name, $from);
         }
     }
     return (undef, undef, undef);
-}
-
-# Find a subroutine line. 
-# FIXME: reorganize things to really set a breakpoint at a subroutine.
-# not just the line number we that we might find subroutine on.
-sub _find_subline {
-    my $name = shift;
-    $name =~ s/\'/::/;
-    $name = "${DB::package}\:\:" . $name if $name !~ /::/;
-    $name = "main" . $name if substr($name,0,2) eq "::";
-    if (exists $DB::sub{$name}) {
-        my($fname, $from, $to) = ($DB::sub{$name} =~ /^(.*):(\d+)-(\d+)$/);
-        if ($from) {
-            local *DB::dbline = "::_<$fname";
-            ++$from while $DB::dbline[$from] == 0 && $from < $to;
-            return $from;
-        }
-    }
-    return undef;
 }
 
 # Return a warning message if breakpoint position is invalid.

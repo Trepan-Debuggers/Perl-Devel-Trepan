@@ -1055,7 +1055,9 @@ sub update_cache($;$)
                 my @lines = @$raw_lines;
                 for (my $i=1; $i<=$#lines; $i++) {
                     if (defined $raw_lines->[$i]) {
-                        $trace_nums->{$i} = 1 if ($raw_lines->[$i] != 0);
+			no warnings;
+                        $trace_nums->{$i} = ($raw_lines->[$i] + 0) if 
+			    (+$raw_lines->[$i]) != 0;
                         $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
                     } else {
                         $raw_lines->[$i] = $lines_check[$i-1] 

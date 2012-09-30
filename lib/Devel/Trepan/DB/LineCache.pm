@@ -944,13 +944,16 @@ sub dualvar_lines($$;$$) {
 B<load_file(I<$filename>)> => I<list of strings>
 
 Somewhat simulates what Perl does in reading a file when debugging is
-turned on. We save a a list under I<_E<gt>$filename> where each line
-has a dual variable nature. In numeric context, each entry of the list
-is I<true> if that line is traceable or break-pointable (is the address
-of a COP instruction). In a non-numeric context, each entry is a string
-of the line contents including the trailing C<\n>.
+turned on. We the file contents as a list of strings in
+I<_E<gt>$filename>. But also entry is a dual variable. In numeric
+context, each entry of the list is I<true> if that line is traceable
+or break-pointable (is the address of a COP instruction). In a
+non-numeric context, each entry is a string of the line contents
+including the trailing C<\n>.
 
-I<Note:> something similar exists in L<Enbugger>.
+I<Note:> something similar exists in L<Enbugger> and it is useful when
+a debugger is called via Enbugger which turn on debugging late so source
+files might not have been read in.
 
 =cut 
 sub load_file($;$) {

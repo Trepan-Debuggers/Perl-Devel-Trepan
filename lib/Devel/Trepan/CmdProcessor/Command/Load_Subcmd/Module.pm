@@ -40,7 +40,7 @@ changed.
 =cut
 HELP
 
-our $SHORT_HELP = 'Load Perl module file(s)';
+our $SHORT_HELP = '(re)load Perl module file(s)';
 our $MIN_ABBREV = length('mo');
 
 # sub complete($$)

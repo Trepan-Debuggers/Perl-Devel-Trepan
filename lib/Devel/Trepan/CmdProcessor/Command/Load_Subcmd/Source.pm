@@ -58,7 +58,6 @@ sub run($$)
     my $proc = $self->{proc};
     my @args = @$args; shift @args; shift @args;
     foreach my $source (@args) {
-        print "+++ source is $source\n";
         if (-r $source) {
             ## FIXME put into a common routine and use in bin/trepan.pl as
             ## well

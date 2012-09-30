@@ -4,8 +4,9 @@
 #
 #
 use Digest::SHA;
+use Scalar::Util;
 
-use version; $VERSION = '0.1.1';
+use version; $VERSION = '0.2';
 
 package DB;
 
@@ -880,11 +881,99 @@ sub update_script_cache($$)
     return 1;
   }
 
-=pod
+=head2
+
+B<dualvar_lines($file_or_string, $is_file, $mark_trace)> => 
+#  I<list of dual-var strings>
+
+# Routine to create dual numeric/string values for
+# C<$file_or_string>. A list reference is returned. In string context
+# it is the line with a trailing "\n". In a numeric context it is 0 or
+# 1 if $mark_trace is set and B::CodeLines determines it is a trace
+# line.
+#
+# Note: Perl implementations seem to put a COP address inside
+# @DB::db_line when there are trace lines. I am not sure if this is
+# specified as part of the API. We # don't do that here but (and might
+# even if it is not officially defined in the API.) Instead put value
+# 1.
+#
+=cut
+
+# FIXME: $mark_trace may be something of a hack. Without it we can
+# get into infinite regress in marking %INC modules.
+
+sub dualvar_lines($$;$$) {
+    my ($file_or_string, $dualvar_lines, $is_file, $mark_trace) = @_;
+    my @break_line = ();
+    local $INPUT_RECORD_SEPARATOR = "\n";
+
+    # Setup for B::CodeLines and for reading file lines
+    my ($cmd, @text);
+    my $fh;
+    if ($is_file) {
+        return () unless open($fh, '<', $file_or_string);
+        @text = readline $fh;
+        $cmd = "$^X -MO=CodeLines $file_or_string";
+        close $fh;
+    } else {
+        @text = split("\n", $file_or_string);
+        $cmd = "$^X -MO=CodeLines,-exec -e '$file_or_string'";
+    }
+
+    # Make text data be 1-origin rather than 0-origin.
+    unshift @text, undef;
+
+    # Get trace lines from B::CodeLines
+    if ($mark_trace and open($fh, '-|', "$cmd 2>/dev/null")) {
+        while (my $line=<$fh>) {
+            next unless $line =~ /^\d+$/;
+            $break_line[$line] = $line;
+        }
+    }
+    # Create dual variable array.
+    for (my $i = 1; $i < scalar @text; $i++) {
+        my $num = exists $break_line[$i] ? $mark_trace : 0;
+        $dualvar_lines->[$i] = Scalar::Util::dualvar($num, $text[$i] . "\n");
+    }
+    return $dualvar_lines;
+}
+
+=head2 
+
+B<load_file(I<$filename>)> => I<list of strings>
+
+Somewhat simulates what Perl does in reading a file when debugging is
+turned on. We save a a list under I<_E<gt>$filename> where each line
+has a dual variable nature. In numeric context, each entry of the list
+is I<true> if that line is traceable or break-pointable (is the address
+of a COP instruction). In a non-numeric context, each entry is a string
+of the line contents including the trailing C<\n>.
+
+I<Note:> something similar exists in L<Enbugger>.
+
+=cut 
+sub load_file($;$) {
+    my ($filename, $eval_string) = @_;
+
+    # The symbols by which we'll know ye.
+    my $base_symname = "_<$filename";
+    my $symname      = "main::$base_symname";
+
+    no strict 'refs';
+    if (defined($eval_string)) {
+        dualvar_lines($eval_string, \@$symname, 0, 1);
+    } else {
+        dualvar_lines($filename, \@$symname, 1, 1);
+    }
+    $$symname ||= $filename;
+
+    return;
+}
 
 =head2 readlines
 
-B<readlines($filename)> => I<list of strings>
+B<readlines(I<$filename>)> => I<list of strings>
 
 Return a a list of strings for I<$filename>. If we can't read
 I<$filename> retun I<undef>. Each line will have a "\n" at the end.
@@ -895,17 +984,16 @@ sub readlines($)
 {
     my $path = shift;
     if (-r $path) {
-        open(FH, '<', $path);
-        seek FH, 0, 0;
-        my @lines = <FH>;
-        close FH;
+        my $fh;
+        open($fh, '<', $path);
+        seek $fh, 0, 0;
+        my @lines = <$fh>;
+        close $fh;
         return @lines;
     } else {
         return undef;
     }
 }
-
-=pod
 
 =head2 update_cache
 
@@ -1115,6 +1203,13 @@ unless (caller) {
                      max_continue => 5});
     print '-' x 30, "\n";
     print "$line\n";
+    print '-' x 30, "\n";
+
+    my $dirname = File::Basename::dirname(__FILE__);
+    my $colors_file = File::Spec->catfile($dirname, 'Colors.pm');
+    load_file($colors_file);
+    @line_nums = trace_line_numbers($colors_file);
+    print join(', ', @line_nums, "\n");
 }
 
 1;

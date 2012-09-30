@@ -60,6 +60,7 @@ my $builder = Module::Build->new(
         'rlib'                              => '0.02',
     },
     recommends => {
+        'B::CodeLines'                      => 1.1,
         'Data::Printer'                     => 0,
         'Devel::Callsite'                   => 0.05,
         'Eval::WithLexicals'                => 0,
@@ -77,6 +78,7 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Pod::Text'                         => 3.13,
+        'Scalar::Util'                      => 0,
         'Syntax::Highlight::Perl::Improved' => 1.01,
         'rlib'                              => '0.02',
         'version'                           => 0,

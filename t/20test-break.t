@@ -3,9 +3,9 @@ use warnings; use strict;
 use rlib '.'; use Helper;
 use English;
 
-plan skip_all => 
-    'BINGOS Solaris smokers have a problem and I get get feedback from him' 
-    if $OSNAME eq 'solaris';
+#plan skip_all => 
+#    'BINGOS Solaris smokers have a problem and I get get feedback from him' 
+#    if $OSNAME eq 'solaris';
 
 my $test_prog = prog_file('gcd.pl');
 

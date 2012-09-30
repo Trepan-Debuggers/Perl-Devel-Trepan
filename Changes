@@ -1,9 +1,16 @@
 Revision history for Devel-Trepan
 
-0.45 - Sep 26, 2012
+0.45 - 
 - Add "load source" to read in Perl source file somewhat like it would be 
   when debugger reads the file under debugging. Might be useful when
   used via in Enbugger. 
+- When stopping we were printing too many lines if the first statement
+  was incomplete. For example
+    if (0) {
+      $x = 1;
+      $y = 2;
+    };
+  was printing entire "if (0) { ... }" rather than stop after "$x = 1";
 
 0.44 - Sep 26, 2012
 - Rerelease to try to address a CPAN Indexing failure

@@ -410,6 +410,7 @@ sub getline($$;$)
             while (--$max_continue && !DB::eval_ok($plain_line)) {
                 $line .= ($sep . $lines->[++$index]);
                 $plain_line .= $plain_lines->[$index];
+		last if $file_cache{$filename}{trace_nums}{$index+1};
             }
         }
         chomp $line if defined $line;

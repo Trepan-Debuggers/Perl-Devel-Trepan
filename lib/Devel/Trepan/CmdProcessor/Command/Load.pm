@@ -9,8 +9,8 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-use constant SHORT_HELP => 'Load or something Perlish'; 
-use constant CATEGORY => 'status';
+use constant SHORT_HELP => 'Load or reload something Perlish'; 
+use constant CATEGORY => 'support';
 use constant MIN_ARGS   => 0;  # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
 use constant NEED_STACK => 0;

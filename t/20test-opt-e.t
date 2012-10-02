@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use warnings; use strict;
 use rlib '.'; use Helper; 
-use English;
+use English qw( -no_match_vars );
 use Config;
 
 if ($OSNAME eq 'MSWin32') {

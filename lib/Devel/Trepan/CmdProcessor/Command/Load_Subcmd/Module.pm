@@ -28,7 +28,7 @@ EOE
 our $HELP = <<'HELP';
 =pod
 
-load module {I<Perl-module-file>}
+B<load module> {I<Perl-module-file>}
 
 Load or reload a Perl module. This is like I<require> with a file name
 but we force a load or reload. This is useful if you wanto to changes the

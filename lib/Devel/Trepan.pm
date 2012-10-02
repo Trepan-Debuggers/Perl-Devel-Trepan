@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version; 
-$VERSION='0.43'; # To fool CPAN indexer.
+$VERSION='0.45'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 
 sub show_version() {
@@ -721,6 +721,12 @@ L</"Allow remote connections (server)">
 
 L</"Run debugger commands from a file (source)">
 
+=item *
+
+L</"Load or Reload something Perlish">
+
+L</"Modify parts of the Debugger Environment">
+
 =back
 
 =head4 Define an alias
@@ -844,6 +850,163 @@ the running of the program.
 
 An error in any command terminates execution of the command file
 unless option C<-c> or C<--continue> is given.
+
+=head4 Load or Reload something Perlish (load)
+
+Sometimes in the middle of debugging you would like to make a change
+to a Perl module -- perhaps you've found a bug -- and start using that.
+If the change is inside a Perl module, you can use the command
+C<load module>:
+
+B<load module> {I<Perl-module-file>}
+
+Another thing that can occur especially if using L<Enbugger> is that
+the source to Perl code is not cached inside the debugger and so you
+can't set a breakpoint on lines in that module. C<load source> can be
+used to rectify this. However this is a bit experimenta. There may
+still be a problem in making sure that debugging turned on when
+tracing inside of that source.
+
+B<load source> {I<Perl-source_file>}
+
+Finally, if you have debugger commands of your own or if you change a
+debugger command, you can force a reread of that debugger command
+using C<load command>.
+
+B<load commmand> {I<file-or-directory-name-1> [I<file-or-directory-name-2>...]}
+
+=head4 Modify parts of the Debugger Environment (set, show)
+
+There are many parts of the debugger environment you can change, like
+the print line width, whether you want syntax highlighting or not and
+so on. These fall under C<set> commands. C<show> commands show you
+values that have been set. In fact, many of the C<set> commands finish
+by runnin the corresponding "show" to echo you see what you've just
+set.
+
+B<Set commands>
+
+=over
+
+=item abbrev  
+
+Set to allow unique abbreviations of commands
+
+=item auto
+
+Set controls for some "automatic" default behaviors
+
+=item basename 
+
+Set to show only file basename in showing file names
+
+=item confirm 
+
+Set whether to confirm potentially dangerous operations.
+
+=item debug 
+
+Set debugging controls
+
+=item different
+
+Set to make sure 'next/step' move to a new position.
+
+=item display 
+
+Set display attributes
+
+=item evaldisplay
+
+Set whether we use terminal highlighting
+
+=item max 
+
+Set maximum length sizes of various things
+
+=item return 
+
+Set the value about to be returned
+
+=item timer 
+
+Set to show elapsed time between debugger events
+
+=item trace 
+
+Set tracing of various sorts.
+
+=item variable 
+
+Set a I<my> or I<our> variable
+
+=back
+
+B<Show commands>
+
+=over
+
+=item abbrev 
+
+Show whether we allow abbreviated debugger command names
+
+=item aliases 
+
+Show defined aliases
+
+=item args 
+
+Arguments to restart program
+
+=item auto
+
+Show controls for things with some sort of "automatic" default behavior
+
+=item basename 
+
+Show only file basename in showing file names
+
+=item confirm 
+
+Show confirm potentially dangerous operations setting
+
+=item debug 
+
+Show debugging controls
+
+=item different
+
+Show status of 'set different'
+
+=item display 
+
+Show display-related controls
+
+=item evaldisplay
+
+Show whether we use terminal highlighting
+
+=item interactive
+
+Show whether debugger input is a terminal
+
+=item max 
+
+Show "maximum length" settings
+
+=item timer 
+
+Show status of the timing hook
+
+=item trace 
+
+Set tracing of various sorts
+
+=item version 
+
+Show debugger name and version
+
+=back
 
 =head3 Syntax of debugger commands
 
@@ -1011,6 +1174,9 @@ support via L<B::Concise>
 
 =item *
 
+L<Devel::Callsite> allows you to see the exact location of where you are stopped. 
+
+=item *
 L<Enbugger> allows you to enter the debugger via a direct call in source code
 
 =item *

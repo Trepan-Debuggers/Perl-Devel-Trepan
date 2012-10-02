@@ -4,7 +4,7 @@ use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Load::Source;
-use English;
+use English qw( -no_match_vars );
 use Cwd 'abs_path';
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
@@ -29,7 +29,9 @@ EOE
 our $HELP = <<'HELP';
 =pod
 
-read source lines of {I<Perl-source-file>}
+B<load source> {I<Perl-source-file>}
+
+Read source lines of {I<Perl-source-file>}.
 
 Somewhat simulates what Perl does in reading a file when debugging is
 turned on. We the file contents as a list of strings in

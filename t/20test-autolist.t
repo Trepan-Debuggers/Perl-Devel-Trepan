@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use warnings; use strict; use English;
+use warnings; use strict; use English qw( -no_match_vars );
 use Test::More;
 use Config;
 

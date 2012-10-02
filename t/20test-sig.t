@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use warnings; use strict;
-use English;
+use English qw( -no_match_vars );
 use rlib '.';
 use Helper;
 if ($OSNAME eq 'MSWin32') {
@@ -8,7 +8,7 @@ if ($OSNAME eq 'MSWin32') {
      'Strawberry Perl might not handle signals properly'";
 }
 
-diag("FIXME: redo with File::Temp. Also, I think there's a bug in the sig2.cmd test.");
+diag("FIXME: redo with File::Temp.");
 
 my $test_prog = File::Spec->catfile(dirname(__FILE__), 
 				    qw(.. example signal.pl));

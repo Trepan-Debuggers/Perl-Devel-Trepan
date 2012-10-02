@@ -1,6 +1,6 @@
 Got signal HUP in debugged program handler
--- main::(signal.pl:9)
-$SIG{'HUP'} = \&hup_handler;
+-- main::(signal.pl:2)
+my $leave_loop = 0;
 x1 main::(signal.pl:10)
 my $tempfile;
 Signal        Stop	Print	Stack	Pass	Description

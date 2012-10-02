@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4, CPAN::Meta::Converter version 2.112150",
+   "generated_by" : "Module::Build version 0.4, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "open_source"
    ],
@@ -21,24 +21,26 @@
       },
       "runtime" : {
          "recommends" : {
-            "Data::Printer" : 0,
+            "B::CodeLines" : "1.1",
+            "Data::Printer" : "0",
             "Devel::Callsite" : "0.05",
-            "Eval::WithLexicals" : 0,
+            "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
-            "Term::ReadKey" : 0,
-            "Term::ReadLine::Perl" : 0
+            "Term::ReadKey" : "0",
+            "Term::ReadLine::Perl" : "0"
          },
          "requires" : {
             "Array::Columnize" : "1.01",
-            "Data::Dumper" : 0,
-            "Digest::SHA" : 0,
+            "Data::Dumper" : "0",
+            "Digest::SHA" : "0",
             "Getopt::Long" : "2.36",
-            "PadWalker" : 0,
+            "PadWalker" : "0",
             "Pod::Text" : "3.13",
+            "Scalar::Util" : "0",
             "Syntax::Highlight::Perl::Improved" : "1.01",
             "perl" : "5.008008",
             "rlib" : "0.02",
-            "version" : 0
+            "version" : "0"
          }
       }
    },
@@ -57,7 +59,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.43"
+         "version" : "0.45"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -229,6 +231,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Load::Module" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Load::Source" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Macro" : {
@@ -657,7 +663,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.44_01"
+         "version" : "0.45"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -672,7 +678,7 @@
          "version" : 0
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
@@ -684,5 +690,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.44_01"
+   "version" : "0.45"
 }

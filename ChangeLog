@@ -1,7 +1,69 @@
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, example/signal.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/Version.pm, t/20test-autolist.t, t/20test-break.t,
+	t/20test-eval.t, t/20test-opt-e.t, t/20test-sig.t,
+	t/data/sig.right, t/data/sig2.right: Go over Trepan.pm pod. Get
+	ready for 0.45 release.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm: 
+	Remove debug output.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Store COP address in trace_nums.
+	We may use this is filtering disassembly.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/DB/LineCache.pm, t/20test-break.t,
+	t/data/break2.cmd, t/data/break2.right: When stopping we were
+	printing too many lines if the first statement   was incomplete. For
+	example     if (0) {       $x = 1;       $y = 2;     };   was
+	printing entire "if (0) { ... }" rather than stop after "$x = 1";
+
+2012-09-29  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: Add debugger
+	command "load source" to read in Perl source lines somewhat like
+	perl does automatically when debug flags are set.
+
+2012-09-29  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: 
+	DB::Lineacache add load_file() which somewhat simulates what happens
+	in debugging when a file is read in under debugging. Todo: a
+	debugger command to (re)load a Perl file. B::CodeLines assists here.
+
+
+2012-09-27  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml, lib/Devel/Trepan/DB/Breakpoint.pm,
+	lib/Devel/Trepan/Version.pm: Breakpoint.pm: remove duplicate code
+	and possibly deal with a failing "find_subline". Is it Build.PL ok
+	to drop Version dependency that smokers erroniously suggested we
+	needed? Bump version.
+
+2012-09-26  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, Changes, MANIFEST, META.json, META.yml,
+	lib/Devel/Trepan.pm, lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for 0.44 release
+
 2012-09-25  Rocky Bernstein <rocky@cpan.org>
 
 	* Changes, lib/Devel/Trepan/Version.pm: Get ready for 0.43 release.
-
+	Change default host on server to 127.0.0.1 from localhost
 
 2012-09-25  Rocky Bernstein <rocky@cpan.org>
 

@@ -1,9 +1,15 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
+use strict; use warnings;
+use English qw( -no_match_vars );
 use rlib '../lib';
 
 use Test::More;
+if ($OSNAME eq 'MSWin32') {
+    plan skip_all => "FIXME see if we can make this work on Strawberry Perl" 
+} else {
+    plan;
+}
+
 note( "Testing Devel::IO::TCPServer" );
 
 BEGIN {

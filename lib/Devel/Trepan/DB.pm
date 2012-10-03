@@ -295,7 +295,8 @@ sub DB {
     }
 
     for my $action (@action) {
-        &DB::eval($namespace_package, $action->condition, @saved) 
+        &DB::eval_with_return($action->condition, {return_type => '$'},
+			      @saved) 
             if $action->enabled;
         my $hits = $action->hits + 1;
         $action->hits($hits);

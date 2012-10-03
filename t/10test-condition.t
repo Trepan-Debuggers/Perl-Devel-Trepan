@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 use strict; use warnings;
-use English;
+use English qw( -no_match_vars );
 use rlib '../lib';
 use Devel::Trepan::Condition;
 

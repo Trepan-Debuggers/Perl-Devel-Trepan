@@ -3,6 +3,7 @@ bin/trepan.pl
 Build.PL			Proto Build creator
 ChangeLog
 Changes
+example/action-bug.pl
 example/eval.pl
 example/except-bug1.pl
 example/fns.pl

@@ -50,7 +50,9 @@ $opts = {
                 # Perl 5.10.0 doesn't show "sub five() {"
 		$skip = 3;
                 next;
-            }
+            } elsif ( /^\s*\}/ ) {
+                next;
+	    }
             push @result, $_;
         }
         $got_lines = join("\n", @result);

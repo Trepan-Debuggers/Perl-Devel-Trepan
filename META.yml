@@ -24,7 +24,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.45
+    version: 0.45_01
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -477,7 +477,7 @@ provides:
     version: 0
   Devel::Trepan::Version:
     file: lib/Devel/Trepan/Version.pm
-    version: 0.45
+    version: 0.46
   Devel::Trepan::WatchMgr:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
@@ -490,7 +490,7 @@ provides:
 recommends:
   B::CodeLines: 1.1
   Data::Printer: 0
-  Devel::Callsite: 0.05
+  Devel::Callsite: 0.06
   Eval::WithLexicals: 0
   Pod::Text::Color: 2.06
   Term::ReadKey: 0
@@ -511,4 +511,4 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.45
+version: 0.46

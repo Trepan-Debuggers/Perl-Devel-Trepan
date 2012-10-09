@@ -2,19 +2,18 @@
 use strict; use warnings;
 use English qw( -no_match_vars );
 use rlib '../lib';
+use Config; 
 
 use Test::More;
-if ($OSNAME eq 'MSWin32') {
-    plan skip_all => "FIXME see if we can make this work on Strawberry Perl" 
+if ($OSNAME eq 'MSWin32' or $OSNAME eq 'msys') {
+    plan skip_all => 'FIXME make work on MinGW and Strawberry Perl?' 
 } else {
     plan;
 }
 
 note( "Testing Devel::IO::TCPServer" );
 
-BEGIN {
-    use_ok( 'Devel::Trepan::IO::TCPServer' );
-}
+require_ok( 'Devel::Trepan::IO::TCPServer' );
 
 note "Testing failure to open server port";
 my $pid = fork();

@@ -1,3 +1,26 @@
+2012-10-09  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/Version.pm, t/20test-eval.t,
+	t/data/action.cmd, t/data/eval2.right: Work around a couple of
+	smoker failures. Get ready for release 0.46
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/action-bug.pl: Forgot to add new test code.
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan.pm, lib/Devel/Trepan/DB.pm,
+	t/10test-condition.t, t/10test-io-tcpserver.t, t/20test-action.t,
+	t/data/action.cmd, t/data/action.right: DB.pm: One more place to
+	convert DB::eval. Add action test. Skip tcpip socket test on
+	Strawberry Perl.
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml: One more small change:
+	use Devel::Callsite 0.06
+
 2012-10-02  Rocky Bernstein <rocky@cpan.org>
 
 	* Changes, example/signal.pl, lib/Devel/Trepan.pm,

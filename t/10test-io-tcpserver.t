@@ -27,7 +27,6 @@ if ($pid == 0) {
     my $rc = $? >> 8;
     unless ($rc) {
         # Can't use the same port twice.
-        diag("foo");
         my $inout2 = Devel::Trepan::IO::TCPServer->new($connection_opts);
         $rc = $? >> 8;
     }

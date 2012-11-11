@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
 # FIXME: Could combine manager code from breakpoints and display
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );

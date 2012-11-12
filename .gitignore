@@ -9,4 +9,5 @@
 /Makefile.PL
 /_build
 /blib
+/pod2htm*.tmp
 /tmp

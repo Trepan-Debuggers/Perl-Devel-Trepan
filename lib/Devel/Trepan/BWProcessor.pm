@@ -27,7 +27,6 @@ unless (@ISA) {
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::Bullwinkle;
     require Devel::Trepan::Processor::Virtual;
-    # require Devel::Trepan::CmdProcessor::Alias;
     require Devel::Trepan::BWProcessor::Default;
     # require Devel::Trepan::CmdProcessor::Msg;
     # require Devel::Trepan::CmdProcessor::Help;
@@ -97,7 +96,7 @@ sub DESTROY($)
     # breakpoint_finalize
 }
 
-# Check that we meed the criteria that cmd specifies it needs
+# Check that we meet the criteria that cmd specifies it needs
 sub ok_for_running ($$$$) {
     my ($self, $cmd, $name, $nargs) = @_;
     # TODO check execution_set against execution status.
@@ -144,33 +143,12 @@ sub process_command_and_quit($)
         # begin
         $self->{current_command} = '';
         my @cmd_queue = @{$self->{cmd_queue}};
-        if (scalar(@cmd_queue) == 0) {
-            # Leave trailing blanks on for the "complete" command
-            $self->{current_command} = $self->read_command() || '';
-            if ($intf->is_input_eof) {
-                if ($intf_size > 1) {
-                    pop @$intf_ary;
-                    $intf_size = scalar @$intf_ary;
-                    $intf = $intf_ary->[-1];
-                    $self->{last_command} = '';
-                    # $self->print_location;
-                } else {
-                    ## FIXME: think of something better.
-                    $self->run_command("quit!");
-                    return 1;
-                }
-            }
-            chomp $self->{current_command};
-        } else {
-            $self->{current_command} = shift @cmd_queue;
-            $self->{cmd_queue} = \@cmd_queue;
-        }
+	$self->{current_command} = shift @cmd_queue;
+	$self->{cmd_queue} = \@cmd_queue;
         if ('' eq $self->{current_command}) {
             next unless $self->{last_command} && $intf->is_interactive;
             $self->{current_command} = $self->{last_command};
         }
-        # Skip comment lines
-        next if substr($self->{current_command}, 0, 1) eq '#';
         last;
         # rescue IOError, Errno::EPIPE => e
         # }
@@ -181,10 +159,6 @@ sub process_command_and_quit($)
     };
     if ($EVAL_ERROR) {
         $self->errmsg("internal error: $EVAL_ERROR")
-    } else {
-        # Save it to the history.
-        $intf->save_history($self->{last_command}) if 
-            $self->{last_command};
     }
 }
 
@@ -221,7 +195,6 @@ sub process_commands($$$;$)
             $self->print_location;
         }
     } else {
-        $self->{completions} = [];
         $self->{event} = $event;
         $self->frame_setup();
 
@@ -244,7 +217,7 @@ sub process_commands($$$;$)
         unless ($next_skip) { 
 
             # prehooks include traceprint, list, and event saving.
-            $self->{unconditional_prehooks}->run;
+            # $self->{unconditional_prehooks}->run;
 
             if (index($self->{event}, 'brkpt') < 0 && !$self->{terminated}) {
                 # Not a breakpoint and not terminated.
@@ -281,20 +254,7 @@ sub process_commands($$$;$)
     unless ($next_skip) {
         $self->{leave_cmd_loop} = 0;
         while (!$self->{leave_cmd_loop}) {
-            # begin
             $self->process_command_and_quit;
-            # rescue systemexit
-            #  @dbgr.stop
-            #  raise
-            #rescue exception => exc
-            # if we are inside the script interface $self->errmsg may fail.
-            # begin
-            #  $self->errmsg("internal debugger error: #{exc.inspect}")
-            # rescue ioerror
-            #  $stderr.puts "internal debugger error: #{exc.inspect}"
-            # }
-            # exception_dump(exc, @settings[:debugexcept], $!.backtrace)
-            # }
         }
     }
     unless ($self->{terminated}) {
@@ -391,35 +351,6 @@ sub run_command($$)
 
     # Eval anything that's not a command or has been
     # requested to be eval'd
-    if ($self->{settings}{autoeval} || $eval_command) {
-        my $return_type = parse_eval_sigil($current_command);
-        $return_type = '$' unless $return_type;
-        my $opts = {nest              => 0, 
-                    hide_position     => 1, 
-                    fix_file_and_line => 1,
-                    return_type       => $return_type};
-
-        # FIXME: 2 below is a magic fixup constant, also found in
-        # DB::finish.  Remove it.
-        if (0 == $self->{frame_index}) {
-            chomp $current_command;
-            $self->eval($current_command, $opts, 2);
-        } else {
-            my $return_type = $DB::eval_opts->{return_type} = 
-                $opts->{return_type};
-            if ('$' eq $opts->{return_type}) {
-                $DB::eval_result = $self->eval($current_command, $opts, 2);
-            } elsif ('@' eq $opts->{return_type}) {
-                @DB::eval_result = $self->eval($current_command, $opts, 2);
-            } elsif ('%' eq $opts->{return_type}) {
-                %DB::eval_result = $self->eval($current_command, $opts, 2);
-            } else {
-                $DB::eval_result = $self->eval($current_command, $opts, 2);
-            }
-            handle_eval_result($self);
-        }
-        return;
-    }
     $self->undefined_command($cmd_name);
     return;
 }
@@ -432,8 +363,8 @@ sub undefined_command($$) {
     print STDERR $msg  if $EVAL_ERROR;
 }
 
-# unless (caller) {
-#     my $proc  = Devel::Trepan::CmdProcessor->new;
+unless (caller) {
+    my $proc  = Devel::Trepan::BWProcessor->new;
 #     print $proc->{class}, "\n";
 #     print join(', ', @{$proc->{interfaces}}), "\n";
 #     $proc->msg("Hi, there!");
@@ -467,6 +398,6 @@ sub undefined_command($$) {
 #         print $sep;
 #         $proc->process_commands([@call_values], 0, 'debugger-call');
 #     }
-# }
+}
 
 1;

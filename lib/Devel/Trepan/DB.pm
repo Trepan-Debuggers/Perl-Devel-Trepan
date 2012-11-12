@@ -234,7 +234,7 @@ sub DB {
         }
     }
 
-    # Accumulate action events.
+    # Test for breakpoints and action events.
     my @action = ();
     if (exists $DB::dbline{$DB::lineno} and 
         my $brkpts = $DB::dbline{$DB::lineno}) {
@@ -258,7 +258,7 @@ sub DB {
                             hide_position     => 0};
                 &DB::eval_with_return($eval_str, $opts, @saved);
             }
-            if ($stop && $brkpt->enabled) {
+            if ($stop && $brkpt->enabled && !($DB::single & RETURN_EVENT)) {
                 $DB::signal |= 1;
                 $DB::brkpt = $brkpt;
                 $event = $brkpt->type;
@@ -278,7 +278,7 @@ sub DB {
     } elsif ($DB::signal) {
         $event ||= 'signal';
     } elsif ($DB::single & RETURN_EVENT) {
-        $event ||= 'return';
+        $event = 'return';
     } elsif ($DB::trace ) {
         $event ||= 'trace';
     } elsif ($DB::single & (SINGLE_STEPPING_EVENT | NEXT_STEPPING_EVENT)) {

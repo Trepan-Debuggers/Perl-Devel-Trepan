@@ -10,4 +10,7 @@ run_debugger("$test_prog", cmd_file());
 $test_prog = prog_file('gcd.pl');
 run_debugger("$test_prog 3 5", 'fin2.cmd');
 
+$test_prog = prog_file('gcd.pl');
+run_debugger("$test_prog 3 5", 'fin3.cmd');
+
 done_testing();

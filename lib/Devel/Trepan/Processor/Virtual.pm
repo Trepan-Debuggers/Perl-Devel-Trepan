@@ -28,12 +28,13 @@ sub new($$;$) {
     return $self;
 }
 
-if (__FILE__ eq $0) {
-    require Devel::Trepan::Interface::Bullwinkle;
-    my $intf = Devel::Trepan::Interface::BullWinkle->new;
-    my $proc  = Devel::Trepan::CmdProcessor::Virtual->new([$intf]);
+if (caller) {
+    require Devel::Trepan::Interface::User;
+    my $intf = Devel::Trepan::Interface::User->new;
+    my $proc  = Devel::Trepan::Processor::Virtual->new([$intf]);
     print $proc->{class}, "\n";
-    print join(', ', @{$proc->{interfaces}}), "\n";
+    require Data::Dumper;
+    print Data::Dumper::Dumper($proc->{interfaces});;
 }
 
 1;

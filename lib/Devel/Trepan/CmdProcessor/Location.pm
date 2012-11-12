@@ -193,6 +193,7 @@ unless (caller()) {
     # Demo it.
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor->new;
+    eval <<'EOE';
     sub create_frame() {
         my ($pkg, $file, $line, $fn) = caller(0);
         return [
@@ -203,6 +204,7 @@ unless (caller()) {
                  pkg       => $pkg,
             }];
     }
+EOE
     my $frame_ary = create_frame();
     $proc->frame_setup($frame_ary);
     $proc->{event} = 'return';

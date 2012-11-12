@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org> 
 
 use rlib '../..';
 
-# A debugger command processor. This includes the debugger commands
+# A debugger BullWinkle protocol processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
-package Devel::Trepan::CmdProcessor;
+package Devel::Trepan::BWProcessor;
 
 use English qw( -no_match_vars );
 use Exporter;
@@ -25,14 +25,14 @@ unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
-    require Devel::Trepan::Interface::User;
+    require Devel::Trepan::Interface::Bullwinkle;
     require Devel::Trepan::Processor::Virtual;
-    require Devel::Trepan::CmdProcessor::Alias;
-    require Devel::Trepan::CmdProcessor::Default;
-    require Devel::Trepan::CmdProcessor::Msg;
-    require Devel::Trepan::CmdProcessor::Help;
-    require Devel::Trepan::CmdProcessor::Hook;
-    require Devel::Trepan::CmdProcessor::Frame;
+    # require Devel::Trepan::CmdProcessor::Alias;
+    require Devel::Trepan::BWProcessor::Default;
+    # require Devel::Trepan::CmdProcessor::Msg;
+    # require Devel::Trepan::CmdProcessor::Help;
+    # require Devel::Trepan::CmdProcessor::Hook;
+    require Devel::Trepan::BWProcessor::Frame;
     require Devel::Trepan::CmdProcessor::Location;
     require Devel::Trepan::CmdProcessor::Eval;
     require Devel::Trepan::CmdProcessor::Running;
@@ -54,9 +54,7 @@ sub new($;$$$) {
     if (defined $interfaces) {
         $intf = $interfaces->[0];
     } else {
-        $intf = Devel::Trepan::Interface::User->new(undef, undef, 
-                                                    {readline => 
-                                                    $settings->{readline}});
+        $intf = Devel::Trepan::Interface::Bullwinkle->new();
         $interfaces = [$intf];
     }
     my $self = 
@@ -81,42 +79,16 @@ sub new($;$$$) {
     $self->{set_wp}         = undef;
 
     $self->{skip_count}     = 0;
-    $self->load_cmds_initialize;
-    $self->running_initialize;
-    $self->hook_initialize;
-    $self->{unconditional_prehooks}->insert_if_new(10, 
-                                                   $self->{trace_hook}[0],
-                                                   $self->{trace_hook}[1]
-        ) if $self->{settings}{traceprint};
+    # $self->load_cmds_initialize;
+    # $self->running_initialize;
+    # $self->hook_initialize;
+    # $self->{unconditional_prehooks}->insert_if_new(10, 
+    #                                                $self->{trace_hook}[0],
+    #                                                $self->{trace_hook}[1]
+    #     ) if $self->{settings}{traceprint};
 
-    if ($intf->has_completion) {
-        my $list_completion = sub {
-            my($text, $state) = @_;
-            $self->list_complete($text, $state);
-        };
-        my $completion = sub {
-            my ($text, $line, $start, $end) = @_;
-            $self->complete($text, $line, $start, $end);
-        };
-        $intf->set_completion($completion, $list_completion);
-    }
     # $B::Data::Dumper::Deparse = 1;
     return $self;
-}
-
-sub compute_prompt($)
-{
-    my $self = shift;
-    my $thread_str = '';
-    # if (1 == Thread.list.size) {
-    #   $thread_str = '';
-    # } elsif (Thread.current == Thread.main) {
-    #   $thread_str = '@main';
-    # } else {
-    #   $thread_str = "@#{Thread.current.object_id}";
-    # }
-    sprintf("%s$self->{settings}{prompt}%s%s: ",
-            '(' x $DB::level, $thread_str, ')' x $DB::level);
 }
 
 sub DESTROY($)
@@ -460,43 +432,41 @@ sub undefined_command($$) {
     print STDERR $msg  if $EVAL_ERROR;
 }
 
-unless (caller) {
-    my $proc  = Devel::Trepan::CmdProcessor->new;
-    print $proc->{class}, "\n";
-    print join(', ', @{$proc->{interfaces}}), "\n";
-    $proc->msg("Hi, there!");
-    $proc->errmsg(['Two', 'lines']);
-    $proc->errmsg("Something wrong?");
-    for my $fn (qw(errmsg msg section)) { 
-        $proc->$fn('testing');
-    }
-    $DB::level = 1;
-    my $prompt = $proc->{prompt} = compute_prompt($proc);
-    eval <<'EOE';
-    sub foo() {
-        my @call_values = caller(0);
-        return @call_values;
-    }
-EOE
-    print "prompt setting: $prompt\n";
-    $DB::level = 2;
-    $prompt = $proc->{prompt} = compute_prompt($proc);
-    print "prompt setting 2: $prompt\n";
-    my @call_values = foo();
-    ## $proc->frame_setup(\@call_values, 0);
-    my $sep = '=' x 40 . "\n";
-    $proc->undefined_command("foo");
-    print $sep;
-    $proc->run_command("help *");
-    print $sep;
-    $proc->run_command("help help;; kill 100");
-    # Note kill 100 is in queue - not run yet.
-    if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
-        $proc->process_command_and_quit; # Handle's queued command
-        $proc->process_command_and_quit;
-        print $sep;
-        $proc->process_commands([@call_values], 0, 'debugger-call');
-    }
-}
+# unless (caller) {
+#     my $proc  = Devel::Trepan::CmdProcessor->new;
+#     print $proc->{class}, "\n";
+#     print join(', ', @{$proc->{interfaces}}), "\n";
+#     $proc->msg("Hi, there!");
+#     $proc->errmsg(['Two', 'lines']);
+#     $proc->errmsg("Something wrong?");
+#     for my $fn (qw(errmsg msg section)) { 
+#         $proc->$fn('testing');
+#     }
+#     $DB::level = 1;
+#     my $prompt = $proc->{prompt} = compute_prompt($proc);
+#     eval <<'EOE';
+#     sub foo() {
+#         my @call_values = caller(0);
+#         return @call_values;
+#     }
+# EOE
+#     $DB::level = 2;
+#     print "prompt setting 2: $prompt\n";
+#     my @call_values = foo();
+#     ## $proc->frame_setup(\@call_values, 0);
+#     my $sep = '=' x 40 . "\n";
+#     $proc->undefined_command("foo");
+#     print $sep;
+#     $proc->run_command("help *");
+#     print $sep;
+#     $proc->run_command("help help;; kill 100");
+#     # Note kill 100 is in queue - not run yet.
+#     if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
+#         $proc->process_command_and_quit; # Handle's queued command
+#         $proc->process_command_and_quit;
+#         print $sep;
+#         $proc->process_commands([@call_values], 0, 'debugger-call');
+#     }
+# }
 
 1;

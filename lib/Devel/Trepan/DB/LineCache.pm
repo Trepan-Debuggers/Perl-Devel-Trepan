@@ -451,9 +451,10 @@ sub getlines($;$)
     if (exists $file_cache{$filename}) {
         my $lines_href = $file_cache{$filename}{lines_href};
         my $lines_aref = $lines_href->{$format};
+	return $lines_href->{plain} if $format eq 'plain';
         if ($opts->{output} && !defined $lines_aref) {
             my @formatted_lines = ();
-            my $lines_aref = $lines_href->{plain};
+            $lines_aref = $lines_href->{plain};
             for my $line (@$lines_aref) {
                 push @formatted_lines, highlight_string($line);
                 ## print $formatted_text;
@@ -873,7 +874,7 @@ sub update_script_cache($$)
         }
     }
     $lines_href->{$opts->{output}} = highlight_string($string) if 
-        $opts->{output};
+        $opts->{output} && $opts->{output} ne 'plain';
 
     my $entry = {
         lines_href => $lines_href,
@@ -1067,7 +1068,7 @@ sub update_cache($;$)
             use strict;
             $lines_href = {};
             $lines_href->{plain} = $raw_lines;
-            if ($opts->{output} && defined($raw_lines)) {
+            if ($opts->{output} && $opts->{output} ne 'plain' && defined($raw_lines)) {
                 # Some lines in $raw_lines may be undefined
                 no strict; no warnings;
                 local $WARNING=0;
@@ -1106,7 +1107,7 @@ sub update_cache($;$)
     if ( -r $path ) { 
         my @lines = readlines($path);
         $lines_href = {plain => \@lines};
-        if ($opts->{output}) {
+        if ($opts->{output} && $opts->{output} ne 'plain') {
             my $highlight_lines = highlight_string(join('', @lines));
             my @highlight_lines = split(/\n/, $highlight_lines);
             $lines_href->{$opts->{output}} = \@highlight_lines;

@@ -16,7 +16,9 @@ use strict;
 our @ISA;
 
 BEGIN {
-    $HAVE_DATA_PRINT = eval("use Data::Printer { colored => 1, alias => 'dprint',}; 1") ? 1 : 0;
+    $HAVE_DATA_PRINT = 
+        eval("use Data::Printer { colored => 1}; 1") ? 
+        1 : 0;
     $HAVE_PERLTIDY   = eval {
         require Data::Dumper::Perltidy; 
     } ? 1 : 0;
@@ -89,8 +91,8 @@ use constant DEFAULT_SETTINGS => {
 
 unless (caller) {
     # Show it:
-    require Data::Dumper::Perltidy;
-    print Dumper(DEFAULT_SETTINGS), "\n";
+    require Data::Dumper;
+    print Data::Dumper::Dumper(DEFAULT_SETTINGS), "\n";
     print '-' x 20, "\n";
     print join(', ', @DISPLAY_TYPES), "\n";
 }

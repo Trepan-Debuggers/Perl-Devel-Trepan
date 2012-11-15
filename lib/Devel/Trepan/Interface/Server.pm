@@ -23,7 +23,7 @@ use strict;
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
     io => 'TCP',
-    logger => undef  # An Inteface. Complaints go here.
+    logger => undef  # An Interface. Complaints go here.
 };
 
 sub new

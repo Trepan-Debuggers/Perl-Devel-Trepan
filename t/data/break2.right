@@ -14,3 +14,6 @@ Num Type          Disp Enb Where
 	stop only if scalar(@_) == 1
 No actions.
 No watch expressions defined.
+x1 TCPPack::(TCPPack.pm:34)
+unless (caller) {
+    my $buf = "Hi there!";

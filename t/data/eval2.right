@@ -47,7 +47,6 @@ eval $eval_sub;
 -- main::(eval.pl:14)
 $y = five();
 -- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
-}
 --> #0 @ = main::five() in 
 	file `(eval 1000)[eval.pl:13]' at line 3
     #1 file `eval.pl' at line 14

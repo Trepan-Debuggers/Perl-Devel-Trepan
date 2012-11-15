@@ -125,7 +125,7 @@ sub DESTROY($)
     # breakpoint_finalize
 }
 
-# Check that we meed the criteria that cmd specifies it needs
+# Check that we meet the criteria that cmd specifies it needs
 sub ok_for_running ($$$$) {
     my ($self, $cmd, $name, $nargs) = @_;
     # TODO check execution_set against execution status.

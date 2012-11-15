@@ -23,10 +23,11 @@ use File::Spec;
 
 my $lib = File::Spec->catfile(dirname(__FILE__), 'lib');
 unshift @INC, $lib;
-require Devel::Trepan;
+require Devel::Trepan::Version;
 
-my $release_status = ($Devel::Trepan::VERSION =~ /_/) ? 'testing' : 'stable';
-# print "$Devel::Trepan::VERSION $release_status\n";
+my $release_status = ($Devel::Trepan::Version::VERSION =~ /_/) ? 
+    'testing' : 'stable';
+# print "$Devel::Trepan::Version::VERSION $release_status\n";
 
 my $builder = Module::Build->new( 
     module_name         => 'Devel::Trepan',
@@ -35,7 +36,7 @@ my $builder = Module::Build->new(
     dist_abstract       => 
     'Modular Perl Debugger (akin to Ruby "Trepanning" Debuggers).',
     dist_author         => 'Rocky Bernstein <rocky@cpan.org>',
-    dist_version_from   => 'lib/Devel/Trepan.pm',
+    dist_version_from   => 'lib/Devel/Trepan/Version.pm',
     license             => 'gpl',
     needs_compiler      => 0,
     release_status      => $release_status,
@@ -56,10 +57,12 @@ my $builder = Module::Build->new(
     },
     test_requires => {
         'Test::More'                        => '0.81',
+        'rlib'                              => '0.02',
     },
     recommends => {
+        'B::CodeLines'                      => 1.1,
         'Data::Printer'                     => 0,
-        'Devel::Callsite'                   => 0,
+        'Devel::Callsite'                   => 0.06,
         'Eval::WithLexicals'                => 0,
         'Pod::Text::Color'                  => 2.06,
         'Term::ReadKey'                     => 0,
@@ -75,7 +78,8 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Pod::Text'                         => 3.13,
-        'Syntax::Highlight::Perl::Improved' => 0,
+        'Scalar::Util'                      => 0,
+        'Syntax::Highlight::Perl::Improved' => 1.01,
         'rlib'                              => '0.02',
         'version'                           => 0,
     },

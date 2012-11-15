@@ -1,5 +1,5 @@
--- main::(signal.pl:9)
-$SIG{'HUP'} = \&hup_handler;
+-- main::(signal.pl:2)
+my $leave_loop = 0;
 Eval result display style is dumper.
 set auto eval is on.
 x1 main::(signal.pl:10)

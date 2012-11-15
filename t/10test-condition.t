@@ -1,8 +1,9 @@
 #!/usr/bin/env perl
 use strict; use warnings;
-use English;
+use English qw( -no_match_vars );
 use rlib '../lib';
 use Devel::Trepan::Condition;
+use Config;
 
 use Test::More;
 if ($OSNAME eq 'MSWin32') {
@@ -10,6 +11,7 @@ if ($OSNAME eq 'MSWin32') {
 } else {
     plan;
 }
+
 note( "Testing Condition" );
 
 note 'Test valid conditions';

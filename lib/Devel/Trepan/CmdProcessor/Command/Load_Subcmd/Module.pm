@@ -28,7 +28,7 @@ EOE
 our $HELP = <<'HELP';
 =pod
 
-load module {I<Perl-module-file>}
+B<load module> {I<Perl-module-file>}
 
 Load or reload a Perl module. This is like I<require> with a file name
 but we force a load or reload. This is useful if you wanto to changes the
@@ -40,7 +40,7 @@ changed.
 =cut
 HELP
 
-our $SHORT_HELP = 'Load Perl module file(s)';
+our $SHORT_HELP = '(re)load Perl module file(s)';
 our $MIN_ABBREV = length('mo');
 
 # sub complete($$)

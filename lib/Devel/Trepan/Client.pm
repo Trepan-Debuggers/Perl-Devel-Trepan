@@ -10,7 +10,7 @@ use rlib;
 use Devel::Trepan::Interface::ComCodes;
 use Devel::Trepan::Interface::Client;
 use Devel::Trepan::Interface::Script;
-use English;
+use English qw( -no_match_vars );
 
 sub new
 {

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use warnings; use strict; use English;
+use warnings; use strict; use English qw( -no_match_vars );
 use Test::More;
 use rlib '.'; use Helper;
 
@@ -50,7 +50,9 @@ $opts = {
                 # Perl 5.10.0 doesn't show "sub five() {"
 		$skip = 3;
                 next;
-            }
+            } elsif ( /^\s*\}/ ) {
+                next;
+	    }
             push @result, $_;
         }
         $got_lines = join("\n", @result);

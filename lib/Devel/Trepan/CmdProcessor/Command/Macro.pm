@@ -45,13 +45,13 @@ strings will be split into separate commands.
 
 =head2 Examples:
 
-The below creates a macro called fin+ which issues two commands
+The below creates a macro called I<fin+> which issues two commands
 C<finish> followed by C<step>:
 
  macro fin+ sub{ ['finish', 'step']}
 
 If you wanted to parameterize the argument of the C<finish> command
-you could do that this way:
+you could do it this way:
 
   macro fin+ sub{ \
                   ['finish', 'step ' . (shift)] \

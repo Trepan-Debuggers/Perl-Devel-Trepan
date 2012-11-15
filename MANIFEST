@@ -3,9 +3,11 @@ bin/trepan.pl
 Build.PL			Proto Build creator
 ChangeLog
 Changes
+example/action-bug.pl
 example/eval.pl
 example/except-bug1.pl
 example/fns.pl
+example/gcd-dbcall.pl
 example/gcd-dbg.pl
 example/gcd.pl
 example/my.pl
@@ -70,6 +72,7 @@ lib/Devel/Trepan/CmdProcessor/Command/List.pm
 lib/Devel/Trepan/CmdProcessor/Command/Load.pm
 lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm
 lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm
+lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm
 lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Next.pm
 lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
@@ -184,6 +187,7 @@ lib/Devel/Trepan/Position.pm
 lib/Devel/Trepan/SigHandler.pm
 lib/Devel/Trepan/Terminated.pm
 lib/Devel/Trepan/Util.pm
+lib/Devel/Trepan/Version.pm
 lib/Devel/Trepan/WatchMgr.pm
 Makefile.PL
 MANIFEST			This list of files
@@ -205,8 +209,10 @@ t/10test-intf-user.t
 t/10test-io-output.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.t
+t/10test-io-tcpserver.t
 t/10test-linecache.t
 t/10test-load.t
+t/10test-location.t
 t/10test-options.t
 t/10test-pod2text.t
 t/10test-position.t
@@ -227,6 +233,7 @@ t/20test-display.t
 t/20test-eval.t
 t/20test-fin.t
 t/20test-__FILE__.t
+t/20test-action.t
 t/20test-line.t
 t/20test-list1.t
 t/20test-list2.t
@@ -244,6 +251,8 @@ t/20test-trepanpl-opts.t
 t/20test-watch1.t
 t/data/__FILE__.cmd
 t/data/__FILE__.right
+t/data/action.cmd
+t/data/action.right
 t/data/alias.cmd
 t/data/alias.right
 t/data/autolist.cmd
@@ -268,6 +277,8 @@ t/data/fin.cmd
 t/data/fin.right
 t/data/fin2.cmd
 t/data/fin2.right
+t/data/fin3.cmd
+t/data/fin3.right
 t/data/line.cmd
 t/data/line.right
 t/data/list1.cmd

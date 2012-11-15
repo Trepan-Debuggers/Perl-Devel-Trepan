@@ -10,6 +10,15 @@ SUMMARY
     GNU ReadLine via Term::ReadLine::Perl or Term::ReadLine::Gnu, and
     interactive shell support via Psh or Devel::REPL.
 
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
+
 DESCRIPTION
     From a shell:
 

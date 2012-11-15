@@ -17,7 +17,7 @@ use Devel::Trepan::Util qw(hash_merge);
 use constant DEFAULT_INIT_OPTS => {open => 1};
 
 use constant SERVER_SOCKET_OPTS => {
-    host    => 'localhost',
+    host    => '127.0.0.1',  # or ::1? or localhost? 
     port    => 1954,
     timeout => 5,     # FIXME: not used
     reuse   => 1,     # FIXME: not used. Allow port to be resued on close?
@@ -89,7 +89,10 @@ sub open($;$)
             Type      => SOCK_STREAM,
             Reuse     => 1,
             Listen    => 1  # or SOMAXCONN
+
         );
+    die "Can't open socket host $self->{host}, port $self->{port}\n" unless
+        $self->{server};
     # @server.setsockopt(Socket::SOL_SOCKET, Socket::SO_RCVTIMEO, 5)
     #                   # @opts[:timeout])
     $self->{state} = 'listening';

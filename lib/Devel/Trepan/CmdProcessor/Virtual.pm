@@ -27,7 +27,7 @@ sub new($$;$) {
     return $self;
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan::Interface::User;
     my $intf = Devel::Trepan::Interface::User->new;
     my $proc  = Devel::Trepan::CmdProcessor::Virtual->new([$intf]);

@@ -21,10 +21,10 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-B<${NAME}> I<alias> I<command>
+B<alias> I<alias> I<command>
 
 Add alias I<alias> for a debugger command I<command>.  
 
@@ -39,7 +39,8 @@ might be C<step>, C<show>, or C<set>, among others.
  alias s   step   # "s" is now an alias for "step".
                   # The above examples done by default.
 
-See also C<unalias> and C<show> ${NAME}.
+For more complex definitions, see C<macro>.
+See also C<unalias> and C<show alias>.
 =cut
 HELP
 

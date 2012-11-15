@@ -220,7 +220,7 @@ sub help($$)
         }
     } else {
         my $proc = $self->{proc};
-        my @matches = sort(grep /^#{subcmd_name}/, @subcmds);
+        my @matches = sort(grep /^#\{$subcmd_name\}/, @subcmds);
         my $name = $self->{name};
         if (0 == scalar @matches) { 
             $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");

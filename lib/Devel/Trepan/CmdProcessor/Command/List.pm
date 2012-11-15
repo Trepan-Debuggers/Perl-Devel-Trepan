@@ -294,6 +294,8 @@ sub run($$)
         chomp $line;
         my $s = sprintf('%3d', $lineno);
         $s = $s . ' ' if length($s) < 4;
+
+	## FIXME: move into DB::Breakpoint and adjust List.pm
         if (exists($DB::dbline{$lineno}) and 
             my $brkpts = $DB::dbline{$lineno}) {
             my $found = 0;
@@ -309,6 +311,8 @@ sub run($$)
         } else  {
             $s .= ' ';
         }
+	## FIXME move above code
+
         $s .= ($proc->{frame} && $lineno == $proc->line &&
                $proc->filename() eq $filename) ? '->' : $a_pad;
         my $opts = {unlimited => 1};

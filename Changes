@@ -1,5 +1,33 @@
 Revision history for Devel-Trepan
 
+0.45 - Oct 2, 2012
+- Add "load source" to read in Perl source file somewhat like it would be 
+  when debugger reads the file under debugging. Might be useful when
+  used via in Enbugger. 
+- When stopping, we were printing too many lines if the first statement
+  was incomplete. For example:
+    if (0) {
+      $x = 1;
+      $y = 2;
+    };
+  was printing entire "if (0) { ... }" rather than stop after "$x = 1";
+- Smallbug fixes
+
+0.44 - Sep 26, 2012
+- Rerelease to try to address a CPAN Indexing failure
+
+0.43 - Sep 25, 2012
+- Bugfix release. See ChangeLog
+
+0.42 - Sep 18, 2012
+- Botched 0.41 release
+
+0.41 - Sep 18, 2012
+- release to asssist pending Devel::Trepan::Disassemble and to see if we
+  can resolve a rlib weirdness.
+- More doc changes
+- Add color setting for black
+
 0.40 - Sep 17, 2012
 - Rerelease to fix yet another problem with Build.PL 
 

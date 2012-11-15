@@ -1,4 +1,4 @@
-use English
+use English qw( -no_match_vars );
 my $leave_loop = 0;
 sub hup_handler($)
 {

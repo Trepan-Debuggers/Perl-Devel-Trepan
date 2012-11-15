@@ -9,8 +9,8 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
 use constant ALIASES    => ('quit!', 'q', 'q!');
-use constant CATEGORY   => 'support';
-use constant SHORT_HELP => 'Quit program - gently';
+use constant CATEGORY   => 'running';
+use constant SHORT_HELP => 'Gently exit debugged program';
 use constant MIN_ARGS   => 0; # Need at least this many
 use constant MAX_ARGS   => 2; # Need at most this many - undef -> unlimited.
 EOE

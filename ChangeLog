@@ -1,3 +1,186 @@
+2012-10-09  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/Version.pm, t/20test-eval.t,
+	t/data/action.cmd, t/data/eval2.right: Work around a couple of
+	smoker failures. Get ready for release 0.46
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/action-bug.pl: Forgot to add new test code.
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan.pm, lib/Devel/Trepan/DB.pm,
+	t/10test-condition.t, t/10test-io-tcpserver.t, t/20test-action.t,
+	t/data/action.cmd, t/data/action.right: DB.pm: One more place to
+	convert DB::eval. Add action test. Skip tcpip socket test on
+	Strawberry Perl.
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml: One more small change:
+	use Devel::Callsite 0.06
+
+2012-10-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, example/signal.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/Version.pm, t/20test-autolist.t, t/20test-break.t,
+	t/20test-eval.t, t/20test-opt-e.t, t/20test-sig.t,
+	t/data/sig.right, t/data/sig2.right: Go over Trepan.pm pod. Get
+	ready for 0.45 release.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm: 
+	Remove debug output.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Store COP address in trace_nums.
+	We may use this is filtering disassembly.
+
+2012-09-30  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/DB/LineCache.pm, t/20test-break.t,
+	t/data/break2.cmd, t/data/break2.right: When stopping we were
+	printing too many lines if the first statement   was incomplete. For
+	example     if (0) {       $x = 1;       $y = 2;     };   was
+	printing entire "if (0) { ... }" rather than stop after "$x = 1";
+
+2012-09-29  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: Add debugger
+	command "load source" to read in Perl source lines somewhat like
+	perl does automatically when debug flags are set.
+
+2012-09-29  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: 
+	DB::Lineacache add load_file() which somewhat simulates what happens
+	in debugging when a file is read in under debugging. Todo: a
+	debugger command to (re)load a Perl file. B::CodeLines assists here.
+
+
+2012-09-27  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml, lib/Devel/Trepan/DB/Breakpoint.pm,
+	lib/Devel/Trepan/Version.pm: Breakpoint.pm: remove duplicate code
+	and possibly deal with a failing "find_subline". Is it Build.PL ok
+	to drop Version dependency that smokers erroniously suggested we
+	needed? Bump version.
+
+2012-09-26  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, Changes, MANIFEST, META.json, META.yml,
+	lib/Devel/Trepan.pm, lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for 0.44 release
+
+2012-09-25  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan/Version.pm: Get ready for 0.43 release.
+	Change default host on server to 127.0.0.1 from localhost
+
+2012-09-25  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Interface/Server.pm, t/10test-io-tcpserver.t: Test
+	to see if IO::Socekt::INET->new succeeds
+
+2012-09-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm: 
+	Don't use a Dafffta::Printer alias. Guard agains
+	Interface::User::readline $last undef which can happen the first
+	time around. Some code cleanup.
+
+2012-09-21  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: DB::save -> DB::save_vars to reduce
+	overlap with perl5db.pl. Also we weren't respecting the prototype.
+
+2012-09-21  R. Bernstein <rockyb@rubyforge.org>
+
+	Merge pull request #16 from kevindawson/master  Add missing
+	section INSTALLATION
+
+2012-09-21  bowtie <bowtie@cpan.org>
+
+	* README: Add missing section INSTALLATION to README file
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Breakpoint.pm: Silence a warning about trying
+	to assign undef to a glob.
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/gcd-dbcall.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB.pm: Add a non-Enbugger way to call the debugger.
+
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: Small DB.pm tweaks to remove a warning
+	message and allow for optional module growth.
+
+2012-09-19  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Try yet again to avoid using rlib and
+	pacifying smokers.
+
+2012-09-18  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm: Get ready for 0.42 release. Botched
+	0.41 release.
+
+2012-09-18  rocky <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Macro.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Server.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Update doc. Get ready for 0.41
+	release
+
+2012-09-18  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Colors.pm: Add definition for black. Without
+	it, Improved.pm of Syntax Highlight may report using an undefined
+	value.
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/alias.right: Upate alias test output for last change
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/DB/Colors.pm: Help: Make section head for aliases.
+	SubMgr.pm: remove deprication on Perl 5.17 Colors.pm: use bblue for
+	keywords rather than black.
+
+2012-09-17  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: More LineCache.pm pod
+	improvements. Bump version number.
+
 2012-09-17  Rocky Bernstein <rocky@cpan.org>
 
 	* Build.PL, Changes, lib/Devel/Trepan.pm: Release 0.40 to fix yet

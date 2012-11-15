@@ -4,8 +4,9 @@
 #
 #
 use Digest::SHA;
+use Scalar::Util;
 
-use version; $VERSION = '0.1.1';
+use version; $VERSION = '0.2';
 
 package DB;
 
@@ -343,7 +344,7 @@ sub cache_file($;$$)
 
 B<cache(I<$file_or_script>)> => I<boolean>
 
-Return true if I<$file_or_script> is cached.
+Return I<true> if I<$file_or_script> is cached.
 
 =cut
 
@@ -409,6 +410,7 @@ sub getline($$;$)
             while (--$max_continue && !DB::eval_ok($plain_line)) {
                 $line .= ($sep . $lines->[++$index]);
                 $plain_line .= $plain_lines->[$index];
+		last if $file_cache{$filename}{trace_nums}{$index+1};
             }
         }
         chomp $line if defined $line;
@@ -449,9 +451,10 @@ sub getlines($;$)
     if (exists $file_cache{$filename}) {
         my $lines_href = $file_cache{$filename}{lines_href};
         my $lines_aref = $lines_href->{$format};
+	return $lines_href->{plain} if $format eq 'plain';
         if ($opts->{output} && !defined $lines_aref) {
             my @formatted_lines = ();
-            my $lines_aref = $lines_href->{plain};
+            $lines_aref = $lines_href->{plain};
             for my $line (@$lines_aref) {
                 push @formatted_lines, highlight_string($line);
                 ## print $formatted_text;
@@ -496,7 +499,7 @@ sub getlines($;$)
 B<highlight_string($string)> => I<marked-up-string>
 
 Add syntax-formatting characters via
-L<Syntax::Highlight::Perl::Improved> to I<string> according to table
+L<Syntax::Highlight::Perl::Improved> to I<marked-up-string> according to table
 given in L<Devel::Trepan::DB::Colors>.
 
 =cut
@@ -526,6 +529,29 @@ sub path($)
     return undef unless exists $file_cache{$filename};
     $file_cache{$filename}->path();
 }
+
+=pod
+
+=head2 remap_file
+
+B<remap_file($from_file, $to_file)> => $to_file
+
+Set to make any lookups retriving lines from of I<$from_file> refer to
+I<$to_file>.
+
+B<Example>:
+
+Running: 
+
+  use Devel::Trepan::DB::LineCache;
+  DB::LineCache::remap_file('another_name', __FILE__);
+  print DB::LineCache::getline('another_name', __LINE__), "\n";
+
+gives: 
+
+  print DB::LineCache::getline('another_name', __LINE__), "\n";
+
+=cut
 
 sub remap_file($$)
 { 
@@ -692,6 +718,11 @@ Return an array of line numbers in (control opcodes) COP in
 $I<filename>.  These line numbers are the places where a breakpoint
 might be set in a debugger.
 
+We get this information from the Perl run-time, so that should have
+been set up for this to take effect. See L<B::CodeLines> for a way to
+get this information, basically by running an Perl invocation that has
+this set up.
+
 =cut 
 
 sub trace_line_numbers($;$)
@@ -710,6 +741,9 @@ B<is_trace_line($filename, $line_num [,$reload_on_change])> => I<boolean>
 
 Return I<true> if I<$line_num> is a trace line number of I<$filename>.
 
+See the comment in L<trace_line_numbers> regarding run-time setup that
+needs to take place for this to work.
+
 =cut
 
 sub is_trace_line($$;$)
@@ -720,13 +754,37 @@ sub is_trace_line($$;$)
     return !!$file_cache{$filename}{trace_nums}{$line_num};
   }
     
+=pod
+
+=head2 map_file
+
+B<map_file($filename)> => string
+
+A previous invocation of I<remap_file()> could have mapped
+I<$filename> into something else. If that is the case we return the
+name that I<$filename> was mapped into. Otherwise we return I<$filename>
+
+=cut
+
 sub map_file($)
 { 
-    my $file = shift;
-    return undef unless defined($file);
-    $file2file_remap{$file} ? $file2file_remap{$file} : $file
+    my $filename = shift;
+    return undef unless defined($filename);
+    $file2file_remap{$filename} ? $file2file_remap{$filename} : $filename
   }
 
+=pod
+
+=head2 map_script
+
+B<map_script($script)> => string
+
+A previous invocation of I<remap_file()> could have mapped I<$script>
+(a pseudo-file name that I<eval()> uses) into something else. If that
+is the case we return the name that I<$script> was mapped
+into. Otherwise we return I<$script>
+
+=cut
 use File::Temp qw(tempfile);
 sub map_script($$)
 {
@@ -816,7 +874,7 @@ sub update_script_cache($$)
         }
     }
     $lines_href->{$opts->{output}} = highlight_string($string) if 
-        $opts->{output};
+        $opts->{output} && $opts->{output} ne 'plain';
 
     my $entry = {
         lines_href => $lines_href,
@@ -825,11 +883,102 @@ sub update_script_cache($$)
     return 1;
   }
 
-=pod
+=head2
+
+B<dualvar_lines($file_or_string, $is_file, $mark_trace)> => 
+#  I<list of dual-var strings>
+
+# Routine to create dual numeric/string values for
+# C<$file_or_string>. A list reference is returned. In string context
+# it is the line with a trailing "\n". In a numeric context it is 0 or
+# 1 if $mark_trace is set and B::CodeLines determines it is a trace
+# line.
+#
+# Note: Perl implementations seem to put a COP address inside
+# @DB::db_line when there are trace lines. I am not sure if this is
+# specified as part of the API. We # don't do that here but (and might
+# even if it is not officially defined in the API.) Instead put value
+# 1.
+#
+=cut
+
+# FIXME: $mark_trace may be something of a hack. Without it we can
+# get into infinite regress in marking %INC modules.
+
+sub dualvar_lines($$;$$) {
+    my ($file_or_string, $dualvar_lines, $is_file, $mark_trace) = @_;
+    my @break_line = ();
+    local $INPUT_RECORD_SEPARATOR = "\n";
+
+    # Setup for B::CodeLines and for reading file lines
+    my ($cmd, @text);
+    my $fh;
+    if ($is_file) {
+        return () unless open($fh, '<', $file_or_string);
+        @text = readline $fh;
+        $cmd = "$^X -MO=CodeLines $file_or_string";
+        close $fh;
+    } else {
+        @text = split("\n", $file_or_string);
+        $cmd = "$^X -MO=CodeLines,-exec -e '$file_or_string'";
+    }
+
+    # Make text data be 1-origin rather than 0-origin.
+    unshift @text, undef;
+
+    # Get trace lines from B::CodeLines
+    if ($mark_trace and open($fh, '-|', "$cmd 2>/dev/null")) {
+        while (my $line=<$fh>) {
+            next unless $line =~ /^\d+$/;
+            $break_line[$line] = $line;
+        }
+    }
+    # Create dual variable array.
+    for (my $i = 1; $i < scalar @text; $i++) {
+        my $num = exists $break_line[$i] ? $mark_trace : 0;
+        $dualvar_lines->[$i] = Scalar::Util::dualvar($num, $text[$i] . "\n");
+    }
+    return $dualvar_lines;
+}
+
+=head2 
+
+B<load_file(I<$filename>)> => I<list of strings>
+
+Somewhat simulates what Perl does in reading a file when debugging is
+turned on. We the file contents as a list of strings in
+I<_E<gt>$filename>. But also entry is a dual variable. In numeric
+context, each entry of the list is I<true> if that line is traceable
+or break-pointable (is the address of a COP instruction). In a
+non-numeric context, each entry is a string of the line contents
+including the trailing C<\n>.
+
+I<Note:> something similar exists in L<Enbugger> and it is useful when
+a debugger is called via Enbugger which turn on debugging late so source
+files might not have been read in.
+
+=cut 
+sub load_file($;$) {
+    my ($filename, $eval_string) = @_;
+
+    # The symbols by which we'll know ye.
+    my $base_symname = "_<$filename";
+    my $symname      = "main::$base_symname";
+
+    no strict 'refs';
+    if (defined($eval_string)) {
+        dualvar_lines($eval_string, \@$symname, 0, 1);
+    } else {
+        dualvar_lines($filename, \@$symname, 1, 1);
+    }
+    $$symname ||= $filename;
+
+    return;
+}
 
 =head2 readlines
 
-B<readlines($filename)> => I<list of strings>
+B<readlines(I<$filename>)> => I<list of strings>
 
 Return a a list of strings for I<$filename>. If we can't read
 I<$filename> retun I<undef>. Each line will have a "\n" at the end.
@@ -840,17 +989,16 @@ sub readlines($)
 {
     my $path = shift;
     if (-r $path) {
-        open(FH, '<', $path);
-        seek FH, 0, 0;
-        my @lines = <FH>;
-        close FH;
+        my $fh;
+        open($fh, '<', $path);
+        seek $fh, 0, 0;
+        my @lines = <$fh>;
+        close $fh;
         return @lines;
     } else {
         return undef;
     }
 }
-
-=pod
 
 =head2 update_cache
 
@@ -908,7 +1056,9 @@ sub update_cache($;$)
                 my @lines = @$raw_lines;
                 for (my $i=1; $i<=$#lines; $i++) {
                     if (defined $raw_lines->[$i]) {
-                        $trace_nums->{$i} = 1 if ($raw_lines->[$i] != 0);
+			no warnings;
+                        $trace_nums->{$i} = ($raw_lines->[$i] + 0) if 
+			    (+$raw_lines->[$i]) != 0;
                         $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
                     } else {
                         $raw_lines->[$i] = $lines_check[$i-1] 
@@ -918,7 +1068,7 @@ sub update_cache($;$)
             use strict;
             $lines_href = {};
             $lines_href->{plain} = $raw_lines;
-            if ($opts->{output} && defined($raw_lines)) {
+            if ($opts->{output} && $opts->{output} ne 'plain' && defined($raw_lines)) {
                 # Some lines in $raw_lines may be undefined
                 no strict; no warnings;
                 local $WARNING=0;
@@ -957,7 +1107,7 @@ sub update_cache($;$)
     if ( -r $path ) { 
         my @lines = readlines($path);
         $lines_href = {plain => \@lines};
-        if ($opts->{output}) {
+        if ($opts->{output} && $opts->{output} ne 'plain') {
             my $highlight_lines = highlight_string(join('', @lines));
             my @highlight_lines = split(/\n/, $highlight_lines);
             $lines_href->{$opts->{output}} = \@highlight_lines;
@@ -1060,6 +1210,13 @@ unless (caller) {
                      max_continue => 5});
     print '-' x 30, "\n";
     print "$line\n";
+    print '-' x 30, "\n";
+
+    my $dirname = File::Basename::dirname(__FILE__);
+    my $colors_file = File::Spec->catfile($dirname, 'Colors.pm');
+    load_file($colors_file);
+    @line_nums = trace_line_numbers($colors_file);
+    print join(', ', @line_nums, "\n");
 }
 
 1;

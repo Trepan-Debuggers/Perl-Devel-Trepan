@@ -74,4 +74,18 @@ undef $INPUT_RECORD_SEPARATOR;
 my $got_str = <FH>;
 is($got_str, $eval_str, "reading contents temp file $filename");
 
+my $have_codelines = eval("use B::CodeLines; 1") ? 1 : 0;
+if ($have_codelines) {
+    my $dirname = File::Basename::dirname(__FILE__);
+    my $podtest_file = File::Spec->catfile($dirname, '00test-pod.t');
+
+    # FIXME: These two things should be one routine. Also change 
+    # Load_Subcmd/Source.pm
+    DB::LineCache::load_file($podtest_file);
+    DB::LineCache::update_cache($podtest_file, {use_perl_d_file => 1});
+
+    my @line_nums = DB::LineCache::trace_line_numbers($podtest_file);
+    is($line_nums[0], 3, "trace_line_numbers for $podtest_file");
+}
+
 done_testing();

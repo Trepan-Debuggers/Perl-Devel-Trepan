@@ -97,7 +97,7 @@ sub handle_eval_result($) {
         $print_properties = {
             colored => $self->{settings}{highlight},
         };
-        $fn = \&dprint;
+        $fn = \&Data::Printer::p;
     } else {
         $fn = \&Data::Dumper::Dumper;
     }

@@ -1,28 +1,70 @@
 #!/usr/bin/env perl 
 # Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
-use vars qw($TREPAN_CMDPROC);
+use strict; use warnings;
+
 use rlib '..';
-
-package Devel::Trepan;
-use strict;
-use warnings;
-use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION);
-use version; $VERSION = '0.40_01';
-use Exporter;
-
+use Devel::Trepan::Version;
 use Devel::Trepan::Core;
 
-use constant PROGRAM => 'trepan.pl';
+package Devel::Trepan;
 
-sub show_version {
+use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION $TREPAN_CMDPROC);
+use Exporter;
+
+@EXPORT = qw(debugger);
+@ISA = qw(Exporter);
+
+
+use constant PROGRAM => 'trepan.pl';
+use version; 
+$VERSION='0.45_01'; # To fool CPAN indexer. Is <= real version
+$VERSION = $Devel::Trepan::Version::VERSION;
+
+sub show_version() {
     PROGRAM . ", version $Devel::Trepan::VERSION";
+}
+
+# =head2 debugger
+# Allows program to make an explicit call to the debugger. 
+# B<Example:>
+#
+# In your Perl program I<foo.pl>: 
+#
+#    my $x = 1;
+#    Devel::Trepan::debugger;
+#    my $y = 2;  # Above line causes a stop here.
+#
+# Invoke as:
+#
+#   $ trepan.pl foo.pl
+#   -- main::(foo.pl:1)
+#   (trepanpl): continue
+#   (trepanpl): c
+#   :o main::(foo.pl:3)
+#   my $y = 2;
+#
+# This is like C<Enbugger-E<gt>stop> but without L<Enbugger>. However in
+# contrast to Enbugger, in order for this to work you must have
+# previously set up for debugging previously by running trepan.pl.
+#
+# =cut
+
+sub debugger {
+    $DB::in_debugger = 0;
+    $DB::event = 'debugger-call';
+    $DB::signal = 2;
 }
 
 if (__FILE__ eq $0 ) {
     print show_version(), "\n";
 }
 
+unless (caller) {
+    print show_version, "\n";
+    print "Pssst... this is a module. See trepan.pl to invoke.\n"
+}
+no warnings;
 "Just another Perl Debugger";
 __END__
 
@@ -160,12 +202,21 @@ L</"Examining the call stack">
 
 =item * 
 
+L</"Support facilities">
+
+=item * 
+
 L</"Syntax of debugger commands">
 
 =back 
 
 
 =head3 Commands involving running the program
+
+The commands in the section involve controlling execution of the
+program, either by kinds of stepping (step into, step over, step out)
+restarting or termintating the program altogether. However setting
+breakpoints is in L</Making the program stop at certain points>.
 
 =over 
 
@@ -187,7 +238,7 @@ L</"Step out (finish)">
 
 =item *
 
-L</"Terminate gently (quit)">
+L</"Gently exit debugged program (quit)">
 
 =item * 
 
@@ -265,18 +316,18 @@ B<finish>
 Continue execution until the program is about to leave the current
 function. Sometimes this is called 'step out'.
 
-=head4 Terminate gently (quit)
+=head4 Gently exit debugged program (quit)
 
 B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 
 Gently exit the debugger and debugged program.
 
-The program being debugged is exited via I<exit()> which runs the Kernel
-I<at_exit> finalizers. If a return code is given, that is the return code
-passed to I<exit()> - presumably the return code that will be passed back
-to the OS. If no exit code is given, 0 is used.
+The program being debugged is exited via I<exit()> which runs the
+Kernel I<at_exit()> finalizers. If a return code is given, that is the
+return code passed to I<exit()> - presumably the return code that will
+be passed back to the OS. If no exit code is given, 0 is used.
 
-I<Examples:> 
+B<Examples:>
 
  quit                 # quit prompting if we are interactive
  quit unconditionally # quit without prompting
@@ -284,8 +335,8 @@ I<Examples:>
  quit 0               # same as "quit"
  quit! 1              # unconditional quit setting exit code 1
 
-See also L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill> and
-C<set confirm>.
+See also C<set confirm> and
+L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.  
 
 =head4 Hard termination (kill)
 
@@ -383,6 +434,18 @@ I<Examples:>
  debug $x=1; $y=2;    # Kind of pointless, but doable.
 
 =head3 Making the program stop at certain points
+
+A I<Breakpoint> is a way to have the program stop at a pre-determined
+location. A breakpoint can be perminant or one-time. A one-time
+breakpoint is removed as soon as it is hit. In a sense, stepping is
+like setting one-time breakpoints. Breakpoints can also be disabled
+which allows you to temporarily ignore stopping at that breakpoint
+while it is disabled. Finally one can control conditions under which a
+breakpoint is enacted upon. 
+
+Another way to force a stop is to watch to see if the value of an
+expression changes. Often that expression is simply examinging a
+variable's value. 
 
 =over
 
@@ -548,6 +611,22 @@ I<Examples:>
 
 =head3 Examining the call stack
 
+The commands in this section show the call stack and let set a
+reference for the default call stack which other commands like C<list>
+or C<break> use as a position when one is not specified.
+
+The most recent call stack entry is 0. Except for the relative motion
+commands C<up> and C<down>, you can refer to the oldest or top-level
+stack entry with -1 and negative numbers refer to the stack from the
+other end.
+
+Beware that in contrast to debuggers in other programming languages,
+Perl really doesn't have an easy way for one to evaluate statements
+and expressions other than at the most recent call stack.  There are
+ways to see lexical variables I<my> and I<our>, however localized
+variables which can hide global variables and other lexicals variables
+can be problematic.
+
 =over
 
 =item *
@@ -568,7 +647,7 @@ L</"Move to a less recent frame (down)">
 
 =back
 
-=head4 Print call stack (backtrace)
+=head4 Print all or parts of the call stack (backtrace)
 
 B<backtrace> [I<count>]
 
@@ -617,6 +696,317 @@ B<down> [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
 is the most recent frame. If no count is given, move down 1.
+
+=head3 Support facilities
+
+=over
+
+=item *
+
+L</"Define an alias (alias)">
+
+=item *
+
+L</"Remove an alias (unalias)">
+
+=item *
+
+L</"Define a macro (macro)">
+
+=item *
+
+L</"Allow remote connections (server)">
+
+=item *
+
+L</"Run debugger commands from a file (source)">
+
+=item *
+
+L</"Load or Reload something Perlish">
+
+L</"Modify parts of the Debugger Environment">
+
+=back
+
+=head4 Define an alias
+
+B<alias> I<alias> I<command>
+
+Add alias I<alias> for a debugger command I<command>.  
+
+Add an alias when you want to use a command abbreviation for a command
+that would otherwise be ambigous. For example, by default we make C<s>
+be an alias of C<step> to force it to be used. Without the alias, C<s>
+might be C<step>, C<show>, or C<set>, among others.
+
+B<Examples:>
+
+ alias cat list   # "cat file.pl" is the same as "list file.pl"
+ alias s   step   # "s" is now an alias for "step".
+                  # The above examples done by default.
+
+For more complex definitions, see C<macro>.
+See also C<unalias> and C<show alias>.
+
+=head4 Remove an unalias
+
+B<unalias> I<alias1> [I<alias2> ...]
+
+Remove alias I<alias1> and so on.
+
+B<Example:>
+
+ unalias s  # Remove 's' as an alias for 'step'
+
+See also C<alias>.
+
+
+=head4 Define a debugger macro
+
+B<macro> I<macro-name> B<sub {> ... B<}>
+
+Define I<macro-name> as a debugger macro. Debugger macros get a list of
+arguments which you supply without parenthesis or commas. See below
+for an example.
+
+The macro (really a Perl anonymous subroutine) should return either a
+string or an array reference to a list of strings. The string in both
+cases are strings of debugger commands.  If the return is a string,
+that gets tokenized by a simple C<split(/ /, $string)>.  Note that
+macro processing is done right after splitting on C<;;> so if the macro
+returns a string containing C<;;> this will not be handled on the
+string returned.
+
+If instead, a reference to a list of strings is returned, then the
+first string is shifted from the array and executed. The remaining
+strings are pushed onto the command queue. In contrast to the first
+string, subsequent strings can contain other macros. Any C<;;> in those
+strings will be split into separate commands.
+
+B<Examples:>
+
+The below creates a macro called I<fin+> which issues two commands
+C<finish> followed by C<step>:
+
+ macro fin+ sub{ ['finish', 'step']}
+
+If you wanted to parameterize the argument of the C<finish> command
+you could do it this way:
+
+  macro fin+ sub{ \
+                  ['finish', 'step ' . (shift)] \
+                }
+
+Invoking with: 
+
+  fin+ 3
+
+would expand to C<["finish", "step 3"]>
+
+If you were to add another parameter, note that the invocation is like
+you use for other debugger commands, no commas or parenthesis. That is:
+
+ fin+ 3 2
+
+rather than C<fin+(3,2)> or C<fin+ 3, 2>.
+
+See also C<info macro>.
+
+=head4 Gently exit debugged program (quit)
+
+B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
+
+=head4 Allow remote debugger connections (server)
+
+B<server> [I<options>]
+
+options: 
+
+    -p | --port NUMBER
+    -a | --address
+
+Suspends interactive debugger session and puts debugger in server mode
+which opens a socket for debugger connections
+
+=head4 Run debugger commands from a file (source)
+
+B<source> [I<options>] I<file>
+
+options: 
+
+    -q | --quiet | --no-quiet
+    -c | --continue | --no-continue
+    -Y | --yes | -N | --no
+    -v | --verbose | --no-verbose
+
+Read debugger commands from a file named I<file>.  Optional C<-v> switch
+causes each command in FILE to be echoed as it is executed.  Option C<-Y>
+sets the default value in any confirmation command to be 'yes' and C<-N>
+sets the default value to 'no'.
+
+Option C<-q> will turn off any debugger output that normally occurs in
+the running of the program.
+
+An error in any command terminates execution of the command file
+unless option C<-c> or C<--continue> is given.
+
+=head4 Load or Reload something Perlish (load)
+
+Sometimes in the middle of debugging you would like to make a change
+to a Perl module -- perhaps you've found a bug -- and start using that.
+If the change is inside a Perl module, you can use the command
+C<load module>:
+
+B<load module> {I<Perl-module-file>}
+
+Another thing that can occur especially if using L<Enbugger> is that
+the source to Perl code is not cached inside the debugger and so you
+can't set a breakpoint on lines in that module. C<load source> can be
+used to rectify this. However this is a bit experimenta. There may
+still be a problem in making sure that debugging turned on when
+tracing inside of that source.
+
+B<load source> {I<Perl-source_file>}
+
+Finally, if you have debugger commands of your own or if you change a
+debugger command, you can force a reread of that debugger command
+using C<load command>.
+
+B<load commmand> {I<file-or-directory-name-1> [I<file-or-directory-name-2>...]}
+
+=head4 Modify parts of the Debugger Environment (set, show)
+
+There are many parts of the debugger environment you can change, like
+the print line width, whether you want syntax highlighting or not and
+so on. These fall under C<set> commands. C<show> commands show you
+values that have been set. In fact, many of the C<set> commands finish
+by runnin the corresponding "show" to echo you see what you've just
+set.
+
+B<Set commands>
+
+=over
+
+=item abbrev  
+
+Set to allow unique abbreviations of commands
+
+=item auto
+
+Set controls for some "automatic" default behaviors
+
+=item basename 
+
+Set to show only file basename in showing file names
+
+=item confirm 
+
+Set whether to confirm potentially dangerous operations.
+
+=item debug 
+
+Set debugging controls
+
+=item different
+
+Set to make sure 'next/step' move to a new position.
+
+=item display 
+
+Set display attributes
+
+=item evaldisplay
+
+Set whether we use terminal highlighting
+
+=item max 
+
+Set maximum length sizes of various things
+
+=item return 
+
+Set the value about to be returned
+
+=item timer 
+
+Set to show elapsed time between debugger events
+
+=item trace 
+
+Set tracing of various sorts.
+
+=item variable 
+
+Set a I<my> or I<our> variable
+
+=back
+
+B<Show commands>
+
+=over
+
+=item abbrev 
+
+Show whether we allow abbreviated debugger command names
+
+=item aliases 
+
+Show defined aliases
+
+=item args 
+
+Arguments to restart program
+
+=item auto
+
+Show controls for things with some sort of "automatic" default behavior
+
+=item basename 
+
+Show only file basename in showing file names
+
+=item confirm 
+
+Show confirm potentially dangerous operations setting
+
+=item debug 
+
+Show debugging controls
+
+=item different
+
+Show status of 'set different'
+
+=item display 
+
+Show display-related controls
+
+=item evaldisplay
+
+Show whether we use terminal highlighting
+
+=item interactive
+
+Show whether debugger input is a terminal
+
+=item max 
+
+Show "maximum length" settings
+
+=item timer 
+
+Show status of the timing hook
+
+=item trace 
+
+Set tracing of various sorts
+
+=item version 
+
+Show debugger name and version
+
+=back
 
 =head3 Syntax of debugger commands
 
@@ -784,6 +1174,9 @@ support via L<B::Concise>
 
 =item *
 
+L<Devel::Callsite> allows you to see the exact location of where you are stopped. 
+
+=item *
 L<Enbugger> allows you to enter the debugger via a direct call in source code
 
 =item *

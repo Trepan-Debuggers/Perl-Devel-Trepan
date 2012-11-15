@@ -28,7 +28,7 @@ EOE
 our $HELP = <<'HELP';
 =pod
 
-load commmand {I<file-or-directory-name-1> [I<file-or-directory-name-2>...]}
+B<load commmand> {I<file-or-directory-name-1> [I<file-or-directory-name-2>...]}
 
 Load debugger commands or directories containing debugger
 commands. This is also useful if you want to change or fix a debugger

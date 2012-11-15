@@ -41,7 +41,7 @@ use strict;
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
-@ISA = qw(Exporter);
+@ISA = qw(Exporter Devel::Trepan::Processor::Virtual);
 
 BEGIN {
     @DB::D = ();  # Place to save eval results;
@@ -50,14 +50,14 @@ BEGIN {
 sub new($;$$$) {
     my ($class, $interfaces, $dbgr, $settings) = @_;
     my $intf;
+    my $self = 
+      Devel::Trepan::Processor::Virtual::new($class, $interfaces, $settings);
     if (defined $interfaces) {
         $intf = $interfaces->[0];
     } else {
         $intf = Devel::Trepan::Interface::Bullwinkle->new();
         $interfaces = [$intf];
     }
-    my $self = 
-      Devel::Trepan::Processor::Virtual::new($class, $interfaces, $settings);
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);
@@ -67,6 +67,7 @@ sub new($;$$$) {
     $self->{cmd_queue}      = [];
     $self->{DB_running}     = $DB::running;
     $self->{DB_single}      = $DB::single;
+    $self->{interfaces}     = $interfaces;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{next_level}     = 30000;  # Virtually infinite;
@@ -87,6 +88,7 @@ sub new($;$$$) {
     #     ) if $self->{settings}{traceprint};
 
     # $B::Data::Dumper::Deparse = 1;
+    bless $self, $class;
     return $self;
 }
 
@@ -365,8 +367,8 @@ sub undefined_command($$) {
 
 unless (caller) {
     my $proc  = Devel::Trepan::BWProcessor->new;
-#     print $proc->{class}, "\n";
-#     print join(', ', @{$proc->{interfaces}}), "\n";
+    print $proc->{class}, "\n";
+    print join(', ', @{$proc->{interfaces}}), "\n";
 #     $proc->msg("Hi, there!");
 #     $proc->errmsg(['Two', 'lines']);
 #     $proc->errmsg("Something wrong?");

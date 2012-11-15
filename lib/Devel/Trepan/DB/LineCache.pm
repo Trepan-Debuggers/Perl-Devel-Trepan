@@ -496,7 +496,7 @@ sub getlines($;$)
 B<highlight_string($string)> => I<marked-up-string>
 
 Add syntax-formatting characters via
-L<Syntax::Highlight::Pel::Improved> to I<string> according to table
+L<Syntax::Highlight::Perl::Improved> to I<string> according to table
 given in L<Devel::Trepan::DB::Colors>.
 
 =cut

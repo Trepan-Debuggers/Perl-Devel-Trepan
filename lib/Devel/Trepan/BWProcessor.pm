@@ -22,7 +22,7 @@ $Data::Dumper::Terse = 1;
 require Data::Dumper;
 
 unless (@ISA) {
-    require Devel::Trepan::CmdProcessor::Load;
+    require Devel::Trepan::BWProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::Bullwinkle;
@@ -79,7 +79,7 @@ sub new($;$$$) {
     $self->{set_wp}         = undef;
 
     $self->{skip_count}     = 0;
-    # $self->load_cmds_initialize;
+    $self->load_cmds_initialize;
     # $self->running_initialize;
     # $self->hook_initialize;
     # $self->{unconditional_prehooks}->insert_if_new(10, 
@@ -100,36 +100,8 @@ sub DESTROY($)
 
 # Check that we meet the criteria that cmd specifies it needs
 sub ok_for_running ($$$$) {
-    my ($self, $cmd, $name, $nargs) = @_;
-    # TODO check execution_set against execution status.
-    # Check we have frame is not null
-    my $min_args = eval { $cmd->MIN_ARGS } || 0;
-    if ($nargs < $min_args) {
-        my $msg = 
-            sprintf("Command '%s' needs at least %d argument(s); " .
-                    "got %d.", $name, $min_args, $nargs);
-        $self->errmsg($msg);
-        return;
-    }
-    my $max_args = eval { $cmd->MAX_ARGS } || undef;
-    if (defined($max_args) && $nargs > $max_args) {
-        my $mess = 
-            sprintf("Command '%s' needs at most %d argument(s); " .
-                    "got %d.", $name, $max_args, $nargs);
-        $self->errmsg($mess);
-        return;
-    }
-
-    if ($cmd->NEED_STACK && $self->{terminated}) {
-        $self->errmsg("Command '$name' requires a running program.");
-        return;
-    }
-
-    if ($cmd->NEED_STACK && !defined $self->{frame}) {
-        $self->errmsg("Command '$name' requires a running stack frame.");
-        return;
-    }
-
+    my ($self, $cmd, $current_command) = @_;
+    # FIXME: check things like status is running etc.
     return 1;
 }
 
@@ -147,10 +119,6 @@ sub process_command_and_quit($)
         my @cmd_queue = @{$self->{cmd_queue}};
 	$self->{current_command} = shift @cmd_queue;
 	$self->{cmd_queue} = \@cmd_queue;
-        if ('' eq $self->{current_command}) {
-            next unless $self->{last_command} && $intf->is_interactive;
-            $self->{current_command} = $self->{last_command};
-        }
         last;
         # rescue IOError, Errno::EPIPE => e
         # }
@@ -260,7 +228,6 @@ sub process_commands($$$;$)
         }
     }
     unless ($self->{terminated}) {
-        $self->{cmdloop_posthooks}->run;
         $self->{last_tid} = $DB::tid;
         $DB::single       = $self->{DB_single};
     }
@@ -272,89 +239,17 @@ sub process_commands($$$;$)
 sub run_command($$) 
 {
     my ($self, $current_command) = @_;
-    my $eval_command = undef;
-    my $cmd_name = undef;
+    my $cmd_name = $current_command->{cmd_name};
     my @cmd_queue = @{$self->{cmd_queue}};
-    unless ($eval_command) {
-        my @commands = split(';;', $current_command);
-        if (scalar(@commands) > 1) {
-            $current_command = shift @commands;
-            $self->{cmd_queue} = \(@cmd_queue, @commands);
-        }
+    my %commands = %{$self->{commands}};
 
-        # Split on space trimming leading space. Note ' ' rather than say \s+
-        # which splits on leading spaces among others.
-        my @args = split(' ', $current_command);
-
-        # Expand macros. FIXME: put in a procedure
-        while (1) {
-            return if scalar(@args) == 0;
-            my $macro_cmd_name = $args[0];
-            last unless $self->{macros}{$macro_cmd_name};
-            my $debugging = $self->{settings}{debugmacro};
-            # if ($debugging) {
-            #   require Enbugger; Enbugger->stop();
-            # }
-            shift @args;
-            my $macro_expanded = 
-                $self->{macros}{$macro_cmd_name}[0]->(@args);
-            if (ref $macro_expanded eq 'ARRAY' #  && 
-#               current_command.all? {|val| val.is_a?(String)}
-                ) {
-                my @new_commands = @{$macro_expanded};
-                $self->msg(join(' ', @new_commands)) if $debugging;
-                if (scalar @new_commands > 0) {
-                    push @cmd_queue, @new_commands;
-                    $current_command = shift @cmd_queue;
-                    @args = split(' ', $current_command);
-                } else {
-                    $current_command = '#';
-                    @args = ();
-                }
-            } else {
-                $self->msg($macro_expanded) if $debugging;
-                $current_command = $macro_expanded;
-                @args = split(/\s+/, $current_command);
-            # } else {
-            #   $self->errmsg("macro ${macro_cmd_name} should return a list " .
-            #                 "of strings " .
-            #                 # or a String
-            #                 ". Got ${current_command.inspect}");
-            #   return;
-            }
-        }
-
-        my %commands = %{$self->{commands}};
-        $cmd_name = $self->{cmd_name} = $args[0];
-        my $run_cmd_name = $cmd_name;
-
-        my %aliases = %{$self->{aliases}};
-        if (exists $aliases{$cmd_name}) {
-          my @alias_expand = split(/\s+/, $aliases{$cmd_name});
-          $run_cmd_name = shift @alias_expand;
-          splice(@args, 1, 0, @alias_expand);
-        }
-
-        $run_cmd_name = uniq_abbrev([keys %commands], $run_cmd_name) if
-            !$commands{$run_cmd_name} && $self->{settings}{abbrev};
-
-        if ($commands{$run_cmd_name}) {
-            my $cmd = $commands{$run_cmd_name};
-            if ($self->ok_for_running($cmd, $run_cmd_name, scalar(@args)-1)) {
-                # Get part of string after command name
-                my $cmd_argstr = substr($current_command, length($cmd_name));
-                $self->{cmd_argstr} = $cmd_argstr;
-                $cmd->run(\@args);
-                $self->{last_command} = $current_command;
-            }
-            return;
-        }
+    if ($commands{$cmd_name}) {
+	my $cmd = $commands{$cmd_name};
+	if ($self->ok_for_running($cmd, $current_command)) {
+	    $cmd->run($current_command);
+	}
+	return;
     }
-
-    # Eval anything that's not a command or has been
-    # requested to be eval'd
-    $self->undefined_command($cmd_name);
-    return;
 }
 
 # Error message when a command doesn't exist

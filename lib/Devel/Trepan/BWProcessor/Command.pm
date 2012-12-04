@@ -28,6 +28,11 @@ use constant NEED_STACK => 0; # We'll say that commands which need a stack
                               # to run have to declare that and those that
                               # don't don't have to mention it.
 
+sub set_name() {
+    my ($pkg, $file, $line) = caller;
+    lc(File::Basename::basename($file, '.pm'));
+}
+
 # Command Command Object creation routine. This sets some class variables to defaults.
 # For example whether a command needs the debugged program to be running or not.
 # For "status": no. For "step": yes.

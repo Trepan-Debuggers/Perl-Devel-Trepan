@@ -10,18 +10,29 @@ use strict;
 
 use vars qw(@ISA); @ISA = @CMD_ISA; 
 use vars @CMD_VARS;  # Value inherited from parent
+our $NAME = set_name();
 
 # This method runs the command
 sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    {
-	'name' => 'status',
-	'response' => {
-	    "status" => "ready",
+    my $response = { 
+	'name'  => $NAME,
+	'event' => $proc->{event}
+    };
+    $response->{'program'} = $DB::ini_dollar0 if
+	defined($DB::ini_dollar0) && $DB::ini_dollar0;
+    $response->{'address'} = $DB::OP_addr if 
+	defined($DB::OP_addr);
+    if ($DB::brkpt) {
+        $response->{breakpoint} = {
+	    'type' => $DB::brkpt->type eq 'tbrkpt' ? 'temporary ' : 'permanent',
+	    'id'   => $DB::brkpt->id
 	}
     }
+    return $response;
+
 }
 
 unless (caller) {

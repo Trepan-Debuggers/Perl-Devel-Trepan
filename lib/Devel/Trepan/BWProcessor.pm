@@ -3,7 +3,7 @@
 
 use rlib '../..';
 
-# A debugger BullWinkle protocol processor. This includes the debugger commands
+# A debugger Bullwinkle protocol processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
 package Devel::Trepan::BWProcessor;
 
@@ -28,7 +28,7 @@ unless (@ISA) {
     require Devel::Trepan::Interface::Bullwinkle;
     require Devel::Trepan::Processor::Virtual;
     require Devel::Trepan::BWProcessor::Default;
-    # require Devel::Trepan::CmdProcessor::Msg;
+    require Devel::Trepan::BWProcessor::Msg;
     # require Devel::Trepan::CmdProcessor::Help;
     # require Devel::Trepan::CmdProcessor::Hook;
     require Devel::Trepan::BWProcessor::Frame;
@@ -74,6 +74,9 @@ sub new($;$$$) {
     $self->{settings}       = hash_merge($settings, DEFAULT_SETTINGS());
     $self->{terminated}     = 0;
 
+    # Place to store response to go back to client.
+    $self->{repsonse}       = {};
+
     # Initial watch point expr value used when a new watch point is set.
     # Set in 'watch' command, and reset here after we get the value back.
     $self->{set_wp}         = undef;
@@ -112,6 +115,10 @@ sub process_command_and_quit($)
     my $intf_ary = $self->{interfaces};
     my $intf = $intf_ary->[-1];
     my $intf_size = scalar @{$intf_ary};
+
+    my $response = {};
+    $self->{response} = $response;
+
     return 1 if !defined $intf || $intf->is_input_eof && $intf_size == 1;
     while ($intf_size > 1 || !$intf->is_input_eof) {
         # begin
@@ -125,11 +132,13 @@ sub process_command_and_quit($)
     }
     
     eval {
-        $self->run_command($self->{current_command});
+        $response = $self->run_command($self->{current_command});
     };
     if ($EVAL_ERROR) {
         $self->errmsg("internal error: $EVAL_ERROR")
     }
+    $self->msg($response);
+    return $response;
 }
 
 sub skip_if_next($$) 
@@ -244,11 +253,12 @@ sub run_command($$)
     my %commands = %{$self->{commands}};
 
     if ($commands{$cmd_name}) {
+	my $response = {};
 	my $cmd = $commands{$cmd_name};
 	if ($self->ok_for_running($cmd, $current_command)) {
-	    $cmd->run($current_command);
+	    $response = $cmd->run($current_command);
 	}
-	return;
+	return $response;
     }
 }
 
@@ -264,37 +274,8 @@ unless (caller) {
     my $proc  = Devel::Trepan::BWProcessor->new;
     print $proc->{class}, "\n";
     print join(', ', @{$proc->{interfaces}}), "\n";
-#     $proc->msg("Hi, there!");
-#     $proc->errmsg(['Two', 'lines']);
-#     $proc->errmsg("Something wrong?");
-#     for my $fn (qw(errmsg msg section)) { 
-#         $proc->$fn('testing');
-#     }
-#     $DB::level = 1;
-#     my $prompt = $proc->{prompt} = compute_prompt($proc);
-#     eval <<'EOE';
-#     sub foo() {
-#         my @call_values = caller(0);
-#         return @call_values;
-#     }
-# EOE
-#     $DB::level = 2;
-#     print "prompt setting 2: $prompt\n";
-#     my @call_values = foo();
-#     ## $proc->frame_setup(\@call_values, 0);
-#     my $sep = '=' x 40 . "\n";
-#     $proc->undefined_command("foo");
-#     print $sep;
-#     $proc->run_command("help *");
-#     print $sep;
-#     $proc->run_command("help help;; kill 100");
-#     # Note kill 100 is in queue - not run yet.
-#     if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
-#         $proc->process_command_and_quit; # Handle's queued command
-#         $proc->process_command_and_quit;
-#         print $sep;
-#         $proc->process_commands([@call_values], 0, 'debugger-call');
-#     }
+    my $response = $proc->run_command({'cmd_name' => 'status'});
+    $proc->msg($response);
 }
 
 1;

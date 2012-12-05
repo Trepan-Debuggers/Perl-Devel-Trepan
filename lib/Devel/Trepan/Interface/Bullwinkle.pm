@@ -81,12 +81,15 @@ sub is_input_eof($)
 }
 
 # used to write to a debugger that is connected to this
-# server; `str' written will have a newline added to it
+# server; 
+
+### FIXME: 
+use Data::Dumper; 
 sub msg($;$)
 {
     my ($self, $msg) = @_;
     ### FIXME
-    print "$msg\n";
+    print Data::Dumper::Dumper($msg), "\n";
     # $self->{inout}->writeline(PRINT . $msg);
 }
 
@@ -96,7 +99,7 @@ sub errmsg($;$)
 {
     my ($self, $msg) = @_;
     ### FIXME
-    print "Error: $msg\n";
+    print Data::Dumper::Dumper($msg), "\n";
     # $self->{inout}->writeline(SERVERERR . $msg);
 }
 

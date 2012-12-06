@@ -48,15 +48,12 @@ BEGIN {
 }
 
 sub new($;$$$) {
-    my ($class, $interfaces, $dbgr, $settings) = @_;
+    my ($class, $interface, $dbgr, $settings) = @_;
     my $intf;
     my $self = 
-      Devel::Trepan::Processor::Virtual::new($class, $interfaces, $settings);
-    if (defined $interfaces) {
-        $intf = $interfaces->[0];
-    } else {
-        $intf = Devel::Trepan::Interface::Bullwinkle->new();
-        $interfaces = [$intf];
+      Devel::Trepan::Processor::Virtual::new($class, $interface, $settings);
+    unless (defined $interface) {
+        $interface = Devel::Trepan::Interface::Bullwinkle->new();
     }
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
@@ -67,7 +64,7 @@ sub new($;$$$) {
     $self->{cmd_queue}      = [];
     $self->{DB_running}     = $DB::running;
     $self->{DB_single}      = $DB::single;
-    $self->{interfaces}     = $interfaces;
+    $self->{interface}     = $interface;
     $self->{last_command}   = undef;
     $self->{leave_cmd_loop} = undef;
     $self->{next_level}     = 30000;  # Virtually infinite;
@@ -75,7 +72,7 @@ sub new($;$$$) {
     $self->{terminated}     = 0;
 
     # Place to store response to go back to client.
-    $self->{repsonse}       = {};
+    $self->{response}       = {};
 
     # Initial watch point expr value used when a new watch point is set.
     # Set in 'watch' command, and reset here after we get the value back.
@@ -112,15 +109,13 @@ sub ok_for_running ($$$$) {
 sub process_command_and_quit($) 
 {
     my $self = shift;
-    my $intf_ary = $self->{interfaces};
-    my $intf = $intf_ary->[-1];
-    my $intf_size = scalar @{$intf_ary};
+    my $intf = $self->{interface};
 
     my $response = {};
     $self->{response} = $response;
 
-    return 1 if !defined $intf || $intf->is_input_eof && $intf_size == 1;
-    while ($intf_size > 1 || !$intf->is_input_eof) {
+    return 1 if !defined $intf || $intf->is_input_eof;
+    while (!$intf->is_input_eof) {
         # begin
         $self->{current_command} = '';
         my @cmd_queue = @{$self->{cmd_queue}};
@@ -267,15 +262,16 @@ sub undefined_command($$) {
     my ($self, $cmd_name) = @_;
     my $msg = sprintf 'Undefined command: "%s". Try "help".', $cmd_name;
     eval { $self->errmsg($msg); };
-    print STDERR $msg  if $EVAL_ERROR;
+    $self->{interface}->msg($msg)  if $EVAL_ERROR;
 }
 
 unless (caller) {
     my $proc  = Devel::Trepan::BWProcessor->new;
     print $proc->{class}, "\n";
-    print join(', ', @{$proc->{interfaces}}), "\n";
+    print $proc->{interface}, "\n";
     my $response = $proc->run_command({'cmd_name' => 'status'});
     $proc->msg($response);
+    $proc->{interface}->msg($response);
 }
 
 1;

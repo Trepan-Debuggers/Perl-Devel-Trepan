@@ -18,7 +18,7 @@ use vars qw(@EXPORT @ISA);
 # sub confirm($$$)
 # {
 #     my ($self, $msg, $default) = @_;
-#     my $intf = $self->{interfaces}[-1];
+#     my $intf = $self->{interface};
 #     my $confirmed = $self->{settings}{confirm} ? 
 #         $intf->confirm($msg, $default) : 1;
 #     $confirmed;
@@ -27,14 +27,15 @@ use vars qw(@EXPORT @ISA);
 sub errmsg($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||={};
-    $self->{interfaces}[-1]->errmsg($message);
+    my $err_ary = $self->{response}{errmsg} ||= [];
+    push @$err_ary, $message;
 }
 
 sub msg($$;$) {
     my($self, $message, $opts) = @_;
-    $self->{interfaces}[-1]->msg($message) if 
-        defined $self->{interfaces}[-1];
-
+    $opts ||={};
+    my $msg_ary = $self->{response}{msg} ||= [];
+    push @$msg_ary, $message;
   }
 
 sub msg_need_running($$;$) {
@@ -42,17 +43,9 @@ sub msg_need_running($$;$) {
     $self->errmsg("$prefix not available when terminated");
 }
 
-sub msg_nocr($$;$) {
-    my($self, $message, $opts) = @_;
-    $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    # $message = $self->perl_format($message) if $self->{opts}{code};
-    $self->{interfaces}[-1]->msg_nocr($message);
-
-  }
-
 sub read_command($) {
     my $self = shift;
-    $self->{interfaces}[-1]->read_command($self->{prompt});
+    $self->{interface}->read_command($self->{prompt});
   }
 
   # sub perl_format($$) {
@@ -74,13 +67,13 @@ sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
-    $self->{interfaces}[-1]->msg($message);
+    $self->{interface}->msg($message);
 }
 
 if (caller) {
     require Devel::Trepan::BWProcessor;
     my $proc  = Devel::Trepan::BWProcessor->new;
-    if (scalar(@ARGV) > 0 && $proc->{interfaces}[-1]->is_interactive) {
+    if (scalar(@ARGV) > 0 && $proc->{interface}->is_interactive) {
         my $response = $proc->confirm("Are you sure?", 1);
         printf "You typed: %s\n", $response ? "Y" : "N";
     }

@@ -154,7 +154,6 @@ lib/Devel/Trepan/CmdProcessor/Mock.pm
 lib/Devel/Trepan/CmdProcessor/Msg.pm
 lib/Devel/Trepan/CmdProcessor/Running.pm
 lib/Devel/Trepan/CmdProcessor/Validate.pm
-lib/Devel/Trepan/CmdProcessor/Virtual.pm
 lib/Devel/Trepan/Complete.pm
 lib/Devel/Trepan/Condition.pm
 lib/Devel/Trepan/Core.pm

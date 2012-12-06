@@ -7,7 +7,7 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for my $line (split("\n", $got_lines)) {
-	    $line =~ s/^COP address: 0x[0-9a-f]+\.$/COP address: 0x12345678./;
+	    $line =~ s/^OP address: 0x[0-9a-f]+\.$/OP address: 0x12345678./;
 	    push @result, $line;
 	}
 	$got_lines = join("\n", @result) . "\n";

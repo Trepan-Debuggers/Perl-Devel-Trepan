@@ -43,26 +43,6 @@ sub msg_need_running($$;$) {
     $self->errmsg("$prefix not available when terminated");
 }
 
-sub read_command($) {
-    my $self = shift;
-    $self->{interface}->read_command($self->{prompt});
-  }
-
-  # sub perl_format($$) {
-  #     my($self, $text);
-  #     return $text unless $self->settings{highlight};
-  #     unless @ruby_highlighter
-  #       begin
-  #         require 'coderay'
-  #         require 'term/ansicolor'
-  #         @ruby_highlighter = CodeRay::Duo[:ruby, :term]
-  #       rescue LoadError
-  #         return text
-  #       }
-  #     }
-  #     return @ruby_highlighter.encode(text)
-  # }
-
 sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};

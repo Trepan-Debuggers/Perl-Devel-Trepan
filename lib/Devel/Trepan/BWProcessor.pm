@@ -43,10 +43,6 @@ use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
 @ISA = qw(Exporter Devel::Trepan::Processor::Virtual);
 
-BEGIN {
-    @DB::D = ();  # Place to save eval results;
-}
-
 sub new($;$$$) {
     my ($class, $interface, $dbgr, $settings) = @_;
     my $intf;
@@ -111,29 +107,35 @@ sub process_command_and_quit($)
     my $self = shift;
     my $intf = $self->{interface};
 
-    my $response = {};
-    $self->{response} = $response;
+    $self->{response} = {};
 
     return 1 if !defined $intf || $intf->is_input_eof;
+    my @cmd_queue = @{$self->{cmd_queue}};
     while (!$intf->is_input_eof) {
         # begin
-        $self->{current_command} = '';
-        my @cmd_queue = @{$self->{cmd_queue}};
-	$self->{current_command} = shift @cmd_queue;
-	$self->{cmd_queue} = \@cmd_queue;
+        if (scalar(@cmd_queue) == 0) {
+	    $self->{current_command} = $intf->read_command();
+	    unless (ref($self->{current_command})) {
+		$self->errmsg("invalid input. Expecting a hash reference");
+		return $self->{response};
+	    }
+	} else {
+	    $self->{current_command} = shift @cmd_queue;
+	    $self->{cmd_queue} = \@cmd_queue;
+	}
         last;
         # rescue IOError, Errno::EPIPE => e
         # }
     }
-    
+
     eval {
-        $response = $self->run_command($self->{current_command});
+        $self->{response} = $self->run_command($self->{current_command});
     };
     if ($EVAL_ERROR) {
         $self->errmsg("internal error: $EVAL_ERROR")
     }
-    $self->msg($response);
-    return $response;
+    $self->{interface}->msg($self->{response});
+    return $self->{response}
 }
 
 sub skip_if_next($$) 
@@ -164,9 +166,8 @@ sub process_commands($$$;$)
         handle_eval_result($self);
         if ($event eq 'after_nest') {
             $self->msg("Leaving nested debug level $DB::level");
-            $self->{prompt} = compute_prompt($self);
             $self->frame_setup();
-            $self->print_location;
+            # $self->print_location;
         }
     } else {
         $self->{event} = $event;
@@ -216,13 +217,12 @@ sub process_commands($$$;$)
                 }
             }
         
-            $self->{prompt} = compute_prompt($self);
             $self->print_location unless $self->{settings}{traceprint} ||
                 $self->{terminated};
 
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
             
-            $self->{cmdloop_prehooks}->run;
+            ## $self->{cmdloop_prehooks}->run;
         }
     }
     unless ($next_skip) {
@@ -238,8 +238,7 @@ sub process_commands($$$;$)
     $DB::running = $self->{DB_running};
 }
 
-# run current_command, a string. @last_command is set after the
-# command is run if it is a command.
+# run current_command, a hash. 
 sub run_command($$) 
 {
     my ($self, $current_command) = @_;
@@ -248,21 +247,15 @@ sub run_command($$)
     my %commands = %{$self->{commands}};
 
     if ($commands{$cmd_name}) {
-	my $response = {};
 	my $cmd = $commands{$cmd_name};
 	if ($self->ok_for_running($cmd, $current_command)) {
-	    $response = $cmd->run($current_command);
+	    $self->{response} = $cmd->run($current_command);
 	}
-	return $response;
+    } else {
+	my $msg = sprintf 'Undefined command: "%s"', $cmd_name;
+	$self->errmsg($msg);
     }
-}
-
-# Error message when a command doesn't exist
-sub undefined_command($$) {
-    my ($self, $cmd_name) = @_;
-    my $msg = sprintf 'Undefined command: "%s". Try "help".', $cmd_name;
-    eval { $self->errmsg($msg); };
-    $self->{interface}->msg($msg)  if $EVAL_ERROR;
+    return $self->{response}
 }
 
 unless (caller) {
@@ -270,8 +263,10 @@ unless (caller) {
     print $proc->{class}, "\n";
     print $proc->{interface}, "\n";
     my $response = $proc->run_command({'cmd_name' => 'status'});
-    $proc->msg($response);
     $proc->{interface}->msg($response);
+    if (@ARGV) {
+	$proc->process_command_and_quit();
+    }
 }
 
 1;

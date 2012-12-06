@@ -16,6 +16,8 @@ use if !@ISA, Devel::Trepan::Interface;
 use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 # use if !@ISA, Devel::Trepan::IO::TCPServer;
+use if !@ISA, Devel::Trepan::IO::Input;
+
 use strict; 
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
@@ -33,8 +35,8 @@ sub new
     # at_exit { finalize };
     ## FIXME:
     my $self = {
-        output => $inp || *STDOUT,
-        input  => $out || *STDIN,
+        output => $out || *STDOUT,
+        input  => Devel::Trepan::IO::Input->new($inp),
         interactive => 0, 
         logger => $connection_opts->{logger}
     };
@@ -104,47 +106,11 @@ sub errmsg($;$)
 }
 
 # used to write to a debugger that is connected to this
-# server; `str' written will not have a newline added to it
-sub msg_nocr($$)
-{    
-    my ($self, $msg) = @_;
-    ### FIXME
-    print "$msg";
-    # $self->{inout}->write(PRINT .  $msg);
-}
-  
 sub read_command($$)
 {
-    my ($self, $prompt) = @_;
-    $self->readline($prompt);
-}
-  
-sub read_data($)
-{
-    my ($self, $prompt) = @_;
-    $self->{inout}->read_data;
-}
-  
-sub readline($;$)
-{
-    my ($self, $prompt, $add_to_history) = @_;
-    # my ($self, $prompt, $add_to_history) = @_;
-    # $add_to_history = 1;
-    if ($prompt) {
-        $self->write_prompt($prompt);
-    }
-    my $coded_line;
-    eval {
-        $coded_line = $self->{inout}->read_msg();
-    };
-    if ($EVAL_ERROR) {
-        print {$self->{logger}} "$EVAL_ERROR\n" if $self->{logger};
-        $self->errmsg("Server communication protocol error, resyncing...");
-        return ('#');
-    } else {
-        my $read_ctrl = substr($coded_line,0,1);
-        substr($coded_line, 1);
-    }
+    my ($self) = @_;
+    my $cmd_str = $self->readline("Bullwinkle: read\n: ");
+    eval($cmd_str);
 }
 
 # Demo

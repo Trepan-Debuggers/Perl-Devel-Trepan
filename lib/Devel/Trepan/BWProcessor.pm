@@ -34,7 +34,7 @@ unless (@ISA) {
     require Devel::Trepan::BWProcessor::Frame;
     require Devel::Trepan::CmdProcessor::Location;
     require Devel::Trepan::CmdProcessor::Eval;
-    require Devel::Trepan::CmdProcessor::Running;
+    require Devel::Trepan::BWProcessor::Running;
     require Devel::Trepan::CmdProcessor::Validate;
 }
 use strict;
@@ -224,8 +224,9 @@ sub process_commands($$$;$)
                 }
             }
         
-            $self->print_location unless $self->{settings}{traceprint} ||
-                $self->{terminated};
+	    ## FIXME: reinstate
+            ## $self->print_location unless $self->{settings}{traceprint} ||
+            ##    $self->{terminated};
 
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
             

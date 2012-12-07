@@ -46,7 +46,7 @@ sub msg_need_running($$;$) {
 sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
-    $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
+    # $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     $self->{interface}->msg($message);
 }
 

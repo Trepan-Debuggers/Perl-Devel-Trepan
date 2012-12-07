@@ -72,6 +72,7 @@ sub process_options($)
     my $result = &GetOptionsFromArray($argv,
          'basename'     => \$opts->{basename},
          'batch:s'      => \$opts->{batchfile},
+         'bw'           => \$opts->{bw},
          'cd:s'         => \$opts->{initial_dir},
          'client'       => \$opts->{client},
          'cmddir=s@'    => \$opts->{cmddir},
@@ -203,7 +204,8 @@ trepan.pl - Perl "Trepanning" Debugger
       --man                full documentation
       --basename           Show basename only on source file listings. 
                            (Needed in regression tests)
-      
+      --bw                 Use Bullwinkle Processor (for front-ends) rather
+                           that the command-line processor
       -c| --command FILE   Run or 'source' debugger command file FILE
       --cmddir DIR         Read DIR for additional debugger commands
       --batch FILE         Like --command, but quit after reading FILE.

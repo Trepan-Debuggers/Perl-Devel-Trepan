@@ -106,40 +106,32 @@ sub text_at($;$)
 sub format_location($;$$$)
 {
     my ($self, $event, $frame, $frame_index) = @_;
-    $event       = $self->{event} unless defined $event;
-    $frame       = $self->{frame} unless defined $frame;
-    $frame_index = $self->{frame_index} unless defined $frame_index;
-    my $text     = undef;
 
     $self->{line_no}  = $self->{frame}{line};
     
     my $loc = $self->source_location_info;
-    my $suffix = ($event eq 'return' && defined($DB::_[0])) ? " $DB::_[0]" : '';
     my $pkg = $self->{frame}{pkg};
-    return {
-	event => $event,
-	pkg   => $pkg,
-	loc   => $loc,
-	# FIXME:
-	# suffix => 
+    my $response = {
+	name        => 'location',
+	'package'   => $pkg,
+	location    => $loc,
     };
+    $response->{event}       = $event if $event;
+    $response->{frame_index} = 	$frame_index if $frame_index;
+    return $response;
 }
 
-# sub print_location($;$)
-# {
-#     my ($self,$opts) = @_;
-#     $opts = {
-#         output => $self->{settings}{highlight},
-#         max_continue => 5,
-#     } unless defined $opts;
-#     my $loc  = $self->format_location;
-#     $self->msg(${loc});
+sub print_location($;$$)
+{
+    my ($self,$event,$opts) = @_;
+    my $response  = $self->format_location($event);
 
-#     my $text = $self->current_source_text($opts);
-#     if ($text) {
-#         $self->msg($text, {unlimited => 1});
-#     }
-#   }
+    my $text = $self->current_source_text($opts);
+    if ($text) {
+        $response->{text} = $text;
+    }
+    $self->{interface}->msg($response);
+  }
   
 sub source_location_info($)
 {
@@ -150,8 +142,14 @@ sub source_location_info($)
     #  else
     my $filename = $self->{frame}{file};
     my $line_number = $self->line() || 0;
+    my $response = {
+	canonic_filename => $self->canonic_file($self->filename(), 0),
+	filename         => $self->filename(),
+	line_number      => ${line_number},
+    };
 
     my $op_addr = $DB::OP_addr;
+    $response->{op_addr} = $op_addr if $op_addr;
     if (DB::LineCache::filename_is_eval($filename)) {
         if ($DB::filename eq $filename) {
             # Some lines in @DB::line might not be defined.
@@ -162,20 +160,12 @@ sub source_location_info($)
                 use warnings;
                 $filename = DB::LineCache::map_script($filename, $string);
             }
-            $canonic_filename = $self->canonic_file($self->filename(), 0);
-            return {
-		filename    => ${canonic_filename},
-		line_number => ${line_number},
-		remapped    => {filename    => $filename,
-				line_number => $line_number},
-		op_addr     => $op_addr};
+            $response->{remapped} =
+		{filename    => $filename,
+		 line_number => $line_number},
         }
     }
-    $canonic_filename = $self->canonic_file($self->filename(), 0);
-    return {
-	filename    => ${canonic_filename},
-	line_number => ${line_number},
-	op_addr     => $op_addr};
+    return $response;
 } 
 
 unless (caller()) {

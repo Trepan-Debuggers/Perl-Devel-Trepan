@@ -32,7 +32,7 @@ unless (@ISA) {
     # require Devel::Trepan::CmdProcessor::Help;
     # require Devel::Trepan::CmdProcessor::Hook;
     require Devel::Trepan::BWProcessor::Frame;
-    require Devel::Trepan::CmdProcessor::Location;
+    require Devel::Trepan::BWProcessor::Location;
     require Devel::Trepan::CmdProcessor::Eval;
     require Devel::Trepan::BWProcessor::Running;
     require Devel::Trepan::CmdProcessor::Validate;
@@ -174,7 +174,7 @@ sub process_commands($$$;$)
         if ($event eq 'after_nest') {
             $self->msg("Leaving nested debug level $DB::level");
             $self->frame_setup();
-            # $self->print_location;
+            $self->print_location($event);
         }
     } else {
         $self->{event} = $event;
@@ -224,9 +224,8 @@ sub process_commands($$$;$)
                 }
             }
         
-	    ## FIXME: reinstate
-            ## $self->print_location unless $self->{settings}{traceprint} ||
-            ##    $self->{terminated};
+            $self->print_location($event) unless $self->{terminated};
+                 # || $self->{settings}{traceprint};
 
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
             

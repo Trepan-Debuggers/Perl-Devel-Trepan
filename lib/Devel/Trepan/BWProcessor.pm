@@ -101,6 +101,11 @@ sub ok_for_running ($$$$) {
     return 1;
 }
 
+sub valid_cmd_hash($) {
+    my ($cmd) = @_;
+    'HASH' eq ref($cmd) and $cmd->{cmd_name};
+}
+
 # Run one debugger command. 1 is returned if we want to quit.
 sub process_command_and_quit($) 
 {
@@ -111,16 +116,18 @@ sub process_command_and_quit($)
 
     return 1 if !defined $intf || $intf->is_input_eof;
     my @cmd_queue = @{$self->{cmd_queue}};
+    my $cmd_hash;
     while (!$intf->is_input_eof) {
         # begin
         if (scalar(@cmd_queue) == 0) {
-	    $self->{current_command} = $intf->read_command();
-	    unless (ref($self->{current_command})) {
-		$self->errmsg("invalid input. Expecting a hash reference");
+	    $cmd_hash = $intf->read_command();
+	    unless (valid_cmd_hash($cmd_hash)) {
+		$self->errmsg("invalid input. Expecting a hash reference with key 'cmd_name'");
+		$self->{interface}->msg($self->{response});
 		return $self->{response};
 	    }
 	} else {
-	    $self->{current_command} = shift @cmd_queue;
+	    $cmd_hash = shift @cmd_queue;
 	    $self->{cmd_queue} = \@cmd_queue;
 	}
         last;
@@ -129,7 +136,7 @@ sub process_command_and_quit($)
     }
 
     eval {
-        $self->{response} = $self->run_command($self->{current_command});
+        $self->{response} = $self->run_command($cmd_hash);
     };
     if ($EVAL_ERROR) {
         $self->errmsg("internal error: $EVAL_ERROR")
@@ -249,6 +256,7 @@ sub run_command($$)
     if ($commands{$cmd_name}) {
 	my $cmd = $commands{$cmd_name};
 	if ($self->ok_for_running($cmd, $current_command)) {
+	    $self->{current_command} = $current_command;
 	    $self->{response} = $cmd->run($current_command);
 	}
     } else {
@@ -262,10 +270,12 @@ unless (caller) {
     my $proc  = Devel::Trepan::BWProcessor->new;
     print $proc->{class}, "\n";
     print $proc->{interface}, "\n";
-    my $response = $proc->run_command({'cmd_name' => 'status'});
+    my $response = $proc->run_command({'cmd_name' => 'info_program'});
     $proc->{interface}->msg($response);
     if (@ARGV) {
-	$proc->process_command_and_quit();
+	while (1) {
+	    $proc->process_command_and_quit();
+	}
     }
 }
 

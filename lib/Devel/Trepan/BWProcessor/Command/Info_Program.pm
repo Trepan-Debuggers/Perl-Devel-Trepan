@@ -3,7 +3,7 @@ use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
 
-package Devel::Trepan::BWProcessor::Command::Status;
+package Devel::Trepan::BWProcessor::Command::Info_Program;
 use if !@ISA, Devel::Trepan::BWProcessor::Command ;
 
 use strict;

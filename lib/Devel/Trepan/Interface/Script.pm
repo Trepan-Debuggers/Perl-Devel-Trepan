@@ -104,6 +104,13 @@ sub msg($$)
 }
 
 sub is_interactive() { 0; }
+
+sub is_closed($) 
+{
+    my($self)  = shift;
+    $self->{input}->eof;
+}
+
 sub has_completion() { 0; }
 sub has_term_readline($) { 0; }
 

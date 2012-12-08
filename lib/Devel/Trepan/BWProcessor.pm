@@ -94,6 +94,17 @@ sub DESTROY($)
     # breakpoint_finalize
 }
 
+sub terminated($) {
+    my($self) = @_;
+    $self->{event} = 'terminated';
+    $self->{terminated} = 1;
+    my $response = { 
+	'name'  => 'info_program',
+	'event' => 'terminated'
+    };
+    $self->{interface}->msg($response);
+}
+
 # Check that we meet the criteria that cmd specifies it needs
 sub ok_for_running ($$$$) {
     my ($self, $cmd, $current_command) = @_;
@@ -162,12 +173,7 @@ sub process_commands($$$;$)
     my ($self, $frame, $event, $arg) = @_;
 
     if ($event eq 'terminated') {
-        $self->{terminated} = 1;
-	my $response = { 
-	    'name'  => 'info_program',
-	    'event' => $event
-	};
-        $self->{interface}->msg($response);
+	$self->terminated();
     } elsif (!defined($event)) {
         $event = 'unknown';
     }

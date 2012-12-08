@@ -55,3 +55,4 @@ Leaving nested debug level 1
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
+trepan.pl: That's all, folks...

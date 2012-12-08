@@ -28,3 +28,4 @@ $%h = {'food' => 'fight','1' => 'foo'};
 -- main::(my.pl:6)
     return $h;
 $h = {'food' => 'fight','1' => 'foo'}
+trepan.pl: That's all, folks...

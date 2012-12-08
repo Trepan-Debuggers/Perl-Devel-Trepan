@@ -15,3 +15,4 @@ Program received signal HUP.
 -- main::(signal.pl:21)
     sleep 1;
 $DB::D[0] = 1
+trepan.pl: That's all, folks...

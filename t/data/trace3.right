@@ -38,3 +38,4 @@ Breakpoint 1 disabled
     return $a if ($a == 1) or ($b-$a == 0);
 <- main::(gcd.pl:21) main::gcd
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
+trepan.pl: That's all, folks...

@@ -4,3 +4,4 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 Eval result display style is dumper.
 $DB::D[0] = "gcd.pl"
 $DB::D[1] = 18
+trepan.pl: That's all, folks...

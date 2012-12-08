@@ -28,6 +28,7 @@ sub errmsg($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||={};
     my $err_ary = $self->{response}{errmsg} ||= [];
+    $self->{response}{name} = 'error' if $opts->{set_name};
     push @$err_ary, $message;
 }
 

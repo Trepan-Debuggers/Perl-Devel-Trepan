@@ -112,7 +112,7 @@ sub format_location($;$$$)
     my $loc = $self->source_location_info;
     my $pkg = $self->{frame}{pkg};
     my $response = {
-	name        => 'location',
+	name        => 'stop_location',
 	'package'   => $pkg,
 	location    => $loc,
     };

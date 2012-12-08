@@ -133,7 +133,8 @@ sub process_command_and_quit($)
         if (scalar(@cmd_queue) == 0) {
 	    $cmd_hash = $intf->read_command();
 	    unless (valid_cmd_hash($cmd_hash)) {
-		$self->errmsg("invalid input. Expecting a hash reference with key 'command'");
+		$self->errmsg("invalid input. Expecting a hash reference with key 'command'",
+		    {set_name => 1});
 		$self->{interface}->msg($self->{response});
 		return $self->{response};
 	    }
@@ -272,7 +273,7 @@ sub run_command($$)
 	}
     } else {
 	my $msg = sprintf 'Undefined command: "%s"', $cmd_name;
-	$self->errmsg($msg);
+	$self->errmsg($msg, {set_name=>1});
     }
     return $self->{response}
 }

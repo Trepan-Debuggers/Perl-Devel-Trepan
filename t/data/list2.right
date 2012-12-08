@@ -45,3 +45,4 @@ test-require.pl [1-9]
   7 B02	my $y = $x;
   8    	
   9    	
+trepan.pl: That's all, folks...

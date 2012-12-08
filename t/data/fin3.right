@@ -13,3 +13,4 @@ printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 Return array value for main::gcd is:
 1
 
+trepan.pl: That's all, folks...

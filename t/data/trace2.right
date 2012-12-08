@@ -19,3 +19,4 @@ xx main::(gcd.pl:9)
     return gcd($b-$a, $a);
 xx main::(gcd.pl:9)
     my ($a, $b) = @_;
+trepan.pl: That's all, folks...

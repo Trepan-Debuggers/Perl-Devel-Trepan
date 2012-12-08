@@ -6,3 +6,4 @@ x1 TCPPack::(TCPPack.pm:18)
     ($buf, $msg) = unpack_msg(pack_msg($buf));
 Return value for TCPPack::pack_msg is: 0009Hi there!
 *** Can't run finish while inside a return. Step and try again.
+trepan.pl: That's all, folks...

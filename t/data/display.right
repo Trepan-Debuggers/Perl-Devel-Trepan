@@ -13,3 +13,4 @@ Display 2 set
 2: 3 | 5
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
+trepan.pl: That's all, folks...

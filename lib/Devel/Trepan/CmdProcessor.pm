@@ -119,9 +119,13 @@ sub compute_prompt($)
             '(' x $DB::level, $thread_str, ')' x $DB::level);
 }
 
-sub DESTROY($)
+sub terminated($)
 {
     my $self = shift;
+    $self->msg(sprintf("%sThat's all, folks...",
+		       (defined($Devel::Trepan::PROGRAM) ? 
+			"${Devel::Trepan::PROGRAM}: " : '')));
+
     # breakpoint_finalize
 }
 

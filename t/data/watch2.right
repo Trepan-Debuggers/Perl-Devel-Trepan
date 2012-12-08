@@ -20,3 +20,4 @@ old value	2
 new value	1
 wa main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
+trepan.pl: That's all, folks...

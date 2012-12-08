@@ -50,3 +50,4 @@ $y = five();
 --> #0 @ = main::five() in 
 	file `(eval 1000)[eval.pl:13]' at line 3
     #1 file `eval.pl' at line 14
+trepan.pl: That's all, folks...

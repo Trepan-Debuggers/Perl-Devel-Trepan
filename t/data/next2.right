@@ -5,3 +5,4 @@ my $y=3;
 Eval result display style is dumper.
 $DB::D[0] = next2.pl
 $DB::D[1] = 1.0
+trepan.pl: That's all, folks...

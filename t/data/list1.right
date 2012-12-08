@@ -45,3 +45,4 @@ test-require.pl [2-9]
   8    	
   9    	
 *** Bad line range [10...19]; file "test-require.pl" has only 9 lines
+trepan.pl: That's all, folks...

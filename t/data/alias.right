@@ -30,3 +30,4 @@ Alias for upper removed.
   See also "down" and "frame".
 set auto eval is off.
 *** Undefined command: "upper". Try "help".
+trepan.pl: That's all, folks...

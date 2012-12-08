@@ -38,3 +38,4 @@ No actions.
 Num Type       Enb Expression
 1   watchpoint y   $a
 	watchpoint already hit 1 time
+trepan.pl: That's all, folks...

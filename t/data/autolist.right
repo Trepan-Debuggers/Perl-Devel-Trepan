@@ -39,3 +39,4 @@ set auto list is off.
     ($a, $b) = ($b, $a) if ($a > $b);
 -- main::(gcd.pl:13)
     return undef if $a <= 0;
+trepan.pl: That's all, folks...

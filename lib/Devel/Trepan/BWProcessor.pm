@@ -163,7 +163,11 @@ sub process_commands($$$;$)
 
     if ($event eq 'terminated') {
         $self->{terminated} = 1;
-        $self->section("Debugged program terminated.  Use 'q' to quit or 'R' to restart.");
+	my $response = { 
+	    'name'  => 'info_program',
+	    'event' => $event
+	};
+        $self->{interface}->msg($response);
     } elsif (!defined($event)) {
         $event = 'unknown';
     }

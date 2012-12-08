@@ -395,7 +395,7 @@ sub run_command($$)
         }
 
         my %commands = %{$self->{commands}};
-        $cmd_name = $self->{cmd_name} = $args[0];
+        $cmd_name = $args[0];
         my $run_cmd_name = $cmd_name;
 
         my %aliases = %{$self->{aliases}};

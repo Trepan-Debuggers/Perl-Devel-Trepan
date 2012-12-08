@@ -31,7 +31,7 @@ sub run($$)
 	    'id'   => $DB::brkpt->id
 	}
     }
-    return $response;
+    $proc->{response} = $response;
 
 }
 

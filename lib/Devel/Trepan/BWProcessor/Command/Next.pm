@@ -27,31 +27,6 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<'HELP';
-=pod
-
-next[+|-] [I<count>]
-
-Step one statement ignoring steps into function calls at this level.
-Sometimes this is called 'step over'.
-
-With an integer argument, perform 'next' that many times. However if
-an exception occurs at this level, or we 'return' or 'yield' or the
-thread changes, we stop regardless of count.
-
-A suffix of C<+> on the command or an alias to the command forces to
-move to another line, while a suffix of C<-> does the opposite and
-disables the requiring a move to a new line. If no suffix is given,
-the debugger setting 'different' determines this behavior.
-
-If no suffix is given, the debugger setting 'different'
-determines this behavior.
-
-=head2 Example: 
-
-  next
-=cut
-HELP
 
 # This method runs the command
 sub run($$) {

@@ -114,7 +114,7 @@ sub ok_for_running ($$$$) {
 
 sub valid_cmd_hash($) {
     my ($cmd) = @_;
-    'HASH' eq ref($cmd) and $cmd->{cmd_name};
+    'HASH' eq ref($cmd) and $cmd->{command};
 }
 
 # Run one debugger command. 1 is returned if we want to quit.
@@ -133,7 +133,7 @@ sub process_command_and_quit($)
         if (scalar(@cmd_queue) == 0) {
 	    $cmd_hash = $intf->read_command();
 	    unless (valid_cmd_hash($cmd_hash)) {
-		$self->errmsg("invalid input. Expecting a hash reference with key 'cmd_name'");
+		$self->errmsg("invalid input. Expecting a hash reference with key 'command'");
 		$self->{interface}->msg($self->{response});
 		return $self->{response};
 	    }
@@ -259,7 +259,7 @@ sub process_commands($$$;$)
 sub run_command($$) 
 {
     my ($self, $current_command) = @_;
-    my $cmd_name = $current_command->{cmd_name};
+    my $cmd_name = $current_command->{command};
     my @cmd_queue = @{$self->{cmd_queue}};
     my %commands = %{$self->{commands}};
 
@@ -267,7 +267,8 @@ sub run_command($$)
 	my $cmd = $commands{$cmd_name};
 	if ($self->ok_for_running($cmd, $current_command)) {
 	    $self->{current_command} = $current_command;
-	    $self->{response} = $cmd->run($current_command);
+	    $self->{response}{name} = $cmd_name;
+	    $cmd->run($current_command);
 	}
     } else {
 	my $msg = sprintf 'Undefined command: "%s"', $cmd_name;
@@ -280,7 +281,7 @@ unless (caller) {
     my $proc  = Devel::Trepan::BWProcessor->new;
     print $proc->{class}, "\n";
     print $proc->{interface}, "\n";
-    my $response = $proc->run_command({'cmd_name' => 'info_program'});
+    my $response = $proc->run_command({'command' => 'info_program'});
     $proc->{interface}->msg($response);
     if (@ARGV) {
 	while (1) {

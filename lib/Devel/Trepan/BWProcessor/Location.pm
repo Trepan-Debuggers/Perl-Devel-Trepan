@@ -143,7 +143,7 @@ sub source_location_info($)
     my $filename = $self->{frame}{file};
     my $line_number = $self->line() || 0;
     my $response = {
-	canonic_filename => $self->canonic_file($self->filename(), 0),
+	canonic_filename => $self->canonic_file($self->filename()),
 	filename         => $self->filename(),
 	line_number      => ${line_number},
     };

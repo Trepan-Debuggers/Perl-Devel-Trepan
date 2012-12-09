@@ -24,6 +24,7 @@ sub run($$) {
     $proc->{skip_count} = $args->{skip_count} || 0;
     # FIXME: Handle opts later
     # $proc->step($opts)
+    $proc->{response}{step_count} = $proc->{skip_count} + 1;
     $proc->step()
 }
 

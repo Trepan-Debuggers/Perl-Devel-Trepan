@@ -4,6 +4,42 @@ use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../..';
 
 package Devel::Trepan::BWProcessor::Command::Info_Line;
+=pod
+
+=head1 Info_Line
+
+Line Location for debugged program.
+
+=head2 Input Fields
+
+ { command => 'info_line',
+   [fn_name => <function-name>],
+   [line    => <line-number>],
+ }
+
+If I<line> isn't given, then information is given for the current
+line.  If I<line> is not a place where a breakpoint can be given,
+you'll get a message to that effect.
+
+If I<function-name> is given, we return the starting and ending lines
+of that function. You should not give both a function name and a line
+number, although giving neither is okay. If both are given, just the
+function name is used.
+
+=head2 Output Fields
+
+ { name       => 'info_line',
+   {location   => <location-info> |
+    errmsg     => <error-message-array>},
+   [end_line  => <last-line-of-function>],
+   [msg       => <message-text array>]
+ }
+
+Unless there is an error I<location> is set, otherwise
+I<errmsg> is set.
+
+=cut
+
 use if !@ISA, Devel::Trepan::BWProcessor::Command ;
 
 use strict;
@@ -34,10 +70,10 @@ sub run($$)
             $line     = $matches[0][1];
             $end_line = $matches[0][2];
         } elsif (scalar(@matches) == 0) {
-            $proc->msg("Can't find a function match for $fn_name");
+            $proc->errmsg("Can't find a function match for $fn_name");
             return;
         } else {
-            $proc->msg("Multiple function matches for $fn_name");
+            $proc->errmsg("Multiple function matches for $fn_name");
             return;
         }
     }

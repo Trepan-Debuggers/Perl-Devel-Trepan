@@ -18,17 +18,11 @@ sub run($$)
     my $proc      = $self->{proc};
     my $frame     = $proc->{frame};
     my $filename  = $proc->filename();
-    my ($line, $end_line);
-    
-    if (!$arg->{line}) {
-        $line = $frame->{line};
-    } else {
-        $line = $arg->{line};
-    }
-    my $fn_name;
-    if ($arg->{function}) {
-        
-        $fn_name = $arg->{function};
+    my $fn_name   = $arg->{function};
+    my $end_line;
+
+    my $line = $arg->{line} || $frame->{line};
+    if ($fn_name) {
         my @matches = $proc->{dbgr}->subs($fn_name);
         unless (scalar(@matches)) {
             # Try with current package name
@@ -58,9 +52,8 @@ sub run($$)
     }
     local(*DB::dbline) = "::_<$filename";
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
-        my $cop = 0;
-        $cop = 0 + $DB::dbline[$line];
-        $loc->{op_addr} = $cop;
+        my $cop_addr = (+ $DB::dbline[$line]) if $DB::dbline[$line] ;
+        $loc->{op_addr} = $cop_addr if $cop_addr;
     } else {
         $proc->msg("Line $line not showing as associated with code")
 	    unless defined($end_line);

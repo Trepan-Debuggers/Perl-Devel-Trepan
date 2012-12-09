@@ -26,7 +26,7 @@ unless (@ISA) {
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::User;
-    require Devel::Trepan::Processor::Virtual;
+    require Devel::Trepan::Processor;
     require Devel::Trepan::CmdProcessor::Alias;
     require Devel::Trepan::CmdProcessor::Default;
     require Devel::Trepan::CmdProcessor::Msg;
@@ -42,7 +42,7 @@ use strict;
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
-@ISA = qw(Exporter);
+@ISA = qw(Exporter Devel::Trepan::Processor);
 
 BEGIN {
     @DB::D = ();  # Place to save eval results;
@@ -60,7 +60,7 @@ sub new($;$$$) {
         $interfaces = [$intf];
     }
     my $self = 
-      Devel::Trepan::Processor::Virtual::new($class, $interfaces, $settings);
+      Devel::Trepan::Processor::new($class, $interfaces, $settings);
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);

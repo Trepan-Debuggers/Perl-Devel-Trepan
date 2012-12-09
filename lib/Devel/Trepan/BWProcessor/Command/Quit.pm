@@ -34,7 +34,7 @@ sub run($$)
     no warnings 'once';
     $DB::single = 0;
     $DB::fall_off_on_end = 1;
-    $proc->terminated();
+    $proc->terminated('quit', $exitrc);
     $proc->{interface} = [];
     # No graceful way to stop threads...
     exit $exitrc;

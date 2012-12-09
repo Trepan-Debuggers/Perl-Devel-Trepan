@@ -22,32 +22,31 @@ $Data::Dumper::Terse = 1;
 require Data::Dumper;
 
 unless (@ISA) {
+    require Devel::Trepan::Processor;
     require Devel::Trepan::BWProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::Bullwinkle;
-    require Devel::Trepan::Processor::Virtual;
     require Devel::Trepan::BWProcessor::Default;
     require Devel::Trepan::BWProcessor::Msg;
     # require Devel::Trepan::CmdProcessor::Help;
     # require Devel::Trepan::CmdProcessor::Hook;
     require Devel::Trepan::BWProcessor::Frame;
     require Devel::Trepan::BWProcessor::Location;
-    require Devel::Trepan::CmdProcessor::Eval;
-    require Devel::Trepan::BWProcessor::Running;
-    require Devel::Trepan::CmdProcessor::Validate;
+    # require Devel::Trepan::CmdProcessor::Eval;
+    # require Devel::Trepan::CmdProcessor::Validate;
 }
 use strict;
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
-@ISA = qw(Exporter Devel::Trepan::Processor::Virtual);
+@ISA = qw(Exporter Devel::Trepan::Processor);
 
 sub new($;$$$) {
     my ($class, $interface, $dbgr, $settings) = @_;
     my $intf;
     my $self = 
-      Devel::Trepan::Processor::Virtual::new($class, $interface, $settings);
+      Devel::Trepan::Processor::new($class, $interface, $settings);
     unless (defined $interface) {
         $interface = Devel::Trepan::Interface::Bullwinkle->new();
     }
@@ -94,14 +93,15 @@ sub DESTROY($)
     # breakpoint_finalize
 }
 
-sub terminated($) {
-    my($self) = @_;
+sub terminated($$;$) {
+    my($self, $event, $exitrc) = @_;
     $self->{event} = 'terminated';
     $self->{terminated} = 1;
     my $response = { 
-	'name'  => 'info_program',
-	'event' => 'terminated'
+	'name'  => 'status',
+	'event' => $event
     };
+    $response->{exit_code} = $exitrc if defined $exitrc;
     $self->{interface}->msg($response);
 }
 
@@ -174,7 +174,7 @@ sub process_commands($$$;$)
     my ($self, $frame, $event, $arg) = @_;
 
     if ($event eq 'terminated') {
-	$self->terminated();
+	$self->terminated('terminated');
     } elsif (!defined($event)) {
         $event = 'unknown';
     }

@@ -24,7 +24,8 @@ use vars qw(@EXPORT @ISA);
 #     $confirmed;
 # }
 
-sub errmsg($$;$) {
+sub errmsg($$;$) 
+{
     my($self, $message, $opts) = @_;
     $opts ||={};
     my $err_ary = $self->{response}{errmsg} ||= [];
@@ -32,12 +33,19 @@ sub errmsg($$;$) {
     push @$err_ary, $message;
 }
 
-sub msg($$;$) {
+sub flush_msg($) 
+{
+    my($self) = @_;
+    $self->{interface}->msg($self->{response});
+}
+
+sub msg($$;$) 
+{
     my($self, $message, $opts) = @_;
     $opts ||={};
     my $msg_ary = $self->{response}{msg} ||= [];
     push @$msg_ary, $message;
-  }
+}
 
 sub msg_need_running($$;$) {
     my($self, $prefix, $opts) = @_;

@@ -102,7 +102,7 @@ sub terminated($$;$) {
 	'event' => $event
     };
     $response->{exit_code} = $exitrc if defined $exitrc;
-    $self->{interface}->msg($response);
+    $self->flush_msg;
 }
 
 # Check that we meet the criteria that cmd specifies it needs

@@ -4,9 +4,29 @@ use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
 
-# require_relative '../../app/condition'
-
 package Devel::Trepan::BWProcessor::Command::Step;
+=head1 Step
+
+step statements
+
+=head2 Input Fields
+
+ { command  => 'step',
+   [count   => <integer>],
+ }
+
+If I<skip_count> is given that many statements will be stepped. If it
+is not given, 1 is used, i.e. stop at the next statement.
+
+=head2 Output Fields
+
+ { name     => 'step',
+   count    => <integer>,
+   [errmsg  => <error-message-array>]
+   [msg     => <message-text array>]
+ }
+
+=cut
 
 use if !@ISA, Devel::Trepan::BWProcessor::Command ;
 
@@ -21,10 +41,11 @@ sub run($$) {
     my ($self, $args) = @_;
 
     my $proc = $self->{proc};
-    $proc->{skip_count} = $args->{skip_count} || 0;
+    $proc->{skip_count} = $args->{count} ? 
+	($args->{count} - 1) : 0;
     # FIXME: Handle opts later
     # $proc->step($opts)
-    $proc->{response}{step_count} = $proc->{skip_count} + 1;
+    $proc->{response}{count} = $proc->{skip_count} + 1;
     $proc->step()
 }
 

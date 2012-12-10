@@ -76,7 +76,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm
 lib/Devel/Trepan/CmdProcessor/Command/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Next.pm
 lib/Devel/Trepan/CmdProcessor/Command/Quit.pm
-lib/Devel/Trepan/CmdProcessor/Command/Restart.pm
+lib/Devel/Trepan/CmdProcessor/Command/Run.pm
 lib/Devel/Trepan/CmdProcessor/Command/Server.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm

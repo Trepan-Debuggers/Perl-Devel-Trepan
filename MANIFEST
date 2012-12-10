@@ -211,6 +211,7 @@ t/10test-io-tcppack.t
 t/10test-io-tcpserver.t
 t/10test-linecache.t
 t/10test-load.t
+t/10test-location.t
 t/10test-options.t
 t/10test-pod2text.t
 t/10test-position.t

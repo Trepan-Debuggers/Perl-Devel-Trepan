@@ -4,13 +4,13 @@
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
-package Devel::Trepan::CmdProcessor::Command::Restart;
+package Devel::Trepan::CmdProcessor::Command::Run;
 use English qw( -no_match_vars );
 
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 unless (@ISA) {
     eval <<'EOE';
-use constant ALIASES    => ('R');
+use constant ALIASES    => ('R', 'restart');
 use constant CATEGORY   => 'running';;
 use constant SHORT_HELP => '(Hard) restart of program via exec()';
 use constant MIN_ARGS   => 0;     # Need at least this many
@@ -27,7 +27,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-B<restart>
+B<run>
 
 Restart debugger and program via an I<exec()> call.
 
@@ -57,7 +57,7 @@ sub run($$) {
 unless (caller()) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    my $cmd = Devel::Trepan::CmdProcessor::Command::Restart->new($proc);
+    my $cmd = Devel::Trepan::CmdProcessor::Command::Run->new($proc);
 }
 
 1;

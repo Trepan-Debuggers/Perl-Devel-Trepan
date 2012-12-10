@@ -26,7 +26,6 @@ unless (@ISA) {
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::User;
-    require Devel::Trepan::CmdProcessor::Virtual;
     require Devel::Trepan::CmdProcessor::Alias;
     require Devel::Trepan::CmdProcessor::Default;
     require Devel::Trepan::CmdProcessor::Msg;
@@ -59,8 +58,15 @@ sub new($;$$$) {
                                                     $settings->{readline}});
         $interfaces = [$intf];
     }
-    my $self = 
-      Devel::Trepan::CmdProcessor::Virtual::new($class, $interfaces, $settings);
+
+    $settings ||= {};
+    my $self = {
+        class      => $class,
+        interfaces => $interfaces,
+        settings   => $settings,
+    };
+    bless ($self, $class);
+
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);

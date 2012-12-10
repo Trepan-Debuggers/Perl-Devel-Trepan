@@ -11,4 +11,8 @@ $x=6; $y = p(); my $z = p();
 $x = 8;
 -- main::(nexting.pl:15)
 $x += $z;
+-- main::(nexting.pl:16)
+$x += 5;
+-- main::(nexting.pl:17)
+$x -= 5;
 trepan.pl: That's all, folks...

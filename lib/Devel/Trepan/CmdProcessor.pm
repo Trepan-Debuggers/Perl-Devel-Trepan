@@ -26,22 +26,22 @@ unless (@ISA) {
     require Devel::Trepan::BrkptMgr;
     eval "require Devel::Trepan::DB::Display";
     require Devel::Trepan::Interface::User;
+    require Devel::Trepan::Processor;
     require Devel::Trepan::CmdProcessor::Alias;
     require Devel::Trepan::CmdProcessor::Default;
     require Devel::Trepan::CmdProcessor::Msg;
     require Devel::Trepan::CmdProcessor::Help;
     require Devel::Trepan::CmdProcessor::Hook;
+    require Devel::Trepan::CmdProcessor::Frame;
     require Devel::Trepan::CmdProcessor::Location;
     require Devel::Trepan::CmdProcessor::Eval;
     require Devel::Trepan::CmdProcessor::Validate;
-    require Devel::Trepan::Processor::Frame;
-    require Devel::Trepan::Processor::Running;
 }
 use strict;
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
-@ISA = qw(Exporter);
+@ISA = qw(Exporter Devel::Trepan::Processor);
 
 BEGIN {
     @DB::D = ();  # Place to save eval results;

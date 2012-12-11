@@ -87,7 +87,7 @@ sub run($$) {
         my $replace_cmd = $Keyword_to_related_cmd->{$args->[1]};
         if (defined($replace_cmd)) {
             my $cmd = $proc->{commands}{$replace_cmd};
-            return $cmd->run( ($replace_cmd, splice(@$args, 2)) );
+            return $cmd->run( [$replace_cmd, splice(@$args, 2)] );
     #   } elsif ('until' eq $args->[1]) {
     #     my $try_condition = join(@$args[2..-1], ' ');
     #     if (valid_condition?(try_condition)) {

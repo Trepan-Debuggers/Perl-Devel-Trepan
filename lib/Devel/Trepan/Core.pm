@@ -2,6 +2,7 @@
 # Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use warnings;  
 # FIXME: Can't use strict;
+
 use rlib '../..';
 use Devel::Trepan::DB;
 use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
@@ -14,7 +15,13 @@ use Devel::Trepan::Interface::Server;
 use Devel::Trepan::Util;
 
 package Devel::Trepan::Core;
-use vars qw(@ISA $dbgr);
+use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
+
+BEGIN {
+    $ENV{'PERL_RL'} ||= 'perl';
+    $HAVE_BULLWINKLE = eval("use Devel::Trepan::BWProcessor; 1") ? 1 : 0;
+}
+
 @ISA = qw(DB);
 
 sub add_startup_files($$;$) {
@@ -115,72 +122,76 @@ sub awaken($;$) {
 
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
-    my %cmdproc_opts = ();
-    for my $field 
-	(qw(basename cmddir highlight readline traceprint)) {
-        # print "field $field $opts->{$field}\n";
-        $cmdproc_opts{$field} = $opts->{$field};
-    }
-    my $cmdproc;
-
-    my $batch_filename = $opts->{testing};
-    $batch_filename = $opts->{batchfile} unless defined $batch_filename;
-    if (defined $batch_filename) {
-        my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
-        if (defined $result) {
-            print STDERR "$result\n" 
-        } else {
-            my $output  = Devel::Trepan::IO::Output->new;
-            my $script_opts = 
-                $opts->{testing} ? {abort_on_error => 0} : {};
-            my $script_intf = 
-                Devel::Trepan::Interface::Script->new($batch_filename, 
-                                                      $output, 
-                                                      $script_opts);
-            $cmdproc = Devel::Trepan::CmdProcessor->new([$script_intf], 
-                                                        $self, 
-                                                        \%cmdproc_opts);
-            $self->{proc} = $cmdproc;
-            $main::TREPAN_CMDPROC = $self->{proc};
-        }
+    my $proc;
+    if ($opts->{bw} && $HAVE_BULLWINKLE) {
+	$proc = Devel::Trepan::BWProcessor->new(undef, $self);
     } else {
-        my $intf = undef;
-        if (defined($dbgr) && exists($dbgr->{proc})) {
-            $intf = $dbgr->{proc}{interfaces};
-            $intf->[-1]{input}{term_readline} = $opts->{readline} if 
-                exists($opts->{readline});
-        }
-        if ($opts->{server}) {
-            my $server_opts = {
-                host   => $opts->{host},
-                port   => $opts->{port},
-                logger => *STDOUT
-            };
-            $intf = [
-                Devel::Trepan::Interface::Server->new(undef, undef,
-                                                      $server_opts)
-                ];
-        }
-        $cmdproc = Devel::Trepan::CmdProcessor->new($intf, $self, 
-                                                    \%cmdproc_opts);
-        $self->{proc} = $cmdproc;
-        $main::TREPAN_CMDPROC = $self->{proc};
-        $opts = {} unless defined $opts;
-
-        for my $startup_file (@{$opts->{cmdfiles}}) {
-            add_startup_files($cmdproc, $startup_file);
-        }
-        if (!$opts->{nx} && exists $opts->{initfile}) {
-            add_startup_files($cmdproc, $opts->{initfile}, 1);
-        }
+	my %cmdproc_opts = ();
+	for my $field 
+	    (qw(basename cmddir highlight readline traceprint)) {
+		# print "field $field $opts->{$field}\n";
+		$cmdproc_opts{$field} = $opts->{$field};
+	}
+	
+	my $batch_filename = $opts->{testing};
+	$batch_filename = $opts->{batchfile} unless defined $batch_filename;
+	if (defined $batch_filename) {
+	    my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
+	    if (defined $result) {
+		print STDERR "$result\n" 
+	    } else {
+		my $output  = Devel::Trepan::IO::Output->new;
+		my $script_opts = 
+		    $opts->{testing} ? {abort_on_error => 0} : {};
+		my $script_intf = 
+		    Devel::Trepan::Interface::Script->new($batch_filename, 
+							  $output, 
+							  $script_opts);
+		$proc = Devel::Trepan::CmdProcessor->new([$script_intf], 
+							    $self, 
+							    \%cmdproc_opts);
+		$self->{proc} = $proc;
+		$main::TREPAN_CMDPROC = $self->{proc};
+	   }
+	} else {
+	    my $intf = undef;
+	    if (defined($dbgr) && exists($dbgr->{proc})) {
+		$intf = $dbgr->{proc}{interfaces};
+		$intf->[-1]{input}{term_readline} = $opts->{readline} if 
+		    exists($opts->{readline});
+	    }
+	    if ($opts->{server}) {
+		my $server_opts = {
+		    host   => $opts->{host},
+		    port   => $opts->{port},
+		    logger => *STDOUT
+		};
+		$intf = [
+		    Devel::Trepan::Interface::Server->new(undef, undef,
+							  $server_opts)
+		    ];
+	    }
+	    $proc = Devel::Trepan::CmdProcessor->new($intf, $self, 
+							\%cmdproc_opts);
+	    $main::TREPAN_CMDPROC = $self->{proc};
+	    $opts = {} unless defined $opts;
+	    
+	    for my $startup_file (@{$opts->{cmdfiles}}) {
+		add_startup_files($proc, $startup_file);
+	    }
+	    if (!$opts->{nx} && exists $opts->{initfile}) {
+		add_startup_files($proc, $opts->{initfile}, 1);
+	    }
+	}
+	$proc->{skip_count} = -1 if $opts->{traceprint};
     }
-    $cmdproc->{skip_count} = -1 if $opts->{traceprint};
+    $self->{proc} = $proc;
     $self->{sigmgr} = 
         Devel::Trepan::SigMgr->new(sub{ $DB::running = 0; $DB::single = 0;
                                         $self->signal_handler(@_) },
-                                   sub {$cmdproc->msg(@_)},
-                                   sub {$cmdproc->errmsg(@_)},
-                                   sub {$cmdproc->section(@_)});
+                                   sub {$proc->msg(@_)},
+                                   sub {$proc->errmsg(@_)},
+                                   sub {$proc->section(@_)});
 }
 
 sub display_lists ($)

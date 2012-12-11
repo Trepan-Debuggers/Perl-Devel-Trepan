@@ -31,11 +31,11 @@ unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Msg;
     require Devel::Trepan::CmdProcessor::Help;
     require Devel::Trepan::CmdProcessor::Hook;
-    require Devel::Trepan::CmdProcessor::Frame;
     require Devel::Trepan::CmdProcessor::Location;
     require Devel::Trepan::CmdProcessor::Eval;
-    require Devel::Trepan::CmdProcessor::Running;
     require Devel::Trepan::CmdProcessor::Validate;
+    require Devel::Trepan::Processor::Frame;
+    require Devel::Trepan::Processor::Running;
 }
 use strict;
 

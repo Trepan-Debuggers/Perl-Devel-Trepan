@@ -4,7 +4,7 @@ use strict; use warnings;
 use rlib '../../..';
 
 use Devel::Trepan::Position;
-package Devel::Trepan::CmdProcessor;
+package Devel::Trepan::Processor;
 use English qw( -no_match_vars );
 
 use constant SINGLE_STEPPING_EVENT =>  1;
@@ -231,5 +231,4 @@ sub restart_args($$) {
       @DB::ini_ARGV );
 }
 
-
-scalar "Just one part of the larger Devel::Trepan::CmdProcessor";
+1;

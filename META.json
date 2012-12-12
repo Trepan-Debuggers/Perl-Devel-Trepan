@@ -249,8 +249,8 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Quit.pm",
          "version" : 0
       },
-      "Devel::Trepan::CmdProcessor::Command::Restart" : {
-         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Restart.pm",
+      "Devel::Trepan::CmdProcessor::Command::Run" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Run.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Server" : {
@@ -549,10 +549,6 @@
          "file" : "lib/Devel/Trepan/CmdProcessor/Mock.pm",
          "version" : 0
       },
-      "Devel::Trepan::CmdProcessor::Virtual" : {
-         "file" : "lib/Devel/Trepan/CmdProcessor/Virtual.pm",
-         "version" : 0
-      },
       "Devel::Trepan::Complete" : {
          "file" : "lib/Devel/Trepan/Complete.pm",
          "version" : 0
@@ -645,6 +641,10 @@
          "file" : "lib/Devel/Trepan/Pod2Text.pm",
          "version" : 0
       },
+      "Devel::Trepan::Processor" : {
+         "file" : "lib/Devel/Trepan/Processor.pm",
+         "version" : 0
+      },
       "Devel::Trepan::SigHandler" : {
          "file" : "lib/Devel/Trepan/SigHandler.pm",
          "version" : 0
@@ -663,7 +663,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.46"
+         "version" : "0.46_01"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -678,7 +678,7 @@
          "version" : 0
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
@@ -690,5 +690,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.46"
+   "version" : "0.46_01"
 }

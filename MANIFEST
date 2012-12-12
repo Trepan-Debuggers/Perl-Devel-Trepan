@@ -25,7 +25,7 @@ example/our.pl
 example/signal.pl
 example/test-module.pm
 example/test-require.pl
-gpl-3.0.txt
+gpl-2.0.txt
 ignore.txt
 lib/Devel/Trepan.pm
 lib/Devel/Trepan/BrkptMgr.pm

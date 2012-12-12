@@ -33,9 +33,11 @@ Or for those who prefer the traditional Perlish way:
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's [Enbugger](http://search.cpan.org/~jjore/Enbugger/):
 
-    # This needs to be done once and could even be in some sort of conditional code
+    # This needs to be done once and could even be in some sort of
+    # conditional code
     require Enbugger; Enbugger->load_debugger( 'trepan' );
-    # Alternatively, to unconditinally load Enbugger and trepan:
+
+    # Alternatively, to unconditionally load Enbugger and trepan:
     use Enbugger 'trepan';
 
     # work, work, work...

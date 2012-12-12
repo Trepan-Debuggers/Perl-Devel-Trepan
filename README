@@ -5,10 +5,21 @@ SUMMARY
     A modular, testable, gdb-like debugger in the family of the Ruby
     trepanning debuggers.
 
-    It has extensive online-help, supports syntax highlighting via
-    Syntax::Highlight::Perl::Improved, command completion and history via
-    GNU ReadLine via Term::ReadLine::Perl or Term::ReadLine::Gnu, and
-    interactive shell support via Psh or Devel::REPL.
+Features: 
+* has extensive online-help, 
+* syntax highlighting of Perl code
+* context-sensitive command completion
+* out-of-process and remote debugging
+* interactive shell support
+* code disassembly
+* gdb syntax
+* easy extensibility at several levels
+    * command aliases
+    * a user-supplied command directory
+    * Perl Plugin module such as [Trepan::Devel::Disassemble](https://github.com/rocky/Perl-Devel-Trepan-Disassemble)
+* is more modular
+* comes with extensive tests
+* is not as ugly as _perl5db_
 
 INSTALLATION
 

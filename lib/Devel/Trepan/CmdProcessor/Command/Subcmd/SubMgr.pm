@@ -203,11 +203,11 @@ sub help($$)
     my @subcmds     = $self->list();
 
     if ('*' eq $subcmd_name) {
-        @help_text = (sprintf("List of subcommands for command '%s':", 
+        @help_text = (sprintf("B<List of subcommands for command I<%s>:>", 
                              $self->{name}));
         my $subcmds = $self->columnize_commands(\@subcmds); chomp $subcmds;
         push @help_text, $subcmds;
-        return join("\n", @help_text);
+        return join("\n\n", @help_text);
     }
 
     # "help cmd subcmd". Give help specific for that subcommand.
@@ -220,19 +220,21 @@ sub help($$)
         }
     } else {
         my $proc = $self->{proc};
-        my @matches = sort(grep /^#\{$subcmd_name\}/, @subcmds);
+        my @matches = sort(grep /^$subcmd_name/, @subcmds);
         my $name = $self->{name};
         if (0 == scalar @matches) { 
-            $proc->errmsg("No ${name} subcommands found matching /^#{$subcmd_name}/. Try \"help\" $name.");
+            $proc->errmsg("No ${name} subcommands found matching /^{$subcmd_name}/. Try \"help $name *\".");
             return undef;
         } elsif (1 == scalar @matches) {
             $args->[-1] = $matches[0];
             $self->help($args);
         } else {
-            @help_text = ("Subcommands of \"$name\" matching /^#{$subcmd_name}/:");
+	    # pod2text formatting used below. That's why B<>, I<> and
+	    # \n\n for \n.
+            @help_text = ("B<Subcommands of I<$name> matching /^$subcmd_name/:>");
             my @sort_matches = sort @matches;
-            push @help_text, $self->{cmd}->columnize_commands(\@sort_matches);
-            return @help_text;
+            push @help_text, $self->columnize_commands(\@sort_matches);
+            return join("\n\n", @help_text);
         }
     }
 }

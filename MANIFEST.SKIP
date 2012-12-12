@@ -27,6 +27,7 @@
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
+\bMakefile.PL$
 \b_build/
 \bBuild.bat$
 \bBuild.COM$

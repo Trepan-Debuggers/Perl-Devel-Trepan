@@ -156,6 +156,7 @@ sub msg_nocr($$)
     $self->{inout}->write(PRINT .  $msg);
 }
   
+# read a debugger command
 sub read_command($$)
 {
     my ($self, $prompt) = @_;

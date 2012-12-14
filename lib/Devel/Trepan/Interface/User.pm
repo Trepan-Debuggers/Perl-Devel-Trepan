@@ -170,6 +170,7 @@ sub want_term_readline($)
     defined($self->{opts}{readline}) && $self->{input}{term_readline};
 }
 
+# read a debugger command
 sub read_command($;$) {
     my($self, $prompt)  = @_;
     $prompt = '(trepanpl) ' unless defined $prompt;

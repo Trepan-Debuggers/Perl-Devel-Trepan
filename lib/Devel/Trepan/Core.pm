@@ -123,9 +123,20 @@ sub awaken($;$) {
     $SIG{__DIE__}  = \&DB::catch if $opts->{post_mortem};
 
     my $proc;
+    my $batch_filename = $opts->{testing};
     if ($opts->{bw} && $HAVE_BULLWINKLE) {
-	$proc = Devel::Trepan::BWProcessor->new(undef, $self);
+	my $bw_opts = undef;
+	if (defined $batch_filename) {
+	    my $fh = IO::File->new($batch_filename, 'r');
+	    $bw_opts = {input => $fh, 
+			bw_opts => {
+			    echo_read  => 1,
+			    input_opts => {readline => 0}}
+			};
+	}
+	$proc = Devel::Trepan::BWProcessor->new(undef, $self, $bw_opts);
     } else {
+	$batch_filename = $opts->{batchfile} unless defined $batch_filename;
 	my %cmdproc_opts = ();
 	for my $field 
 	    (qw(basename cmddir highlight readline traceprint)) {
@@ -133,8 +144,6 @@ sub awaken($;$) {
 		$cmdproc_opts{$field} = $opts->{$field};
 	}
 	
-	my $batch_filename = $opts->{testing};
-	$batch_filename = $opts->{batchfile} unless defined $batch_filename;
 	if (defined $batch_filename) {
 	    my $result = Devel::Trepan::Util::invalid_filename($batch_filename);
 	    if (defined $result) {

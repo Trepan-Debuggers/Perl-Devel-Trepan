@@ -7,6 +7,7 @@ $x = 2;
 $y = 3;
 $z = 4';
 Eval result display style is dumper.
+set max width is 80.
 set auto eval is on.
 eval.pl [1-10]
   1  ->	$var = '

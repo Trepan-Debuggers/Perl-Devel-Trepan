@@ -34,7 +34,8 @@ sub prog_file(;$)
     if (scalar(@_)) {
 	$prog =  shift;
     } else {
-	my ($pkg, $prog) = caller;
+	my $pkg;
+	($pkg, $prog) = caller;
 	$prog .= '.pl'
     }
     return File::Spec->catfile(dirname(__FILE__), qw(.. example), $prog)

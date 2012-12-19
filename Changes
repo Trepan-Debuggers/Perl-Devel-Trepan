@@ -1,5 +1,9 @@
 Revision history for Devel-Trepan
 
+0.47  Dec 18, 2012
+- Bullwinkle protocol tolerance. Some small changes, mostly typos and
+  better gdb compliance.
+
 0.45 - Oct 2, 2012
 - Add "load source" to read in Perl source file somewhat like it would be 
   when debugger reads the file under debugging. Might be useful when

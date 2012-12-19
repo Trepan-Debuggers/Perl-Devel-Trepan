@@ -73,11 +73,13 @@ sub run_debugger($$;$$)
     my $output = `$cmd`;
     print "$output\n" if $debug;
     my $rc = $CHILD_ERROR >> 8;
+    my $test_rc = $opts->{exitcode} || 0;
     if ($opts->{do_test}) {
-	Test::More::is($rc, 0, 'Debugger command executed successfully');
+	Test::More::is($rc, $test_rc, "Debugger command executed giving exit code $test_rc");
     }
     return $rc if $rc;
-    open(RIGHT_FH, "<$right_filename");
+    open(RIGHT_FH, "<$right_filename") || 
+	die "Cannot open $right_filename for reading - $OS_ERROR";
     undef $INPUT_RECORD_SEPARATOR;
     my $right_string = <RIGHT_FH>;
     ($output, $right_string) = $opts->{filter}->($output, $right_string) if $opts->{filter};
@@ -120,4 +122,7 @@ sub run_debugger($$;$$)
     }
 }
 
+unless(caller) {
+    print cmd_file, "\n";
+}
 1;

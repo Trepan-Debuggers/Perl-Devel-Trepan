@@ -1,8 +1,148 @@
+2012-12-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/Interface/Script.pm,
+	t/Helper.pm, t/data/eval2.cmd, t/data/eval2.right: Core.pm: allow
+	for running Bullwinkle in batch by passing through options. rest:
+	small changes
+
+2012-12-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/Server.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Options.pm: 
+	Merge --bw option from Bullwinkle. Add comment for read_command
+	funciton
+
+2012-12-12  Rocky Bernstein <rocky@cpan.org>
+
+	* README, README.md: A couple of spelling typos
+
+2012-12-12  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, META.json, META.yml, gpl-2.0.txt, gpl-3.0.txt: More
+	packaging administrivia
+
+2012-12-12  Rocky Bernstein <rocky@cpan.org>
+
+	* README: Sync README with README.md
+
+2012-12-12  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: Administrivia: update MANIFEST
+
+2012-12-11  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST.SKIP,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	t/20test-help.t, t/data/help.cmd, t/data/help.right: MANIFEST.SKIP:
+	remove Makefile.PL. SubMgr.pm SubsubMgr.pm: bugs porting Ruby code
+	(# -> $) and use pod2text formatting.
+
+2012-12-11  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST: MANIFEST: CmdProcessor/Running.pm is now in
+	Processor/Running.pm
+
+2012-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm: Subclass Processor to deal with
+	common CmdProcessor and BWProcessor code.
+
+2012-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+
+2012-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Running.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/Processor.pm, lib/Devel/Trepan/Processor/Frame.pm,
+	lib/Devel/Trepan/Processor/Running.pm: Allow for optional Bullwinkle
+	processor. Add superclass Processor for common CmdProcessor and
+	BWProcessor code.
+
+2012-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	* example/nexting.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm, t/data/step.cmd,
+	t/data/step.right: Fix "step over" and "step into" bugs
+
+2012-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Run.pm,
+	lib/Devel/Trepan/CmdProcessor/Virtual.pm: Sync up with Bullwinkle
+	branch; Restart->Run; Remove Virtual.pm
+
+2012-12-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/Interface/Script.pm, t/data/__FILE__.right,
+	t/data/alias.right, t/data/autolist.right, t/data/break.right,
+	t/data/break2.right, t/data/cont.right, t/data/debug.right,
+	t/data/display.right, t/data/dollar0.right, t/data/eval.right,
+	t/data/eval2.right, t/data/fin.right, t/data/fin3.right,
+	t/data/line.right, t/data/list1.right, t/data/list2.right,
+	t/data/list3.right, t/data/list4.right, t/data/my.right,
+	t/data/next2.right, t/data/opt-e.right, t/data/sig2.right,
+	t/data/step.right, t/data/trace2.right, t/data/trace3.right,
+	t/data/watch1.right, t/data/watch2.right: Add termination message.
+	Add $Devel::Trepan::PROGRAM
+
+2012-12-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	t/20test-line.t, t/data/line.right: COP->OP (info line).
+
+2012-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	Merge branch 'master' of github.com:rocky/Perl-Devel-Trepan
+	Conflicts: 	lib/Devel/Trepan/DB/LineCache.pm
+
+2012-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Spelling typo
+
+2012-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, t/10test-location.t, t/data/fin3.cmd,
+	t/data/fin3.right: Sync with Bullwinkle. Add test for recent bug
+	found.
+
+2012-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/DB/LineCache.pm: Bugs in saving and
+	returning lines when we want plain output.
+
+2012-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Virtual.pm, lib/Devel/Trepan/DB.pm,
+	t/20test-fin.t: Fix bug: fin to a breakpoint was showing the
+	breakpoint event.
+
+2012-11-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm: spelling an comment
+
+2012-11-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Display.pm: Fix email address
+
 2012-10-09  Rocky Bernstein <rocky@cpan.org>
 
-	* ChangeLog, lib/Devel/Trepan/Version.pm, t/20test-eval.t,
-	t/data/action.cmd, t/data/eval2.right: Work around a couple of
-	smoker failures. Get ready for release 0.46
+	* lib/Devel/Trepan/Version.pm, t/10test-io-tcpserver.t: Bumb version
+	remove silly diag statement.
+
+2012-10-09  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, META.json, META.yml, lib/Devel/Trepan/Version.pm,
+	t/10test-condition.t, t/10test-io-tcpserver.t, t/20test-action.t,
+	t/20test-eval.t, t/data/action.cmd, t/data/eval2.right: Work around
+	a couple of smoker failures. Get ready for release 0.46
 
 2012-10-02  Rocky Bernstein <rocky@cpan.org>
 

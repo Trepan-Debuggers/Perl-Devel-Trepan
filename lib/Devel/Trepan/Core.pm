@@ -125,7 +125,8 @@ sub awaken($;$) {
     my $proc;
     my $batch_filename = $opts->{testing};
     if ($opts->{bw} && $HAVE_BULLWINKLE) {
-	my $bw_opts = undef;
+	my $bw_opts = $opts->{bw};
+	$bw_opts = {} unless ref($bw_opts) eq 'HASH';
 	if (defined $batch_filename) {
 	    my $fh = IO::File->new($batch_filename, 'r');
 	    $bw_opts = {input => $fh, 

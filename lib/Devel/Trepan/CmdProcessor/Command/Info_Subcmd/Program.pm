@@ -26,9 +26,13 @@ HELP
 sub run($$) 
 {
     my ($self, $args) = @_;
-    my $proc = $self->{proc};
-    my $frame = $proc->{frame};
-    my $line = $frame->{line};
+    my $proc     = $self->{proc};
+    my $frame    = $proc->{frame};
+    my $line     = $frame->{line};
+    my $pkg      = $frame->{pkg};
+    my $function = $frame->{fn} if 
+	$frame->{fn} && $frame->{fn} ne 'DB::DB';
+
     my $m;
     if (defined($DB::ini_dollar0) && $DB::ini_dollar0) {
         $m = sprintf "Program: %s.", $DB::ini_dollar0;
@@ -40,6 +44,8 @@ sub run($$)
         $m = sprintf "OP address: 0x%x.", $DB::OP_addr;
         $proc->msg($m);
     }
+    $proc->msg("Function: $function") if defined $function;
+    $proc->msg("Package: $pkg");
     if ('return' eq $proc->{event}) {
         $proc->{commands}{info}->run(['info', 'return']);
     } elsif ('raise' eq  $proc->{event}) {

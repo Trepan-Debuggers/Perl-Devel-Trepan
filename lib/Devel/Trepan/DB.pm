@@ -322,7 +322,12 @@ sub DB {
                     # FIXME: allow more than just scalar contexts.
                     my $eval_result =  
                         &DB::eval_with_return($disp->arg, $opts, @saved);
-                    my $mess = sprintf("%d: $eval_result", $disp->number);
+		    my $mess;
+		    if (defined($eval_result)) {
+			$mess = sprintf("%d: $eval_result", $disp->number);
+		    } else {
+			$mess = sprintf("%d: undef", $disp->number);
+		    }
                     $c->output($mess);
                 }
 

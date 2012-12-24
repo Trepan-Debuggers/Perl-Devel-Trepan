@@ -16,6 +16,7 @@ eval <<'EOE';
     use lib $TREPAN_DIR;
     use Devel::Trepan::Options;
     use Devel::Trepan::Client;
+    use Devel::Trepan::Util;
     use Data::Dumper;
 EOE
 die $EVAL_ERROR if $EVAL_ERROR;
@@ -32,8 +33,7 @@ my @exec_strs = @{$opts->{exec_strs}};
 my @exec_strs_with_e = map {('-e', qq{'$_'})} @exec_strs;
 my $cmd;
 if (scalar @exec_strs) {
-    $cmd = "$EXECUTABLE_NAME -c " . join(' ', @exec_strs_with_e) . 
-        join(' ', @ARGV) . " 2>&1";
+    $cmd = join(' ', @exec_strs_with_e) . join(' ', @ARGV);
     @exec_strs_with_e = map {('-e', qq{$_})} @exec_strs;
 } else {
     die "You need a Perl program to run or pass an string to eval" 
@@ -42,12 +42,13 @@ if (scalar @exec_strs) {
     # Resolve program name if it is not readable
     $ARGV[0] = whence_file($ARGV[0]) unless -r $ARGV[0];
     # Check that the debugged Perl program is syntactically valid.
-    $cmd = "$EXECUTABLE_NAME -c " . join(' ', @ARGV) . " 2>&1";
+    $cmd = join(' ', @ARGV);
 }
-my $output = `$cmd`;
-my $rc = $? >>8;
-print "$output\n" if $rc;
-exit $rc if $rc;
+my $syntax_errmsg = Devel::Trepan::Util::invalid_perl_syntax($cmd, 1);
+if ($syntax_errmsg) {
+    print STDERR "$syntax_errmsg\n";
+    exit -1;
+}
 
 $opts->{dollar_0} = $ARGV[0];
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings;
+
 package Devel::Trepan::Util;
+use strict; use warnings; use English qw( -no_match_vars );
+
 use vars qw(@EXPORT @ISA @YN);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression
                  parse_eval_suffix parse_eval_sigil
@@ -115,6 +117,22 @@ sub invalid_filename($)
     return undef;
 }
 
+# Return 'undef' arg $cmd_str is ok. If not return the message a Perl -c 
+# gives, dropping off the "-e had complation errors" message.
+sub invalid_perl_syntax($;$)
+{
+    my ($cmd_str, $have_e_opt) = @_;
+    my $cmd = sprintf("$EXECUTABLE_NAME -c %s", 
+		      $have_e_opt ? $cmd_str : "-e '$cmd_str'");
+    my $output = `$cmd 2>&1`;
+    my $rc = $? >>8;
+    return undef if 0 == $rc;
+    # Drop off: -e had compilation errors.
+    my @errmsg = split(/\n/, $output);
+    pop @errmsg;
+    return join("\n", @errmsg);
+}
+
 sub parse_eval_suffix($)
 {
     my $cmd = shift;
@@ -192,6 +210,13 @@ unless (caller) {
     for my $resp (1, 0, '', 'Foo', undef) {
         my $resp_str = defined $resp ? $resp : 'undef';
         printf "bool2YN($resp_str) => '%s'\n", bool2YN($resp);
+    }
+
+    for my $expr ('1+', '{cmd=5}') {
+        print invalid_perl_syntax($expr), "\n";
+    }
+    for my $expr ('-e "$x="', '-e "(1,2"') {
+        print invalid_perl_syntax($expr, 1), "\n";
     }
 
 }

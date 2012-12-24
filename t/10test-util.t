@@ -111,4 +111,24 @@ for my $pair
 	is($result, $expect, 'bool2YN of ' . ($resp || 'undef'));
 }
 
+for my $expr ('1+', '{cmd=5}') {
+    ok(Devel::Trepan::Util::invalid_perl_syntax($expr),
+	"invalid perl expression '$expr'");
+
+}
+for my $expr ('-e "$x="', '-e "(1,2"') {
+    ok(Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
+	"invalid perl expression '$expr'");
+}
+
+for my $expr ('-e "\$x=1"', '-e "(1,2)"') {
+    ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
+	"valid perl expression '$expr'");
+}
+
+for my $expr ('\$x=2', '-e "{a => 1}"') {
+    ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
+	"valid perl expression '$expr'");
+}
+
 done_testing();

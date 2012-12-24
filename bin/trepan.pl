@@ -34,16 +34,16 @@ my @exec_strs_with_e = map {('-e', qq{'$_'})} @exec_strs;
 my $cmd;
 if (scalar @exec_strs) {
     $cmd = join(' ', @exec_strs_with_e) . join(' ', @ARGV);
-    @exec_strs_with_e = map {('-e', qq{$_})} @exec_strs;
 } else {
     die "You need a Perl program to run or pass an string to eval" 
         unless @ARGV;
 
     # Resolve program name if it is not readable
     $ARGV[0] = whence_file($ARGV[0]) unless -r $ARGV[0];
-    # Check that the debugged Perl program is syntactically valid.
     $cmd = join(' ', @ARGV);
 }
+
+# Check that the debugged Perl program is syntactically valid.
 my $syntax_errmsg = Devel::Trepan::Util::invalid_perl_syntax($cmd, 1);
 if ($syntax_errmsg) {
     print STDERR "$syntax_errmsg\n";

@@ -181,7 +181,7 @@ sub read_command($;$) {
         $line .= substr($last, 0, -1) . "\n";
         $last = $self->readline($prompt);
     }
-    $line .= $last;
+    $line .= $last if defined $last;
     return $line;
 }
 

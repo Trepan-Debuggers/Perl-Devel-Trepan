@@ -44,6 +44,23 @@ our $SHORT_HELP   = "Information about 'my' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
+sub complete($$;$)
+{ 
+    my ($self, $prefix, $fixup_num) = @_;
+    # FIXME: combine with My.pm
+    my $i = 0;
+    while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
+    my $diff = $i - $DB::stack_depth;
+
+    # FIXME: 4 is a magic fixup constant, also found in DB::finish.
+    # Remove it.
+    $fixup_num = 4 unless defined($fixup_num);
+    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + $fixup_num);
+    my @vars = sort keys %$var_hash;
+    Devel::Trepan::Complete::complete_token(\@vars, $prefix) ;
+}
+
+
 sub show_var($$$) 
 {
     my ($proc, $var_name, $ref) = @_;
@@ -112,9 +129,9 @@ sub process_args($$$$) {
     }
 }
 
-sub run($$)
+sub run($$;$)
 {
-    my ($self, $args) = @_;
+    my ($self, $args, $fixup_num) = @_;
     # FIXME: combine with My.pm
     my $i = 0;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
@@ -122,7 +139,8 @@ sub run($$)
 
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.
-    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + 4);
+    $fixup_num = 4 unless defined($fixup_num);
+    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + $fixup_num);
     my @ARGS = splice(@{$args}, scalar(@CMD));
     $self->process_args(\@ARGS, $var_hash, 'my');
 }
@@ -130,15 +148,44 @@ sub run($$)
 unless (caller) { 
     # Demo it.
     require Devel::Trepan;
-    # require_relative '../../mock'
-    # dbgr, parent_cmd = MockDebugger::setup('set', false)
-    # cmd              = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
-    #                                                      parent_cmd)
-    # cmd.run(cmd.prefix + ['string', '30'])
-    
-    # %w(s lis foo).each do |prefix|
-    #   p [prefix, cmd.complete(prefix)]
-    # end
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $grandparent = 
+	Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $parent = 
+	Devel::Trepan::CmdProcessor::Command::Info::Variables->new($grandparent,
+								   'variables');
+    my $cmd = __PACKAGE__->new($parent, 'my');
+
+    eval {
+        sub create_frame() {
+            my ($pkg, $file, $line, $fn) = caller(0);
+            $DB::package = $pkg;
+            return [
+                {
+                    file      => $file,
+                    fn        => $fn,
+                    line      => $line,
+                    pkg       => $pkg,
+                }];
+        }
+    };
+    my $frame_ary = create_frame();
+    $proc->frame_setup($frame_ary);
+
+    $cmd->run($cmd->{prefix}, -2);
+    my @args = @{$cmd->{prefix}};
+    push @args, '$args';
+    print '-' x 40, "\n";
+    $cmd->run(\@args, -2);
+    print '-' x 40, "\n";
+    $cmd->run($cmd->{prefix}, -1);
+    print '-' x 40, "\n";
+    my @complete = $cmd->complete('', -1);
+    print join(', ', @complete), "\n";
+    print '-' x 40, "\n";
+    @complete = $cmd->complete('$p', -1);
+    print join(', ', @complete), "\n";
+
 }
 
 1;

@@ -27,7 +27,7 @@ unless (caller) {
     # FIXME: DRY with other subcommand manager demo code.
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new;
-    my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'info');
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
     my $cmd = __PACKAGE__->new($parent, 'variables');
     print $cmd->{help}, "\n";
     print "min args: ", $cmd->MIN_ARGS, "\n";
@@ -37,8 +37,8 @@ unless (caller) {
     }
 
     print join(' ', @{$cmd->{prefix}}), "\n"; 
+    print '-' x 30, "\n";
     $cmd->run($cmd->{prefix});
-    # $cmd->run($cmd->{prefix}, ('string', '30'));
 }
 
 1;

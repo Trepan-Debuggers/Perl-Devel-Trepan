@@ -19,7 +19,7 @@ use PadWalker qw(peek_my);
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 our $CMD = "info variables my";
-our @CMD = split(/ /, $CMD);
+my  @CMD = split(/ /, $CMD);
 our $MIN_ABBREV = length('m');
 our $HELP   = <<'HELP';
 =pod
@@ -44,18 +44,25 @@ our $SHORT_HELP   = "Information about 'my' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
-sub complete($$;$)
-{ 
-    my ($self, $prefix, $fixup_num) = @_;
+sub get_var_hash($;$) 
+{
+    my ($self, $fixup_num) = @_;
     # FIXME: combine with My.pm
     my $i = 0;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
     my $diff = $i - $DB::stack_depth;
-
-    # FIXME: 4 is a magic fixup constant, also found in DB::finish.
+    
+    # FIXME: 5 is a magic fixup constant, also found in DB::finish.
     # Remove it.
-    $fixup_num = 4 unless defined($fixup_num);
-    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + $fixup_num);
+    $fixup_num = 5 unless defined($fixup_num);
+    my $ref = peek_my($diff + $self->{proc}{frame_index} + $fixup_num);
+    return $ref;
+}
+
+sub complete($$;$)
+{ 
+    my ($self, $prefix, $fixup_num) = @_;
+    my $var_hash = $self->get_var_hash($fixup_num);
     my @vars = sort keys %$var_hash;
     Devel::Trepan::Complete::complete_token(\@vars, $prefix) ;
 }
@@ -94,8 +101,9 @@ sub show_var($$$)
 }
 
 
-sub process_args($$$$) {
-    my ($self, $args, $hash_ref, $lex_type) = @_;
+sub process_args($$$) {
+    my ($self, $args, $hash_ref) = @_;
+    my $lex_type = $self->{prefix}[-1];
     my $proc = $self->{proc};
     my @ARGS = @{$args};
     my @names = sort keys %{$hash_ref};
@@ -132,17 +140,9 @@ sub process_args($$$$) {
 sub run($$;$)
 {
     my ($self, $args, $fixup_num) = @_;
-    # FIXME: combine with My.pm
-    my $i = 0;
-    while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
-    my $diff = $i - $DB::stack_depth;
-
-    # FIXME: 4 is a magic fixup constant, also found in DB::finish.
-    # Remove it.
-    $fixup_num = 4 unless defined($fixup_num);
-    my $var_hash = peek_my($diff + $self->{proc}{frame_index} + $fixup_num);
+    my $var_hash = $self->get_var_hash($fixup_num);
     my @ARGS = splice(@{$args}, scalar(@CMD));
-    $self->process_args(\@ARGS, $var_hash, 'my');
+    $self->process_args(\@ARGS, $var_hash);
 }
 
 unless (caller) { 

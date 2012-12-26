@@ -101,20 +101,10 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan::CmdProcessor;
+    require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc);
-    sub create_frame() {
-        my ($pkg, $file, $line, $fn) = caller(0);
-        return [
-            {
-                 file      => $file,
-                 fn        => $fn,
-                 line      => $line,
-                 pkg       => $pkg,
-            }];
-    }
-    my $frame_ary = create_frame();
+    my $frame_ary = Devel::Trepan::CmdProcessor::Mock::create_frame();
     $proc->frame_setup($frame_ary);
 
     $cmd->run([$NAME]);

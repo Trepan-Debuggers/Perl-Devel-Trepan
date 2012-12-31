@@ -13,5 +13,5 @@ if (($OSNAME eq 'netbsd' or $OSNAME eq 'freebsd' or $OSNAME eq 'darwin')
 
 use rlib '.'; use Helper;
 my $test_prog = prog_file('gcd.pl');
-run_debugger("$test_prog 3 5", 'autolist.cmd');
+run_debugger("$test_prog 3 5");
 done_testing();

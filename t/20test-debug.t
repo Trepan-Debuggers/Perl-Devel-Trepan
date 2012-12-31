@@ -19,5 +19,5 @@ my $opts = {
     run_opts => " --no-highlight --basename -nx"
 };
 
-run_debugger("$test_prog 3 5", cmd_file(), undef, $opts);
+run_debugger("$test_prog 3 5", undef, undef, $opts);
 done_testing();

@@ -1,0 +1,14 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+basename is on.
+highlight is off.
+set auto eval is off.
+Evaluation of unrecognized debugger commands is off.
+*** Undefined command: "fdafdsa". Try "help".
+*** Undefined command: "1+2". Try "help".
+set auto eval is on.
+$DB::D[0] = 7
+Evaluation of unrecognized debugger commands is on.
+Evaluation of unrecognized debugger commands is on.
+trepan.pl: That's all, folks...

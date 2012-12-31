@@ -17,5 +17,5 @@ my $opts = {
 };
 
 my $test_prog = prog_file('gcd.pl');
-run_debugger("$test_prog 3 5", cmd_file(), undef, $opts);
+run_debugger("$test_prog 3 5", undef, undef, $opts);
 done_testing();

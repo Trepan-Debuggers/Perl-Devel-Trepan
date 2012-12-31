@@ -11,5 +11,5 @@ if ($OSNAME eq 'MSWin32') {
 
 my $test_prog = File::Spec->catfile(dirname(__FILE__), 
 				    qw(.. example action-bug.pl));
-run_debugger("$test_prog", cmd_file());
+run_debugger("$test_prog");
 done_testing();

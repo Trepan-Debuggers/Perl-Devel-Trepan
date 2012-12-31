@@ -22,7 +22,7 @@ my $opts = {
     run_opts => " --no-highlight --basename -nx --fall-off-end"
 };
 
-run_debugger("$test_prog 3 5", cmd_file(), undef, $opts);
+run_debugger("$test_prog 3 5", undef, undef, $opts);
 $test_prog = prog_file('eval.pl');
 
 $opts = {

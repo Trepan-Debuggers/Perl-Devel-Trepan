@@ -29,6 +29,5 @@ my $opts = {
     run_opts => ' --basename --no-highlight -nx'
 };
 
-run_debugger("-e 'no warnings \"once\";\$x=1; \$y=2'", cmd_file(),
-             undef, $opts);
+run_debugger("-e 'no warnings \"once\";\$x=1; \$y=2'", undef, undef, $opts);
 done_testing();

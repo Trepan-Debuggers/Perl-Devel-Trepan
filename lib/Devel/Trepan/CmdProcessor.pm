@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org> 
 
 use rlib '../..';
 
@@ -14,13 +14,6 @@ use warnings; no warnings 'redefine';
 use vars qw(@EXPORT @ISA $eval_result);
 
 # Showing eval results can be done using either data dump package.
-use if !@ISA, Data::Dumper; 
-
-# Eval does uses its own variables.
-# FIXME: have a way to customize Data:Dumper, PerlTidy etc.
-$Data::Dumper::Terse = 1; 
-require Data::Dumper;
-
 unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;

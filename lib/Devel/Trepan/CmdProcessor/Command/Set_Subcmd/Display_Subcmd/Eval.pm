@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -17,15 +17,18 @@ our $CMD = 'set display eval';
 my @DISPLAY_TYPES = @Devel::Trepan::CmdProcessor::DISPLAY_TYPES;
 my $param = join('|', @DISPLAY_TYPES);
 our $HELP   = <<"HELP";
-${CMD} \{$param\}
+=pod
+
+B<set display> {B<dumper>|B<dprint>|B<tidy>}
 
 Set how you want the evaluation results shown.
 
-The 'tidy' option sets to use Data::Dumper::Perltidy. 'dumper' uses 
-Data::Dumper. When the Data::Printer module is installed, 
-'dprint' specifies using that.
+The I<tidy> option sets to use L<Data::Dumper::Perltidy>; I<dumper> uses 
+L<Data::Dumper>. When the L<Data::Printer module> is installed, 
+I<dprint> specifies using that.
 
-See also 'show display eval', 'eval', and 'set autoeval'.
+See also C<show display eval>, C<eval>, and C<set autoeval>.
+=cut
 HELP
 
 our $MIN_ABBREV = length('ev');

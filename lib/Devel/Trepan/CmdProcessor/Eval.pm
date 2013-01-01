@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-                                                         
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>                           
+# Copyright (C) 2012-2013 Rocky Bernstein <rocky@cpan.org>                           
 use warnings;
 use rlib '../../..';
 
@@ -7,6 +7,8 @@ package Devel::Trepan::CmdProcessor;
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev);
 use PadWalker qw(peek_my peek_our);
 use strict;
+
+# Note DB::Eval uses and sets its own variables.
 
 use vars qw($HAVE_EVAL_WITH_LEXICALS);                                          
 BEGIN {                                                                         
@@ -77,6 +79,11 @@ sub eval($$$$$) {
     }
 }
 
+# FIXME: have a way to customize Data::Dumper, PerlTidy etc.
+require Data::Dumper;
+# FIXME: remove this when converted to OO forms of Data::Dumper
+$Data::Dumper::Terse = 1; 
+
 my $last_eval_value = 0;
 
 sub handle_eval_result($) {
@@ -91,6 +98,15 @@ sub handle_eval_result($) {
     my $fn;
     my $print_properties = {};
     my $evdisp = $self->{settings}{displayeval};
+
+    # FIXME: switch over entirely to the OO way of using Data::Dumper
+    # than set this global.
+    my $old_terse = $Data::Dumper::Terse;
+    $Data::Dumper::Terse = 1; 
+
+
+    # FIXME: this is way ugly. We could probably use closures 
+    # (anonymous subroutines) to combine this and the if code below
     if ('tidy' eq $evdisp) {
         $fn = \&Data::Dumper::Perltidy::Dumper;
     } elsif ('dprint' eq $evdisp) {
@@ -128,7 +144,15 @@ sub handle_eval_result($) {
             $self->msg("$prefix\n\@\{$val_str}");
     } elsif ('%' eq $return_type) {
             if (%DB::eval_result) {
-                $val_str = $fn->(\%DB::eval_result, %$print_properties);
+                if ('dumper' eq $evdisp) {
+		    my $d = Data::Dumper->new([\%DB::eval_result]);
+		    $d->Terse(1)->Sortkeys(1);
+		    $val_str = $d->Dump()
+		} elsif ('dprint' eq $evdisp) {
+		    $val_str = $fn->(\%DB::eval_result, %$print_properties);
+		} else {
+		    $val_str = $fn->(\%DB::eval_result);
+		}
                 chomp $val_str;
                 @{$DB::D[$last_eval_value++]} = %DB::eval_result;
             } else {
@@ -163,6 +187,9 @@ sub handle_eval_result($) {
     };
     $DB::eval_result = undef;
     @DB::eval_result = undef;
+
+    $Data::Dumper::Terse = $old_terse; 
+
 }
 
 unless (caller) {

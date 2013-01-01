@@ -145,14 +145,14 @@ sub handle_eval_result($) {
     } elsif ('%' eq $return_type) {
             if (%DB::eval_result) {
                 if ('dumper' eq $evdisp) {
-		    my $d = Data::Dumper->new([\%DB::eval_result]);
-		    $d->Terse(1)->Sortkeys(1);
-		    $val_str = $d->Dump()
-		} elsif ('dprint' eq $evdisp) {
-		    $val_str = $fn->(\%DB::eval_result, %$print_properties);
-		} else {
-		    $val_str = $fn->(\%DB::eval_result);
-		}
+                    my $d = Data::Dumper->new([\%DB::eval_result]);
+                    $d->Terse(1)->Sortkeys(1);
+                    $val_str = $d->Dump()
+                } elsif ('dprint' eq $evdisp) {
+                    $val_str = $fn->(\%DB::eval_result, %$print_properties);
+                } else {
+                    $val_str = $fn->(\%DB::eval_result);
+                }
                 chomp $val_str;
                 @{$DB::D[$last_eval_value++]} = %DB::eval_result;
             } else {

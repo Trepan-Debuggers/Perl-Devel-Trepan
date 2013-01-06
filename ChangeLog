@@ -1,3 +1,21 @@
+2013-01-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/Options.pm: 
+	Mess with version again
+
+2013-01-06  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-break.t, t/Helper.pm: Skip test-break on Strawberry perl.
+	Modify helper to accomodate Strawberry perl's lack of diff.
+
+2013-01-06  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, GNUmakefile, MANIFEST, META.json, META.yml,
+	bin/trepan.pl, lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm,
+	t/data/list3.cmd, t/data/list3.right, t/data/opt-e.right: Fix bug in
+	handling -e and don't use File::Basename in list test. Get ready for
+	release 0.48. Fi
+
 2013-01-04  rocky <rocky@cpan.org>
 
 	* lib/Devel/Trepan/Interface/User.pm: Guard against a potentially

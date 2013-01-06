@@ -3,9 +3,11 @@ use warnings; use strict;
 use rlib '.'; use Helper;
 use English qw( -no_match_vars );
 
-#plan skip_all => 
-#    'BINGOS Solaris smokers have a problem and I get get feedback from him' 
-#    if $OSNAME eq 'solaris';
+if ($OSNAME eq 'MSWin32') {
+    plan skip_all => "Strawberry Perl has trouble here and I can't get info to fix" 
+} else {
+    plan;
+}
 
 my $test_prog = prog_file('gcd.pl');
 

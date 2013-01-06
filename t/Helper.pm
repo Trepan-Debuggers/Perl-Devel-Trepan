@@ -107,10 +107,7 @@ sub run_debugger($;$$$)
 	# FIXME use a better diff test.
 	if ($OSNAME eq 'MSWin32') {
 	    # Windows doesn't do diff.
-	    print "Got:\n";
-	    print $output, "\n"; 
-	    print "Need:\n";
-	    print $right_string, "\n"
+	    diag("Got:\n", $output, "Need:\n", $right_string);
 	} else {
 	    my $output = `diff -u $right_filename $got_filename 2>&1`;
 	    my $rc = $? >> 8;

@@ -1,5 +1,10 @@
 Revision history for Devel-Trepan
 
+0.48  Jan 6, 2013
+- Sort hash keys in Data::Printer output
+- fix bug in "set autoeval"
+- add package and function name to "info program"
+
 0.47  Dec 18, 2012
 - Bullwinkle protocol tolerance. Some small changes, mostly typos and
   better gdb compliance.

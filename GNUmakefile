@@ -44,9 +44,11 @@ diff:
 dist:
 	perl Build --makefile_env_macros 1 dist
 
+#: Create distribution tarball and check manifest
 distcheck:
 	perl Build --makefile_env_macros 1 distcheck
 
+#: Clean ALL data
 distclean:
 	perl Build --makefile_env_macros 1 distclean
 
@@ -118,7 +120,7 @@ test:
 testcover:
 	perl Build --makefile_env_macros 1 testcover
 
-#:Create a log file from the individual commits
+#:Create a log file from the individual git commits via git2cl
 ChangeLog:
 	git log --pretty --numstat --summary | git2cl > $@
 
@@ -126,6 +128,7 @@ ChangeLog:
 testdb:
 	perl Build --makefile_env_macros 1 testdb
 
+#: Look for errors in POD in each of the Poerl Module files in blib
 testpod:
 	perl Build --makefile_env_macros 1 testpod
 

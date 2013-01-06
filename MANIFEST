@@ -258,7 +258,6 @@ t/data/action.right
 t/data/alias.cmd
 t/data/alias.right
 t/data/autoeval.cmd
-t/data/autoeval.got
 t/data/autoeval.right
 t/data/autolist.cmd
 t/data/autolist.right
@@ -323,3 +322,4 @@ t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
 t/Helper.pm			Helper routine for integration tests
+Makefile.PL

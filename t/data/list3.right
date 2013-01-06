@@ -2,74 +2,32 @@
 my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.
--- File::Basename::(Basename.pm:284)
-    my $path = shift;
-Basename.pm [280-289]
-280    	=cut
-281    	
-282    	
-283    	sub dirname {
-284  ->	    my $path = shift;
-285    	
-286    	    my($type) = $Fileparse_fstype;
-287    	
-288    	    if( $type eq 'VMS' and $path =~ m{/} ) {
-289    	        # Parse as Unix
-Basename.pm [290-299]
-290    	        local($File::Basename::Fileparse_fstype) = '';
-291    	        return dirname($path);
-292    	    }
-293    	
-294    	    my($basename, $dirname) = fileparse($path);
-295    	
-296    	    if ($type eq 'VMS') { 
-297    	        $dirname ||= $ENV{DEFAULT};
-298    	    }
-299    	    elsif ($type eq 'MacOS') {
-Basename.pm [300-309]
-300    		if( !length($basename) && $dirname !~ /^[^:]+:\z/) {
-301    	            _strip_trailing_sep($dirname);
-302    		    ($basename,$dirname) = fileparse $dirname;
-303    		}
-304    		$dirname .= ":" unless $dirname =~ /:\z/;
-305    	    }
-306    	    elsif (grep { $type eq $_ } qw(MSDOS DOS MSWin32 OS2)) { 
-307    	        _strip_trailing_sep($dirname);
-308    	        unless( length($basename) ) {
-309    		    ($basename,$dirname) = fileparse $dirname;
-Basename.pm [290-299]
-290    	        local($File::Basename::Fileparse_fstype) = '';
-291    	        return dirname($path);
-292    	    }
-293    	
-294    	    my($basename, $dirname) = fileparse($path);
-295    	
-296    	    if ($type eq 'VMS') { 
-297    	        $dirname ||= $ENV{DEFAULT};
-298    	    }
-299    	    elsif ($type eq 'MacOS') {
-Basename.pm [280-289]
-280    	=cut
-281    	
-282    	
-283    	sub dirname {
-284  ->	    my $path = shift;
-285    	
-286    	    my($type) = $Fileparse_fstype;
-287    	
-288    	    if( $type eq 'VMS' and $path =~ m{/} ) {
-289    	        # Parse as Unix
---> #1 file `test-require.pl' at line 3
-   main::(test-require.pl:3)
-my $DIR = dirname(__FILE__);
-test-require.pl [1-9]
-  1    	use File::Basename;
-  2    	use File::Spec;
-  3  ->	my $DIR = dirname(__FILE__);
-  4    	my $require_file = File::Spec->catfile($DIR, "test-module.pm");
+set max list is 3.
+x1 main::(test-require.pl:6)
+my $x = Test::Module::five();
+-- Test::Module::(test-module.pm:3)
+    return 5;
+test-module.pm [2-4]
+  2    	sub five { 
+  3  ->	    return 5;
+  4    	}
+test-module.pm [5-6]
+  5    	my $x = 1;
+  6    	my $y = 2;
+*** Bad line range [7...9]; file "test-module.pm" has only 6 lines
+test-module.pm [1-3]
+  1    	package Test::Module;
+  2    	sub five { 
+  3  ->	    return 5;
+test-module.pm [2-4]
+  2    	sub five { 
+  3  ->	    return 5;
+  4    	}
+--> #1 file `test-require.pl' at line 6
+   main::(test-require.pl:6)
+my $x = Test::Module::five();
+test-require.pl [5-7]
   5    	require $require_file;
-  6    	my $x = Test::Module::five();
+  6  ->	my $x = Test::Module::five();
   7    	my $y = $x;
-  8    	
-  9    	
 trepan.pl: That's all, folks...

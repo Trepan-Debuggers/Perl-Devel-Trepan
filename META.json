@@ -59,7 +59,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.47"
+         "version" : "0.48"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -663,7 +663,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.47"
+         "version" : "0.48"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -690,5 +690,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.47"
+   "version" : "0.48"
 }

@@ -56,6 +56,13 @@ $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 
 # And just when you thought we'd never get around to actually 
 # doing something...
+my $i=0;
+foreach my $arg (@exec_strs_with_e) {
+    if ('-e' eq $arg && scalar(@exec_strs_with_e) > $i) {
+	$exec_strs_with_e[$i+1] =~ s/^(["'])(.+)\1$/$2/ ;
+	$i++;
+    }
+}
 
 my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan', 
             @exec_strs_with_e, @ARGV);

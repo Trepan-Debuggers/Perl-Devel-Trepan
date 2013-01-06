@@ -2,6 +2,8 @@ package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
+=pod
+
 =head2 backtrace(skip[,count,scan_for_DB])
 
 Collect the traceback information available via C<caller()>.  Some

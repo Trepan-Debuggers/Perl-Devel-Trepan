@@ -57,8 +57,8 @@ $DEFAULT_OPTIONS = {
 
 sub show_version()
 {
-    require Devel::Trepan;
-    printf "$PROGRAM_NAME, version %s\n", $Devel::Trepan::VERSION;
+    require Devel::Trepan::Version;
+    printf "$PROGRAM_NAME, version %s\n", $Devel::Trepan::Version::VERSION;
     exit 10;
 }
 

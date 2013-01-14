@@ -43,7 +43,7 @@ sub sub {
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
     if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
-        print "creating new thread\n"; 
+        print "creating new thread\n";
     }
     
     # If the last ten characters are '::AUTOLOAD', note we've traced
@@ -80,6 +80,91 @@ sub sub {
     }
     elsif (wantarray) {
         # Called in array context. call sub and capture output.
+        # DB::DB will recursively get control again if appropriate;
+        # we'll come back here when the sub is finished.
+
+	# call the original lvalue sub.
+        @ret = &$sub;
+
+        # Pop the single-step value back off the stack.
+        $DB::single |= $stack[ $stack_depth-- ];
+        if ($single & RETURN_EVENT) {
+            $DB::return_type = 'array';
+            @DB::return_value = @ret;
+            DB::DB($DB::sub) ;
+            return @DB::return_value;
+        }
+        @ret;
+    } else {
+        if ( defined wantarray ) {
+	    # Call the original lvalue sub and save the scalar value.
+            $ret = &$sub;
+        } else {
+	    # Call the original lvalue sub and explicitly void the return
+            # value.
+            &$sub;
+            undef $ret;
+        }
+
+        # Pop the single-step value back off the stack.
+        $DB::single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
+        if ($single & RETURN_EVENT) {
+            $DB::return_type = defined $ret ? 'scalar' : 'undef';
+            $DB::return_value = $ret;
+            DB::DB($DB::sub) ;
+            return $DB::return_value;
+        }
+
+        # Return the appropriate scalar value.
+        return $ret;
+    }
+}
+
+sub lsub : lvalue {
+    # Possibly [perl #66110] also applies here as in sub.
+
+    # lock ourselves under threads
+    lock($DBGR);
+
+    # Whether or not the autoloader was running, a scalar to put the
+    # sub's return value in (if needed), and an array to put the sub's
+    # return value in (if needed).
+    my ( $al, $ret, @ret ) = "";
+    if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
+        print "creating new thread\n";
+    }
+    
+    # If the last ten characters are '::AUTOLOAD', note we've traced
+    # into AUTOLOAD for $sub.
+    if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
+        $al = " for $$sub" if defined $$sub;;
+    }
+    
+    # We stack the stack pointer and then increment it to protect us
+    # from a situation that might unwind a whole bunch of call frames
+    # at once. Localizing the stack pointer means that it will automatically
+    # unwind the same amount when multiple stack frames are unwound.
+    local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
+
+    # Expand @stack.
+    $#stack = $stack_depth;
+
+    # Save current single-step setting.
+    $stack[-1] = $DB::single;
+    
+    # printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
+    # Turn off all flags except single-stepping or return event.
+    $DB::single &= SINGLE_STEPPING_EVENT;
+    
+    # If we've gotten really deeply recursed, turn on the flag that will
+    # make us stop with the 'deep recursion' message.
+    $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+    
+    # Pop the single-step value back off the stack.
+    $DB::single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
+    
+    if (wantarray) {
+        # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
         # back here when the sub is finished.
         @ret = &$sub;
@@ -93,20 +178,18 @@ sub sub {
             return @DB::return_value;
         }
         @ret;
-    }
-    else {
+    } else {
         if ( defined wantarray ) {
             # Save the value if it's wanted at all.
             $ret = &$sub;
-        }
-        else {
+        } else {
             # Void return, explicitly.
             &$sub;
             undef $ret;
         }
 
         # Pop the single-step value back off the stack.
-        $single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
+        $DB::single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
         if ($single & RETURN_EVENT) {
             $DB::return_type = defined $ret ? 'scalar' : 'undef';
             $DB::return_value = $ret;
@@ -115,53 +198,8 @@ sub sub {
         }
 
         # Return the appropriate scalar value.
-        $ret;
+        return $ret;
     }
-}
-
-sub lsub : lvalue {
-
-    # lock ourselves under threads
-    lock($DBGR);
-    
-    # Whether or not the autoloader was running, a scalar to put the
-    # sub's return value in (if needed), and an array to put the sub's
-    # return value in (if needed).
-    my ( $al, $ret, @ret ) = "";
-    if ($sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
-        print "creating new thread\n";
-    }
-    
-    # If the last ten characters are C'::AUTOLOAD', note we've traced
-    # into AUTOLOAD for $sub.
-    if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
-        $al = " for $$sub";
-    }
-    
-    # We stack the stack pointer and then increment it to protect us
-    # from a situation that might unwind a whole bunch of call frames
-    # at once. Localizing the stack pointer means that it will automatically
-    # unwind the same amount when multiple stack frames are unwound.
-    local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
-    
-    # Expand @stack.
-    $#stack = $stack_depth;
-    
-    # Save current single-step setting.
-    $stack[-1] = $single;
-    
-    # Turn off all flags except single-stepping.
-    $single &= SINGLE_STEPPING_EVENT;
-    
-    # If we've gotten really deeply recursed, turn on the flag that will
-    # make us stop with the 'deep recursion' message.
-    $single |= DEEP_RECURSION_EVENT if $stack_depth == $deep;
-    
-    # Pop the single-step value back off the stack.
-    $single |= $stack[ $stack_depth-- ];
-    
-    # call the original lvalue sub.
-    &$sub;
 }
 
 ####

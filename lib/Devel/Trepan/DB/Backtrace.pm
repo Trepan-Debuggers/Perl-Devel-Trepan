@@ -73,8 +73,8 @@ sub backtrace($;$$$) {
         }
     }
 
-    # print "++count: $count, i $iline\n";
     $count += $i;
+    # print "++count: $count, i $i\n";
 
     my ( @a, $args_ary );
     my @callstack = ();
@@ -91,8 +91,8 @@ sub backtrace($;$$$) {
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
            ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
-        next if $pkg eq 'DB' && 'fn' eq 'sub';
-        # print "++file: $file, line $line $fn\n";
+        next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub');
+        ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
         $i++;
         # Go through the arguments and save them for later.
         @a = ();
@@ -180,7 +180,7 @@ sub backtrace($;$$$) {
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
 
-    # The function and args for the stopped line is DB:DB, 
+    # The function and args for the stopped line is DB::DB, 
     # but we want it to be the function and args of the last call.
     # And the function and args for the file and line that called us
     # should also be the prior function and args.

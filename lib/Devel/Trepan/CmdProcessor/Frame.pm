@@ -93,19 +93,19 @@ sub print_stack_trace_from_to($$$$$)
 # Print `count' frame entries
 sub print_stack_trace($$$)
 { 
-    my ($self, $frame, $opts)=@_;
+    my ($self, $frames, $opts)=@_;
     $opts ||= {maxstack=>1e9, count=>1e9};
     # $opts  = DEFAULT_STACK_TRACE_SETTINGS.merge(opts);
     my $halfstack = $opts->{maxstack} / 2;
-    my $n         = scalar @{$frame};
+    my $n         = scalar @{$frames};
     $n            = $opts->{count} if $opts->{count} < $n;
     if ($n > ($halfstack * 2)) {
-        $self->print_stack_trace_from_to(0, $halfstack-1, $frame, $opts);
+        $self->print_stack_trace_from_to(0, $halfstack-1, $frames, $opts);
         my $msg = sprintf "... %d levels ...",  ($n - $halfstack*2);
         $self->msg($msg);
-        $self->print_stack_trace_from_to($n - $halfstack, $n-1, $frame, $opts);
+        $self->print_stack_trace_from_to($n - $halfstack, $n-1, $frames, $opts);
     } else {
-        $self->print_stack_trace_from_to(0, $n-1, $frame, $opts);
+        $self->print_stack_trace_from_to(0, $n-1, $frames, $opts);
     }
 }
 

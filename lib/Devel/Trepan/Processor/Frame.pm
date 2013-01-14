@@ -80,6 +80,7 @@ sub frame_setup($$)
                 }
                 $stack_size++;
                 $DB::stack_depth = $j;
+		$stack_size -= ($j-3);
             } else {
                 $stack_size -= ($i-3);
             }

@@ -64,7 +64,7 @@ sub backtrace($;$$$) {
 
     my $i=0;
     if ($scan_for_DB_sub) {
-        my $db_fn = ($event eq 'post-mortem') ? 'catch' : 'DB'; 
+        my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB'; 
         while (my ($pkg, $file, $line, $fn) = caller($i++)) {
             if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
                 $i--;
@@ -90,11 +90,13 @@ sub backtrace($;$$$) {
     # quit.
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
-           ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
+           ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, 
+	    $is_require) = caller($i))
+    {
         ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
         $i++;
         next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' || 
-				 -1 != rindex($file, 'Devel/Trepan/DB/Sub.pm'));
+				 $file =~ m{Devel/Trepan/DB/Sub\.pm$});
         # Go through the arguments and save them for later.
         @a = ();
         for my $arg (@DB::args) {

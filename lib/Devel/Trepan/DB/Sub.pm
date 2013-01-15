@@ -31,7 +31,7 @@ BEGIN {
 ####
 # entry point for all subroutine calls
 #
-sub sub {
+sub DB::sub {
     # Do not use a regex in this subroutine -> results in corrupted
     # memory See: [perl #66110]
 
@@ -45,13 +45,14 @@ sub sub {
     if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
-    
+   
     # If the last ten characters are '::AUTOLOAD', note we've traced
     # into AUTOLOAD for $sub.
     if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
+        no strict 'refs';
         $al = " for $$sub" if defined $$sub;
     }
-    
+   
     # We stack the stack pointer and then increment it to protect us
     # from a situation that might unwind a whole bunch of call frames
     # at once. Localizing the stack pointer means that it will automatically
@@ -83,8 +84,11 @@ sub sub {
         # DB::DB will recursively get control again if appropriate;
         # we'll come back here when the sub is finished.
 
-	# call the original lvalue sub.
-        @ret = &$sub;
+	{
+	    no strict 'refs';
+	    # call the original subroutine and save the array value.
+	    @ret = &$sub;
+	}
 
         # Pop the single-step value back off the stack.
         $DB::single |= $stack[ $stack_depth-- ];
@@ -96,10 +100,13 @@ sub sub {
         }
         @ret;
     } else {
+	# Scalar context.
         if ( defined wantarray ) {
-	    # Call the original lvalue sub and save the scalar value.
+            no strict 'refs';
+	    # call the original subroutine and save the array value.
             $ret = &$sub;
         } else {
+            no strict 'refs';
 	    # Call the original lvalue sub and explicitly void the return
             # value.
             &$sub;
@@ -120,7 +127,8 @@ sub sub {
     }
 }
 
-sub lsub : lvalue {
+sub DB::lsub : lvalue {
+    no strict 'refs';
     # Possibly [perl #66110] also applies here as in sub.
 
     # lock ourselves under threads
@@ -130,7 +138,7 @@ sub lsub : lvalue {
     # sub's return value in (if needed), and an array to put the sub's
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
-    if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
+    if ($sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
     

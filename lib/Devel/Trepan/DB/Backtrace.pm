@@ -91,9 +91,10 @@ sub backtrace($;$$$) {
     # Up the stack frame index to go back one more level each time.
     while ($i <= $count and 
            ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, $is_require) = caller($i)) {
-        next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub');
         ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
         $i++;
+        next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' || 
+				 -1 != rindex($file, 'Devel/Trepan/DB/Sub.pm'));
         # Go through the arguments and save them for later.
         @a = ();
         for my $arg (@DB::args) {

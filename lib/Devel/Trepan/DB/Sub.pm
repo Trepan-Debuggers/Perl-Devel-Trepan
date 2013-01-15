@@ -160,9 +160,6 @@ sub lsub : lvalue {
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
     
-    # Pop the single-step value back off the stack.
-    $DB::single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
-    
     if (wantarray) {
         # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
@@ -171,7 +168,7 @@ sub lsub : lvalue {
 
         # Pop the single-step value back off the stack.
         $DB::single |= $stack[ $stack_depth-- ];
-        if ($single & RETURN_EVENT) {
+        if ($DB::single & RETURN_EVENT) {
             $DB::return_type = 'array';
             @DB::return_value = @ret;
             DB::DB($DB::sub) ;
@@ -190,7 +187,7 @@ sub lsub : lvalue {
 
         # Pop the single-step value back off the stack.
         $DB::single |= $stack[ $stack_depth-- ] if $stack[$stack_depth];
-        if ($single & RETURN_EVENT) {
+        if ($DB::single & RETURN_EVENT) {
             $DB::return_type = defined $ret ? 'scalar' : 'undef';
             $DB::return_value = $ret;
             DB::DB($DB::sub) ;

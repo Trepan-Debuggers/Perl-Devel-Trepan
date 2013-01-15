@@ -1,0 +1,11 @@
+-- main::(lsub.pl:8)
+my $data = '';
+basename is on.
+-- main::(lsub.pl:17)
+my $x = "Start test, \$data=$data\n";
+-- main::(lsub.pl:18)
+lslice(3,5) = 4;
+-- main::(lsub.pl:19)
+print "Stop  test, \$data=$data\n";
+--> #0 file `lsub.pl' at line 19
+trepan.pl: That's all, folks...

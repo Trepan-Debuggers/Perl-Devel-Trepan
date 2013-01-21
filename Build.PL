@@ -57,6 +57,7 @@ my $builder = Module::Build->new(
     },
     test_requires => {
         'Test::More'                        => '0.81',
+	'Time::HiRes'                       => '1.9725',
         'rlib'                              => '0.02',
     },
     recommends => {

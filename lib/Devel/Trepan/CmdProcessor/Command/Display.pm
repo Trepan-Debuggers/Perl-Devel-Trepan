@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -25,17 +25,17 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod 
 
-${NAME} I<Perl-expression>
+B<display> I<Perl-expression>
  
 Print value of expression I<Perl-expression> each time the program stops.
 
 =head2 Examples:
 
- ${NAME} \$a  # Display variable \$a each time we enter debugger
- ${NAME} join(', ', \@ARGV)  # show values of array \@ARGV
+ display $a  # Display variable \$a each time we enter debugger
+ display join(', ', @ARGV)  # show values of array @ARGV
 
 If what you want to do is evaluate a Perl expression or statement once
 rather than every time the program stops, see C<eval>.

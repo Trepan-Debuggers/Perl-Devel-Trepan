@@ -23,26 +23,26 @@ our @ISA = @CMD_ISA;  # value inherited from parent
 use vars @CMD_VARS;   # value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
-${NAME} [[I<file>] [I<line>]]
+B<edit> [[I<file>] [I<line>]]
 
 With no argument, edits file containing most recent line listed.
 The value of the environment variable I<EDITOR> is used for the
 editor to run. If no I<EDITOR> environment variable is set /bin/ex
 is used. The editor should support line and file positioning via
 
- editor-name +line file-name
+   editor-name +line file-name
 
 (Most editors do.)
 
 =head2 Examples:
 
- ${NAME}            # Edit current location
- ${NAME} 7          # Edit current file at line 7
- ${NAME} test.rb    # Edit test.rb, line 1
- ${NAME} test.rb 10 # Edit test.rb  line 10
+   edit            # Edit current location
+   edit 7          # Edit current file at line 7
+   edit test.rb    # Edit test.rb, line 1
+   edit test.rb 10 # Edit test.rb  line 10
 =cut
 HELP
 

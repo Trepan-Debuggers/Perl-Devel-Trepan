@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -28,7 +28,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-action I<position> I<Perl-statement>
+B<action> I<position> I<Perl-statement>
 
 Set an action to be done before the line is executed. If line is
 C<.>, set an action on the line about to be executed. The sequence
@@ -53,7 +53,7 @@ For example, this will print out the value of C<$foo> every time line
 
 =head2 Examples:
 
- ${NAME} 53 print "DB FOUND $foo\n"
+   action 53 print "DB FOUND $foo\n"
 
 See also C<help breakpoints>.
 =cut

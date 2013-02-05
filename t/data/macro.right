@@ -1,0 +1,34 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+set max width is 80.
+highlight is off.
+No macros defined.
+*** Command 'macro' needs at least 3 argument(s); got 1.
+Macro "foo" defined.
+gcd.pl [14-21]
+ 14    	    return $a if ($a == 1) or ($b-$a == 0);
+ 15    	    return gcd($b-$a, $a);
+ 16    	}
+ 17    	
+ 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+ 19    	    @ARGV == 2;
+ 20    	my ($a, $b) = @ARGV[0,1];
+ 21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
+List of macro names currently defined:
+foo
+Macro "bar" defined.
+gcd.pl [14-21]
+ 14    	    return $a if ($a == 1) or ($b-$a == 0);
+ 15    	    return gcd($b-$a, $a);
+ 16    	}
+ 17    	
+ 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+ 19    	    @ARGV == 2;
+ 20    	my ($a, $b) = @ARGV[0,1];
+ 21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
+List of macro names currently defined:
+  bar    foo
+bar: sub($) { my $count=shift; ['list ' . $count] }
+foo: sub { 'list' }
+trepan.pl: That's all, folks...

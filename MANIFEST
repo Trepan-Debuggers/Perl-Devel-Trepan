@@ -10,6 +10,7 @@ example/fns.pl
 example/gcd-dbcall.pl
 example/gcd-dbg.pl
 example/gcd.pl
+example/lsub.pl
 example/my.pl
 example/next2.pl
 example/nexting.pl
@@ -241,6 +242,8 @@ t/20test-list1.t
 t/20test-list2.t
 t/20test-list3.t
 t/20test-list4.t
+t/20test-lsub.t
+t/20test-macro.t
 t/20test-my.t
 t/20test-next.t
 t/20test-next2.t
@@ -295,6 +298,10 @@ t/data/list3.cmd
 t/data/list3.right
 t/data/list4.cmd
 t/data/list4.right
+t/data/lsub.cmd
+t/data/lsub.right
+t/data/macro.cmd
+t/data/macro.right
 t/data/my.cmd
 t/data/my.right
 t/data/next.cmd

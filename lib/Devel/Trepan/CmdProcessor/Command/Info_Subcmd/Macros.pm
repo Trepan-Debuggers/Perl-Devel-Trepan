@@ -4,6 +4,9 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
+# For DB::Linecache;
+use Devel::Trepan::DB::LineCache;
+
 package Devel::Trepan::CmdProcessor::Command::Info::Macros;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
@@ -50,18 +53,30 @@ sub run($$) {
     my $proc = $self->{proc};
     my @args = @$args;
     if (scalar(@args) > 2) {
-        shift @args; shift @args;
-        for my $macro_name (@args) {
+	my @macro_names;
+	if ((scalar(@args)) == 3 && '*' eq $args[2]) {
+	    @macro_names = sort keys %{$proc->{macros}};
+	    if (scalar @macro_names == 0) {
+		$proc->msg("No macros defined.");
+		return;
+	    }
+	} else {
+	    @macro_names = @args[2..$#args];
+	}
+	for my $macro_name (@macro_names) {
             if (exists $proc->{macros}{$macro_name}) {
-                my $msg = sprintf("%s: %s", $macro_name, 
-                                  $proc->{macros}{$macro_name}->[1]);
+		my $line = $proc->{macros}{$macro_name}->[1];
+		if ($proc->{settings}{highlight} eq 'term') {
+		    $line = DB::LineCache::highlight_string($line);
+		}
+                my $msg = sprintf("%s: %s", $macro_name, $line);
                 $proc->msg($msg);
             } else {
-                $proc->msg("$macro_name is not a defined macro");
+                $proc->errmsg("$macro_name is not a defined macro");
             }
         }
     } else {
-        my @macros = keys %{$proc->{macros}};
+        my @macros = sort keys %{$proc->{macros}};
         if (scalar @macros == 0) {
             $proc->msg("No macros defined.");
         } else {

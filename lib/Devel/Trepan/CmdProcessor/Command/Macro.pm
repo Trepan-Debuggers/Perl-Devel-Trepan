@@ -30,14 +30,15 @@ arguments which you supply without parenthesis or commas. See below
 for an example.
 
 The macro (really a Perl anonymous subroutine) should return either a
-string or an array reference to a list of strings. The string in both
-cases are strings of debugger commands.  If the return is a string,
-that gets tokenized by a simple C<split(/ /, $string)>.  Note that
-macro processing is done right after splitting on C<;;> so if the macro
-returns a string containing C<;;> this will not be handled on the
-string returned.
+string or an array reference to a list of strings. The string in
+bothcases is a debugger command..  
 
-If instead, a reference to a list of strings is returned, then the
+If a string is returned, that gets tokenized by a simple C<split(/ /,
+$string)>.  Note that macro processing is done right after splitting
+on C<;;> so if the macro returns a string containing C<;;> this will
+not be handled on the string returned.
+
+If instead a reference to a list of strings is returned, then the
 first string is shifted from the array and executed. The remaining
 strings are pushed onto the command queue. In contrast to the first
 string, subsequent strings can contain other macros. Any C<;;> in those
@@ -70,7 +71,7 @@ you use for other debugger commands, no commas or parenthesis. That is:
 
 rather than C<fin+(3,2)> or C<fin+ 3, 2>.
 
-See also C<info macro>.
+See also C<alias> and C<info macro>.
 =cut
 HELP
   

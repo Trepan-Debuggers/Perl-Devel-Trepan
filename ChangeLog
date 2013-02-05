@@ -1,3 +1,42 @@
+2013-02-04  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Macro.pm, t/20test-macro.t,
+	t/data/macro.cmd, t/data/macro.right: info macro: colorize sub if
+	highlight is on. Allow for info macro *. This puts this more inline
+	with other Trepan debuggers.
+
+2013-01-21  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Edit.pm: Build.PL: need
+	Time::HiRes for testing. Command/*.pm remove ${NAME} which doesn't
+	work with plain POD and remove here string interpolation.
+
+2013-01-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/DB/Sub.pm: Sync
+	some of the lower level DB code with perl5db.pl 5.17
+
+2013-01-14  Rocky Bernstein <rocky@cpan.org>
+
+	* example/lsub.pl, lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/DB/Sub.pm, t/20test-lsub.t, t/data/lsub.cmd,
+	t/data/lsub.right: Perl bug #116358
+
+2013-01-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/DB/Sub.pm,
+	lib/Devel/Trepan/Processor/Frame.pm, lib/Devel/Trepan/Version.pm: 
+	Start looking at 116358. For us it's a stack counting bug.
+
+2013-01-06  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog: Get ready for release 0.48. This time, for sure!
+
 2013-01-06  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/Options.pm: 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -30,15 +30,15 @@ arguments which you supply without parenthesis or commas. See below
 for an example.
 
 The macro (really a Perl anonymous subroutine) should return either a
-string or an array reference to a list of strings. The string in
-bothcases is a debugger command..  
+string or an list reference to a list of strings. Each string is a
+debugger command.
 
-If a string is returned, that gets tokenized by a simple C<split(/ /,
+If a single string is returned, that gets tokenized by a simple C<split(/ /,
 $string)>.  Note that macro processing is done right after splitting
 on C<;;> so if the macro returns a string containing C<;;> this will
 not be handled on the string returned.
 
-If instead a reference to a list of strings is returned, then the
+If a reference to a list of strings is returned instead, then the
 first string is shifted from the array and executed. The remaining
 strings are pushed onto the command queue. In contrast to the first
 string, subsequent strings can contain other macros. Any C<;;> in those

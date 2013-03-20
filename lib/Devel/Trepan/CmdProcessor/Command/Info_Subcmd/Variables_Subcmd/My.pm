@@ -62,6 +62,21 @@ sub get_var_hash($;$)
 sub complete($$;$)
 { 
     my ($self, $prefix, $fixup_num) = @_;
+    
+    # This is really hacky
+    unless ($fixup_num) {
+	my $i = 0;
+	while (my ($pkg, $file, $line, $fn) = caller($i++)) { 
+	    last if $pkg eq 'Devel::Trepan::CmdProcessor' && $fn eq '(eval)';
+	    last if $pkg eq 'Devel::Trepan::Core' && 
+		$fn eq 'Devel::Trepan::CmdProcessor::process_commands';
+	};
+	
+	$fixup_num = $i;
+    }
+
+    # print "FIXUP_NUM is $fixup_num\n";
+
     my $var_hash = $self->get_var_hash($fixup_num);
     my @vars = sort keys %$var_hash;
     Devel::Trepan::Complete::complete_token(\@vars, $prefix) ;
@@ -180,10 +195,10 @@ unless (caller) {
     print '-' x 40, "\n";
     $cmd->run($cmd->{prefix}, -1);
     print '-' x 40, "\n";
-    my @complete = $cmd->complete('', -1);
+    my @complete = $cmd->complete('', -2);
     print join(', ', @complete), "\n";
     print '-' x 40, "\n";
-    @complete = $cmd->complete('$p', -1);
+    @complete = $cmd->complete('$p', -2);
     print join(', ', @complete), "\n";
 
 }

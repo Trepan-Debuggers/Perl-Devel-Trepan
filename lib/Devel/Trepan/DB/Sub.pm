@@ -19,7 +19,13 @@ BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
     $DB::ret = '';    # return value of last sub executed in scalar context
     $DB::return_type = 'undef';
-    $deep = 300;      # Max stack depth before we complain.
+
+    # $deep: Maximium stack depth before we complain.
+    # See RT #117407
+    # https://rt.perl.org/rt3//Public/Bug/Display.html?id=117407
+    # for justification for why this should be 1000 rather than something
+    # smaller.
+    $deep = 1000;
 
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as

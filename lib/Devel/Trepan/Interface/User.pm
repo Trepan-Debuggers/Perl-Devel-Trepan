@@ -50,7 +50,7 @@ sub new
             my $attribs = $inp->{readline}->Attribs;
             $attribs->{attempted_completion_function} = $self->{opts}{complete};
         }
-        $self->read_history;
+        $self->read_history();
     }
     return $self;
 }
@@ -136,10 +136,12 @@ sub save_history($)
     if ($self->{histfile} && $self->{opts}{history_save} && 
         $self->want_term_readline &&
         $self->{input}{readline}) {
+
         $self->{input}{readline}->StifleHistory($self->{histsize}) if
             $self->{input}{readline}->can("StifleHistory");
-        $self->{input}{readline}->WriteHistory($self->{histfile}) if
-            $self->{input}{readline}->can("WriteHistory");
+	if ($self->{input}{readline}->can("WriteHistory")) {
+	    $self->{input}{readline}->WriteHistory($self->{histfile}) 
+	}
     }
 }
 

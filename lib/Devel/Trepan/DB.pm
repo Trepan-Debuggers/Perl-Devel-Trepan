@@ -35,13 +35,13 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my ($deep, @saved, @skippkg);
+my (@saved, @skippkg);
 
 my $ineval = {};
 
 ####
 #
-# Globals - must be defined at startup so that clients can refer to 
+# Globals - must be defined at startup so that clients can refer to
 # them right after a C<use Devel::Trepan::DB;>
 #
 ####
@@ -52,9 +52,9 @@ BEGIN {
     $ini_warn = $WARNING;
 
     # these are hardcoded in perl source (some are magical)
-    
+
     $DB::sub      = '';    # name of current subroutine
-    $DB::single   = 0;     # single-step flags. See constants at the 
+    $DB::single   = 0;     # single-step flags. See constants at the
                            # top of DB/Sub.pm
     $DB::signal   = 0;     # signal flag (will cause a stop at the next line)
     $DB::stop     = 0;     # value of last breakpoint condition evaluation
@@ -62,7 +62,7 @@ BEGIN {
     @DB::dbline   = ();    # list of lines in currently loaded file
     %DB::dbline   = ();    # actions in current file (keyed by line number)
 
-    # other "public" globals  
+    # other "public" globals
 
     @ini_INC        = @INC; # Save the contents of @INC before they are
                             # modified elsewhere.
@@ -76,9 +76,9 @@ BEGIN {
     $eval_opts    = {};    # Options controlling how the client wants the
                            # eval to take place
     $DB::tid      = undef; # Thread id
-    
+
     $DB::eval_str = '';    # Client wants to eval this string
-    
+
     $DB::package  = '';    # current package space
     $DB::filename = '';    # current filename
     $DB::subname  = '';    # currently executing sub (fully qualified name)
@@ -101,18 +101,18 @@ BEGIN {
     $DB::caller = [];
 
     $DB::event = undef;  # The reason we have entered the debugger
-    
+
     $DB::VERSION = '1.04';
-    
+
     # initialize private globals to avoid warnings
-    
+
     $running = 1;         # are we running, or are we stopped?
     $in_debugger = 0;
     @clients = ();
     $ready = 0;
     @saved = ();
     @skippkg = ();
-    
+
     # ensure we can share our non-threaded variables or no-op
     if ($ENV{PERL5DB_THREADED}) {
         require threads;
@@ -150,7 +150,7 @@ END {
         Devel::Trepan::Terminated::at_exit();
     }
     $DB::ready = 0;
-} 
+}
 
 sub save_vars();
 
@@ -185,16 +185,16 @@ sub DB {
     local $filename_ini = $filename;
 
     local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
-        ? Devel::Callsite::callsite() : undef; 
+        ? Devel::Callsite::callsite() : undef;
 
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 
-    # Set package namespace for running eval's in the user context. 
+    # Set package namespace for running eval's in the user context.
     # However this won't let them modify lexical variables, alas.
     # This has to be 'local' rather than 'my' to allow recursive
     # debugging ("debug" command).
     local $namespace_package = "package $DB::package;";
-    
+
     local(*DB::dbline) = "::_<$DB::filename";
 
     # we need to check for pseudofiles on Mac OS (these are files
@@ -215,7 +215,7 @@ sub DB {
         my @list= @{$c->{watch}->{list}};
         for my $wp (@list) {
             next unless $wp->enabled;
-            my $opts = {return_type => '$', 
+            my $opts = {return_type => '$',
                         namespace_package => $namespace_package,
                         fix_file_and_line => 1,
                         hide_position     => 0};
@@ -236,7 +236,7 @@ sub DB {
 
     # Test for breakpoints and action events.
     my @action = ();
-    if (exists $DB::dbline{$DB::lineno} and 
+    if (exists $DB::dbline{$DB::lineno} and
         my $brkpts = $DB::dbline{$DB::lineno}) {
         for (my $i=0; $i < @$brkpts; $i++) {
             my $brkpt = $brkpts->[$i];
@@ -250,7 +250,7 @@ sub DB {
                 # A cheap and simple test for unconditional.
                 $stop = 1;
             } else  {
-                my $eval_str = sprintf("\$DB::stop = do { %s; }", 
+                my $eval_str = sprintf("\$DB::stop = do { %s; }",
                                        $brkpt->condition);
                 my $opts = {return_type => ';',  # ignore return
                             namespace_package => $namespace_package,
@@ -288,7 +288,7 @@ sub DB {
     } else {
         $event = 'unknown';
     }
-    
+
     if ($DB::single || $DB::trace || $DB::signal || $event eq 'watch') {
         $DB::subname = ($DB::sub =~ /\'|::/) ? $DB::sub : "${DB::package}::$DB::sub"; #';
         loadfile($DB::filename, $DB::lineno);
@@ -296,7 +296,7 @@ sub DB {
 
     for my $action (@action) {
         &DB::eval_with_return($action->condition, {return_type => '$'},
-			      @saved) 
+			      @saved)
             if $action->enabled;
         my $hits = $action->hits + 1;
         $action->hits($hits);
@@ -306,7 +306,7 @@ sub DB {
         $DB::single = 0;
         $DB::signal = 0;
         $running = 0;
-        
+
         for my $c (@clients) {
             # Now sit in an event loop until something sets $running
             my $after_eval = 0;
@@ -320,7 +320,7 @@ sub DB {
                                 fix_file_and_line => 1,
                                 hide_position     => 0};
                     # FIXME: allow more than just scalar contexts.
-                    my $eval_result =  
+                    my $eval_result =
                         &DB::eval_with_return($disp->arg, $opts, @saved);
 		    my $mess;
 		    if (defined($eval_result)) {
@@ -340,7 +340,7 @@ sub DB {
                 # call client event loop; must not block
                 $c->idle($event, $watch_triggered);
                 $after_eval = 0;
-                if ($running == 2 && defined($eval_str)) { 
+                if ($running == 2 && defined($eval_str)) {
                     # client wants something eval-ed
                     # FIXME: turn into subroutine.
 
@@ -355,7 +355,7 @@ sub DB {
                     } elsif ('%' eq $return_type) {
                         &DB::eval_with_return($eval_str, $opts, @saved);
                     } else {
-                        $eval_result = 
+                        $eval_result =
                             &DB::eval_with_return($eval_str, $opts, @saved);
                     }
 
@@ -371,16 +371,16 @@ sub DB {
         }
     }
     $DB::event = undef;
-    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-     $OUTPUT_FIELD_SEPARATOR, 
-     $INPUT_RECORD_SEPARATOR, 
+    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
+     $OUTPUT_FIELD_SEPARATOR,
+     $INPUT_RECORD_SEPARATOR,
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
     ();
 }
 
 =head1 RESTART SUPPORT
 
-These routines are used to store (and restore) lists of items in environment 
+These routines are used to store (and restore) lists of items in environment
 variables during a restart.
 
 =head2 set_list
@@ -414,7 +414,7 @@ sub set_list {
 Reverse the set_list operation: grab VAR_n to see how many we should be getting
 back, and then pull VAR_0, VAR_1. etc. back out.
 
-=cut 
+=cut
 
 sub get_list {
     my $stem = shift;
@@ -443,14 +443,14 @@ sub save { die "Remember to update Enbugger/trepan.pm" };
 # reduce prototype conflict of save $ vs none if we use perl5db.pl to
 # debug Devel::Trepan.
 sub save_vars() {
-  @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-             $OUTPUT_FIELD_SEPARATOR, 
-             $INPUT_RECORD_SEPARATOR, 
+  @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
+             $OUTPUT_FIELD_SEPARATOR,
+             $INPUT_RECORD_SEPARATOR,
              $OUTPUT_RECORD_SEPARATOR, $WARNING );
 
-  $OUTPUT_FIELD_SEPARATOR  = ""; 
+  $OUTPUT_FIELD_SEPARATOR  = "";
   $INPUT_RECORD_SEPARATOR  = "\n";
-  $OUTPUT_RECORD_SEPARATOR = "";  
+  $OUTPUT_RECORD_SEPARATOR = "";
   $WARNING = 0;       # warnings off
 }
 
@@ -462,7 +462,7 @@ sub catch {
      $DB::hinthash
     ) = @{$DB::caller};
 
-    # Set package namespace for running eval's in the user context. 
+    # Set package namespace for running eval's in the user context.
     # However this won't let them modify lexical variables, alas.
     my $namespace_package = "package $DB::package;";
 
@@ -477,11 +477,11 @@ sub catch {
             for my $disp (@$display_aref) {
                 next unless $disp && $disp->enabled;
                 my $opts = {
-                    return_type       => $disp->return_type, 
+                    return_type       => $disp->return_type,
                     namespace_package => $namespace_package,
                     fix_file_and_line => 1,
                     hide_position     => 0};
-                my $eval_result = &DB::eval_with_return($disp->arg, $opts, 
+                my $eval_result = &DB::eval_with_return($disp->arg, $opts,
                                                         @saved);
                 my $mess = sprintf("%d: $eval_result", $disp->number);
                 $c->output($mess);
@@ -492,14 +492,14 @@ sub catch {
             } elsif (2 == $after_eval) {
                 $event = 'after_nest'
             }
-            
+
             # call client event loop; must not block
             $c->idle($event, 0);
             $after_eval = 0;
-            if ($running == 2 && defined($eval_str)) { 
+            if ($running == 2 && defined($eval_str)) {
                 # client wants something eval-ed
                 # FIXME: turn into subroutine.
-                
+
                 my $opts = $eval_opts;
                 $opts->{namespace_package} = $namespace_package;
 
@@ -508,7 +508,7 @@ sub catch {
                 } elsif ('%' eq $opts->{return_type}) {
                         &DB::eval_with_return($eval_str, $opts, @saved);
                 } else {
-                    $eval_result = 
+                    $eval_result =
                         &DB::eval_with_return($eval_str, $opts, @saved);
                 }
 
@@ -552,7 +552,7 @@ sub step {
     $DB::running = 1;
 }
 
-# cont 
+# cont
 # cont fn_or_line
 # cont file line
 #
@@ -593,7 +593,7 @@ sub finish($;$$) {
         while (my ($pkg, $file, $line, $fn) = caller($i++)) {
             if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
                 # FIXME: This is hoaky. 4 is somehow how far off
-                # @stack is from caller. 
+                # @stack is from caller.
                 $i -= 4;
                 last;
             }
@@ -608,7 +608,7 @@ sub finish($;$$) {
     $DB::running = 1;
 }
 
-sub return_value($) 
+sub return_value($)
 {
     if ('undef' eq $DB::return_type) {
         return undef;
@@ -619,7 +619,7 @@ sub return_value($)
     }
 }
 
-sub return_type($) 
+sub return_type($)
 {
     $DB::return_type;
 }
@@ -672,7 +672,7 @@ sub loadfile {
   my($file, $line) = @_;
   if (!defined $main::{'_<' . $file}) {
     my $try;
-    if (($try) = grep(m|^_<.*$file|, keys %main::)) {  
+    if (($try) = grep(m|^_<.*$file|, keys %main::)) {
       $file = substr($try,2);
     }
   }
@@ -763,7 +763,7 @@ DB - programmatic interface to the Perl debugging API
     CLIENT->idle(BOOL, EVENT, ARGS)  # while stopped (can be a client event loop)
     CLIENT->cleanup()       # just before exit
     CLIENT->output(STRING)   # called to print any output that API must show
-    CLIENT->warning(STRING) # called to print any warning output that API 
+    CLIENT->warning(STRING) # called to print any warning output that API
                             # must show
     CLIENT->showfile(FILE,LINE) # called to show file and line before idling
 
@@ -781,7 +781,7 @@ by Swat, the perl/Tk GUI debugger.
 
 Note that multiple "front-ends" can latch into this debugging API
 simultaneously.  This is intended to facilitate things like
-debugging with a command line and GUI at the same time, debugging 
+debugging with a command line and GUI at the same time, debugging
 debuggers etc.  [Sounds nice, but this needs some serious support -- GSAR]
 
 In particular, this API does B<not> provide the following functions:
@@ -826,7 +826,7 @@ Name of current executing subroutine.
 =item  %DB::sub
 
 The keys of this hash are the names of all the known subroutines.  Each value
-is an encoded string that has the sprintf(3) format 
+is an encoded string that has the sprintf(3) format
 C<("%s:%d-%d", filename, fromline, toline)>.
 
 =item  $DB::single
@@ -844,7 +844,7 @@ This flag is set to true if the API is tracing through subroutine calls.
 
 =item  @DB::args
 
-Contains the arguments of current subroutine, or the C<@ARGV> array if in the 
+Contains the arguments of current subroutine, or the C<@ARGV> array if in the
 toplevel context.
 
 =item  @DB::dbline
@@ -854,7 +854,7 @@ List of lines in currently loaded file.
 =item  %DB::dbline
 
 Actions in current file (keys are line numbers).  The values are strings that
-have the sprintf(3) format C<("%s\000%s", breakcondition, actioncode)>. 
+have the sprintf(3) format C<("%s\000%s", breakcondition, actioncode)>.
 
 =item  $DB::package
 
@@ -930,26 +930,26 @@ Called after debug API inits itself.
 
 Called while stopped (can be a client event loop or REPL). If called
 after the idle program requested an eval to be performed, BOOLEAN will be
-true. False otherwise. See evalcode below. ARGS are any 
+true. False otherwise. See evalcode below. ARGS are any
 
 =item CLIENT->evalcode(STRING)
 
 Usually inherited from DB package. Ask for a STRING to be C<eval>-ed
-in executing code context. 
+in executing code context.
 
 In order to evaluate properly, control has to be passed back to the DB
 subroutine. Suppose you would like your C<idle> program to do this:
 
     until $done {
         $command = read input
-        if $command is a valid debugger command, 
+        if $command is a valid debugger command,
            run it
-        else 
+        else
            evaluate it via CLIENT->evalcode($command) and print
            the results.
     }
 
-Due to the limitation of Perl, the above is not sufficient. You have to 
+Due to the limitation of Perl, the above is not sufficient. You have to
 break out of the B<until> to get back to C<DB::sub> to have the eval run.
 After that's done, C<DB::sub> will call idle again, from which you can
 then retrieve the results.

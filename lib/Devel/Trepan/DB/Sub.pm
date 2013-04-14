@@ -19,7 +19,13 @@ BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
     $DB::ret = '';    # return value of last sub executed in scalar context
     $DB::return_type = 'undef';
-    $deep = 70;      # Max stack depth before we complain.
+
+    # $deep: Maximium stack depth before we complain.
+    # See RT #117407
+    # https://rt.perl.org/rt3//Public/Bug/Display.html?id=117407
+    # for justification for why this should be 1000 rather than something
+    # smaller.
+    $deep = 1000;
 
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as
@@ -45,14 +51,14 @@ sub DB::sub {
     if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
-   
+
     # If the last ten characters are '::AUTOLOAD', note we've traced
     # into AUTOLOAD for $sub.
     if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
         no strict 'refs';
         $al = " for $$sub" if defined $$sub;
     }
-   
+
     # We stack the stack pointer and then increment it to protect us
     # from a situation that might unwind a whole bunch of call frames
     # at once. Localizing the stack pointer means that it will automatically
@@ -141,13 +147,13 @@ sub DB::lsub : lvalue {
     if ($sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
-    
+
     # If the last ten characters are '::AUTOLOAD', note we've traced
     # into AUTOLOAD for $sub.
     if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
         $al = " for $$sub" if defined $$sub;;
     }
-    
+
     # We stack the stack pointer and then increment it to protect us
     # from a situation that might unwind a whole bunch of call frames
     # at once. Localizing the stack pointer means that it will automatically
@@ -159,15 +165,15 @@ sub DB::lsub : lvalue {
 
     # Save current single-step setting.
     $stack[-1] = $DB::single;
-    
+
     # printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
     # Turn off all flags except single-stepping or return event.
     $DB::single &= SINGLE_STEPPING_EVENT;
-    
+
     # If we've gotten really deeply recursed, turn on the flag that will
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
-    
+
     if (wantarray) {
         # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
@@ -217,7 +223,7 @@ sub subs {
     my(@ret) = ();
     while (@_) {
       my $name = shift;
-      push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/] 
+      push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/]
         if exists $DB::sub{$name};
     }
     return @ret;

@@ -14,13 +14,21 @@ use rlib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;
 
-use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
+## FIXME: REVERT TERM_READLINE5
+use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE $HAVE_TERM_READLINE5);
 @ISA = qw(Devel::Trepan::IO::InputBase Exporter);
 @EXPORT = qw($HAVE_TERM_READLINE);
 
 BEGIN {
     $ENV{'PERL_RL'} ||= 'perl';
-    $HAVE_TERM_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0;
+    # We will clean this up when Florian and Jordan get their acts together.
+    ## FIXME: REVERT TERM_READLINE5
+    $HAVE_TERM_READLINE5 = eval("use Term::ReadLine::Perl5; 1") ? 1 : 0;
+    if ($HAVE_TERM_READLINE5) {
+	$HAVE_TERM_READLINE = 'Perl';
+    } else {
+	$HAVE_TERM_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0 
+    }
 
     sub GLOBAL_have_term_readline {
         if (!defined($HAVE_TERM_READLINE)) {
@@ -47,7 +55,12 @@ sub new($;$$) {
     if ($opts->{readline} && GLOBAL_have_term_readline()) {
         my $rc = 0;
         $rc = eval {
-            $self->{readline} = Term::ReadLine->new('trepan.pl');
+	    ## FIXME: REVERT TERM_READLINE5
+	    if ($HAVE_TERM_READLINE5) {
+		$self->{readline} = Term::ReadLine::Perl5->new('trepan.pl');
+	    } else {
+		$self->{readline} = Term::ReadLine->new('trepan.pl');
+	    }
             1 ;
         };
         if ($rc) {

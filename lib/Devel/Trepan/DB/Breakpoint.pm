@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 # largely rewritten from perl5db.
 
 use Class::Struct;
 use strict;
 
 struct DBBreak => {
-    id          => '$', # breakpoint/action number 
+    id          => '$', # breakpoint/action number
     enabled     => '$', # True if breakpoint or action is enabled
     type        => '$', # 'tbrkpt', 'brkpt' or 'action'
     condition   => '$', # Condition to evaluate or '1' fo unconditional
@@ -22,11 +22,11 @@ sub inspect($)
 {
     my $self = shift;
     sprintf("id %d, file %s, line %s, type: %s, enabled: %d, negate %s, hits: %s, cond: %s",
-            $self->id, 
+            $self->id,
             $self->filename, $self->line_num,
             $self->type,
-            $self->enabled, 
-            $self->negate || 0, 
+            $self->enabled,
+            $self->negate || 0,
             $self->hits, $self->condition
         );
 };
@@ -36,9 +36,9 @@ sub icon_char($)
     my $self = shift;
     if ('tbrkpt' eq $self->type) {
         return 'T';
-    } elsif ('brkpt' eq $self->type) { 
+    } elsif ('brkpt' eq $self->type) {
         return 'B';
-    } elsif ('action' eq $self->type) { 
+    } elsif ('action' eq $self->type) {
         return 'A';
     }
 }
@@ -78,7 +78,7 @@ sub find_subline($) {
         my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
         if ($from) {
             local *DB::dbline = "::_<$filename";
-	    ++$from while $DB::dbline[$from] && $DB::dbline[$from] == 0 && 
+	    ++$from while $DB::dbline[$from] && $DB::dbline[$from] == 0 &&
 		$from < $to;
             return ($filename, $fn_name, $from);
         }
@@ -123,7 +123,11 @@ sub break_invalid {
     return undef;
 }
 
+=head2 set_breakpoint
+
 # Set a breakpoint, temporary breakpoint, or action.
+
+=cut
 sub set_break {
     my ($s, $filename, $fn_or_lineno, $cond, $id, $type, $enabled, $force) = @_;
     $filename = $DB::filename unless defined $filename;
@@ -158,10 +162,9 @@ sub set_break {
             ## $max      = $#dbline;
         }
     }
-    if ((!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) &&
-        !$force) {
+    unless (is_breakable($filename, $lineno) || $force) {
         $s->warning("Line $lineno of $filename not known to be a trace line.\n");
-        
+
         *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
         return undef;
     }
@@ -181,13 +184,24 @@ sub set_break {
         filename  => $filename,
         line_num  => $lineno
         );
-    
+
     my $ary_ref;
     $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
     $ary_ref = $DB::dbline{$lineno};
     push @$ary_ref, $brkpt;
     *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
     return $brkpt;
+}
+
+=head2 is_breakable
+
+Return 1 if C<$filename> has code associated with C<$lineno>; 0 otherwise.
+
+=cut
+# Return 1 if $lineno is
+sub is_breakable {
+    my($filename, $lineno) = @_;
+    return defined($DB::dbline[$lineno]) && ($DB::dbline[$lineno] != 0)
 }
 
 # Set a temporary breakpoint

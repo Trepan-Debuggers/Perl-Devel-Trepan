@@ -135,7 +135,7 @@ sub running_initialize($)
 # Some reasons for skipping: 
 # -  step count was given. 
 # - We want to make sure we stop on a different line
-# - We want to stop only when some condition is reached (step util ...). 
+# - We want to stop only when some condition is reached (step until ...). 
 sub is_stepping_skip($)
 {
 

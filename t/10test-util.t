@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
-use strict;
-use warnings;
+use strict; use warnings;
+use English qw( -no_match_vars );
+use Config;
 use rlib '../lib';
 
 use Test::More;
@@ -37,7 +38,7 @@ is(safe_repr($string, 17), 'The time...  things.');
 note 'Test uniq_abbrev';
 
 my @list = qw(disassemble disable distance up);
-for my $pair 
+for my $pair
     (
      ['dis', 'dis'],
      ['disas', 'disassemble'],
@@ -50,14 +51,14 @@ for my $pair
 
 note 'Test extract expression';
 for my $triple (
-    ['if (condition("if"))', 'condition("if")', 'if'], 
-    ['if (condition("if")) {', 'condition("if")', 'if (...) {'], 
-    ['if(condition("if")){', 'condition("if")', 'if (...){'], 
+    ['if (condition("if"))', 'condition("if")', 'if'],
+    ['if (condition("if")) {', 'condition("if")', 'if (...) {'],
+    ['if(condition("if")){', 'condition("if")', 'if (...){'],
     ['until (until_termination)', 'until_termination', 'until(...)'],
     ['until (until_termination){', 'until_termination', 'until(...){'],
     ['return return_value', 'return_value', 'return'],
     ['return return_value;', 'return_value', 'return ...;'],
-    ['nothing to be done', 'nothing to be done', 'no change'], 
+    ['nothing to be done', 'nothing to be done', 'no change'],
     ['my ($a,$b) = (5,6);', '($a,$b) = (5,6)', 'my vars assign'],
     ['my $scalar = "Scalar value";', '"Scalar value"', 'my scalar assign'],
     ) {
@@ -74,12 +75,12 @@ for my $pair (
     ['evaluate%', '%'],
     ['none', '']) {
     is(parse_eval_suffix($pair->[0]), parse_eval_suffix($pair->[1]),
-       sprintf("parse_eval_suffix(%s) => '%s' should be '%s'", 
+       sprintf("parse_eval_suffix(%s) => '%s' should be '%s'",
 	       $pair->[0], parse_eval_suffix($pair->[0]), $pair->[1]));
 }
 
 
-for my $pair 
+for my $pair
     ([__FILE__, ''],
      ['bogus', 1]) {
 	my ($name, $expect) = @$pair;
@@ -87,7 +88,7 @@ for my $pair
 	is(!!$result, $expect, $result || "$name should exist");
 };
 
-for my $pair 
+for my $pair
     (['yes', 1],
      ['no',  1],
      ['Y',   1],
@@ -100,7 +101,7 @@ for my $pair
 	is($result, $expect, $resp);
 }
 
-for my $pair 
+for my $pair
     ([1,      'Yes'],
      [0,      'No'],
      ['',     'No'],
@@ -111,23 +112,24 @@ for my $pair
 	is($result, $expect, 'bool2YN of ' . ($resp || 'undef'));
 }
 
-for my $expr ('1+', '{cmd=5}') {
-    ok(Devel::Trepan::Util::invalid_perl_syntax($expr),
-	"invalid perl expression '$expr'");
-
+if ($OSNAME ne 'MSWin32') {
+    for my $expr ('1+', '{cmd=5}') {
+	ok(Devel::Trepan::Util::invalid_perl_syntax($expr),
+	   "invalid perl expression '$expr'");
+    }
+    for my $expr ('-e "\$x=1"') {
+	ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1),
+	   "valid perl expression '$expr'");
+    }
 }
+
 for my $expr ('-e "$x="', '-e "(1,2"') {
-    ok(Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
+    ok(Devel::Trepan::Util::invalid_perl_syntax($expr, 1),
 	"invalid perl expression '$expr'");
 }
 
-for my $expr ('-e "\$x=1"', '-e "(1,2)"') {
-    ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
-	"valid perl expression '$expr'");
-}
-
-for my $expr ('\$x=2', '-e "{a => 1}"') {
-    ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1), 
+for my $expr ('\$x=2', '-e "{a => 1}"', '-e "(1,2)"') {
+    ok(!Devel::Trepan::Util::invalid_perl_syntax($expr, 1),
 	"valid perl expression '$expr'");
 }
 

@@ -15,7 +15,7 @@ use constant YES => qw(y yes oui si yep ja);
 use constant NO => qw(n no non nope nein);
 push(@YN, NO);
 
-sub YN($) 
+sub YN($)
 {
     my $response = shift;
     !!grep(/^${response}$/i, @YN);
@@ -23,7 +23,7 @@ sub YN($)
 
 # Return 'Yes' for True and 'No' for False, and ?? for anything else
 sub bool2YN($)
-{ 
+{
     my $bool = shift;
     $bool ? 'Yes' : 'No';
 }
@@ -43,7 +43,7 @@ sub safe_repr($$;$)
     $elipsis = '... ' unless defined $elipsis;
     my $strlen = length($str);
     if ($max > 0 && $strlen > $max && -1 == index($str, "\n")) {
-        sprintf("%s%s%s", substr($str, 0, $max/2), 
+        sprintf("%s%s%s", substr($str, 0, $max/2),
                 $elipsis,  substr($str, $strlen+1-($max)/2));
     } else {
         $str;
@@ -54,7 +54,7 @@ sub safe_repr($$;$)
 # If name is a unique leading prefix of one of the entries of list,
 # then return that. Otherwise return name.
 sub uniq_abbrev($$)
-{ 
+{
     my ($list, $name) = @_;
     my @candidates = ();
     for my $try_name (@$list) {
@@ -113,16 +113,16 @@ sub invalid_filename($)
 {
     my $filename = shift;
     return "Command file '$filename' doesn't exist"   unless -f $filename;
-    return "Command file '$filename' is not readable" unless -r $filename; 
+    return "Command file '$filename' is not readable" unless -r $filename;
     return undef;
 }
 
-# Return 'undef' arg $cmd_str is ok. If not return the message a Perl -c 
+# Return 'undef' arg $cmd_str is ok. If not return the message a Perl -c
 # gives, dropping off the "-e had complation errors" message.
 sub invalid_perl_syntax($;$)
 {
     my ($cmd_str, $have_e_opt) = @_;
-    my $cmd = sprintf("$EXECUTABLE_NAME -c %s", 
+    my $cmd = sprintf("$EXECUTABLE_NAME -c %s",
 		      $have_e_opt ? $cmd_str : "-e '$cmd_str'");
     my $output = `$cmd 2>&1`;
     my $rc = $? >>8;
@@ -155,7 +155,7 @@ unless (caller) {
     hash_merge $config, $default_config;
     print Dumper($config), "\n";
 
-    for my $file (__FILE__, 'bogus') { 
+    for my $file (__FILE__, 'bogus') {
         my $result = invalid_filename($file);
         if (defined($result)) {
             print "$result\n";
@@ -181,15 +181,15 @@ unless (caller) {
     uniq_abbrev(\@list, 'disas');
     print join(' ', @list), "\n";
     for my $name (qw(dis disas u upper foo)) {
-        printf("uniq_abbrev of %s is %s\n", $name, 
+        printf("uniq_abbrev of %s is %s\n", $name,
                uniq_abbrev(\@list, $name));
     }
     # ------------------------------------
     # extract_expression
     for my $stmt (
-        'if (condition("if"))', 
-        'if (condition("if")) {', 
-        'if(condition("if")){', 
+        'if (condition("if"))',
+        'if (condition("if")) {',
+        'if(condition("if")){',
         'until (until_termination)',
         'until (until_termination){',
         'return return_value',

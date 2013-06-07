@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
-# 
-#   Copyright (C) 2011, 2012 Rocky Bernstein <rockyb@cpan.org>
+#
+#   Copyright (C) 2011-2013 Rocky Bernstein <rockyb@cpan.org>
 #
 #
 use Digest::SHA;
@@ -12,12 +12,12 @@ package DB;
 
 # FIXME: Figure out where to put this
 # *pod
-# 
+#
 # I<eval_ok($code)> => I<boolean>
 #
 # Evaluate I<$code> and return true if there's no error.
 # *cut
-sub eval_ok ($) 
+sub eval_ok ($)
 {
     my $code = shift;
     no strict; no warnings;
@@ -34,12 +34,12 @@ package DB::LineCache;
 
 =head1 NAME DB::LineCache
 
-DB::LineCache - package to read and cache lines of a Perl program. 
+DB::LineCache - package to read and cache lines of a Perl program.
 
 =head1 SYNOPSIS
 
 The LineCache package allows one to get any line from any file,
-caching lines of the file on first access to the file. Although the 
+caching lines of the file on first access to the file. Although the
 file may be any file, the common use is when the file is a Perl
 script since parsing of the file is done to figure out where the
 statement boundaries are.
@@ -55,8 +55,8 @@ source lines.
  unshift @INC, '/tmp';
  $lines = DB::LineCache::getlines('myperl.pl');
  shift @INC;
- 
- chdir '/tmp';  
+
+ chdir '/tmp';
  $lines = DB::LineCache::getlines('myperl.pl')
 
  $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
@@ -120,7 +120,7 @@ find the file.
 
 =cut
 
-sub remove_temps() 
+sub remove_temps()
 {
     for my $filename (values %script2file) {
         unlink($filename) if -f $filename;
@@ -130,9 +130,9 @@ sub remove_temps()
     }
 }
 
-END { 
+END {
     $DB::ready = 0;
-    remove_temps 
+    remove_temps
 };
 
 =pod
@@ -175,7 +175,7 @@ have previously been syntax marked.
 
 =cut
 
-sub clear_file_format_cache() 
+sub clear_file_format_cache()
 {
     while (my ($fname, $cache_info) = each %file_cache) {
         while (my($format, $lines) = each %{$cache_info->{lines_href}}) {
@@ -229,7 +229,7 @@ If we did not previously have I<stat()> information about a file, it
 will be added. Return a list of invalidated filenames. I<undef> is
 returned if a filename was given but not found cached.
 
-=cut 
+=cut
 
 sub checkcache(;$$)
 {
@@ -255,8 +255,8 @@ sub checkcache(;$$)
             my $cache_info = $file_cache{$filename}{stat};
             my $stat = File::stat::stat($path);
             if ($cache_info) {
-                if ($stat && 
-                    ($cache_info->{size} != $stat->size or 
+                if ($stat &&
+                    ($cache_info->{size} != $stat->size or
                      $cache_info->{mtime} != $stat->mtime)) {
                     push @result, $filename;
                     update_cache($filename, $opts);
@@ -278,13 +278,13 @@ B<cache_script(I<$script> [, I<$opts>]) > => I<script>
 
 Cache psuedo eval-string for a pseudo eval-string if it's not already cached.
 
-=cut 
+=cut
 
-sub cache_script($;$) 
+sub cache_script($;$)
 {
     my ($script, $opts) = @_;
     $opts = {} unless defined $opts;
-    update_script_cache($script, $opts) unless 
+    update_script_cache($script, $opts) unless
         (exists $script_cache{$script});
     $script;
 }
@@ -300,7 +300,7 @@ Cache file name or script object if it's not already cached.
 Return the expanded filename for it in the cache if a filename,
 or the script, or I<undef> if we can't find the file.
 
-=cut 
+=cut
 
 sub cache($;$)
 {
@@ -321,7 +321,7 @@ cache or I<undef> if we can't find it.
 
 =cut
 
-sub cache_file($;$$) 
+sub cache_file($;$$)
 {
     my ($filename, $reload_on_change, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -349,7 +349,7 @@ Return I<true> if I<$file_or_script> is cached.
 =cut
 
 sub is_cached($)
-{ 
+{
     my $file_or_script = shift;
     return undef unless defined $file_or_script;
     exists $file_cache{map_file($file_or_script)};
@@ -361,7 +361,7 @@ sub is_cached_script($)
     my $name = map_file($filename);
     scalar @{"_<$name"};
 }
-      
+
 sub is_empty($)
 {
     my $filename = shift;
@@ -372,7 +372,10 @@ sub is_empty($)
 
 sub file_list()
 {
-    sort((cached_files(), keys(%file2file_remap)));
+    my @list = (cached_files(), keys(%file2file_remap));
+    my %seen;
+    my @uniq = grep { ! $seen{$_} ++ } @list;
+    sort(@uniq);
 }
 
 =pod
@@ -444,7 +447,7 @@ sub getlines($;$)
 {
     my ($filename, $opts) = @_;
     $opts = {use_perl_d_file => 1} unless defined $opts;
-    my ($reload_on_change, $use_perl_d_file) = 
+    my ($reload_on_change, $use_perl_d_file) =
         ($opts->{reload_on_change}, $opts->{use_perl_d_file});
     checkcache($filename) if $reload_on_change;
     my $format = $opts->{output} || 'plain';
@@ -541,20 +544,20 @@ I<$to_file>.
 
 B<Example>:
 
-Running: 
+Running:
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::remap_file('another_name', __FILE__);
   print DB::LineCache::getline('another_name', __LINE__), "\n";
 
-gives: 
+gives:
 
   print DB::LineCache::getline('another_name', __LINE__), "\n";
 
 =cut
 
 sub remap_file($$)
-{ 
+{
     my ($from_file, $to_file) = @_;
     $file2file_remap{$from_file} = $to_file;
     cache_file($to_file);
@@ -574,7 +577,7 @@ that.
 =cut
 
 sub remap_dbline_to_file()
-{ 
+{
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
                                    TMPDIR => 1);
     push @tempfiles, $tempfile;
@@ -610,18 +613,18 @@ Return SHA1 for I<$filename>.
 
 B<Example>:
 
-In file C</tmp/foo.pl>: 
+In file C</tmp/foo.pl>:
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
   printf "SHA1 of %s is:\n%s\n", __FILE__, DB::LineCache::sha1(__FILE__);
 
-gives: 
+gives:
 
   SHA1 of /tmp/foo.pl is:
   719b1aa8d559e64bd0de70b325beff79beac32f5
 
-=cut 
+=cut
 
 sub DB::LineCache::sha1($)
 {
@@ -639,7 +642,7 @@ sub DB::LineCache::sha1($)
     $file_cache{$filename}{sha1} = $sha1;
     $sha1->hexdigest;
   }
-      
+
 =pod
 
 =head2 size
@@ -650,17 +653,17 @@ Return the number of lines in I<$filename_or_script>.
 
 B<Example>:
 
-In file C</tmp/foo.pl>: 
+In file C</tmp/foo.pl>:
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
   printf "%s has %d lines\n", __FILE__,  DB::LineCache::size(__FILE__);
 
-gives: 
+gives:
 
   /tmp/foo.pl has 3 lines
 
-=cut 
+=cut
 
 sub size($)
 {
@@ -683,17 +686,17 @@ Return file I<stat()> info in the cache for I<$filename>.
 
 B<Example>:
 
-In file C</tmp/foo.pl>: 
+In file C</tmp/foo.pl>:
 
   use Devel::Trepan::DB::LineCache;
   DB::LineCache::cache(__FILE__);
   printf("stat() info for %s is:
   dev    ino      mode nlink  uid  gid rdev size atime      ctime ...
   %4d  %8d %7o %3d %4d %4d %4d %4d %d %d",
-         __FILE__, 
+         __FILE__,
          @{DB::LineCache::stat(__FILE__)});
 
-gives: 
+gives:
 
   stat() info for /tmp/foo.pl is:
   dev    ino      mode nlink  uid  gid rdev size atime      ctime ...
@@ -702,7 +705,7 @@ gives:
 =cut
 
 sub DB::LineCache::stat($)
-{ 
+{
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
     $file_cache{$filename}{stat};
@@ -723,7 +726,7 @@ been set up for this to take effect. See L<B::CodeLines> for a way to
 get this information, basically by running an Perl invocation that has
 this set up.
 
-=cut 
+=cut
 
 sub trace_line_numbers($;$)
 {
@@ -732,7 +735,7 @@ sub trace_line_numbers($;$)
     return undef unless $fullname;
     return sort {$a <=> $b} keys %{$file_cache{$filename}{trace_nums}};
   }
-    
+
 =pod
 
 =head2 is_trace_line
@@ -753,7 +756,7 @@ sub is_trace_line($$;$)
     return undef unless $fullname;
     return !!$file_cache{$filename}{trace_nums}{$line_num};
   }
-    
+
 =pod
 
 =head2 map_file
@@ -767,7 +770,7 @@ name that I<$filename> was mapped into. Otherwise we return I<$filename>
 =cut
 
 sub map_file($)
-{ 
+{
     my $filename = shift;
     return undef unless defined($filename);
     $file2file_remap{$filename} ? $file2file_remap{$filename} : $filename
@@ -829,7 +832,7 @@ sub map_file_line($$)
 B<filename_is_eval($filename)> => I<boolean>
 
 Return I<true> if $filename matches one of the pseudo-filename strings
-that get created for by I<eval()>. 
+that get created for by I<eval()>.
 
 =cut
 
@@ -837,7 +840,11 @@ sub filename_is_eval($)
 {
     my $filename = shift;
     return 0 unless defined $filename;
-    return !!($filename =~ /^\(eval \d+\)|-e$/);
+    return !!
+	($filename =~ /^\(eval \d+\)|-e$/
+	 # SelfLoader does this:
+	 ## || $filename =~ /^sub \S+::\S+/
+	);
 }
 
 =pod
@@ -863,7 +870,7 @@ sub update_script_cache($$)
         $lines_href->{plain} = \@lines;
     } else {
         if ($script eq $DB::filename) {
-            # Should be the same as the else case, 
+            # Should be the same as the else case,
             # but just in case...
             $lines_href->{plain} = \@DB::lines;
             $string = join("\n", @DB::lines);
@@ -872,8 +879,9 @@ sub update_script_cache($$)
             $lines_href->{plain} = \@{"_<$script"};
             $string = join("\n", @{"_<$script"});
         }
+	return 0 unless length($string);
     }
-    $lines_href->{$opts->{output}} = highlight_string($string) if 
+    $lines_href->{$opts->{output}} = highlight_string($string) if
         $opts->{output} && $opts->{output} ne 'plain';
 
     my $entry = {
@@ -885,7 +893,7 @@ sub update_script_cache($$)
 
 =head2
 
-B<dualvar_lines($file_or_string, $is_file, $mark_trace)> => 
+B<dualvar_lines($file_or_string, $is_file, $mark_trace)> =>
 #  I<list of dual-var strings>
 
 # Routine to create dual numeric/string values for
@@ -941,7 +949,7 @@ sub dualvar_lines($$;$$) {
     return $dualvar_lines;
 }
 
-=head2 
+=head2
 
 B<load_file(I<$filename>)> => I<list of strings>
 
@@ -957,7 +965,7 @@ I<Note:> something similar exists in L<Enbugger> and it is useful when
 a debugger is called via Enbugger which turn on debugging late so source
 files might not have been read in.
 
-=cut 
+=cut
 sub load_file($;$) {
     my ($filename, $eval_string) = @_;
 
@@ -983,7 +991,7 @@ B<readlines(I<$filename>)> => I<list of strings>
 Return a a list of strings for I<$filename>. If we can't read
 I<$filename> retun I<undef>. Each line will have a "\n" at the end.
 
-=cut 
+=cut
 
 sub readlines($)
 {
@@ -1002,16 +1010,16 @@ sub readlines($)
 
 =head2 update_cache
 
-B<update_cache($filename, [, $opts]> 
+B<update_cache($filename, [, $opts]>
 
 Update a cache entry.  If something's wrong, return I<undef>. Return
 I<true> if the cache was updated and I<false> if not.  If
 $I<$opts-E<gt>{use_perl_d_file}> is I<true>, use that as the source for the
 lines of the file.
 
-=cut 
+=cut
 
-sub update_cache($;$) 
+sub update_cache($;$)
 {
     my ($filename, $opts) = @_;
     my $read_file = 0;
@@ -1057,11 +1065,11 @@ sub update_cache($;$)
                 for (my $i=1; $i<=$#lines; $i++) {
                     if (defined $raw_lines->[$i]) {
 			no warnings;
-                        $trace_nums->{$i} = ($raw_lines->[$i] + 0) if 
+                        $trace_nums->{$i} = ($raw_lines->[$i] + 0) if
 			    (+$raw_lines->[$i]) != 0;
                         $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
                     } else {
-                        $raw_lines->[$i] = $lines_check[$i-1] 
+                        $raw_lines->[$i] = $lines_check[$i-1]
                     }
                 }
             }
@@ -1104,7 +1112,7 @@ sub update_cache($;$)
         }
         return 0 unless defined $stat;
     }
-    if ( -r $path ) { 
+    if ( -r $path ) {
         my @lines = readlines($path);
         $lines_href = {plain => \@lines};
         if ($opts->{output} && $opts->{output} ne 'plain') {
@@ -1145,16 +1153,16 @@ unless (caller) {
     print join("\n", @{$lines}), "\n";
     $lines = getlines($script_name);
     printf "%s has %d lines\n",  $script_name,  scalar @$lines;
-    printf("Line 1 of $script_name is:\n%s\n", 
+    printf("Line 1 of $script_name is:\n%s\n",
           getline($script_name, 1));
     my $max_line = size($script_name);
-    printf("%s has %d lines via size\n",  
+    printf("%s has %d lines via size\n",
            $script_name,  scalar @$lines);
     do __FILE__;
     my @line_nums = trace_line_numbers(__FILE__);
 
     ### FIXME: add more of this stuff into unit test.
-    printf("Breakpoints for: %s:\n%s\n", 
+    printf("Breakpoints for: %s:\n%s\n",
            __FILE__, join(', ', @line_nums[0..30]));
     $lines = getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
@@ -1172,9 +1180,9 @@ unless (caller) {
     update_cache(__FILE__);
     printf "I said %s has %d lines!\n", __FILE__, size(__FILE__);
     printf "SHA1 of %s is:\n%s\n", __FILE__, sha1(__FILE__);
-    
+
     my $stat = stat(__FILE__);
-    printf("stat info size: %d, ctime %s, mode %o\n", 
+    printf("stat info size: %d, ctime %s, mode %o\n",
            $stat->size, $stat->ctime, $stat->mode);
 
     my $lines_aref = getlines(__FILE__, {output=>'term'});
@@ -1182,11 +1190,11 @@ unless (caller) {
     $DB::filename = '(eval 4)';
     my $filename = map_script($DB::filename, "\$x=1;\n\$y=2;\n\$z=3;\n");
     print "mapped eval is $filename\n";
-    printf("%s is a trace line? %d\n", __FILE__, 
+    printf("%s is a trace line? %d\n", __FILE__,
            is_trace_line(__FILE__, __LINE__-1));
-    printf("%s is a trace line? %d\n", __FILE__, 
+    printf("%s is a trace line? %d\n", __FILE__,
            is_trace_line(__FILE__, __LINE__));
-    eval "printf \"filename_is_eval: %s, %d\n\", __FILE__, 
+    eval "printf \"filename_is_eval: %s, %d\n\", __FILE__,
           filename_is_eval(__FILE__);";
     printf("filename_is_eval: %s, %d\n", __FILE__, filename_is_eval(__FILE__));
     printf("filename_is_eval: %s, %d\n", '-e', filename_is_eval('-e'));

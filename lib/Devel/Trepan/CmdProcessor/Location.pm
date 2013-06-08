@@ -1,4 +1,4 @@
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use Exporter;
 use warnings;
@@ -7,6 +7,19 @@ use rlib '../../..';
 # require_relative '../app/default'
 
 package Devel::Trepan::CmdProcessor;
+
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
+
+sub DESTROY{}
+
 use English qw( -no_match_vars );
 use Cwd 'abs_path';
 
@@ -37,7 +50,7 @@ sub canonic_file($$;$)
     return undef unless defined $filename;
     $resolve = 1 unless defined $resolve;
 
-    # For now we want resolved filenames 
+    # For now we want resolved filenames
     if ($self->{settings}{basename}) {
         my $is_eval = DB::LineCache::filename_is_eval($filename);
         return $is_eval ? $filename : (basename($filename) || $filename);
@@ -58,7 +71,7 @@ sub min($$) {
 
 # Return the text to the current source line. We use trace line
 # information to try to retrieve all of the current source line up
-# to some limit of lines. The lines returned may be colorized. 
+# to some limit of lines. The lines returned may be colorized.
 # DB::LineCache actually does the retrieval.
 sub current_source_text(;$)
 {
@@ -66,12 +79,12 @@ sub current_source_text(;$)
     $opts = {max_continue => 5} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
-    my $text        = (DB::LineCache::getline($filename, $line_number, $opts)) 
+    my $text        = (DB::LineCache::getline($filename, $line_number, $opts))
         || '';
     chomp($text);
     return $text;
 }
-  
+
 sub resolve_file_with_dir($$)
 {
     my ($self, $path_suffix) = @_;
@@ -88,8 +101,8 @@ sub resolve_file_with_dir($$)
     }
     return undef;
 }
-  
-sub text_at($;$) 
+
+sub text_at($;$)
 {
     my ($self, $opts) = @_;
     $opts = {
@@ -102,7 +115,7 @@ sub text_at($;$)
     my $filename = $self->filename();
     if (DB::LineCache::filename_is_eval($filename)) {
         if ($DB::filename eq $filename) {
-            { 
+            {
                 # Some lines in @DB::line might not be defined.
                 # So we have to turn off strict here.
                 no warnings;
@@ -114,12 +127,12 @@ sub text_at($;$)
         }
     } else {
         $text = line_at($filename, $line_no, $opts);
-        my ($map_file, $map_line) = 
+        my ($map_file, $map_line) =
             DB::LineCache->map_file_line($filename, $line_no);
     }
     $text;
   }
-  
+
 sub format_location($;$$$)
 {
     my ($self, $event, $frame, $frame_index) = @_;
@@ -133,7 +146,7 @@ sub format_location($;$$$)
     }
 
     $self->{line_no}  = $self->{frame}{line};
-    
+
     my $loc = $self->source_location_info;
     my $suffix = ($event eq 'return' && defined($DB::_[0])) ? " $DB::_[0]" : '';
     my $pkg = $self->{frame}{pkg} || '??' ;
@@ -155,7 +168,7 @@ sub print_location($;$)
         $self->msg($text, {unlimited => 1});
     }
   }
-  
+
 sub source_location_info($)
 {
     my $self = shift;
@@ -171,23 +184,33 @@ sub source_location_info($)
         $op_addr = sprintf " \@0x%x", $DB::OP_addr;
     }
     if (DB::LineCache::filename_is_eval($filename)) {
+	### FIXME: put this all into DB::LineCache
         if ($DB::filename eq $filename) {
             # Some lines in @DB::line might not be defined.
-            # So we have to turn off strict here. 
+            # So we have to turn off strict here.
             if ($filename ne '-e') {
-                no warnings;
-                my $string = join('', @DB::dbline);
-                use warnings;
-                $filename = DB::LineCache::map_script($filename, $string);
+		my $string;
+		if (@DB::dbline) {
+		    no warnings;
+		    $string = join('', @DB::dbline);
+		    use warnings;
+		} elsif ($filename =~/^sub (\S+)/) {
+		    my $func = $1;
+		    $string = $Devel::Trepan::SelfLoader::Cache{$func};
+		    $string =~ s/^\n#line 1.+\n//;
+		}
+
+                my $try_filename = DB::LineCache::map_script($filename, $string);
+		$filename = $try_filename if defined($try_filename);
             }
             $canonic_filename = $self->canonic_file($self->filename(), 0);
-            return "${canonic_filename}:${line_number} " . 
+            return "${canonic_filename}:${line_number} " .
                 "remapped $filename:$line_number$op_addr";
         }
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);
     return "${canonic_filename}:${line_number}$op_addr";
-} 
+}
 
 unless (caller()) {
     # Demo it.

@@ -12,6 +12,17 @@ require Devel::Trepan::Util;
 require Devel::Trepan::CmdProcessor;
 package Devel::Trepan::CmdProcessor;
 
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
+
+
 use vars qw(@EXPORT @ISA $HAVE_TERM_ANSIColor);
 @ISA = qw(Exporter);
 
@@ -23,7 +34,7 @@ sub confirm($$$)
 {
     my ($self, $msg, $default) = @_;
     my $intf = $self->{interfaces}[-1];
-    my $confirmed = $self->{settings}{confirm} ? 
+    my $confirmed = $self->{settings}{confirm} ?
         $intf->confirm($msg, $default) : 1;
     $intf->remove_history unless $confirmed;
     $confirmed;
@@ -50,7 +61,7 @@ sub msg($$;$) {
     my($self, $message, $opts) = @_;
     $message = $self->safe_rep($message) unless $opts->{unlimited};
     # $message = $self->perl_format($message) if $opts->{code};
-    $self->{interfaces}[-1]->msg($message) if 
+    $self->{interfaces}[-1]->msg($message) if
         defined $self->{interfaces}[-1];
 
   }

@@ -16,11 +16,11 @@ use strict;
 our @ISA;
 
 BEGIN {
-    $HAVE_DATA_PRINT = 
-        eval("use Data::Printer { colored => 1}; 1") ? 
+    $HAVE_DATA_PRINT =
+        eval("use Data::Printer { colored => 1}; 1") ?
         1 : 0;
     $HAVE_PERLTIDY   = eval {
-        require Data::Dumper::Perltidy; 
+        require Data::Dumper::Perltidy;
     } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
     push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
@@ -43,13 +43,13 @@ use constant DEFAULT_SETTINGS => {
     abbrev        => 1,      # Allow abbreviations of debugger commands?
     autoeval      => 1,      # Perl eval non-debugger commands
     autoirb       => 0,      # Go into IRB in debugger command loop
-    autolist      => 0,      # Run 'list' before entering command loop? 
-    
+    autolist      => 0,      # Run 'list' before entering command loop?
+
     basename      => 0,      # Show basename of filenames only
     confirm       => 1,      # Confirm potentially dangerous operations?
     cmddir        => [],     # Additional directories to load commands
                              # from
-    different     => 0,      # stop *only* when  different position? 
+    different     => 0,      # stop *only* when  different position?
     displayop     => 0,      # If set, show OP address in location
     debugdbgr     => 0,      # Debugging the debugger
     debugexcept   => 1,      # Internal debugging of command exceptions
@@ -57,7 +57,7 @@ use constant DEFAULT_SETTINGS => {
     debugskip     => 0,      # Internal debugging of step/next skipping
     directory     =>         # last-resort path-search for files
     '$cdir:$cwd',            # that are not fully qualified.
-    
+
     displayeval   => default_eval_display(),
                              # use Data::Dumper (dumper) or
                              # Data::Dumper::Perltidy::dumper (tidy) ?
@@ -67,10 +67,10 @@ use constant DEFAULT_SETTINGS => {
                              # means hide none. Less than 0 means show
                              # all stack entries.
 
-    highlight     => Devel::Trepan::Options::default_term(), 
+    highlight     => Devel::Trepan::Options::default_term(),
                              # Use terminal highlight? 0 or undef if off.
-      
-    maxlist       => 10,     # Number of source lines to list 
+
+    maxlist       => 10,     # Number of source lines to list
     maxstack      => 10,     # backtrace limit
     maxstring     => 150,    # Strings which are larger than this
                              # will be truncated to this length when

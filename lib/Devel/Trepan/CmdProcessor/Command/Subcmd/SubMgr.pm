@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-
-# require_relative '../../../app/complete'
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 
-use rlib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
+
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
+
 
 use File::Basename;
 use File::Spec;
@@ -21,7 +29,7 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 use constant MIN_ARGS => 0;
 use constant MAX_ARGS => undef;
-$NAME          = '?'; # FIXME: Need to define this, but should 
+$NAME          = '?'; # FIXME: Need to define this, but should
                       # pick this up from class/file name.
 use constant NEED_STACK => 0;
 
@@ -48,20 +56,20 @@ sub new($$)
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::";
     my $excluded_cmd_vars = {'$HELP' => 1, '$NAME'=>2};
     for my $field (@CMD_VARS) {
-        next if exists $excluded_cmd_vars->{$field} && 
+        next if exists $excluded_cmd_vars->{$field} &&
             $excluded_cmd_vars->{$field} == 2;
         my $sigil = substr($field, 0, 1);
         my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
         if ($sigil eq '$') {
             my $lc_field = lc $new_field;
             $self->{$lc_field} = eval "\$${class}::${new_field}";
-            next if exists $excluded_cmd_vars->{$field} || 
+            next if exists $excluded_cmd_vars->{$field} ||
                 exists $self->{$lc_field};
             $self->{$lc_field} = "\$${base_prefix}${new_field}";
         }
     }
-    my @ary = eval "${class}::ALIASES()";
-    $self->{aliases} = @ary ? [@ary] : [];
+    # my @ary = eval "${class}::ALIASES()";
+    # $self->{aliases} = @ary ? [@ary] : [];
     no strict 'refs';
     *{"${class}::Category"} = eval "sub { ${class}::CATEGORY() }";
     my $short_help = eval "${class}::SHORT_HELP()";
@@ -86,7 +94,7 @@ sub load_debugger_subcommands($$)
     $self->{cmd_basenames} = ();
     my $cmd_dir = dirname(__FILE__);
     my $parent_name = ucfirst $self->{name};
-    my $subcmd_dir = File::Spec->catfile($cmd_dir, '..', 
+    my $subcmd_dir = File::Spec->catfile($cmd_dir, '..',
                                          $parent_name . '_Subcmd');
     if (-d $subcmd_dir) {
         my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
@@ -109,12 +117,12 @@ sub load_debugger_subcommands($$)
     }
 }
 
-sub setup_subcommand($$$$) 
+sub setup_subcommand($$$$)
 {
     my ($self, $parent_name, $name) = @_;
     my $cmd_obj;
     my $cmd_name = lc $name;
-    my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" . 
+    my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" .
         "${parent_name}::${name}->new(\$self, '$cmd_name'); 1";
     if (eval $new_cmd) {
         # Add to hash of commands, and list of subcmds
@@ -128,7 +136,7 @@ sub setup_subcommand($$$$)
 }
 
 # Find subcmd in self.subcmds
-sub lookup($$;$) 
+sub lookup($$;$)
 {
     my ($self, $subcmd_prefix, $use_regexp) = @_;
     $use_regexp = 0 if scalar @_ < 3;
@@ -138,7 +146,7 @@ sub lookup($$;$)
     } elsif ($use_regexp) {
         $compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
     } else {
-        $compare = sub($) { 
+        $compare = sub($) {
             my $name = shift; 0 == index($name, $subcmd_prefix)
         };
     }
@@ -156,7 +164,7 @@ sub lookup($$;$)
 }
 
 # Show short help for a subcommand.
-sub short_help($$$;$) 
+sub short_help($$$;$)
 {
     my ($self, $subcmd_cb, $subcmd_name, $label) = @_;
     $label = 0 unless defined $label;
@@ -180,7 +188,7 @@ sub short_help($$$;$)
 # show command will be run when giving a list of all sub commands
 # of this object. Some commands have long output like "show commands"
 # so we might not want to show that.
-sub add($$;$) 
+sub add($$;$)
 {
     my ($self, $subcmd_cb, $subcmd_name) = @_;
     $subcmd_name ||= $subcmd_cb->{name};
@@ -203,7 +211,7 @@ sub help($$)
     my @subcmds     = $self->list();
 
     if ('*' eq $subcmd_name) {
-        @help_text = (sprintf("B<List of subcommands for command I<%s>:>", 
+        @help_text = (sprintf("B<List of subcommands for command I<%s>:>",
                              $self->{name}));
         my $subcmds = $self->columnize_commands(\@subcmds); chomp $subcmds;
         push @help_text, $subcmds;
@@ -212,7 +220,7 @@ sub help($$)
 
     # "help cmd subcmd". Give help specific for that subcommand.
     my $cmd = $self->lookup($subcmd_name, 0);
-    if (defined $cmd) { 
+    if (defined $cmd) {
         if ($cmd->can("help")) {
             return $cmd->help($args);
         } else {
@@ -222,7 +230,7 @@ sub help($$)
         my $proc = $self->{proc};
         my @matches = sort(grep /^$subcmd_name/, @subcmds);
         my $name = $self->{name};
-        if (0 == scalar @matches) { 
+        if (0 == scalar @matches) {
             $proc->errmsg("No ${name} subcommands found matching /^{$subcmd_name}/. Try \"help $name *\".");
             return undef;
         } elsif (1 == scalar @matches) {
@@ -246,7 +254,7 @@ sub list($) {
 
 #   # Return an Array of subcommands that can start with +arg+. If none
 #   # found we just return +arg+.
-#   # FIXME: Not used any more? 
+#   # FIXME: Not used any more?
 #   sub complete(prefix)
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
@@ -258,7 +266,7 @@ sub complete_token_with_next($$;$)
     Devel::Trepan::Complete::complete_token_with_next($subcmds, $prefix);
 }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     $self->{last_args} = $args;

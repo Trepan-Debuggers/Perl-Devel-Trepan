@@ -24,12 +24,12 @@ use constant NEED_STACK => 0;
 EOE
 }
 
-@ISA = @CMD_ISA; 
+@ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<'HELP';
-=pod 
+=pod
 
 help [I<command> [I<subcommand>]|I<expression>]
 
@@ -54,7 +54,7 @@ BEGIN {
     'breakpoints' => 'Making the program stop at certain points',
     'data'        => 'Examining data',
     'files'       => 'Specifying and examining files',
-    'running'     => 'Running the program', 
+    'running'     => 'Running the program',
     'status'      => 'Status inquiries',
     'support'     => 'Support facilities',
     'stack'       => 'Examining the call stack',
@@ -88,11 +88,11 @@ sub complete($$)
 {
     my ($self, $prefix) = @_;
     my $proc = $self->{proc};
-    my @candidates = (keys %{CATEGORIES()}, qw(* all), 
+    my @candidates = (keys %{CATEGORIES()}, qw(* all),
                       $self->command_names());
     my @matches = complete_token(\@candidates, $prefix);
-    # my @aliases = 
-    #   Devel::Trepan::Complete::complete_token_filtered($proc->{aliases}, 
+    # my @aliases =
+    #   Devel::Trepan::Complete::complete_token_filtered($proc->{aliases},
     #                                                    $prefix, \@matches);
     # sort (@matches, @aliases);
     sort @matches;
@@ -117,8 +117,8 @@ sub complete_token_with_next($$;$)
             push @result, [$cmd, $commands{$cmd}];
         } elsif ('syntax' eq $cmd) {
             my @syntax_files = @{$self->syntax_files()};
-            push @result, [$cmd, 
-                           sub { my $prefix = shift; 
+            push @result, [$cmd,
+                           sub { my $prefix = shift;
                                  $self->complete_syntax($prefix) } ];
         } else {
             push @result, [$cmd, ['*'] ];
@@ -168,18 +168,18 @@ sub show_category($$$)
         $self->msg($self->columnize_commands([sort @commands]));
         return;
     }
-    
+
     $self->section("Command class: ${category}");
     my %commands = %{$self->{proc}{commands}};
     for my $name (sort keys %commands) {
         next if $category ne $commands{$name}->Category;
-        my $short_help = defined $commands{$name}{short_help} ? 
+        my $short_help = defined $commands{$name}{short_help} ?
             $commands{$name}{short_help} : $commands{$name}->short_help;
         my $msg = sprintf("%-13s -- %s", $name, $short_help);
         $self->msg($msg);
     }
 }
-  
+
 sub syntax_files($)
 {
     my $self = shift;
@@ -202,7 +202,7 @@ sub show_command_syntax($$)
                 my @lines = $self->readlines($filename);
                 $self->{syntax_summary_help}{$name} = $lines[0];
             }
-            my $msg = sprintf("  %-8s -- %s", $name, 
+            my $msg = sprintf("  %-8s -- %s", $name,
                               $self->{syntax_summary_help}{$name});
             $self->msg($msg, {unlimited => 1});
         }
@@ -213,7 +213,7 @@ sub show_command_syntax($$)
             my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
             if ( -r $filename) {
                 my $proc = $self->{proc};
-                my $text = pod2string($filename, 
+                my $text = pod2string($filename,
                                       $proc->{settings}{highlight},
                                       $proc->{settings}{maxwidth});
                 $self->msg($text);
@@ -225,7 +225,7 @@ sub show_command_syntax($$)
 }
 
 # This method runs the command
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -238,7 +238,7 @@ sub run($$)
             $self->msg($self->columnize_commands(\@cmds));
             if (scalar keys %{$proc->{aliases}}) {
                 $self->msg('');
-                show_aliases($self) 
+                show_aliases($self)
             }
             # $self->show_macros   unless scalar @$self->{proc}->macros;
         } elsif ($cmd_name =~ /^aliases$/i) {
@@ -263,8 +263,8 @@ sub run($$)
                 $real_name = $proc->{aliases}{$cmd_name};
             }
             my $cmd_obj = $proc->{commands}{$real_name};
-            my $help_text = 
-                $cmd_obj->can('help') ? $cmd_obj->help($args) 
+            my $help_text =
+                $cmd_obj->can('help') ? $cmd_obj->help($args)
                 : $cmd_obj->{help};
             if ($help_text) {
                 $help_text = help2podstring($help_text,
@@ -272,7 +272,8 @@ sub run($$)
                                             $proc->{settings}{maxwidth});
                 chomp $help_text; chomp $help_text;
                 $self->msg($help_text) ;
-                if (scalar @{$cmd_obj->{aliases}} && scalar @$args == 2) {
+		my $aliases_ref = $cmd_obj->{aliases};
+                if ($aliases_ref && scalar @{$aliases_ref} && $args && scalar @$args == 2) {
                     $self->section("\n  Aliases:");
 		    $self->msg($self->columnize_commands($cmd_obj->{aliases}));
                 }
@@ -307,7 +308,7 @@ sub readlines($$$) {
     close FH;
     return @lines;
 }
-  
+
 #   sub show_macros
 #     section 'All macro names:'
 #     msg columnize_commands(@proc.macros.keys.sort)

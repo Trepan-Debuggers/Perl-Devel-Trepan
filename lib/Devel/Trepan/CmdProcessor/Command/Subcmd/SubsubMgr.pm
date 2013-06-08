@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2013 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 
@@ -14,7 +14,7 @@ use File::Spec;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 use strict;
-## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core. 
+## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core.
 use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES
             @SUBCMD_ISA @SUBCMD_VARS);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
@@ -40,17 +40,17 @@ sub new($$$)
         subcmds => {},
         name    => $name,
         proc    => $parent->{proc},
-        parent  => $parent, 
+        parent  => $parent,
         prefix  => \@prefix,
         cmd_str => join(' ', map {lc $_} @prefix)
     };
     # Initialization
     my $parent_name = ucfirst $parent->{name};
     my $base_prefix="Devel::Trepan::CmdProcessor::Command::$parent_name";
-    my $excluded_cmd_vars = {'$HELP' => 1, 
+    my $excluded_cmd_vars = {'$HELP' => 1,
                              '$NAME'=>2};
     for my $field (@Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS) {
-        next if exists $excluded_cmd_vars->{$field} && 
+        next if exists $excluded_cmd_vars->{$field} &&
             $excluded_cmd_vars->{$field} == 2;
         my $sigil = substr($field, 0, 1);
         my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
@@ -92,9 +92,9 @@ sub load_debugger_subsubcommands($$)
         my @files = glob(File::Spec->catfile($subcmd_dir, '*.pm'));
         for my $pm (@files) {
             my $basename = basename($pm, '.pm');
-            my $item = sprintf("%s::%s::%s", 
+            my $item = sprintf("%s::%s::%s",
                                ucfirst($cmd_name),
-                               ucfirst($parent_name), 
+                               ucfirst($parent_name),
                                ucfirst($basename));
             if (-d File::Spec->catfile(dirname($pm), $basename . '_Subcmd')) {
                 push @{$self->{subcmd_names}}, $item;
@@ -116,13 +116,13 @@ sub load_debugger_subsubcommands($$)
     }
 }
 
-sub setup_subsubcommand($$$$) 
+sub setup_subsubcommand($$$$)
 {
     my ($self, $parent, $cmd_prefix, $name) = @_;
     my $parent_name = $parent->{name};
     my $cmd_obj;
     my $cmd_name = lc $name;
-    my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" . 
+    my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" .
         "${cmd_prefix}->new(\$self, '$cmd_name'); 1";
     if (eval $new_cmd) {
         # Add to hash of commands, and list of subcmds
@@ -137,7 +137,7 @@ sub setup_subsubcommand($$$$)
 }
 
 # Find subcmd in self->subcmds
-sub lookup($$;$) 
+sub lookup($$;$)
 {
     my ($self, $subcmd_prefix, $use_regexp) = @_;
     $use_regexp = 0 if scalar @_ < 3;
@@ -147,7 +147,7 @@ sub lookup($$;$)
     } elsif ($use_regexp) {
         $compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
     } else {
-        $compare = sub($) { 
+        $compare = sub($) {
             my $name = shift; 0 == index($name, $subcmd_prefix)
         };
     }
@@ -165,7 +165,7 @@ sub lookup($$;$)
 }
 
 # Show short help for a subcommand.
-sub short_help($$$;$) 
+sub short_help($$$;$)
 {
     my ($self, $subcmd_cb, $subcmd_name, $label) = @_;
     $label = 0 unless defined $label;
@@ -189,7 +189,7 @@ sub short_help($$$;$)
 # show command will be run when giving a list of all sub commands
 # of this object. Some commands have long output like "show commands"
 # so we might not want to show that.
-sub add($$;$) 
+sub add($$;$)
 {
     my ($self, $subcmd_cb, $subcmd_name) = @_;
     $subcmd_name ||= $subcmd_cb->{name};
@@ -215,7 +215,7 @@ sub help($$)
     my @subcmds     = $self->list();
 
     if ('*' eq $subcmd_name) {
-        @help_text = (sprintf("B<List of subcommands for command I<%s>:>", 
+        @help_text = (sprintf("B<List of subcommands for command I<%s>:>",
                              $self->{cmd_str}));
 
         my $subcmds = $self->{parent}->columnize_commands(\@subcmds);
@@ -227,7 +227,7 @@ sub help($$)
 
     # "help cmd subcmd". Give help specific for that subcommand.
     my $cmd = $self->lookup($subcmd_name, 0);
-    if (defined $cmd) { 
+    if (defined $cmd) {
         if ($cmd->can("help")) {
             return $cmd->help($args);
         } else {
@@ -238,7 +238,7 @@ sub help($$)
         my @matches = sort(grep /^${subcmd_name}/, @subcmds);
         my $name = $self->{cmd_str};
 	print "HI!\n";
-        if (0 == scalar @matches) { 
+        if (0 == scalar @matches) {
             $proc->errmsg("No ${name} subcommands found matching /^{$subcmd_name}/. Try \"help\" $name.");
             return undef;
         } elsif (1 == scalar @matches) {
@@ -260,7 +260,7 @@ sub list($) {
 
 #   # Return an Array of subcommands that can start with +arg+. If none
 #   # found we just return +arg+.
-#   # FIXME: Not used any more? 
+#   # FIXME: Not used any more?
 #   sub complete(prefix)
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
@@ -273,7 +273,7 @@ sub complete_token_with_next($)
                                                              $prefix);
   }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     $self->{last_args} = $args;

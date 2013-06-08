@@ -18,13 +18,13 @@ sub summary_help($$) {
     if (defined $subcmd->{help} && !defined $subcmd->{short_help}) {
         my @lines = split("\n", $subcmd->{help});
         $short_help = $lines[0];
-        $short_help = substr($short_help, 0, -1) if 
+        $short_help = substr($short_help, 0, -1) if
             '.' eq substr($short_help, -1, 1);
     } else {
         $short_help = $subcmd->{short_help};
     }
 
-    sprintf('  %-13s -- %s', 
+    sprintf('  %-13s -- %s',
             $self->abbrev_stringify($subcmd->{name},
                                     $subcmd->{min_abbrev}),
             $short_help);

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 no warnings 'redefine';
 
-use Array::Columnize;
 use Carp ();
 use File::Basename;
 
@@ -13,6 +12,19 @@ use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
 use strict;
 package Devel::Trepan::CmdProcessor::Command;
 
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
+
+sub DESTROY {}
+
+use Array::Columnize;
 sub declared ($) {
     use constant 1.01;              # don't omit this!
     my $name = shift;
@@ -30,7 +42,7 @@ use vars @CMD_VARS;
 @ISA = qw(Exporter);
 
 @CMD_ISA  = qw(Devel::Trepan::CmdProcessor::Command);
-@EXPORT = qw(&set_name @CMD_ISA $NEED_RUNNING 
+@EXPORT = qw(&set_name @CMD_ISA $NEED_RUNNING
              $NEED_STACK @CMD_VARS declared);
 
 
@@ -63,7 +75,7 @@ sub new($$) {
         my $sigil = substr($field, 0, 1);
         my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
         if ($sigil eq '$') {
-            $self->{lc $new_field} = 
+            $self->{lc $new_field} =
                 eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
         } elsif ($sigil eq '@') {
             $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
@@ -71,6 +83,7 @@ sub new($$) {
             die "Woah - bad sigil: $sigil";
         }
     }
+    no warnings;
     my @ary = eval "${class}::ALIASES()";
     $self->{aliases} = @ary ? [@ary] : [];
     no strict 'refs';
@@ -86,10 +99,10 @@ sub new($$) {
 sub columnize_commands($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
-    my $r = Array::Columnize::columnize($commands, 
-                                       {displaywidth => $width, 
+    my $r = Array::Columnize::columnize($commands,
+                                       {displaywidth => $width,
                                         colsep => '    ',
-                                        ljust => 1, 
+                                        ljust => 1,
                                         lineprefix => '  '});
     chomp $r;
     return $r;
@@ -98,10 +111,10 @@ sub columnize_commands($$) {
 sub columnize_numbers($$) {
     my ($self, $commands) = @_;
     my $width = $self->settings->{maxwidth};
-    my $r = Array::Columnize::columnize($commands, 
-                                        {displaywidth => $width, 
+    my $r = Array::Columnize::columnize($commands,
+                                        {displaywidth => $width,
                                          colsep => ', ',
-                                         ljust => 0, 
+                                         ljust => 0,
                                          lineprefix => '  '});
     chomp $r;
     return $r;
@@ -123,7 +136,7 @@ sub errmsg($$;$) {
 
 # sub obj_const($$$) {
 #     my ($self, $obj, $name) = @_;
-#     $obj->class.const_get($name) 
+#     $obj->class.const_get($name)
 # }
 
 # Convenience short-hand for $self->{proc}->msg

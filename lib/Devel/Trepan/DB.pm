@@ -6,12 +6,14 @@
 
 use rlib '../..';
 
+# use if defined($SelfLoader::VERSION), "Devel::Trepan::SelfLoader";
+
 =pod
 
 =head1 C<DB>
 
 Devel::Trepan customized DB package. Down the line this should be split off
-and merged with DB that perl5db.pl and other use
+and merged with DB that perl5db.pl and other uses similar ilk.
 
 =cut
 

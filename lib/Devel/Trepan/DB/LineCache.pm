@@ -799,6 +799,7 @@ sub map_script($$)
         # $sha1->add($string);
         my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
                                        TMPDIR => 1);
+	return undef unless defined($string);
         print $fh $string;
         $fh->close();
         $script2file{$script} = $tempfile;

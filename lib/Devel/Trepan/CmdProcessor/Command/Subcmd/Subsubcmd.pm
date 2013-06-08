@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 # A base class for debugger subcommands.
 #
 use Exporter;
@@ -13,13 +13,13 @@ package Devel::Trepan::CmdProcessor::Command::Subsubcmd;
 use Devel::Trepan::CmdProcessor::Validate;
 
 BEGIN {
-    @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MIN_ABBREV 
+    @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MIN_ABBREV
                       $NAME $SHORT_HELP @SUBCMD_VARS
                       @SUBCMD_ISA);
 }
 use strict;
 
-my $NotImplementedMessage = 
+my $NotImplementedMessage =
     "This method must be overridden in a subsubclass";
 
 use vars qw(@SUBCMD_VARS @EXPORT @ISA @SUBCMD_ISA);
@@ -44,7 +44,7 @@ $NAME       = 'your_command_name';
 # $cmd contains the command object that this
 # command is invoked through.  A debugger field gives access to
 # the stack frame and I/O.
-sub new($$$) 
+sub new($$$)
 {
     my ($class, $parent, $name) = @_;
     my $self = {parent => $parent};
@@ -53,7 +53,7 @@ sub new($$$)
     # will change over the course of the program execution like
     # errmsg(), msg(), and msg_nocr() might. (See the note below
     # on these latter 3 methods.)
-    # 
+    #
     $self->{dbgr} = $parent->{dbgr};
     $self->{proc} = $parent->{proc};
 
@@ -64,7 +64,7 @@ sub new($$$)
         my $sigil = substr($field, 0, 1);
         my $new_field = index('$@', $sigil) >= 0 ? substr($field, 1) : $field;
         if ($sigil eq '$') {
-            $self->{lc $new_field} = 
+            $self->{lc $new_field} =
                 eval "\$${class}::${new_field} || \$${base_prefix}${new_field}";
         } elsif ($sigil eq '@') {
             $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
@@ -86,8 +86,8 @@ sub confirm($$;$) {
     return($self->{proc}->confirm($msg, $default));
 }
 
-# Set a Boolean-valued debugger setting. 
-sub run_set_bool($$;$) 
+# Set a Boolean-valued debugger setting.
+sub run_set_bool($$;$)
 {
     my ($self, $args, $default) = @_;
     $default = 1 if scalar @_ < 3;
@@ -97,7 +97,7 @@ sub run_set_bool($$;$)
     $self->run_show_bool();
 }
 
-# set an Integer-valued debugger setting. 
+# set an Integer-valued debugger setting.
 sub run_set_int($$$;$$)
 {
     my ($self, $arg, $msg_on_error, $min_value, $max_value) = @_;
@@ -106,9 +106,9 @@ sub run_set_int($$$;$$)
         $proc->errmsg('You need to supply a number.');
         return undef;
     }
-    my $val = $proc->get_an_int($arg, 
+    my $val = $proc->get_an_int($arg,
                                 {max_value => $max_value,
-                                 min_value => $min_value, 
+                                 min_value => $min_value,
                                  msg_on_error => $msg_on_error
                                 });
     if (defined ($val)) {
@@ -149,10 +149,10 @@ sub run_show_int($;$)
 #
 #   :what - the String name of what we are showing. If none is
 #           given, then we use the part of the SHORT_HELP string.
-# 
+#
 #   :value - a String value associated with "what" above. If none
 #            is given, then we pick up the value from settings.
-# 
+#
 sub run_show_val($;$)
 {
     my ($self, $opts) = @_;
@@ -168,13 +168,13 @@ sub run_show_val($;$)
 #   ["${subcmd_prefix_string} ${settings[subcmd_setting_key]}"]
 # }
 
-sub subcmd_prefix_string($) 
+sub subcmd_prefix_string($)
 {
     my $self = shift;
     join(' ', $self->{prefix});
 }
 
-sub subcmd_setting_key($) 
+sub subcmd_setting_key($)
 {
     my $self = shift;
     return $self->{subcmd_setting_key} if $self->{subcmd_setting_key};
@@ -184,7 +184,7 @@ sub subcmd_setting_key($)
 
 # Return 'on' for true and 'off' for false, and ?? for anything else.
 sub show_onoff($$)
-{ 
+{
     my ($self, $bool) = @_;
     if (!defined($bool)) {
         return 'unset';
@@ -195,7 +195,7 @@ sub show_onoff($$)
     }
 }
 
-sub set_name_prefix($$) 
+sub set_name_prefix($$)
 {
     my ($self, $class) = @_;
     my @prefix = split(/::/, $class);
@@ -206,7 +206,7 @@ sub set_name_prefix($$)
     $self->{subcmd_setting_key} = "$prefix[1]$prefix[2]";
 }
 
-sub string_in_show($) 
+sub string_in_show($)
 {
     my ($self, $bool) = @_;
     my $skip_len = length('Show ');
@@ -265,7 +265,7 @@ unless (caller) {
     # my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
     # my %cmds = %{$proc->{commands}};
     # print join(', ', keys %cmds), "\n";
-    # my $subcmd = 
+    # my $subcmd =
     #   Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
     # print join(', ', keys %{$subcmd->{settings}}), "\n";
     # print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";

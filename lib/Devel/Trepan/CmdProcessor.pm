@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
 use rlib '../..';
 
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
 package Devel::Trepan::CmdProcessor;
+
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+no warnings 'redefine';
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
 
 use English qw( -no_match_vars );
 use Exporter;
@@ -46,8 +57,8 @@ sub new($;$$$) {
     if (defined $interfaces) {
         $intf = $interfaces->[0];
     } else {
-        $intf = Devel::Trepan::Interface::User->new(undef, undef, 
-                                                    {readline => 
+        $intf = Devel::Trepan::Interface::User->new(undef, undef,
+                                                    {readline =>
                                                     $settings->{readline}});
         $interfaces = [$intf];
     }
@@ -83,7 +94,7 @@ sub new($;$$$) {
     $self->load_cmds_initialize;
     $self->running_initialize;
     $self->hook_initialize;
-    $self->{unconditional_prehooks}->insert_if_new(10, 
+    $self->{unconditional_prehooks}->insert_if_new(10,
                                                    $self->{trace_hook}[0],
                                                    $self->{trace_hook}[1]
         ) if $self->{settings}{traceprint};
@@ -122,7 +133,7 @@ sub terminated($)
 {
     my $self = shift;
     $self->msg(sprintf("%sThat's all, folks...",
-		       (defined($Devel::Trepan::PROGRAM) ? 
+		       (defined($Devel::Trepan::PROGRAM) ?
 			"${Devel::Trepan::PROGRAM}: " : '')));
 
     # breakpoint_finalize
@@ -135,7 +146,7 @@ sub ok_for_running ($$$$) {
     # Check we have frame is not null
     my $min_args = eval { $cmd->MIN_ARGS } || 0;
     if ($nargs < $min_args) {
-        my $msg = 
+        my $msg =
             sprintf("Command '%s' needs at least %d argument(s); " .
                     "got %d.", $name, $min_args, $nargs);
         $self->errmsg($msg);
@@ -143,7 +154,7 @@ sub ok_for_running ($$$$) {
     }
     my $max_args = eval { $cmd->MAX_ARGS } || undef;
     if (defined($max_args) && $nargs > $max_args) {
-        my $mess = 
+        my $mess =
             sprintf("Command '%s' needs at most %d argument(s); " .
                     "got %d.", $name, $max_args, $nargs);
         $self->errmsg($mess);
@@ -164,7 +175,7 @@ sub ok_for_running ($$$$) {
 }
 
 # Run one debugger command. 1 is returned if we want to quit.
-sub process_command_and_quit($) 
+sub process_command_and_quit($)
 {
     my $self = shift;
     my $intf_ary = $self->{interfaces};
@@ -206,7 +217,7 @@ sub process_command_and_quit($)
         # rescue IOError, Errno::EPIPE => e
         # }
     }
-    
+
     eval {
         $self->run_command($self->{current_command});
     };
@@ -214,18 +225,18 @@ sub process_command_and_quit($)
         $self->errmsg("internal error: $EVAL_ERROR")
     } else {
         # Save it to the history.
-        $intf->save_history($self->{last_command}) if 
+        $intf->save_history($self->{last_command}) if
             $self->{last_command};
     }
 }
 
-sub skip_if_next($$) 
+sub skip_if_next($$)
 {
     my ($self, $event) = @_;
     return 0 if ('line' ne $event);
     return 0 if $self->{terminated};
     return 0 if eval { no warnings; $DB::tid ne $self->{last_tid} };
-    # print  "+++event $event ", $self->{stack_size}, " ", 
+    # print  "+++event $event ", $self->{stack_size}, " ",
     #        $self->{next_level}, "\n";
     return 1 if $self->{stack_size} > $self->{next_level};
 }
@@ -241,7 +252,7 @@ sub process_commands($$$;$)
     } elsif (!defined($event)) {
         $event = 'unknown';
     }
-    
+
     my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
         handle_eval_result($self);
@@ -257,10 +268,10 @@ sub process_commands($$$;$)
         $self->frame_setup();
 
         if ($event eq 'watch') {
-            my $msg = sprintf("Watchpoint %s: %s changed", 
+            my $msg = sprintf("Watchpoint %s: %s changed",
                               $arg->id, $arg->expr);
             $self->section($msg);
-            my $old_value = defined($arg->old_value) ? $arg->old_value 
+            my $old_value = defined($arg->old_value) ? $arg->old_value
                 : 'undef';
             $msg = sprintf("old value\t%s", $old_value);
             $self->msg($msg);
@@ -272,7 +283,7 @@ sub process_commands($$$;$)
         }
 
         $next_skip = skip_if_next($self, $event);
-        unless ($next_skip) { 
+        unless ($next_skip) {
 
             # prehooks include traceprint, list, and event saving.
             $self->{unconditional_prehooks}->run;
@@ -282,7 +293,7 @@ sub process_commands($$$;$)
 
                 if ($event eq 'line') {
 
-                    # We may want to not stop because of "step n"; step different, or 
+                    # We may want to not stop because of "step n"; step different, or
                     # "next"
                     # use Enbugger; Enbugger->stop if 2 == $self->{next_level};
                     if ($self->is_stepping_skip()) {
@@ -299,13 +310,13 @@ sub process_commands($$$;$)
                     }
                 }
             }
-        
+
             $self->{prompt} = compute_prompt($self);
             $self->print_location unless $self->{settings}{traceprint} ||
                 $self->{terminated};
 
             ## $self->{eventbuf}->add_mark if $self->{settings}{tracebuffer};
-            
+
             $self->{cmdloop_prehooks}->run;
         }
     }
@@ -338,7 +349,7 @@ sub process_commands($$$;$)
 
 # run current_command, a string. @last_command is set after the
 # command is run if it is a command.
-sub run_command($$) 
+sub run_command($$)
 {
     my ($self, $current_command) = @_;
     my $eval_command = undef;
@@ -365,9 +376,9 @@ sub run_command($$)
             #   require Enbugger; Enbugger->stop();
             # }
             shift @args;
-            my $macro_expanded = 
+            my $macro_expanded =
                 $self->{macros}{$macro_cmd_name}[0]->(@args);
-            if (ref $macro_expanded eq 'ARRAY' #  && 
+            if (ref $macro_expanded eq 'ARRAY' #  &&
 #               current_command.all? {|val| val.is_a?(String)}
                 ) {
                 my @new_commands = @{$macro_expanded};
@@ -425,8 +436,8 @@ sub run_command($$)
     if ($self->{settings}{autoeval} || $eval_command) {
         my $return_type = parse_eval_sigil($current_command);
         $return_type = '$' unless $return_type;
-        my $opts = {nest              => 0, 
-                    hide_position     => 1, 
+        my $opts = {nest              => 0,
+                    hide_position     => 1,
                     fix_file_and_line => 1,
                     return_type       => $return_type};
 
@@ -436,7 +447,7 @@ sub run_command($$)
             chomp $current_command;
             $self->eval($current_command, $opts, 2);
         } else {
-            my $return_type = $DB::eval_opts->{return_type} = 
+            my $return_type = $DB::eval_opts->{return_type} =
                 $opts->{return_type};
             if ('$' eq $opts->{return_type}) {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
@@ -470,7 +481,7 @@ unless (caller) {
     $proc->msg("Hi, there!");
     $proc->errmsg(['Two', 'lines']);
     $proc->errmsg("Something wrong?");
-    for my $fn (qw(errmsg msg section)) { 
+    for my $fn (qw(errmsg msg section)) {
         $proc->$fn('testing');
     }
     $DB::level = 1;

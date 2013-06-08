@@ -68,12 +68,12 @@ use Devel::Trepan::Util qw(hash_merge);
 # {
 #     my ($self, $arg, $opts)= @_;
 #     $opts ||={};
-      
+
 #     return $opts->{default} unless $arg;
 #     $opts = hash_merge($opts, DEFAULT_GET_INT_OPTS);
 #     my $val = $arg ? $self->get_int_noerr($arg) : $opts->{default};
 #     unless ($val) {
-#         if ($opts->{cmdname}) { 
+#         if ($opts->{cmdname}) {
 #           my $msg = sprintf("Command '%s' expects an integer; " +
 #                             "got: %s.", $opts->{cmdname}, $arg);
 #           $self->errmsg($msg);
@@ -82,18 +82,18 @@ use Devel::Trepan::Util qw(hash_merge);
 #         }
 #         return undef;
 #       }
-      
+
 #     if ($val < $opts->{min_value}) {
 #         if ($opts->{cmdname}) {
 #           my $msg = sprintf("Command '%s' expects an integer at least" .
-#                           ' %d; got: %d.', 
-#                           $opts->{cmdname}, $opts->{min_value}, 
+#                           ' %d; got: %d.',
+#                           $opts->{cmdname}, $opts->{min_value},
 #                           $opts->{default});
 #         $self->errmsg($msg);
 #       } else {
 #           my $msg = sprintf("Expecting a positive integer at least" .
-#                             ' %d; got: %d', 
-#                             $opts->{min_value}, $opts->{default});  
+#                             ' %d; got: %d',
+#                             $opts->{min_value}, $opts->{default});
 #           $self->errmsg($msg);
 #         }
 #         return undef;
@@ -120,13 +120,13 @@ sub get_int_list($$;$)
     $opts = {} unless defined $opts;
     map {$self->get_an_int($_, $opts)} @{$args}; # .compact
 }
-    
+
 # Eval arg and it is an integer return the value. Otherwise
 # return undef;
 sub get_int_noerr($$)
 {
     my ($self, $arg) = @_;
-    my $val = eval { 
+    my $val = eval {
         no warnings 'all';
         eval($arg);
     };
@@ -178,13 +178,13 @@ sub get_int_noerr($$)
 #           vm_offset = ary.size > 1 ? ary[1] : ary[0]
 #           line_no   = position
 #         elsif found_iseq = find_iseqs_with_lineno(filename, position)
-#           return position_to_line_and_offset(found_iseq, filename, position, 
+#           return position_to_line_and_offset(found_iseq, filename, position,
 #                                              offset_type)
 #         elsif found_iseq = find_iseq_with_line_from_iseq(iseq, position)
-#           return position_to_line_and_offset(found_iseq, filename, position, 
+#           return position_to_line_and_offset(found_iseq, filename, position,
 #                                              offset_type)
 #         else
-#           errmsg("Unable to find offset for line #{position}\n\t" + 
+#           errmsg("Unable to find offset for line #{position}\n\t" +
 #                  "in #{iseq.name} of file #{filename}")
 #           return [nil, nil]
 #         }
@@ -221,11 +221,11 @@ sub get_int_noerr($$)
 #                         }
 #       return [nil] * 5 unless break_cmd_parse
 #       tail = [break_cmd_parse.condition, break_cmd_parse.negate]
-#       meth_or_frame, file, position, offset_type = 
+#       meth_or_frame, file, position, offset_type =
 #         parse_position(break_cmd_parse.position)
 #       if meth_or_frame
 #         if iseq = meth_or_frame.iseq
-#           iseq, line_no, vm_offset = 
+#           iseq, line_no, vm_offset =
 #             position_to_line_and_offset(iseq, file, position, offset_type)
 #           if vm_offset && line_no
 #             return [iseq, line_no, vm_offset] + tail
@@ -237,18 +237,18 @@ sub get_int_noerr($$)
 #         if :line == offset_type
 #           iseq = find_iseqs_with_lineno(file, position)
 #           if iseq
-#             junk, line_no, vm_offset = 
+#             junk, line_no, vm_offset =
 #               position_to_line_and_offset(iseq, file, position, offset_type)
 #             return [@frame.iseq, line_no, vm_offset] + tail
 #           else
-#             errmsg("Unable to find instruction sequence for" + 
+#             errmsg("Unable to find instruction sequence for" +
 #                    " position #{position} in #{file}")
 #           }
 #         else
 #           errmsg "Come back later..."
 #         }
-#       elsif @frame.file == file 
-#         line_no, vm_offset = position_to_line_and_offset(@frame.iseq, position, 
+#       elsif @frame.file == file
+#         line_no, vm_offset = position_to_line_and_offset(@frame.iseq, position,
 #                                                          offset_type)
 #         return [@frame.iseq, line_no, vm_offset] + tail
 #       else
@@ -259,7 +259,7 @@ sub get_int_noerr($$)
 
 # Return true if arg is 'on' or 1 and false arg is 'off' or 0.
 # Any other value is returns undef.
-sub get_onoff($$;$$) 
+sub get_onoff($$;$$)
 {
     my ($self, $arg, $default, $print_error) = @_;
     $print_error = 1 unless defined $print_error;
@@ -288,8 +288,8 @@ sub is_method($$)
     return !!$line_num;
 }
 
-#     # FIXME: this is a ? method but we return 
-#     # the method value. 
+#     # FIXME: this is a ? method but we return
+#     # the method value.
 #     sub method?(meth)
 #       get_method(meth)
 #     }
@@ -300,7 +300,7 @@ sub is_method($$)
 #        fn [rest..]
 # returns (filename, line_num, fn, rest)
 # NOTE: Test for failure should only be on $line_num
-sub parse_position($$;$) 
+sub parse_position($$;$)
 {
     my ($self, $args, $validate_line_num) = @_;
     my @args = @$args;
@@ -321,7 +321,7 @@ sub parse_position($$;$)
         $fn = undef;
     } else {
         ($filename, $fn, $line_num) = DB::find_subline($first_arg) ;
-        unless ($line_num) { 
+        unless ($line_num) {
             $filename = $first_arg;
             my $mapped_filename = DB::LineCache::map_file($filename);
             if (-r $mapped_filename) {
@@ -331,12 +331,12 @@ sub parse_position($$;$)
                     $line_num = shift @args;
                 }
                 unless ($line_num =~ /\d+/) {
-                    $self->errmsg("Got filename $first_arg, " . 
+                    $self->errmsg("Got filename $first_arg, " .
                                   "expecting $line_num to a line number");
                     return ($filename, undef, undef, 0, @args);
                 }
             } else {
-                $self->errmsg("Expecting $first_arg to be a file " . 
+                $self->errmsg("Expecting $first_arg to be a file " .
                               "or function name");
                 return ($filename, undef, $fn, 0, @args);
             }
@@ -363,7 +363,7 @@ sub parse_position($$;$)
 #           true
 #         else
 #           matches = find_scripts(filename)
-#           if matches.size == 1 
+#           if matches.size == 1
 #             LineCache.remap_file(filename, matches[0])
 #             true
 #           else
@@ -380,15 +380,15 @@ unless (caller) {
     require Devel::Trepan::DB;
     my @onoff = qw(1 0 on off);
     for my $val (@onoff) {
-        printf "onoff(${val}) = %s\n", get_onoff('bogus', $val); 
+        printf "onoff(${val}) = %s\n", get_onoff('bogus', $val);
     }
-    
+
     for my $val (qw(1 1E bad 1+1 -5)) {
         my $result = get_int_noerr('bogus', $val);
         $result = '<undef>' unless defined $result;
         print "get_int_noerr(${val}) = $result\n";
     }
-    
+
     no warnings 'redefine';
     require Devel::Trepan::CmdProcessor;
     my $proc  = Devel::Trepan::CmdProcessor::new(__PACKAGE__);
@@ -409,7 +409,7 @@ unless (caller) {
         return @call_values;
     }
     my @call_values = foo();
-    
+
     $DB::package = 'main';
         @position = $proc->parse_position([__FILE__, __LINE__], 0);
     print_position;

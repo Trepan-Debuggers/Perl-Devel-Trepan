@@ -284,9 +284,11 @@ sub cache_script($;$)
 {
     my ($script, $opts) = @_;
     $opts = {} unless defined $opts;
-    update_script_cache($script, $opts) unless
-        (exists $script_cache{$script});
-    $script;
+    if (exists $script_cache{$script}) {
+	return 1;
+    } else {
+	return update_script_cache($script, $opts);
+    }
 }
 
 =pod
@@ -399,6 +401,7 @@ sub getline($$;$)
     ($filename, $line_number) = map_file_line($filename, $line_number);
     my $lines = getlines($filename, $opts);
     # Adjust for 0-origin arrays vs 1 origin line numbers
+    return undef unless $lines;
     my $max_index = scalar(@$lines) - 1;
     my $index = $line_number - 1;
     if (defined $lines && @$lines && $index >= 0 && $index <= $max_index) {
@@ -844,7 +847,7 @@ sub filename_is_eval($)
     return !!
 	($filename =~ /^\(eval \d+\)|-e$/
 	 # SelfLoader does this:
-	 ## || $filename =~ /^sub \S+::\S+/
+	 || $filename =~ /^sub \S+::\S+/
 	);
 }
 
@@ -871,10 +874,19 @@ sub update_script_cache($$)
         $lines_href->{plain} = \@lines;
     } else {
         if ($script eq $DB::filename) {
+	    ### FIXME: for thefuture
+	    # ## SelfLoader evals
+	    # if (!@DB::line && $script =~/^sub (\S+)/) {
+	    # 	my $func = $1;
+	    # 	my $string = $Devel::Trepan::SelfLoader::Cache{$func};
+	    # 	$string =~ s/^\n#line 1.+\n//;
+	    # 	@DB::line = split(/\n/, $string);
+	    # }
+
             # Should be the same as the else case,
             # but just in case...
-            $lines_href->{plain} = \@DB::lines;
-            $string = join("\n", @DB::lines);
+            $lines_href->{plain} = \@DB::line;
+            $string = join("\n", @DB::line);
         } else {
             no strict;
             $lines_href->{plain} = \@{"_<$script"};
@@ -1086,13 +1098,6 @@ sub update_cache($;$)
                 $lines_href->{$opts->{output}} = \@highlight_lines;
                 use strict; use warnings;
             }
-            my $entry = {
-                stat       => $stat,
-                lines_href => $lines_href,
-                path       => $path,
-                incomplete => $incomplete,
-                trace_nums => $trace_nums,
-            };
             $read_file = 1;
         }
     }

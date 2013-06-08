@@ -189,17 +189,21 @@ sub source_location_info($)
             # Some lines in @DB::line might not be defined.
             # So we have to turn off strict here.
             if ($filename ne '-e') {
-		my $string;
+		my $string = undef;
 		if (@DB::dbline) {
 		    no warnings;
 		    $string = join('', @DB::dbline);
 		    use warnings;
 		} elsif ($filename =~/^sub (\S+)/) {
 		    my $func = $1;
-		    $string = $Devel::Trepan::SelfLoader::Cache{$func};
-		    $string =~ s/^\n#line 1.+\n//;
+		    if (%SelfLoader::Cache) {
+			$string = $SelfLoader::Cache{$func};
+			$string =~ s/^\n#line 1.+\n//;
+		    }
 		}
-
+		unless (defined($string)) {
+		    return "${filename}:${line_number}$op_addr";
+		}
                 my $try_filename = DB::LineCache::map_script($filename, $string);
 		$filename = $try_filename if defined($try_filename);
             }

@@ -1,4 +1,3 @@
-package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
@@ -18,30 +17,30 @@ them (well, the first 10^9) are returned if C<count> is omitted.
 
 This routine returns a list of hashes, from most-recent to least-recent
 stack frame. Each has the following keys and values:
-    
+
 =over 4
 
-=item * 
+=item *
 
 C<wantarray> - C<.> (null), C<$> (scalar), or C<@> (array)
 
-=item * 
+=item *
 
 C<fn>   - subroutine name, or C<eval> information
 
-=item * 
+=item *
 
 C<args> - undef, or a reference to an array of arguments
 
-=item * 
+=item *
 
 C<file> - the file in which this item was defined (if any)
 
-=item * 
+=item *
 
 C<line> - the line on which it was defined
 
-=item * 
+=item *
 
 C<evaltext> - eval text if we are in an eval.
 
@@ -53,7 +52,7 @@ C<evaltext> - eval text if we are in an eval.
 # subroutine args.
 sub backtrace($;$$$) {
     my ($self, $skip, $count, $scan_for_DB_sub) = @_;
-    $skip = 0 unless defined($skip);  
+    $skip = 0 unless defined($skip);
     $count = 1e9 unless defined($count);
 
     $scan_for_DB_sub ||= 1;
@@ -64,7 +63,7 @@ sub backtrace($;$$$) {
 
     my $i=0;
     if ($scan_for_DB_sub) {
-        my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB'; 
+        my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
         while (my ($pkg, $file, $line, $fn) = caller($i++)) {
             if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
                 $i--;
@@ -89,13 +88,13 @@ sub backtrace($;$$$) {
     # number of stack frames, or we run out - caller() returns nothing - we
     # quit.
     # Up the stack frame index to go back one more level each time.
-    while ($i <= $count and 
-           ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext, 
+    while ($i <= $count and
+           ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext,
 	    $is_require) = caller($i))
     {
         ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
         $i++;
-        next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' || 
+        next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' ||
 				 $file =~ m{Devel/Trepan/DB/Sub\.pm$});
         # Go through the arguments and save them for later.
         @a = ();
@@ -104,7 +103,7 @@ sub backtrace($;$$$) {
             if ( not defined $arg ) {    # undefined parameter
                 push @a, "undef";
             }
-            
+
             elsif ( $nothard and tied $arg ) {    # tied parameter
                 push @a, "tied";
             }
@@ -114,58 +113,58 @@ sub backtrace($;$$$) {
             else {                                       # can be stringified
                 local $_ =
                     "$arg";    # Safe to stringify now - should not call f().
-                
+
                 # Backslash any single-quotes or backslashes.
                 s/([\'\\])/\\$1/g;
-                
+
                 # Single-quote it unless it's a number or a colon-separated
                 # name.
                 s/(.*)/'$1'/s
                     unless /^(?: -?[\d.]+ | \*[\w:]* )$/x;
-                
+
                 # Turn high-bit characters into meta-whatever.
                 s/([\200-\377])/sprintf("M-%c",ord($1)&0177)/eg;
-                
+
                 # Turn control characters into ^-whatever.
                 s/([\0-\37\177])/sprintf("^%c",ord($1)^64)/eg;
-                
+
                 push( @a, $_ );
             } ## end else [ if (not defined $arg)
         } ## end for $arg (@args)
-        
+
         # If $wantarray is true, this is array (@)context.
         # If $wantarray is false, this is scalar ($) context.
         # If neither, $wantarray isn't defined. (This is apparently a 'can't
         # happen' trap.)
         $wantarray = $wantarray ? '@' : ( defined $wantarray ? "\$" : '.' );
-        
+
         # if the sub has args ($hasargs true), make an anonymous array of the
         # dumped args.
         $args_ary = $hasargs ? [@a] : undef;
-        
+
         # remove trailing newline-whitespace-semicolon-end of line sequence
         # from the eval text, if any.
         $evaltext =~ s/\n\s*\;\s*\Z// if $evaltext;
-        
+
         # Escape backslashed single-quotes again if necessary.
         $evaltext =~ s/([\\\'])/\\$1/g if $evaltext;
-        
+
         # if the require flag is true, the eval text is from a require.
         if ($is_require) {
             $fn = "require '$evaltext'";
         }
-        
+
         # if it's false, the eval text is really from an eval.
         elsif ( defined $is_require ) {
             $fn = "eval '$evaltext'";
         }
-        
+
         # If the sub is '(eval)', this is a block eval, meaning we don't
         # know what the eval'ed text actually was.
         elsif ( $fn eq '(eval)' ) {
             $fn = "eval {...}";
         }
-        
+
         # Stick the collected information into @callstack a hash reference.
         push(@callstack,
              {
@@ -178,12 +177,12 @@ sub backtrace($;$$$) {
                  wantarray => $wantarray,
              }
             );
-        
+
         # Stop processing frames if the user hit control-C.
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
 
-    # The function and args for the stopped line is DB::DB, 
+    # The function and args for the stopped line is DB::DB,
     # but we want it to be the function and args of the last call.
     # And the function and args for the file and line that called us
     # should also be the prior function and args.

@@ -874,14 +874,14 @@ sub update_script_cache($$)
         $lines_href->{plain} = \@lines;
     } else {
         if ($script eq $DB::filename) {
-	    ### FIXME: for thefuture
-	    # ## SelfLoader evals
-	    # if (!@DB::line && $script =~/^sub (\S+)/) {
-	    # 	my $func = $1;
-	    # 	my $string = $Devel::Trepan::SelfLoader::Cache{$func};
-	    # 	$string =~ s/^\n#line 1.+\n//;
-	    # 	@DB::line = split(/\n/, $string);
-	    # }
+	    ## SelfLoader evals
+	    if (!@DB::line && $script =~/^sub (\S+)/) {
+	    	my $func = $1;
+	    	my $string = $Devel::Trepan::SelfLoader::Cache{$func};
+		return 0 unless $string;
+	    	$string =~ s/^\n#line 1.+\n//;
+	    	@DB::line = split(/\n/, $string);
+	    }
 
             # Should be the same as the else case,
             # but just in case...

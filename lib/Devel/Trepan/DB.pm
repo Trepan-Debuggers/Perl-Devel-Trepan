@@ -6,7 +6,7 @@
 
 use rlib '../..';
 
-# use if defined($SelfLoader::VERSION), "Devel::Trepan::SelfLoader";
+# use Devel::Trepan::SelfLoader;
 
 =pod
 

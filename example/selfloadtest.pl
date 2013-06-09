@@ -2,8 +2,6 @@
 use SelfLoader;
 use strict; use warnings;
 
-package main;
-
 printf "%d\n", F_Undo();
 F_Also();
 

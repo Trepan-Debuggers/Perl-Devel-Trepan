@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
 # Debugger user/command-oriented input possibly attached to IO-style
 # input or GNU Readline.
-# 
+#
 
 use warnings; use strict;
 use Exporter;
@@ -14,49 +14,43 @@ use rlib '../../..';
 use Devel::Trepan::Util qw(hash_merge);
 use Devel::Trepan::IO;
 
-## FIXME: REVERT TERM_READLINE5
-use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE $HAVE_TERM_READLINE5);
+use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
 @ISA = qw(Devel::Trepan::IO::InputBase Exporter);
 @EXPORT = qw($HAVE_TERM_READLINE);
 
-BEGIN {
-    $ENV{'PERL_RL'} ||= 'perl';
-    # We will clean this up when Florian and Jordan get their acts together.
-    ## FIXME: REVERT TERM_READLINE5
-    $HAVE_TERM_READLINE5 = eval("use Term::ReadLine::Perl5; 1") ? 1 : 0;
-    if ($HAVE_TERM_READLINE5) {
-	$HAVE_TERM_READLINE = 'Perl';
-    } else {
-	$HAVE_TERM_READLINE = eval("use Term::ReadLine; 1") ? 1 : 0 
-    }
+sub term_readline_capability {
+    # FIXME: Revist.
+    # Term::ReadLine::Perl5 isn't stable yet. So for now to use
+    # Term::ReadLine::Perl5, you need to have this package installed
+    # as well as setting environment variable PERL_RL to 'Perl5'.
+    #
+    my $have_term_readline =
+	!! eval q(use Term::ReadLine::Perl5; $ENV{PERL_RL} && $ENV{PERL_RL} eq 'Perl5');
+    return 'Perl5' if $have_term_readline;
 
-    sub GLOBAL_have_term_readline {
-        if (!defined($HAVE_TERM_READLINE)) {
-            my $term = Term::ReadLine->new('testing');
-            if ($term->ReadLine eq 'Term::ReadLine::Perl') {
-                $HAVE_TERM_READLINE = $Term::ReadLine::Perl::term ? 0 : 'Perl';
-            } elsif ($term->ReadLine eq 'Term::ReadLine::Gnu') {
-                $HAVE_TERM_READLINE = 'Gnu';
-            } else {
-                $HAVE_TERM_READLINE = 0;
-            }
-            # Don't know how to close $term
-            $term = undef;
-        }
-        return $HAVE_TERM_READLINE;
+    if ($ENV{PERL_RL}) {
+	return eval qq(use Term::ReadLine; 1);
+    } else {
+	# Prefer Term::ReadLine::Perl for Term::Readline
+	foreach my $ilk (qw(Perl Gnu)) {
+	    return $ilk if eval qq(use Term::ReadLine::$ilk; 1);
+	}
+	return 'Stub' if eval qq(use Term::ReadLine; 1);
     }
+    return 0;
 }
 
-my $readline_finalized = 0;
+BEGIN { $HAVE_TERM_READLINE = term_readline_capability(); }
+
 sub new($;$$) {
     my ($class, $inp, $opts) = @_;
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
-    if ($opts->{readline} && GLOBAL_have_term_readline()) {
+    if ($opts->{readline} && $HAVE_TERM_READLINE) {
         my $rc = 0;
         $rc = eval {
-	    ## FIXME: REVERT TERM_READLINE5
-	    if ($HAVE_TERM_READLINE5) {
+	    ## FIXME: Simplfiy after Term::ReadLine::Perl5 is in Term::ReadLine
+	    if ($HAVE_TERM_READLINE eq 'Perl5') {
 		$self->{readline} = Term::ReadLine::Perl5->new('trepan.pl');
 	    } else {
 		$self->{readline} = Term::ReadLine->new('trepan.pl');
@@ -77,13 +71,13 @@ sub new($;$$) {
     return $self;
 }
 
-sub have_term_readline($) 
+sub have_term_readline($)
 {
     my $self = shift;
     $self->{term_readline} && (exists($ENV{'TERM'}) && $ENV{'TERM'} ne 'dumb');
 }
 
-sub want_term_readline($) 
+sub want_term_readline($)
 {
     my $self = shift;
     $self->{term_readline};
@@ -94,7 +88,7 @@ sub is_interactive($)  {
     return -t $self->{input};
 }
 
-# Read a line of input. EOFError will be raised on EOF.  
+# Read a line of input. EOFError will be raised on EOF.
 # Prompt is ignored if we don't have GNU readline. In that
 # case, it should have been handled prior to this call.
 sub readline($;$) {
@@ -110,11 +104,11 @@ sub readline($;$) {
     }
     return $line;
 }
-    
+
 # Demo
 unless (caller) {
     my $in = __PACKAGE__->new(*main::STDIN, {line_edit => 1});
-    require Data::Dumper; import Data::Dumper; 
+    require Data::Dumper; import Data::Dumper;
     print Dumper($in), "\n";
     printf "Is interactive: %s\n", ($in->is_interactive ? "yes" : "no");
     printf "Have Term::ReadLine: %s\n", ($HAVE_TERM_READLINE ? "yes" : "no");

@@ -1,8 +1,16 @@
 Artistic
-bin/trepan.pl
 Build.PL			Proto Build creator
 ChangeLog
 Changes
+GNUmakefile
+MANIFEST			This list of files
+META.json
+META.yml
+Makefile.PL
+README				README in perlpod format for CPAN
+README.md			README in Markdown format for github
+bin/trepan.pl
+example/TCPPack.pm
 example/action-bug.pl
 example/eval.pl
 example/except-bug1.pl
@@ -15,11 +23,10 @@ example/my.pl
 example/next2.pl
 example/nexting.pl
 example/our.pl
+example/selfloadtest.pl
 example/signal.pl
-example/TCPPack.pm
 example/test-module.pm
 example/test-require.pl
-GNUmakefile
 gpl-2.0.txt
 ignore.txt
 lib/Devel/Trepan.pm
@@ -47,11 +54,11 @@ lib/Devel/Trepan/CmdProcessor/Command/Finish.pm
 lib/Devel/Trepan/CmdProcessor/Command/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Handle.pm
 lib/Devel/Trepan/CmdProcessor/Command/Help.pm
+lib/Devel/Trepan/CmdProcessor/Command/Help/README
 lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod
-lib/Devel/Trepan/CmdProcessor/Command/Help/README
 lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod
 lib/Devel/Trepan/CmdProcessor/Command/Info.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
@@ -101,6 +108,8 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/Path.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm
@@ -137,8 +146,8 @@ lib/Devel/Trepan/CmdProcessor/Command/Source.pm
 lib/Devel/Trepan/CmdProcessor/Command/Step.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm
-lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
 lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm
+lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm
 lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm
 lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
@@ -164,13 +173,9 @@ lib/Devel/Trepan/DB/Colors.pm
 lib/Devel/Trepan/DB/Display.pm
 lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
+lib/Devel/Trepan/DB/SelfLoader.pm
 lib/Devel/Trepan/DB/Sub.pm
-lib/Devel/Trepan/Interface.pm
-lib/Devel/Trepan/Interface/Client.pm
-lib/Devel/Trepan/Interface/ComCodes.pm
-lib/Devel/Trepan/Interface/Script.pm
-lib/Devel/Trepan/Interface/Server.pm
-lib/Devel/Trepan/Interface/User.pm
+lib/Devel/Trepan/DB/Use.pm
 lib/Devel/Trepan/IO.pm
 lib/Devel/Trepan/IO/InOutBase.pm
 lib/Devel/Trepan/IO/Input.pm
@@ -180,6 +185,12 @@ lib/Devel/Trepan/IO/StringArray.pm
 lib/Devel/Trepan/IO/TCPClient.pm
 lib/Devel/Trepan/IO/TCPPack.pm
 lib/Devel/Trepan/IO/TCPServer.pm
+lib/Devel/Trepan/Interface.pm
+lib/Devel/Trepan/Interface/Client.pm
+lib/Devel/Trepan/Interface/ComCodes.pm
+lib/Devel/Trepan/Interface/Script.pm
+lib/Devel/Trepan/Interface/Server.pm
+lib/Devel/Trepan/Interface/User.pm
 lib/Devel/Trepan/Options.pm
 lib/Devel/Trepan/Pod2Text.pm
 lib/Devel/Trepan/Position.pm
@@ -191,14 +202,9 @@ lib/Devel/Trepan/Terminated.pm
 lib/Devel/Trepan/Util.pm
 lib/Devel/Trepan/Version.pm
 lib/Devel/Trepan/WatchMgr.pm
-MANIFEST			This list of files
-META.json
-META.yml
-README				README in perlpod format for CPAN
-README.md			README in Markdown format for github
 t/00test-pod.t
-t/10test-brkptmgr.t
-t/10test-cmd-complete.t		Note: t/10*.t tests are unit tests
+t/10test-brkptmgr.t		Note: t/10*.t tests are unit tests
+t/10test-cmd-complete.t
 t/10test-cmd-kill.t
 t/10test-cmd-macro.t
 t/10test-complete.t
@@ -224,9 +230,9 @@ t/10test-sighandler.t
 t/10test-util.t
 t/10test-validate.t
 t/10test-watchmgr.t
-t/20test-__FILE__.t
+t/20test-__FILE__.t 		Note: t/20*.t tests are integration tests
 t/20test-action.t
-t/20test-alias.t		Note: t/20*.t tests are integration tests
+t/20test-alias.t
 t/20test-autoeval.t
 t/20test-autolist.t
 t/20test-break.t
@@ -254,6 +260,7 @@ t/20test-step.t
 t/20test-trace.t
 t/20test-trepanpl-opts.t
 t/20test-watch1.t
+t/Helper.pm			Helper routine for integration tests
 t/data/__FILE__.cmd
 t/data/__FILE__.right
 t/data/action.cmd
@@ -328,5 +335,3 @@ t/data/watch1.cmd
 t/data/watch1.right
 t/data/watch2.cmd
 t/data/watch2.right
-t/Helper.pm			Helper routine for integration tests
-Makefile.PL

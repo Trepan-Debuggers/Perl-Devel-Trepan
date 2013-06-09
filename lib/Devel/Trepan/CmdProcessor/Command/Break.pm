@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
-use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::DB::Sub;
 # require_relative '../../app/condition'
 
 package Devel::Trepan::CmdProcessor::Command::Break;
+use Devel::Trepan::DB::LineCache;
 use English qw( -no_match_vars );
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
@@ -26,7 +26,7 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<'HELP';
-=pod 
+=pod
 
 B<break> [I<location>] [B<if> I<condition>]
 
@@ -37,7 +37,7 @@ point. An optional condition may be given.
 
  break                  # set a breakpoint on the current line
  break gcd              # set a breakpoint in function gcd
- break gcd if $a == 1   # set a breakpoint in function gcd with 
+ break gcd if $a == 1   # set a breakpoint in function gcd with
                         # condition $a == 1
  break 10               # set breakpoint on line 10
 
@@ -47,14 +47,14 @@ See also C<help breakpoints>.
 =cut
 HELP
 
-# FIXME: Should we include all files? 
+# FIXME: Should we include all files?
 # Combine with LIST completion.
 sub complete($$)
 {
     my ($self, $prefix) = @_;
     my $filename = $self->{proc}->filename;
-    my @completions = sort(('.', DB::LineCache::file_list, DB::subs,
-                            DB::LineCache::trace_line_numbers($filename)));
+    my @completions = sort(('.', file_list, DB::subs,
+                            trace_line_numbers($filename)));
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
@@ -89,7 +89,7 @@ sub run($$) {
                 }
             }
         } else {
-            # $arg_count == 1. 
+            # $arg_count == 1.
             $line_or_fn = $args[0];
             if ($line_or_fn =~ /^\d+/) {
                 $filename = $DB::filename;
@@ -98,8 +98,8 @@ sub run($$) {
                 if (scalar(@matches) == 1) {
                     $filename = $matches[0][0];
                 } else {
-                    my $canonic_name = DB::LineCache::map_file($args[0]);
-                    if (DB::LineCache::is_cached($canonic_name)) {
+                    my $canonic_name = map_file($args[0]);
+                    if (is_cached($canonic_name)) {
                         $filename = $canonic_name;
                     }
                 }
@@ -115,7 +115,7 @@ sub run($$) {
                 shift @args;
                 $condition = join(' ', @args);
             } else {
-                $proc->errmsg("Expecting 'if' to start breakpoint condition;" . 
+                $proc->errmsg("Expecting 'if' to start breakpoint condition;" .
                               " got ${args[0]}");
             }
         }
@@ -129,11 +129,11 @@ sub run($$) {
                 return unless $force;
             }
         }
-        $bp = $self->{dbgr}->set_break($filename, $line_or_fn, 
+        $bp = $self->{dbgr}->set_break($filename, $line_or_fn,
                                        $condition, undef, undef, undef, $force);
     }
     if (defined($bp)) {
-            my $prefix = $bp->type eq 'tbrkpt' ? 
+            my $prefix = $bp->type eq 'tbrkpt' ?
                 'Temporary breakpoint' : 'Breakpoint' ;
             my $id = $bp->id;
             my $filename = $proc->canonic_file($bp->filename);
@@ -142,8 +142,7 @@ sub run($$) {
             $proc->msg("$prefix $id set in $filename at line $line_num");
             # Warn if we are setting a breakpoint on a line that starts
             # "use.."
-            my $text = DB::LineCache::getline($bp->filename, $line_num, 
-                                              {output => 'plain'});
+            my $text = getline($bp->filename, $line_num, {output => 'plain'});
             if (defined($text) && $text =~ /^\s*use\s+/) {
                 $proc->msg("Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.");
             }
@@ -155,17 +154,17 @@ unless (caller) {
     require Devel::Trepan::DB;
     require Devel::Trepan::Core;
     my $db = Devel::Trepan::Core->new;
-    my $intf = Devel::Trepan::Interface::User->new(undef, undef, 
+    my $intf = Devel::Trepan::Interface::User->new(undef, undef,
                                                    {readline => 0});
     my $proc = Devel::Trepan::CmdProcessor->new([$intf], $db);
     $proc->{stack_size} = 0;
     my $cmd = __PACKAGE__->new($proc);
 
-    eval { 
+    eval {
       sub db_setup() {
           no warnings 'once';
           $DB::caller = [caller];
-          ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine) 
+          ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine)
               = @{$DB::caller};
       }
     };

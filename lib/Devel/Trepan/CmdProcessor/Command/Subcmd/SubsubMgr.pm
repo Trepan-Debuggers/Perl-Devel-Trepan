@@ -102,7 +102,8 @@ sub load_debugger_subsubcommands($$)
                 push @{$self->{cmd_names}}, $item;
                 push @{$self->{cmd_basenames}}, $basename;
             }
-            my $rc = eval "require '$pm' || 1";
+	    my $rc=0;
+            eval{require "$pm"; $rc=1};
             if ($rc eq 'Skip me!') {
                 ;
             } elsif ($rc) {

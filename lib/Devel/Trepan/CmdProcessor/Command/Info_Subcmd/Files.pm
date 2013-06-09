@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -35,7 +35,7 @@ info files [{I<filename>|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
 
 Show information about the current file. If no filename is given and
 the program is running, then the current file associated with the
-current stack entry is used. Giving . has the same effect. 
+current stack entry is used. Giving . has the same effect.
 
 C<*> gives a list of all files we know about.
 
@@ -48,15 +48,15 @@ Sub-options which can be shown about a file are:
 Line numbers where there are statement boundaries.  These lines can be
 used in breakpoint commands.
 
-=item ctime 
+=item ctime
 
 File creation time
 
-=item iseq 
+=item iseq
 
 Instruction sequences from this file.
 
-=item time 
+=item time
 
 File modification time
 
@@ -68,7 +68,7 @@ A SHA1 hash of the source text. This may be useful in comparing source code.
 
 The number of lines in the file.
 
-=item stat 
+=item stat
 
 I<stat()> information
 
@@ -100,7 +100,7 @@ sub complete($$)
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -116,15 +116,15 @@ sub run($$)
     my $filename = shift @args;
     if ($filename eq '.') {
         my $frame_file = $proc->filename;
-        $filename = DB::LineCache::map_file($frame_file) ||
+        $filename = map_file($frame_file) ||
             abs_path($frame_file);
     }
     @args = @DEFAULT_FILE_ARGS if 0 == scalar @args;
 
     my $m = $filename;
     my $canonic_name = $proc->canonic_file($filename);
-    $canonic_name = DB::LineCache::map_file($canonic_name) || $canonic_name;
-    if (DB::LineCache::is_cached($canonic_name)) {
+    $canonic_name = map_file($canonic_name) || $canonic_name;
+    if (is_cached($canonic_name)) {
         $m .= " is cached in debugger";
         if ($canonic_name ne $filename) {
             $m .= (" as:\n  " + $canonic_name);
@@ -139,12 +139,12 @@ sub run($$)
     #   } else {
     #       $self->msg('File "%s" just now cached.' % filename);
     #       LineCache::cache(matches[0]);
-    #       LineCache::remap_file(filename, matches[0]);
+    #       remap_file(filename, matches[0]);
     #       canonic_name = matches[0];
     #   }
     } else {
       my @matches = ();
-      for my $try (DB::LineCache::file_list()) {
+      for my $try (file_list()) {
           push @matches, $try unless -1 == rindex($try, $filename);
       }
       if (scalar(@matches) > 1) {
@@ -154,7 +154,7 @@ sub run($$)
           }
           return
       } elsif (1 == scalar(@matches)) {
-          $canonic_name = DB::LineCache::map_file($matches[0]);
+          $canonic_name = map_file($matches[0]);
           $m .= " matched debugger cache file:\n\t"  . $canonic_name;
           $proc->msg($m);
          } else {
@@ -163,13 +163,14 @@ sub run($$)
          }
     }
     my %seen;
-    for my $arg (@args) { 
+    for my $arg (@args) {
         my $processed_arg = 0;
         my $arg = lc($arg);
 
         if ($arg eq 'all' || $arg eq 'size') {
             unless ($seen{size}) {
-                my $max_line = DB::LineCache::size($canonic_name);
+                my $max_line =
+		    Devel::Trepan::DB::LineCache::size($canonic_name);
                 $proc->msg("File has $max_line lines.") if defined $max_line;
             }
             $processed_arg = $seen{size} = 1;
@@ -177,20 +178,20 @@ sub run($$)
 
         if ($arg eq 'all' || $arg eq 'sha1') {
             unless ($seen{sha1}) {
-                my $sha1 = DB::LineCache::sha1($canonic_name);
+                my $sha1 = Devel::Trepan::DB::LineCache::sha1($canonic_name);
                 $proc->msg("SHA1: ${sha1}");
             }
             $processed_arg = $seen{sha1} = 1;
         }
 
-        ## Breakpoints are broken. Something changed to break it and 
+        ## Breakpoints are broken. Something changed to break it and
         ## I haven't a clue. Furthermore, %{'_<'.$filename} no longer seems
         ## be set so we can't test for == 1 or == 0 in numeric context and
         ## get something.
         if ($arg eq 'all' || $arg eq 'brkpts') {
             unless ($seen{brkpts}) {
                 $proc->msg("Possible breakpoint line numbers:");
-                my @lines = DB::LineCache::trace_line_numbers($canonic_name);
+                my @lines = trace_line_numbers($canonic_name);
                 my $fmt_lines = $self->{cmd}->columnize_numbers(\@lines);
                 chomp $fmt_lines;
                 $proc->msg($fmt_lines);
@@ -200,19 +201,20 @@ sub run($$)
 
         if ($arg eq 'all' || $arg eq 'ctime') {
             unless ($seen{ctime}) {
-                my $stat = DB::LineCache::stat($canonic_name);
+                my $stat = Devel::Trepan::DB::LineCache::stat($canonic_name);
                 if (defined $stat) {
-                    my $ctime = DB::LineCache::stat($canonic_name)->ctime;
+                    my $ctime =
+			Devel::Trepan::DB::LineCache::stat($canonic_name)->ctime;
                     $ctime = localtime($ctime);
                     $proc->msg("Creation time:\t$ctime");
                 }
             }
             $processed_arg = $seen{ctime} = 1;
         }
-      
+
         if ($arg eq 'all' || $arg eq 'mtime') {
             unless ($seen{mtime}) {
-                my $stat = DB::LineCache::stat($canonic_name);
+                my $stat = Devel::Trepan::DB::LineCache::stat($canonic_name);
                 if (defined($stat)) {
                     my $mtime = localtime($stat->mtime);
                     $proc->msg("Modify time:\t$mtime");
@@ -220,17 +222,17 @@ sub run($$)
             }
             $processed_arg = $seen{mtime} = 1;
         }
-      
+
         # if ($arg eq 'all' || $arg eq 'stat') {
         #     unless ($seen{stat}) {
         #       require Enbugger; Enbugger->stop;
-        #       my $stat = DB::LineCache::stat($canonic_name);
+        #       my $stat = Devel::Trepan::DB::LineCache::stat($canonic_name);
         #       my $msg = sprintf "File attributes:\t%s", join(', ', @$stat);
         #       $proc->msg($msg);
         #     }
         #     $processed_arg = $seen{stat} = 1;
         # }
-      
+
         unless ($processed_arg) {
             $proc->errmsg("I don't understand sub-option \"$arg\"");
         }
@@ -240,8 +242,8 @@ sub run($$)
 unless (caller) {
     require Devel::Trepan;
     require Devel::Trepan::DB::LineCache;
-    DB::LineCache::cache_file(__FILE__);
-    print join(', ', DB::LineCache::file_list), "\n";
+    cache_file(__FILE__);
+    print join(', ', file_list), "\n";
     # Demo it.
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');

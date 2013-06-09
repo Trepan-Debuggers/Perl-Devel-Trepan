@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -21,21 +21,21 @@ Set whether we use terminal highlighting.
 =cut
 HELP
 
-# sub complete($$) 
+# sub complete($$)
 # {
 #     my ($self, $prefix) = @_;
 #     Devel::Trepan::Complete::complete_token(qw(on off reset), $prefix);
 # }
 
 sub run($$)
-{ 
+{
     my ($self, $args) = @_;
     if (scalar @$args == 3 && 'reset' eq $args->[2]) {
-        DB::LineCache::clear_file_format_cache;
+        clear_file_format_cache;
         $self->{proc}{settings}{highlight} = 'term';
     } else {
         $self->SUPER::run($args);
-        $self->{proc}{settings}{highlight} = 'term' if 
+        $self->{proc}{settings}{highlight} = 'term' if
             $self->{proc}{settings}{highlight};
     }
 }
@@ -45,7 +45,7 @@ unless (caller) {
   # require_relative '../../mock'
 
   # # FIXME: DRY the below code
-  # my $cmd = 
+  # my $cmd =
   #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
   # $cmd->run(@$cmd->prefix + ('off'));
   # $cmd->run(@$cmd->prefix + ('ofn'));

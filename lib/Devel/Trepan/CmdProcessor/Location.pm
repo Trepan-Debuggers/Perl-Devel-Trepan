@@ -52,12 +52,12 @@ sub canonic_file($$;$)
 
     # For now we want resolved filenames
     if ($self->{settings}{basename}) {
-        my $is_eval = DB::LineCache::filename_is_eval($filename);
+        my $is_eval = filename_is_eval($filename);
         return $is_eval ? $filename : (basename($filename) || $filename);
     } elsif ($resolve) {
-        my $mapped_filename = DB::LineCache::map_file($filename);
+        my $mapped_filename = map_file($filename);
         $filename = $mapped_filename if defined($mapped_filename);
-        my $is_eval = DB::LineCache::filename_is_eval($filename);
+        my $is_eval = filename_is_eval($filename);
         return $is_eval ? $filename : (abs_path($filename) || $filename);
     } else {
         return $filename;
@@ -72,15 +72,14 @@ sub min($$) {
 # Return the text to the current source line. We use trace line
 # information to try to retrieve all of the current source line up
 # to some limit of lines. The lines returned may be colorized.
-# DB::LineCache actually does the retrieval.
+# Devel::Trepan::DB:LineCache::getline actually does the retrieval.
 sub current_source_text(;$)
 {
     my ($self, $opts) = @_;
     $opts = {max_continue => 5} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
-    my $text        = (DB::LineCache::getline($filename, $line_number, $opts))
-        || '';
+    my $text        = (getline($filename, $line_number, $opts)) || '';
     chomp($text);
     return $text;
 }
@@ -113,7 +112,7 @@ sub text_at($;$)
     my $line_no = $self->line();
     my $text;
     my $filename = $self->filename();
-    if (DB::LineCache::filename_is_eval($filename)) {
+    if (filename_is_eval($filename)) {
         if ($DB::filename eq $filename) {
             {
                 # Some lines in @DB::line might not be defined.
@@ -121,14 +120,14 @@ sub text_at($;$)
                 no warnings;
                 my $string = join("\n", @DB::dbline);
                 use warnings;
-                $filename = DB::LineCache::map_script($filename, $string);
-                $text = DB::LineCache::getline($filename, $line_no, $opts);
+                $filename = map_script($filename, $string);
+                $text = getline($filename, $line_no, $opts);
             }
         }
     } else {
         $text = line_at($filename, $line_no, $opts);
         my ($map_file, $map_line) =
-            DB::LineCache->map_file_line($filename, $line_no);
+            map_file_line($filename, $line_no);
     }
     $text;
   }
@@ -183,7 +182,7 @@ sub source_location_info($)
     if ($self->{settings}{displayop} && $DB::OP_addr) {
         $op_addr = sprintf " \@0x%x", $DB::OP_addr;
     }
-    if (DB::LineCache::filename_is_eval($filename)) {
+    if (filename_is_eval($filename)) {
 	### FIXME: put this all into DB::LineCache
         if ($DB::filename eq $filename) {
             # Some lines in @DB::line might not be defined.
@@ -204,7 +203,7 @@ sub source_location_info($)
 		unless (defined($string)) {
 		    return "${filename}:${line_number}$op_addr";
 		}
-                my $try_filename = DB::LineCache::map_script($filename, $string);
+                my $try_filename = map_script($filename, $string);
 		$filename = $try_filename if defined($try_filename);
             }
             $canonic_filename = $self->canonic_file($self->filename(), 0);

@@ -28,13 +28,14 @@ sub eval_ok ($)
     return !$@;
 }
 
-package DB::LineCache;
+use rlib '../../..';
+package Devel::Trepan::DB::LineCache;
 
 =pod
 
-=head1 NAME DB::LineCache
+=head1 NAME Devel::Trepan::DB::LineCache
 
-DB::LineCache - package to read and cache lines of a Perl program.
+Devel::Trepan::DB::LineCache - package to read and cache lines of a Perl program.
 
 =head1 SYNOPSIS
 
@@ -48,24 +49,37 @@ The routines here may be is useful when a small random sets of lines
 are read from a single file, in particular in a debugger to show
 source lines.
 
- use DB::LineCache;
- $lines = DB::LineCache::getlines('/tmp/myperl.pl')
+ use Devel::Trepan::DB::LineCache;
+ $lines = getlines('/tmp/myperl.pl')
 
  # The following lines have same effect as the above.
  unshift @INC, '/tmp';
- $lines = DB::LineCache::getlines('myperl.pl');
+ $lines = getlines('myperl.pl');
  shift @INC;
 
  chdir '/tmp';
- $lines = DB::LineCache::getlines('myperl.pl')
+ $lines = getlines('myperl.pl')
 
- $line = DB::LineCache::getline('/tmp/myperl.pl', 6)
+ $line = getline('/tmp/myperl.pl', 6)
  # Note lines[6] == line (if /tmp/myperl.pl has 6 lines)
 
- DB::LineCache::clear_file_cache
- DB::LineCache::update_cache   # Check for modifications of all cached files.
+ clear_file_cache
+ update_cache   # Check for modifications of all cached files.
 
 =cut
+
+our(@ISA, @EXPORT, $VERSION);
+require Exporter;
+@ISA = qw(Exporter);
+@EXPORT = qw(cache_file clear_file_format_cache
+             clear_cache update_cache
+             file_list getlines
+             filename_is_eval getline map_file is_cached
+             load_file map_script map_file_line remap_file
+             remap_dbline_to_file %script_cache
+             trace_line_numbers update_script_cache
+             );
+$VERSION = "1.0";
 
 use English qw( -no_match_vars );
 use vars qw(%file_cache %script_cache);
@@ -79,7 +93,6 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
-use rlib '../..';
 ## FIXME:: Make conditional
 use Devel::Trepan::DB::Colors;
 my $perl_formatter = Devel::Trepan::DB::Colors::setup();
@@ -438,10 +451,10 @@ cache. Return I<undef> if we can't get lines.
 
 B<Examples:>
 
- $lines = LineCache::getline('/tmp/myfile.pl')
+ $lines = getline('/tmp/myfile.pl')
  # Same as above
  push @INC, '/tmp';
- $lines = LineCache.getlines('myfile.pl')
+ $lines = getlines('myfile.pl')
 
 =cut
 
@@ -550,12 +563,12 @@ B<Example>:
 Running:
 
   use Devel::Trepan::DB::LineCache;
-  DB::LineCache::remap_file('another_name', __FILE__);
-  print DB::LineCache::getline('another_name', __LINE__), "\n";
+  remap_file('another_name', __FILE__);
+  print getline('another_name', __LINE__), "\n";
 
 gives:
 
-  print DB::LineCache::getline('another_name', __LINE__), "\n";
+  print getline('another_name', __LINE__), "\n";
 
 =cut
 
@@ -619,8 +632,8 @@ B<Example>:
 In file C</tmp/foo.pl>:
 
   use Devel::Trepan::DB::LineCache;
-  DB::LineCache::cache(__FILE__);
-  printf "SHA1 of %s is:\n%s\n", __FILE__, DB::LineCache::sha1(__FILE__);
+  cache_file(__FILE__);
+  printf "SHA1 of %s is:\n%s\n", __FILE__, Devel::Trepan::DB::LineCache::sha1(__FILE__);
 
 gives:
 
@@ -629,7 +642,7 @@ gives:
 
 =cut
 
-sub DB::LineCache::sha1($)
+sub Devel::Trepan::DB::LineCache::sha1($)
 {
     my $filename = shift;
     $filename = map_file($filename);
@@ -658,9 +671,9 @@ B<Example>:
 
 In file C</tmp/foo.pl>:
 
-  use Devel::Trepan::DB::LineCache;
-  DB::LineCache::cache(__FILE__);
-  printf "%s has %d lines\n", __FILE__,  DB::LineCache::size(__FILE__);
+  use :Devel::Trepan::DB::LineCache;
+  cache_file(__FILE__);
+  printf "%s has %d lines\n", __FILE__,  Devel::Trepan::DB::LineCache::size(__FILE__);
 
 gives:
 
@@ -692,12 +705,12 @@ B<Example>:
 In file C</tmp/foo.pl>:
 
   use Devel::Trepan::DB::LineCache;
-  DB::LineCache::cache(__FILE__);
+  cache_file(__FILE__);
   printf("stat() info for %s is:
   dev    ino      mode nlink  uid  gid rdev size atime      ctime ...
   %4d  %8d %7o %3d %4d %4d %4d %4d %d %d",
          __FILE__,
-         @{DB::LineCache::stat(__FILE__)});
+         @{Devel::Trepan::DB::LineCache::stat(__FILE__)});
 
 gives:
 
@@ -707,7 +720,7 @@ gives:
 
 =cut
 
-sub DB::LineCache::stat($)
+sub Devel::Trepan::DB::LineCache::stat($)
 {
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
@@ -1154,7 +1167,7 @@ unless (caller) {
 
     my $script_name = '(eval 234)';
     update_script_cache($script_name, {string => "now\nis\nthe\ntime"});
-    print join(', ', keys %DB::LineCache::script_cache), "\n";
+    print join(', ', keys %script_cache), "\n";
     my $lines = $script_cache{$script_name}{lines_href}{plain};
     print join("\n", @{$lines}), "\n";
     $lines = getlines($script_name);

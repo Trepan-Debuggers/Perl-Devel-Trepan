@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 
 # Part of Devel::Trepan::CmdProcessor that loads up debugger commands from
-# builtin and user directories.  
+# builtin and user directories.
 # Sets @commands, @aliases, @macros
 use rlib '../../..';
 
@@ -20,12 +20,12 @@ use Devel::Trepan::Complete;
 #                                # indexed by alias name
 # attr_reader   :commands        # Hash[String] of command objects
 #                                # indexed by name
-# attr_reader   :macros          # Hash[String] of Proc objects 
+# attr_reader   :macros          # Hash[String] of Proc objects
 #                                # indexed by macro name.
-# attr_reader   :leading_str     # leading part of string. Used in 
+# attr_reader   :leading_str     # leading part of string. Used in
 #                                # command completion
 
-# "initialize" for multi-file class. Called from 
+# "initialize" for multi-file class. Called from
 # Devel::Trepan::CmdProcessor->new in CmdProcessor.pm
 sub load_cmds_initialize($)
 {
@@ -33,8 +33,8 @@ sub load_cmds_initialize($)
     $self->{commands} = {};
     $self->{aliases}  = {};
     $self->{macros}   = {};
-    
-    my @cmd_dirs = ( 
+
+    my @cmd_dirs = (
         File::Spec->catfile(dirname(__FILE__), 'Command'),
         @{$self->{settings}{cmddir}}
         );
@@ -44,10 +44,10 @@ sub load_cmds_initialize($)
 }
 
 # Loads in debugger commands by require'ing each ruby file in the
-# 'command' directory. Then a new instance of each class of the 
+# 'command' directory. Then a new instance of each class of the
 # form Trepan::xxCommand is added to @commands and that array
 # is returned.
-sub load_debugger_commands($$) 
+sub load_debugger_commands($$)
 {
     my ($self, $file_or_dir) = @_;
     if ( -d $file_or_dir ) {
@@ -67,12 +67,13 @@ sub load_debugger_commands($$)
     return 1;
   }
 
-sub load_debugger_command($$;$) 
+sub load_debugger_command($$;$)
 {
     my ($self, $command_file, $force) = @_;
     return unless -r $command_file;
-    my $rc = do $command_file;
-    if ($rc eq 'Skip me!') {
+    my $rc = '';
+    eval { $rc = do $command_file; };
+    if (!$rc or $rc eq 'Skip me!') {
         ;
     } elsif ($rc) {
         # Instantiate each Command class found by the above require(s).
@@ -83,7 +84,7 @@ sub load_debugger_command($$;$)
     }
 }
 
-# Looks up cmd_array[0] in @commands and runs that. We do lots of 
+# Looks up cmd_array[0] in @commands and runs that. We do lots of
 # validity testing on cmd_array.
 sub run_cmd($$)
 {
@@ -108,9 +109,9 @@ sub run_cmd($$)
     }
 }
 
-# sub save_commands(opts) 
+# sub save_commands(opts)
 # {
-#     save_filename = opts[:filename] || 
+#     save_filename = opts[:filename] ||
 #       File.join(Dir.tmpdir, Dir::Tmpname.make_tmpname(['trepanning-save', '.txt'], nil))
 #     begin
 #       save_file = File.open(save_filename, 'w')
@@ -124,16 +125,16 @@ sub run_cmd($$)
 #       cmd_obj.save_command if cmd_obj.respond_to?(:save_command)
 #       next unless cmd_obj.is_a?(Trepan::SubcommandMgr)
 #       cmd_obj.subcmds.subcmds.each do |subcmd_name, subcmd_obj|
-#         save_file.print subcmd_obj.save_command if 
+#         save_file.print subcmd_obj.save_command if
 #           subcmd_obj.respond_to?(:save_command)
 #         next unless subcmd_obj.is_a?(Trepan::SubSubcommandMgr)
 #         subcmd_obj.subcmds.subcmds.each do |subsubcmd_name, subsubcmd_obj|
-#           save_file.print subsubcmd_obj.save_command if 
+#           save_file.print subsubcmd_obj.save_command if
 #             subsubcmd_obj.respond_to?(:save_command)
 #         }
 #       }
 #     }
-#     save_file.print "!FileUtils.rm #{save_filename.inspect}" if 
+#     save_file.print "!FileUtils.rm #{save_filename.inspect}" if
 #       opts[:erase]
 #     save_file.close
 
@@ -142,7 +143,7 @@ sub run_cmd($$)
 
 # Instantiate a Trepan::Command and extract info: the NAME, ALIASES
 # and store the command in @commands.
-sub setup_command($$) 
+sub setup_command($$)
 {
     my ($self, $name) = @_;
     my $cmd_obj;
@@ -168,10 +169,10 @@ sub list_complete($$$)
 {
     my($self, $text, $state) = @_;
     state $_list_complete_i = -1; # clear counter at the first call
-    $_list_complete_i++;;       
+    $_list_complete_i++;;
     my $cw = $self->{completions};
     for (; $_list_complete_i <= $#{$cw}; $_list_complete_i++) {
-        return $cw->[$_list_complete_i] 
+        return $cw->[$_list_complete_i]
             if ($cw->[$_list_complete_i] =~ /^\Q$text/);
     }
     return undef;
@@ -182,16 +183,16 @@ my ($_last_line, $_last_start, $_last_end, @_last_return, $_last_token);
 # Handle initial completion. We draw from the commands, aliases,
 # and macros for completion. However we won't include aliases which
 # are prefixes of other commands.
-sub complete($$$$$) 
+sub complete($$$$$)
 {
     my ($self, $text, $line, $start, $end) = @_;
     $self->{leading_str} = $line;
-    
-    $_last_line  = '' unless defined $_last_line;  
+
+    $_last_line  = '' unless defined $_last_line;
     $_last_start = -1 unless defined $_last_start;
-    $_last_end   = -1 unless defined $_last_end; 
+    $_last_end   = -1 unless defined $_last_end;
     $_last_token = '' unless defined $_last_token;
-    $_last_token = '' unless 
+    $_last_token = '' unless
         $_last_start < length($line) &&
         0 == index(substr($line, $_last_start), $_last_token);
     # print "\ntext: $text, line: $line, start: $start, end: $end\n";
@@ -205,9 +206,9 @@ sub complete($$$$$)
     ($_last_line, $_last_start, $_last_end) = ($line, $start, $end);
 
     my @commands = sort keys %{$self->{commands}};
-    my ($next_blank_pos, $token) = 
+    my ($next_blank_pos, $token) =
         Devel::Trepan::Complete::next_token($line, 0);
-    if (!$token && !$_last_token) { 
+    if (!$token && !$_last_token) {
         @_last_return = @commands;
         $_last_token = $_last_return[0];
         $_last_line = $line . $_last_token;
@@ -224,7 +225,7 @@ sub complete($$$$$)
         $match_hash->{$pair->[0]} = $pair->[1];
     }
 
-    my @alias_pairs = complete_token_filtered_with_next($self->{aliases}, 
+    my @alias_pairs = complete_token_filtered_with_next($self->{aliases},
                                                         $token, $match_hash,
                                                         $self->{commands});
     push @match_pairs, @alias_pairs;
@@ -252,10 +253,10 @@ sub complete($$$$$)
       # }
     }
     # scalar @match_pairs == 1
-    @_last_return = $self->next_complete($line, $next_blank_pos, 
-                                        $match_pairs[0]->[1], 
+    @_last_return = $self->next_complete($line, $next_blank_pos,
+                                        $match_pairs[0]->[1],
                                         $token);
-    
+
     $self->{completions} = \@_last_return;
     return @_last_return;
 }
@@ -265,7 +266,7 @@ sub next_complete($$$$$)
     my($self, $str, $next_blank_pos, $cmd, $last_token) = @_;
 
     my $token;
-    ($next_blank_pos, $token) = 
+    ($next_blank_pos, $token) =
         Devel::Trepan::Complete::next_token($str, $next_blank_pos);
     return () if !$token && !$last_token;
     return () unless defined($cmd);
@@ -279,12 +280,12 @@ sub next_complete($$$$$)
             return map {$_->[0]} @match_pairs;
         } else {
             if (scalar @match_pairs == 1) {
-                if ($next_blank_pos == length($str)-1 
+                if ($next_blank_pos == length($str)-1
                     && ' ' ne substr($str, length($str)-1)) {
                     return map {$_->[0]} @match_pairs;
                 } elsif ($match_pairs[0]->[0] eq $token) {
-                    return $self->next_complete($str, $next_blank_pos, 
-                                                $match_pairs[0]->[1], 
+                    return $self->next_complete($str, $next_blank_pos,
+                                                $match_pairs[0]->[1],
                                                 $token);
                 } else {
                     return ();

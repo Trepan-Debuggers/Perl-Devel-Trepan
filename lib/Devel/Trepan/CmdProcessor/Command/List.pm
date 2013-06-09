@@ -32,7 +32,7 @@ list[>] [I<filename>] [I<first> [I<number>]]
 
 list[>] I<location> [I<number>]
 
-List Perl source code. 
+List Perl source code.
 
 Without arguments, prints lines centered around the current
 line. If this is the first list command issued since the debugger
@@ -54,13 +54,13 @@ A I<location> is a either:
 
 =item *
 
-number, e.g. 5, 
+number, e.g. 5,
 
 =item *
 
 a function, e.g. C<File::Basename::dirname>, or C<dirname>
 
-=item * 
+=item *
 
 a filename and a number, e.g. C<foo.pl 5>,
 
@@ -94,7 +94,7 @@ list . 3          # List 3 lines starting from where we currently are stopped
 list -            # List lines previous to those just shown
 
 The output of the list command give a line number, and some status
-information about the line and the text of the line. Here is some 
+information about the line and the text of the line. Here is some
 hypothetical list output modeled roughly around line 251 of one
 version of this code:
 
@@ -114,7 +114,7 @@ See also C<set autolist>.
 =cut
 HELP
 
-# FIXME: Should we include all files? 
+# FIXME: Should we include all files?
 # Combine with BREAK completion.
 sub complete($$)
 {
@@ -122,8 +122,8 @@ sub complete($$)
     my $filename = $self->{proc}->filename;
     # For line numbers we'll use stoppable line number even though one
     # can enter line numbers that don't have breakpoints associated with them
-    my @completions = sort(('.', '-', DB::LineCache::file_list, DB::subs(),
-                            DB::LineCache::trace_line_numbers($filename)));
+    my @completions = sort(('.', '-', file_list, DB::subs(),
+                            trace_line_numbers($filename)));
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
@@ -141,7 +141,7 @@ sub no_frame_msg($)
     $self->errmsg("No Perl program loaded.");
     return (undef, undef, undef);
 }
-    
+
 
 # What a mess. Necessitated I suppose because we want to allow
 # somewhat flexible parsing with either module names, files or none
@@ -175,14 +175,14 @@ sub parse_list_cmd($$$$)
             $start    = 1 if $start < 1;
             if (scalar @args == 2) {
                 my $opts = {
-                    'msg_on_error' => 
+                    'msg_on_error' =>
                         "${NAME} command $end or count parameter expected, " .
                         "got: $args[2]"
                 };
                 my $second = $proc->get_an_int($args[1], $opts);
                 return (undef, undef, undef) unless $second;
                 $end = $self->adjust_end($start, $second);
-            } 
+            }
         } else {
             my ($rest, $gobble_count);
             ($filename, $start, $fn, $gobble_count, $rest) = $proc->parse_position(\@args);
@@ -196,12 +196,12 @@ sub parse_list_cmd($$$$)
             $start = 1 if $start < 1;
         } elsif (scalar @args == 2 or (scalar @args == 3 and $fn)) {
             my $opts = {
-                msg_on_error => 
+                msg_on_error =>
                     "${NAME} command starting line expected, got $args[-1]"
             };
             $end = $proc->get_an_int($args[1], $opts);
             return (undef, undef, undef) unless $end;
-            if ($fn) { 
+            if ($fn) {
                 if ($start) {
                     $start = $end;
                     if (scalar @args == 3 and $fn) {
@@ -232,34 +232,34 @@ sub parse_list_cmd($$$$)
     $start = 1 if $start < 1;
     $end = $start + $listsize - 1 unless $end;
 
-    &DB::LineCache::cache($filename) unless DB::LineCache::is_cached($filename);
+    cache_file($filename) unless is_cached($filename);
     return ($filename, $start, $end);
 }
 
 # This method runs the command
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
 
     my $listsize = $proc->{settings}{maxlist};
-    my $center_correction = 
+    my $center_correction =
         (substr($args->[0], -1, 1) eq '>') ? 0 : int(($listsize-1) / 2);
 
-    my ($filename, $start, $end) = parse_list_cmd($self, $args, $listsize, 
+    my ($filename, $start, $end) = parse_list_cmd($self, $args, $listsize,
                                                   $center_correction);
     return unless $filename;
 
     # We now have range information. Do the listing.
-    my $max_line = DB::LineCache::size($filename);
-    $filename = DB::LineCache::map_file($filename);
+    my $max_line = Devel::Trepan::DB::LineCache::size($filename);
+    $filename = map_file($filename);
     unless (defined $max_line) {
         $proc->errmsg("File \"$filename\" not found.");
         return;
     }
 
     if ($start > $max_line) {
-        my $mess = sprintf('Bad line range [%d...%d]; file "%s" has only %d lines', 
+        my $mess = sprintf('Bad line range [%d...%d]; file "%s" has only %d lines',
                            $start, $end, $proc->canonic_file($filename), $max_line);
         $proc->errmsg($mess);
         return;
@@ -282,7 +282,7 @@ sub run($$)
     $self->section($msg);
     for ($lineno = $start; $lineno <= $end; $lineno++) {
         my $a_pad = '  ';
-        my $line  = DB::LineCache::getline($filename, $lineno, $opts);
+        my $line  = getline($filename, $lineno, $opts);
         unless (defined $line) {
             if ($lineno > $max_line)  {
                 $proc->msg('[EOF]');
@@ -296,7 +296,7 @@ sub run($$)
         $s = $s . ' ' if length($s) < 4;
 
 	## FIXME: move into DB::Breakpoint and adjust List.pm
-        if (exists($DB::dbline{$lineno}) and 
+        if (exists($DB::dbline{$lineno}) and
             my $brkpts = $DB::dbline{$lineno}) {
             my $found = 0;
             for my $bp (@{$brkpts}) {
@@ -331,7 +331,7 @@ unless (caller) {
     my $cmd = __PACKAGE__->new($proc);
     require Devel::Trepan::DB::Sub;
     require Devel::Trepan::DB::LineCache;
-    DB::LineCache::cache(__FILE__);
+    cache_file(__FILE__);
     my $frame_ary = Devel::Trepan::CmdProcessor::Mock::create_frame();
     $proc->frame_setup($frame_ary);
     $proc->{settings}{highlight} = 0;

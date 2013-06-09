@@ -4,6 +4,9 @@ use warnings;
 # FIXME: Can't use strict;
 
 use rlib '../..';
+
+package Devel::Trepan::Core;
+
 use Devel::Trepan::DB::Use;
 use Devel::Trepan::DB;
 use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
@@ -15,7 +18,6 @@ use Devel::Trepan::Interface::Script;
 use Devel::Trepan::Interface::Server;
 use Devel::Trepan::Util;
 
-package Devel::Trepan::Core;
 use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
 
 BEGIN {
@@ -62,7 +64,7 @@ sub idle($$$)
     my $proc = $self->{proc};
     $event = 'terminated' if $DB::package eq 'Devel::Trepan::Terminated';
     if ($self->{need_e_remap} && $DB::filename eq '-e') {
-        DB::LineCache::remap_dbline_to_file();
+        remap_dbline_to_file();
         $self->{need_e_remap} = 0;
     }
 

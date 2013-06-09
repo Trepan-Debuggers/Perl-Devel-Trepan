@@ -14,15 +14,15 @@ BEGIN {
 note 'Test update_script_cache';
 my $lines = "now\nis\nthe\ntime";
 my $script_name = '(eval 234)';
-DB::LineCache::update_script_cache($script_name, {string => $lines});
-my $ary_ref = $DB::LineCache::script_cache{$script_name}{lines_href}{plain};
+update_script_cache($script_name, {string => $lines});
+my $ary_ref = $script_cache{$script_name}{lines_href}{plain};
 is(join("\n", @$ary_ref), $lines);
 
 note 'Test getlines';
 
 my $file=__FILE__;
 # my $line_count = scalar(@{"main::_<$file"});
-$lines = DB::LineCache::getlines(__FILE__);
+$lines = getlines(__FILE__);
 my $line_count = scalar @$lines;
 ok($line_count > __LINE__, "Compare getlines count to __LINE__");
 
@@ -32,18 +32,18 @@ ok($line_count > __LINE__, "Compare getlines count to __LINE__");
 ## $lines = DB::LineCache::getlines($full_file);
 ## is(scalar @$lines, $line_count, "Compare linecount for full name $full_file");
 
-my $expected_line = 'my $line = DB::LineCache::getline(__FILE__, __LINE__);';
+my $expected_line = 'my $line = getline(__FILE__, __LINE__);';
 my $line_number = __LINE__+1;
-my $line = DB::LineCache::getline(__FILE__, __LINE__);
+my $line = getline(__FILE__, __LINE__);
 is($line, $expected_line, "Test getline");
-DB::LineCache::remap_file('another_name', __FILE__);
-my $another_line = DB::LineCache::getline('another_name', $line_number);
+remap_file('another_name', __FILE__);
+my $another_line = getline('another_name', $line_number);
 is($another_line, $expected_line, "Test getline via remap_file");
 
-$expected_line = "\$line = DB::LineCache::getline(__FILE__, __LINE__,
+$expected_line = "\$line = getline(__FILE__, __LINE__,
     {max_continue => 4}
     );";
-$line = DB::LineCache::getline(__FILE__, __LINE__,
+$line = getline(__FILE__, __LINE__,
     {max_continue => 4}
     );
 is($line, $expected_line, "Test multi-spanning getline line");
@@ -53,22 +53,22 @@ is($line, $expected_line, "Test multi-spanning getline line");
 ## DB::LineCache::checkcache(__FILE__);
 # printf "I said %s has %d lines!\n", __FILE__, DB::LineCache::size(__FILE__);
 
-my $sha1 = DB::LineCache::sha1(__FILE__);
+my $sha1 = Devel::Trepan::DB::LineCache::sha1(__FILE__);
 like($sha1, qr/^[0-9a-f]+$/,  'Got some sort of SHA1');
 
-note 'DB::LineCache::filename_is_eval';
-eval "is(DB::LineCache::filename_is_eval(__FILE__), 1, " . 
+note 'filename_is_eval';
+eval "is(filename_is_eval(__FILE__), 1, " .
     "'eval(...) should pick up eval filename')";
 is($EVAL_ERROR, '', 'no eval error on previous test');
-is(DB::LineCache::filename_is_eval(__FILE__), '', 
+is(filename_is_eval(__FILE__), '',
    '__FILE__ should not be an eval filename');
-is(DB::LineCache::filename_is_eval('-e'), 1, 
+is(filename_is_eval('-e'), 1,
    '-e should be an eval filename');
 
-note 'DB::LineCache::map_script';
+note 'map_script';
 $DB::filename = '(eval 1)';
 my $eval_str = "\$x=1;\n\$y=2;\n\$z=3;\n";
-my $filename = DB::LineCache::map_script($DB::filename, $eval_str);
+my $filename = map_script($DB::filename, $eval_str);
 open(FH, '<', $filename);
 undef $INPUT_RECORD_SEPARATOR;
 my $got_str = <FH>;
@@ -79,12 +79,12 @@ if ($have_codelines) {
     my $dirname = File::Basename::dirname(__FILE__);
     my $podtest_file = File::Spec->catfile($dirname, '00test-pod.t');
 
-    # FIXME: These two things should be one routine. Also change 
+    # FIXME: These two things should be one routine. Also change
     # Load_Subcmd/Source.pm
-    DB::LineCache::load_file($podtest_file);
-    DB::LineCache::update_cache($podtest_file, {use_perl_d_file => 1});
+    load_file($podtest_file);
+    update_cache($podtest_file, {use_perl_d_file => 1});
 
-    my @line_nums = DB::LineCache::trace_line_numbers($podtest_file);
+    my @line_nums = trace_line_numbers($podtest_file);
     is($line_nums[0], 3, "trace_line_numbers for $podtest_file");
 }
 

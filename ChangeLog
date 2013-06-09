@@ -1,3 +1,96 @@
+2013-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Validate.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/Processor/Frame.pm, t/10test-linecache.t: 
+	DB::LineCache -> Devel::Trepan::DB::LineCache which is more
+	accurate.
+
+2013-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* example/selfloadtest.pl,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/DB/SelfLoader.pm, lib/Devel/Trepan/DB/Use.pm: Start
+	dealing with tracing into use statements and closer to handling
+	SelfLoader.
+
+2013-06-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Some more DB::LineCache cleanup
+
+2013-06-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm,
+	lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Msg.pm,
+	lib/Devel/Trepan/CmdProcessor/Validate.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/20test-debug.t: Guard against
+	uninitialized variables and some AUTOLOAD deprecations. Some
+	DB::LineCache cleanup. All in preparation for dealing better with
+	SelfLoader and AutoLoader.
+
+2013-06-07  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: Make sure the list returned by
+	DB::LineCache::file_lines is unique.
+
+2013-04-14  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 3525d8597d54f10f6c4578a6037e8367702b4348 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sun Apr 14 18:05:12 2013 -0400
+
+2013-04-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Breakpoint.pm: Add is_breakable()
+
+2013-04-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Util.pm, t/10test-util.t: Strawberry Perl accepts
+	some expressions that other OS's find invalid.
+
+2013-03-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm: Bump $deep based on discussion in RT
+	#117407
+
+2013-03-29  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Sub.pm: Up deep level.
+	Strip blanks
+
+2013-03-20  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm, lib/Devel/Trepan/IO/Input.pm,
+	lib/Devel/Trepan/Interface/User.pm: Hacky fixups: my completion.
+	Using Term::ReadLine::Perl5 until it is in Term::ReadLine.
+
+2013-02-05  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/CmdProcessor/Command/Macro.pm: macro
+	pod text changes
+
 2013-02-04  Rocky Bernstein <rocky@cpan.org>
 
 	* MANIFEST,

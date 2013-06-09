@@ -1,5 +1,13 @@
 Revision history for Devel-Trepan
 
+0.49
+
+- Add "set substitute path" command
+- Add provision for tracing use (Use.pm and debuggable SelfLoader.pm)
+- Bump $deep based on discussion in RT #117407
+- Perl bug #116358
+- Misc bug fixes
+
 0.48  Jan 6, 2013
 - Sort hash keys in Data::Printer output
 - fix bug in "set autoeval"
@@ -10,9 +18,9 @@ Revision history for Devel-Trepan
   better gdb compliance.
 
 0.45 - Oct 2, 2012
-- Add "load source" to read in Perl source file somewhat like it would be 
+- Add "load source" to read in Perl source file somewhat like it would be
   when debugger reads the file under debugging. Might be useful when
-  used via in Enbugger. 
+  used via in Enbugger.
 - When stopping, we were printing too many lines if the first statement
   was incomplete. For example:
     if (0) {
@@ -38,11 +46,11 @@ Revision history for Devel-Trepan
 - Add color setting for black
 
 0.40 - Sep 17, 2012
-- Rerelease to fix yet another problem with Build.PL 
+- Rerelease to fix yet another problem with Build.PL
 
 0.39 - Sep 17, 2012
 
-- Rerelease to fix yet another problem with Build.PL 
+- Rerelease to fix yet another problem with Build.PL
 - Improve POD documentation for DB::LineCache
 
 0.38 - Sep 16, 2012
@@ -57,36 +65,36 @@ Revision history for Devel-Trepan
 0.36 - Sep 15, 2012
 
 - Allow color in Data::Printer output
-- Help strings are now in pod format and we run pod2text to give help. 
+- Help strings are now in pod format and we run pod2text to give help.
   This means terminal width settings can be adjusted (with set max width)
   and terminal highlighting is handled. We are also closer to automating
-  a Devel::Trepan manual 
-- If Devel::Callsite is installed we can show a more exact location of 
-  where we are. 
-- Add debugger command 'load command' to force loading or reloading a 
+  a Devel::Trepan manual
+- If Devel::Callsite is installed we can show a more exact location of
+  where we are.
+- Add debugger command 'load command' to force loading or reloading a
   debugger command file
 - Add debugger command 'load module' to foce loading or reloading a
   Perl module
 - Continuation of a command now allowed if you end a line with '\'
-  This should make writing macros for example easier and may help 
+  This should make writing macros for example easier and may help
   in eval
-- There's enough flexibility with eval that we don't need special 
+- There's enough flexibility with eval that we don't need special
   ! handling. Remove that.
 - Bug in tab completion of help syntax fixed.
 - Tidy syntax errors in evaluation
 
 0.35  - Aug 27, 2012
-- More CPANTS failures, Had broken tolerance in older Perls and 
+- More CPANTS failures, Had broken tolerance in older Perls and
   perl compiled with usesiteconfig
 - Add more verbiage to Trepan.pm and revise help docs
 - Don't trace into Devel::Trepan::Terminated
 - Fix another alias reporting bug.
 
 0.34  - Aug 26, 2012
-- Add step count. 
+- Add step count.
 - Avoid DB::fake for CPAN indexer
 - Fix issue 11
-- Add set debug {except, skip, macro}. 
+- Add set debug {except, skip, macro}.
 - Fix Bug in getting macro parameters
 - Rerelease for CPANTS failures
 
@@ -125,11 +133,11 @@ Revision history for Devel-Trepan
 - Address some CPANTS failures. Some doc tweaks.
 
 0.2.0  - May 24 2012
-- Nexting should be more accurate albeit slower 
+- Nexting should be more accurate albeit slower
   We can't rely on $DB:single -- sigh
 - Remove defined(@array) which is deprecated in Perl 5.16
 - Allow alias replacement to be a blank-delimited string
-- eval? treats 'local' and 'our' like eval? for 'my', e.g. 
+- eval? treats 'local' and 'our' like eval? for 'my', e.g.
     local ($a,b) =  ($v1,$v2)
   displays ($v1,v2) without setting. If you want to set, use 'eval'
 
@@ -137,7 +145,7 @@ Revision history for Devel-Trepan
 0.1.9  - Jan 16, 2012
 - Allow Data::Print to be used for printing eval output
 - Use sigils in eval? and eval; was previously done only in autoeval
-- "info program" may show COP position. 
+- "info program" may show COP position.
 - Miscelleneous bug fixes and documentation corrections and improvements.
 
 0.1.8  - Jan 3, 2012
@@ -183,12 +191,12 @@ Revision history for Devel-Trepan
 - Tests work in Strawberry Perl
 - Complete completion more. Completion offers choices properly by using
   Term::Complete::Perl
-- Add debugger commands: 
+- Add debugger commands:
    * info functions
    * info variables
    * server
    * show interactive
-- Make easier to build on older Perl (but still >= 5.10.0) 
+- Make easier to build on older Perl (but still >= 5.10.0)
 - Start script trepanpl is now trepan.pl
 - Add '--no-readline' option on trepan.pl
 - Remove "shell" for now. Will reinstate sometime later with Devel::REPL
@@ -203,7 +211,7 @@ Revision history for Devel-Trepan
 
 - Add watchpoints
 - Don't require Term::ReadLine::Gnu or Term::Readline
-- Reduce uses Term::ReadLine when it not needed, e.g. trepanpl --command 
+- Reduce uses Term::ReadLine when it not needed, e.g. trepanpl --command
   or --testing options.
 - Use "use rlib" instead of "use lib"
 - Remove deprecated warning given by newer Perls (Reine Urban and Shlomi Fish)
@@ -211,7 +219,7 @@ Revision history for Devel-Trepan
 
 0.1.0  - Oct 27, 2011
 
-Initial release. 
+Initial release.
 
 Some cool things not in other Perl debuggers
 - Syntax higlighting via Syntax::Highlight::Perl::Improved

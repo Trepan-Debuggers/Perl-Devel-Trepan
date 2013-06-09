@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-use rlib '../lib';
 use SelfLoader;
 use strict; use warnings;
 

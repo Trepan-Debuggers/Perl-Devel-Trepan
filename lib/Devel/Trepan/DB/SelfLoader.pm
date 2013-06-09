@@ -43,7 +43,7 @@ use Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(AUTOLOAD);
 sub Version {$VERSION}
-sub DEBUG () { 1 }
+sub DEBUG () { 0 }
 
 our %Cache;      # private cache for all SelfLoader's client packages
 
@@ -91,7 +91,7 @@ sub _load_stubs {
     my $fh = \*{"${callpack}::DATA"};
     use strict;
     my $currpack = $callpack;
-    my($line,$name,@lines, @stubs, $protoype);
+    my($line, $name, @lines, @stubs, $prototype);
 
     print STDERR "SelfLoader::load_stubs($callpack)\n" if DEBUG;
     croak("$callpack doesn't contain an __DATA__ token")
@@ -109,8 +109,9 @@ sub _load_stubs {
     local($/) = "\n";
     while(defined($line = <$fh>) and $line !~ m/^__END__/) {
 	if ($line =~ m/^\s*sub\s+([\w:]+)\s*((?:\([\\\$\@\%\&\*\;]*\))?(?:$AttrList)?)/) {
-            push(@stubs, $self->_add_to_cache($name, $currpack, \@lines, $protoype));
-            $protoype = $2;
+            push(@stubs,
+		 $self->_add_to_cache($name, $currpack, \@lines, $prototype));
+            $prototype = $2;
             @lines = ($line);
             if (index($1,'::') == -1) {         # simple sub name
                 $name = "${currpack}::$1";
@@ -126,7 +127,8 @@ sub _load_stubs {
                 }
             }
         } elsif ($line =~ m/^package\s+([\w:]+)/) { # A package declared
-            push(@stubs, $self->_add_to_cache($name, $currpack, \@lines, $protoype));
+            push(@stubs,
+		 $self->_add_to_cache($name, $currpack, \@lines, $prototype));
             $self->_package_defined($line);
             $name = '';
             @lines = ();
@@ -153,22 +155,22 @@ sub _load_stubs {
             close($fh);
         }
     }
-    push(@stubs, $self->_add_to_cache($name, $currpack, \@lines, $protoype));
+    push(@stubs,
+	 $self->_add_to_cache($name, $currpack, \@lines, $prototype));
     no strict;
     eval join('', @stubs) if @stubs;
 }
 
 
 sub _add_to_cache {
-    my($self,$fullname,$pack,$lines, $protoype) = @_;
-    return () unless $fullname;
-    carp("Redefining sub $fullname")
-      if exists $Cache{$fullname};
-    $Cache{$fullname} = join('', "\n\#line 1 \"sub $fullname\"\npackage $pack; ", @$lines);
-    #$Cache{$fullname} = join('', "package $pack; ",@$lines);
-    print STDERR "SelfLoader cached $fullname: $Cache{$fullname}" if DEBUG;
+    my($self, $funcname, $pack, $lines, $prototype) = @_;
+    return () unless $funcname;
+    carp("Redefining sub $funcname") if exists $Cache{$funcname};
+    my $header = qq(\n\#line 1 "sub $funcname"\npackage $pack; );
+    $Cache{$funcname} = join('', $header, @$lines);
+    print STDERR "SelfLoader cached $funcname: $Cache{$funcname}" if DEBUG;
     # return stub to be eval'd
-    defined($protoype) ? "sub $fullname $protoype;" : "sub $fullname;"
+    defined($prototype) ? "sub $funcname $prototype;" : "sub $funcname;"
 }
 
 sub _package_defined {}

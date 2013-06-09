@@ -51,6 +51,7 @@ sub new {
     $self->awaken();
     $self->skippkg('Devel::Trepan::Core');
     $self->skippkg('Devel::Trepan::DB::Use');
+    $self->skippkg('SelfLoader');
     $self->register();
     $self->ready();
     return $self;

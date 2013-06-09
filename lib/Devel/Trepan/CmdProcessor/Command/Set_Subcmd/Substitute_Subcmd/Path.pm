@@ -26,9 +26,7 @@ Add a substitution rule replacing I<from-path> into I<to-path> in
 source file names.  If a substitution rule was previously set for
 I<from-path>, the old rule is replaced by the new one. If I<from_path>
 is not given use the current filename.
-
 =cut
-
 HELP
 
 our $MIN_ABBREV = length('pa');

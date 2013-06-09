@@ -4,11 +4,8 @@ use strict; use warnings;
 
 package main;
 
-unless (caller()) {
-    printf "%d\n", F_Undo();
-    F_Also();
-    # print $Devel::Trepan::SelfLoader::Cache{'main::F_Undo'};
-}
+printf "%d\n", F_Undo();
+F_Also();
 
 __DATA__
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 # FIXME: Could combine manager code from breakpoints and display
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
@@ -8,7 +8,7 @@ use Class::Struct;
 use strict;
 
 struct DBDisplay => {
-    number      => '$', # display number 
+    number      => '$', # display number
     enabled     => '$', # True if display is enabled
     arg         => '$', # What to display
     fmt         => '$', # Format to use in display
@@ -24,9 +24,9 @@ sub inspect($)
 };
 
 
-package Devel::Trepan::DisplayMgr;
+package Devel::Trepan::DB::DisplayMgr;
 
-sub new($$) 
+sub new($$)
 {
     my ($class,$dbgr) = @_;
     my $self = {max => 0};
@@ -36,14 +36,14 @@ sub new($$)
     $self;
 }
 
-sub clear($) 
+sub clear($)
 {
     my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
-}    
+}
 
-sub inspect($) 
+sub inspect($)
 {
     my $self = shift;
     my $str = '';
@@ -52,7 +52,7 @@ sub inspect($)
         $str .= $display->inspect . "\n";
     }
     $str;
-}    
+}
 
 # Remove all breakpoints that we have recorded
 sub DESTROY() {
@@ -105,9 +105,9 @@ sub add($$;$)
     $return_type = '$' unless defined $return_type;
     my $number = $self->{max};
     my $disp = DBDisplay->new(
-        number      => $number, 
-        enabled     => 1, 
-        arg         => $display, 
+        number      => $number,
+        enabled     => 1,
+        arg         => $display,
         fmt         => '$',
         return_type => $return_type);
     push @{$self->{list}}, $disp;
@@ -160,7 +160,7 @@ sub reset($)
 unless (caller) {
 
     sub display_status($$)
-    { 
+    {
         my ($displays, $i) = @_;
         printf "list size: %s\n", $displays->size();
         my $max = $displays->max();
@@ -173,7 +173,7 @@ unless (caller) {
     eval "use rlib '..';";
     require Devel::Trepan::Core;
     my $dbgr = Devel::Trepan::Core->new;
-    my $displays = Devel::Trepan::DisplayMgr->new($dbgr);
+    my $displays = Devel::Trepan::DB::DisplayMgr->new($dbgr);
     display_status($displays, 0);
     my $display1 = DBDisplay->new(
         number=>1, enabled => 1, arg => '$dbgr', fmt => '$'

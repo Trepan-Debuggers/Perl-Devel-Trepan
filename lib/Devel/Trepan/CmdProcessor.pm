@@ -28,7 +28,7 @@ use vars qw(@EXPORT @ISA $eval_result);
 unless (@ISA) {
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
-    eval "require Devel::Trepan::DB::Display";
+    eval {require Devel::Trepan::DB::Display};
     require Devel::Trepan::Interface::User;
     require Devel::Trepan::Processor;
     require Devel::Trepan::CmdProcessor::Alias;
@@ -73,7 +73,7 @@ sub new($;$$$) {
 
     $self->{actions}        = Devel::Trepan::BrkptMgr->new($dbgr);
     $self->{brkpts}         = Devel::Trepan::BrkptMgr->new($dbgr);
-    $self->{displays}       = Devel::Trepan::DisplayMgr->new($dbgr);
+    $self->{displays}       = Devel::Trepan::DB::DisplayMgr->new($dbgr);
     $self->{completions}    = [];
     $self->{dbgr}           = $dbgr;
     $self->{event}          = undef;

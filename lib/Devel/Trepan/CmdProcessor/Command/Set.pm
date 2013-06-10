@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 
 package Devel::Trepan::CmdProcessor::Command::Set;
-
-use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 
 unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY => 'support';
     use constant SHORT_HELP => 'Modify parts of the debugger environment';
     use constant MIN_ARGS   => 0;     # Need at least this many
-    use constant MAX_ARGS   => undef; # Need at most this many - 
+    use constant MAX_ARGS   => undef; # Need at most this many -
                                       # undef -> unlimited.
     use constant NEED_STACK => 0;
 EOE
@@ -26,7 +25,7 @@ use vars @CMD_VARS;
 
 our $NAME = set_name();
 our $HELP = <<'HELP';
-=pod 
+=pod
 
 Modifies parts of the debugger environment.
 
@@ -37,12 +36,12 @@ Type C<set> for a list of set subcommands and what they do.
 Type C<help set *> for the list of C<set> subcommands.
 
 C<set auto...> is the
-same as C<set auto ...>. For example C<set autolist> is the same 
+same as C<set auto ...>. For example C<set autolist> is the same
 as C<set auto list>.
 =cut
 HELP
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $first;

@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 
 package Devel::Trepan::CmdProcessor::Command::Info;
 
-use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
-use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-use constant SHORT_HELP => 'Information about debugged program and its environment'; 
+use constant SHORT_HELP => 'Information about debugged program and its environment';
 use constant CATEGORY => 'status';
 use constant MIN_ARGS   => 0;  # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
@@ -26,7 +26,7 @@ our $NAME       = set_name();
 our $HELP = <<'HELP';
 =pod
 
-Generic command for showing things about the program being debugged. 
+Generic command for showing things about the program being debugged.
 
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.

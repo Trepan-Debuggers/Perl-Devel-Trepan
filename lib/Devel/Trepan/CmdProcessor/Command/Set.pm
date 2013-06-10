@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
-use rlib '../../../..';
-use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 
 package Devel::Trepan::CmdProcessor::Command::Set;
 
+use rlib '../../../..';
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY => 'support';

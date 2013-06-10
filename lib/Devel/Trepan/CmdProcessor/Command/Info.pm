@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
-use rlib '../../../..';
-use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
-use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 
 package Devel::Trepan::CmdProcessor::Command::Info;
+use rlib '../../../..';
 
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
 use constant SHORT_HELP => 'Information about debugged program and its environment';

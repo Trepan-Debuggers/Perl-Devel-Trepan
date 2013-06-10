@@ -76,7 +76,7 @@ require Exporter;
              file_list getlines
              filename_is_eval getline map_file is_cached
              load_file map_script map_file_line remap_file
-             remap_dbline_to_file %script_cache
+             remap_dbline_to_file remap_string_to_tempfile %script_cache
              trace_line_numbers update_script_cache
              );
 $VERSION = "1.0";
@@ -579,6 +579,18 @@ sub remap_file($$)
     cache_file($to_file);
 }
 
+sub remap_string_to_tempfile($)
+{
+    my $string = shift;
+    my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
+                                   TMPDIR => 1);
+    push @tempfiles, $tempfile;
+    $fh->autoflush(1);
+    print $fh $string;
+    $fh->close();
+    return $tempfile;
+}
+
 =pod
 
 =head2 remap_dbline_to_file
@@ -594,17 +606,12 @@ that.
 
 sub remap_dbline_to_file()
 {
-    my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
-                                   TMPDIR => 1);
-    push @tempfiles, $tempfile;
     no strict;
     my @lines = @DB::dbline;
     shift @lines if $lines[0] eq "use Devel::Trepan;\n";
     my $string = join('', @lines);
-    print $fh $string;
-    $fh->close();
+    my $tempfile = remap_string_to_tempfile $string;
     remap_file('-e', $tempfile);
-    return $tempfile
 }
 
 sub remap_file_lines($$$$)
@@ -789,40 +796,47 @@ sub map_file($)
 {
     my $filename = shift;
     return undef unless defined($filename);
-    $file2file_remap{$filename} ? $file2file_remap{$filename} : $filename
+    if ($file2file_remap{$filename}) {
+	$file2file_remap{$filename};
+    } elsif ($script2file{$filename}) {
+	$script2file{$filename};
+    } else {
+	$filename
+    }
   }
 
 =pod
 
 =head2 map_script
 
-B<map_script($script)> => string
+B<map_script($script, $string)> => string
 
-A previous invocation of I<remap_file()> could have mapped I<$script>
-(a pseudo-file name that I<eval()> uses) into something else. If that
-is the case we return the name that I<$script> was mapped
-into. Otherwise we return I<$script>
+Note that a previous invocation of I<remap_file()> could have mapped I<$script>
+(a pseudo-file name that I<eval()> uses) into something else.
+
+Return the temporary file name that I<$script> was mapped to.
 
 =cut
+
 use File::Temp qw(tempfile);
-sub map_script($$)
+sub map_script($$;$)
 {
-    my ($script, $string) = @_;
+    my ($script, $string, $opts) = @_;
     if (exists $script2file{$script}) {
-        $script2file{$script};
-    } else  {
-        # my $sha1 = Digest::SHA->new('sha1');
-        # $sha1->add($string);
-        my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
-                                       TMPDIR => 1);
-	return undef unless defined($string);
-        print $fh $string;
-        $fh->close();
-        $script2file{$script} = $tempfile;
-        # cache_file($tempfile);
-        # $file_cache{$tempfile}{sha1} = $sha1;
-        $tempfile;
+        return $script2file{$script};
     }
+
+    my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
+				   TMPDIR => 1);
+    return undef unless defined($string);
+    print $fh $string;
+    $fh->close();
+    $opts ||= {};
+    $opts->{use_perl_d_file} = 0;
+    update_cache($tempfile, $opts);
+    $script2file{$script} = $tempfile;
+
+    return $tempfile;
 }
 
 sub map_file_line($$)

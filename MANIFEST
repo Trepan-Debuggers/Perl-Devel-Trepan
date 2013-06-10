@@ -110,6 +110,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/Path.pm
+lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/String.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print.pm

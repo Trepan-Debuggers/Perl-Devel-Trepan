@@ -99,7 +99,12 @@ sub frame_setup($$)
 sub filename($)
 {
     my $self = shift;
-    map_file($self->{frame}{file});
+    my $filename = $self->{frame}{file};
+    if (filename_is_eval($filename)) {
+	return $filename;
+    } else {
+	return map_file($filename);
+    }
 }
 
 sub funcname($)

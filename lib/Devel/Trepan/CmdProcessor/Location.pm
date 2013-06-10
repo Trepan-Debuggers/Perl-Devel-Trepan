@@ -206,9 +206,8 @@ sub source_location_info($)
                 my $try_filename = map_script($filename, $string);
 		$filename = $try_filename if defined($try_filename);
             }
-            $canonic_filename = $self->canonic_file($self->filename(), 0);
-            return "${canonic_filename}:${line_number} " .
-                "remapped $filename:$line_number$op_addr";
+            return $self->filename() .
+                " remapped $filename:$line_number$op_addr";
         }
     }
     $canonic_filename = $self->canonic_file($self->filename(), 0);

@@ -6,8 +6,8 @@ highlight is off.
 set auto eval is on.
 Eval result display style is dumper.
 $DB::D[0] = <undef>
--- main::((eval 1955)[Eval.pm:73]:6 remapped bogus.pl:6)
-$DB::in_debugger=0;
+-- main::((eval 1955)[Eval.pm:73] remapped bogus.pl:6)
+gcd(1,1)
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)
@@ -24,15 +24,15 @@ Leaving nested debug level 1
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 $DB::D[3] = <undef>
--- main::((eval 1955)[Eval.pm:73]:6 remapped bogus.pl:6)
-$DB::in_debugger=0;
+-- main::((eval 1955)[Eval.pm:73] remapped bogus.pl:6)
+gcd(1,1)
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)
     ($a, $b) = ($b, $a) if ($a > $b);
 $DB::D[3] = 1
 $DB::D[4] = 1
--- main::((eval 1955)[Eval.pm:73]:6 remapped bogus.pl:6)
+-- main::((eval 1955)[Eval.pm:73] remapped bogus.pl:6)
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)

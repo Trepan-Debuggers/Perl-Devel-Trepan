@@ -9,7 +9,7 @@ my $opts = {
 	my ($got_lines, $correct_lines) = @_;
 	my @result = ();
 	for (split("\n", $got_lines)) {
-	    s/main::\(\(eval \d+\)\[.+Eval\.pm:\d+\]:(\d+).+/main::((eval 1955)[Eval.pm:73]:$1 remapped bogus.pl:$1)/;
+	    s/main::\(\(eval \d+\)\[.+Eval\.pm:\d+\].+(\d+)/main::((eval 1955)[Eval.pm:73] remapped bogus.pl:$1/;
 	    # $line =~ s/\((?:.*\/)?(.+\:\d+)\)/($1)/;
 	    push @result, $_;
 	}

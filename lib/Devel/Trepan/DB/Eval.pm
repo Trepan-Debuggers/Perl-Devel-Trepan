@@ -19,21 +19,21 @@ BEGIN {
     $DB::eval_result = undef;   # Place for result if scalar;
     @DB::eval_result = ();      # place for result if array
     %DB::eval_result = ();      # place for result if hash
-}    
+}
 
 # evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
-# $return_type indicates the return context: 
-#  @ for array context, 
+# $return_type indicates the return context:
+#  @ for array context,
 #  $ for scalar context,
 #  % save result in a hash variable
-#  
+#
 sub eval_with_return {
     my ($eval_str, $opts, @saved) = @_;
     no strict;
-    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-     $OUTPUT_FIELD_SEPARATOR, 
-     $INPUT_RECORD_SEPARATOR, 
+    ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
+     $OUTPUT_FIELD_SEPARATOR,
+     $INPUT_RECORD_SEPARATOR,
      $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
 
     {
@@ -75,7 +75,7 @@ sub eval_with_return {
         } else {
             $eval_result = eval "$eval_setup $eval_str\n";
         };
-        
+
         # Restore those old values.
         $DB::trace  = $otrace;
         $DB::single = $osingle;
@@ -104,7 +104,7 @@ sub eval_with_return {
 
 # Evaluate the argument and return 0 if there's no error.
 # If there is an error we return the error message.
-sub eval_not_ok ($) 
+sub eval_not_ok ($)
 {
     my $code = shift;
     my $wrapped = "$DB::namespace_package; sub { $code }";

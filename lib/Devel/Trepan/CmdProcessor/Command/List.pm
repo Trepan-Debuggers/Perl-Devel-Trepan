@@ -279,6 +279,12 @@ sub run($$)
     local(*DB::dbline) = "::_<$filename";
     my $lineno;
     my $msg = sprintf("%s [%d-%d]", $proc->canonic_file($filename), $start, $end);
+
+    # FIXME: put in frame?
+    my $frame_filename = $proc->filename();
+    $frame_filename = map_file($frame_filename)
+	if filename_is_eval($frame_filename);
+
     $self->section($msg);
     for ($lineno = $start; $lineno <= $end; $lineno++) {
         my $a_pad = '  ';
@@ -314,7 +320,7 @@ sub run($$)
 	## FIXME move above code
 
         $s .= ($proc->{frame} && $lineno == $proc->line &&
-               $proc->filename() eq $filename) ? '->' : $a_pad;
+               $frame_filename eq $filename) ? '->' : $a_pad;
         my $opts = {unlimited => 1};
         $proc->msg("$s\t$line", $opts);
     }

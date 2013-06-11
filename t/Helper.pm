@@ -1,6 +1,8 @@
 use warnings; use strict;
 use Test::More;
 use File::Basename qw(dirname basename); use File::Spec;
+
+# Funky terminals like xterm on cygwin can mess up output comparison.
 $ENV{'TERM'}='dumb';
 
 package Helper;

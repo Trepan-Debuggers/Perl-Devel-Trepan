@@ -1,6 +1,7 @@
 use warnings; use strict;
 use Test::More;
 use File::Basename qw(dirname basename); use File::Spec;
+$ENV{'TERM'}='dumb';
 
 package Helper;
 use English qw( -no_match_vars ) ;
@@ -54,10 +55,10 @@ sub run_debugger($;$$$)
 	$cmd_filename = cmd_file(1);
     }
     Test::More::note( "running $test_invoke with $cmd_filename" );
-    my $run_opts = $opts->{run_opts} || 
+    my $run_opts = $opts->{run_opts} ||
 	'--basename --nx --no-highlight --fall-off-end';
     my $dirname = dirname(__FILE__);
-    my $full_cmd_filename = File::Spec->catfile($dirname, 'data', 
+    my $full_cmd_filename = File::Spec->catfile($dirname, 'data',
 						$cmd_filename);
 
     # rlib seems to flip out if it can't find trepan.pl
@@ -83,17 +84,17 @@ sub run_debugger($;$$$)
 	Test::More::is($rc, $test_rc, "Debugger command executed giving exit code $test_rc");
     }
     return $rc if $rc;
-    open(RIGHT_FH, "<$right_filename") || 
+    open(RIGHT_FH, "<$right_filename") ||
 	die "Cannot open $right_filename for reading - $OS_ERROR";
     undef $INPUT_RECORD_SEPARATOR;
     my $right_string = <RIGHT_FH>;
     ($output, $right_string) = $opts->{filter}->($output, $right_string) if $opts->{filter};
     my $got_filename;
     $got_filename = $ext_file->('got');
-    # TODO : Perhaps make sure we optionally use eq_or_diff from 
+    # TODO : Perhaps make sure we optionally use eq_or_diff from
     # Test::Differences here.
     my $equal_output = $right_string eq $output;
-    Test::More::ok($right_string eq $output, 'Output comparison') 
+    Test::More::ok($right_string eq $output, 'Output comparison')
 	if $opts->{do_test};
     if ($equal_output) {
         unlink $got_filename;
@@ -116,7 +117,7 @@ sub run_debugger($;$$$)
 	    # case where diff isn't installed. So although we expect a 1
 	    # for GNU diff, we'll also take accept 0, but any other return
 	    # code means some sort of failure.
-	    $output = `diff $right_filename $got_filename 2>&1` 
+	    $output = `diff $right_filename $got_filename 2>&1`
 		if ($rc > 1) || ($rc < 0) ;
 	    Test::More::diag($output);
 	    return 1;

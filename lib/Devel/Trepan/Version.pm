@@ -1,3 +1,3 @@
 package Devel::Trepan::Version;
-use version; $VERSION = '0.48_01';
+use version; $VERSION = '0.49';
 1;

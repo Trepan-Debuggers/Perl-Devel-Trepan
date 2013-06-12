@@ -1,4 +1,4 @@
-#  Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+#  Copyright (C) 2011, 2013 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,10 @@
 #     PREREQ_PM => { Test::More=>q[0], version=>q[0], ExtUtils::PkgConfig=>q[1.03] }
 
 # Note: remake (GNU make with debugging) has a --tasks option which
-# will show important targets. In remake, to give a target a 
+# will show important targets. In remake, to give a target a
 # user-friendly description, one starts a comment line with #:
+
+GIT2CL ?= git2cl
 
 #: Build everything
 all:
@@ -28,27 +30,25 @@ build:
 	perl Build --makefile_env_macros 1 build
 
 #: Remove automatically generated files
-clean: 
+clean:
 	perl Build --makefile_env_macros 1 clean
 
-code: 
+code:
 	perl Build --makefile_env_macros 1 code
 
 config_data:
 	perl Build --makefile_env_macros 1 config_data
 
-diff: 
+diff:
 	perl Build --makefile_env_macros 1 diff
 
 #: Create distribution tarball
 dist:
 	perl Build --makefile_env_macros 1 dist
 
-#: Create distribution tarball and check manifest
 distcheck:
 	perl Build --makefile_env_macros 1 distcheck
 
-#: Clean ALL data
 distclean:
 	perl Build --makefile_env_macros 1 distclean
 
@@ -75,7 +75,7 @@ fakeinstall:
 help:
 	perl Build --makefile_env_macros 1 help
 
-html: 
+html:
 	perl Build --makefile_env_macros 1 html
 
 #: Install this puppy
@@ -120,15 +120,17 @@ test:
 testcover:
 	perl Build --makefile_env_macros 1 testcover
 
-#:Create a log file from the individual git commits via git2cl
-ChangeLog:
-	git log --pretty --numstat --summary | git2cl > $@
+rmChangeLog:
+	rm ChangeLog || true
+
+#: Create a ChangeLog from git via git log and git2cl
+ChangeLog: rmChangeLog
+	git log --pretty --numstat --summary | $(GIT2CL) >$@
 
 #: Calling perl debugger (perldb) on each test
 testdb:
 	perl Build --makefile_env_macros 1 testdb
 
-#: Look for errors in POD in each of the Poerl Module files in blib
 testpod:
 	perl Build --makefile_env_macros 1 testpod
 

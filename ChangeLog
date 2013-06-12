@@ -1,3 +1,81 @@
+2013-06-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/List.pm, t/Helper.pm: Had
+	dropped up arrow on "list" command for eval-derived listings with
+	temporary names
+
+2013-06-11  Rocky Bernstein <rocky@cpan.org>
+
+	* t/Helper.pm: Funky terminals (like xterm on cygwin) can mess up
+	output comparisons.
+
+2013-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/
+	String.pm, lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/Eval.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/Processor/Frame.pm, t/20test-debug.t,
+	t/data/debug.right, t/data/eval2.right: Add "Set Substitute Path".
+	Eval substitution fixes.
+
+2013-06-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm: Last change was a
+	little wrong - move use rlib inside package
+
+2013-06-10  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm: Moving use allows
+	prevents installed Devel::Trepan from getting used
+
+2013-06-09  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/
+	Path.pm: Path.pm pod format problem in doc.
+
+2013-06-09  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/IO/Input.pm: Input.pm: Deal with
+	Term::ReadLine::Perl5 yet again, mostly disabled. MANIFEST: newly
+	added files. Sort now.
+
+2013-06-09  Rocky Bernstein <rocky@cpan.org>
+
+	* example/selfloadtest.pl: And simpler
+
+2013-06-09  Rocky Bernstein <rocky@cpan.org>
+
+	* example/selfloadtest.pl: Even simpler.
+
+2013-06-09  Rocky Bernstein <rocky@cpan.org>
+
+	* example/selfloadtest.pl: Don't need rlib here
+
+2013-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm, lib/Devel/Trepan/DB/Display.pm: 
+	Devel::Trepan::DisplayMgr -> Devel::Trepan::DB::DisplayMgr
+
+2013-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* example/selfloadtest.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/
+	Path.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/DB/SelfLoader.pm: Core.pm: Don't trace into
+	SelfLoader now that we know it works. selfloadertest.pl: this really
+	works now. Add "set substitute command". SelfLoader.pm:
+	protoype->prototype.
+
+2013-06-08  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes: Update ChangeLog and note just-added "set
+	substitute path" command
+
 2013-06-08  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm,

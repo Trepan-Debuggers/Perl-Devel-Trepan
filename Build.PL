@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#  Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+#  Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,15 +25,15 @@ my $lib = File::Spec->catfile(dirname(__FILE__), 'lib');
 unshift @INC, $lib;
 require Devel::Trepan::Version;
 
-my $release_status = ($Devel::Trepan::Version::VERSION =~ /_/) ? 
+my $release_status = ($Devel::Trepan::Version::VERSION =~ /_/) ?
     'testing' : 'stable';
 # print "$Devel::Trepan::Version::VERSION $release_status\n";
 
-my $builder = Module::Build->new( 
+my $builder = Module::Build->new(
     module_name         => 'Devel::Trepan',
     add_to_cleanup      => [ 'Devel-Trepan-*', 'tmp*', '*.got'  ],
     create_makefile_pl  => 'passthrough',
-    dist_abstract       => 
+    dist_abstract       =>
     'Modular Perl Debugger (akin to Ruby "Trepanning" Debuggers).',
     dist_author         => 'Rocky Bernstein <rocky@cpan.org>',
     dist_version_from   => 'lib/Devel/Trepan/Version.pm',
@@ -46,11 +46,11 @@ my $builder = Module::Build->new(
             bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
             repository  => 'http://github.com/rocky/Perl-Devel-Trepan'
         }
-    },    
+    },
 
-    configure_requires  => { 
+    configure_requires  => {
         'Module::Build' => '0.32',
-                              
+
     },
     build_requires => {
         # 'String::Diff'        => 0,
@@ -67,12 +67,12 @@ my $builder = Module::Build->new(
         'Eval::WithLexicals'                => 0,
         'Pod::Text::Color'                  => 2.06,
         'Term::ReadKey'                     => 0,
-        'Term::ReadLine::Perl'              => 0,
+        'Term::ReadLine::Perl5'             => 1.08,
     },
 
     requires => {
         'perl'                              => '5.008008',
-        'Array::Columnize'                  => '1.01',
+        'Array::Columnize'                  => '1.04',
         # 'Capture::Tiny'                     => 0,
         'Data::Dumper'                      => 0,
         'Getopt::Long'                      => '2.36',

@@ -1,4 +1,4 @@
-#!/usr/bin/env perl 
+#!/usr/bin/env perl
 # Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
 use strict; use warnings;
@@ -17,8 +17,8 @@ use Exporter;
 
 
 use constant PROGRAM => 'trepan.pl';
-use version; 
-$VERSION='0.48_01'; # To fool CPAN indexer. Is <= real version
+use version;
+$VERSION='0.49'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -27,10 +27,10 @@ sub show_version() {
 }
 
 # =head2 debugger
-# Allows program to make an explicit call to the debugger. 
+# Allows program to make an explicit call to the debugger.
 # B<Example:>
 #
-# In your Perl program I<foo.pl>: 
+# In your Perl program I<foo.pl>:
 #
 #    my $x = 1;
 #    Devel::Trepan::debugger;
@@ -90,11 +90,11 @@ Devel::Trepan -- A new modular Perl debugger
 A modular, testable, gdb-like debugger in the family of the Ruby
 L<trepanning debuggers|http://github.com/rocky/rb-trepanning/wiki>.
 
-=head2 Features: 
+=head2 Features:
 
 =over
 
-=item * 
+=item *
 
 extensive online-help
 
@@ -144,7 +144,7 @@ effect. See L</Plugins> and L</Recommended Modules> below.
 
 =head2 Invocation
 
-From a shell: 
+From a shell:
 
     $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
 
@@ -152,14 +152,14 @@ For out-of-process (and possibly out-of server) debugging:
 
     $ trepan.pl --server [trepan-opts] -- perl-program [perl-program-opts]
 
-and then from another process or computer: 
+and then from another process or computer:
 
     $ trepan.pl --client [--host DNS-NAME-OR-IP]
 
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's L<Enbugger>:
 
-    # This needs to be done once and could even be in some sort of 
+    # This needs to be done once and could even be in some sort of
     # conditional code
     require Enbugger; Enbugger->load_debugger( 'trepan' );
 
@@ -168,7 +168,7 @@ Jore's L<Enbugger>:
 
     # work, work, work...
     # Oops! there was an error! Enable the debugger now!
-    Enbugger->stop;  # or Enbugger->stop if ... 
+    Enbugger->stop;  # or Enbugger->stop if ...
 
 Or if you just want POSIX-shell-like C<set -x> line tracing:
 
@@ -189,27 +189,27 @@ command, but rather some of the more basic commands and options.
 
 L</"Commands involving running the program">
 
-=item * 
+=item *
 
 L</"Examining data">
 
-=item * 
+=item *
 
 L</"Making the program stop at certain points">
 
-=item * 
+=item *
 
 L</"Examining the call stack">
 
-=item * 
+=item *
 
 L</"Support facilities">
 
-=item * 
+=item *
 
 L</"Syntax of debugger commands">
 
-=back 
+=back
 
 
 =head3 Commands involving running the program
@@ -219,9 +219,9 @@ program, either by kinds of stepping (step into, step over, step out)
 restarting or termintating the program altogether. However setting
 breakpoints is in L</Making the program stop at certain points>.
 
-=over 
+=over
 
-=item * 
+=item *
 
 L</"Step into (step)">
 
@@ -229,11 +229,11 @@ L</"Step into (step)">
 
 L</"Step over (next)">
 
-=item * 
+=item *
 
 L<"Continue execution (continue)">
 
-=item * 
+=item *
 
 L</"Step out (finish)">
 
@@ -241,7 +241,7 @@ L</"Step out (finish)">
 
 L</"Gently exit debugged program (quit)">
 
-=item * 
+=item *
 
 L</"Hard termination (kill)">
 
@@ -270,7 +270,7 @@ the return for that call.)
 If no suffix is given, the debugger setting C<different> determines
 this behavior.
 
-I<Examples:> 
+I<Examples:>
 
     step        # step 1 event, *any* event obeying 'set different' setting
     step 1      # same as above
@@ -297,7 +297,7 @@ the debugger however may occur via breakpoints or explicit calls, or
 exceptions.
 
 If a parameter is given, a temporary breakpoint is set at that position
-before continuing. 
+before continuing.
 
 I<Examples:>
 
@@ -337,7 +337,7 @@ B<Examples:>
  quit! 1              # unconditional quit setting exit code 1
 
 See also C<set confirm> and
-L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.  
+L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.
 
 =head4 Hard termination (kill)
 
@@ -349,12 +349,12 @@ Equivalent of C<kill('KILL', $$)>. This is an unmaskable
 signal. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
-However when this command is aliased from a command ending in C<!>, no 
+However when this command is aliased from a command ending in C<!>, no
 questions are asked.
 
-I<Examples:> 
+I<Examples:>
 
- kill  
+ kill
  kill KILL # same as above
  kill -9   # same as above
  kill  9   # same as above
@@ -376,7 +376,7 @@ See also C<show args> for the exact invocation that will be used.
 
 =over
 
-=item * 
+=item *
 
 L</"Evaluate Perl code (eval)">
 
@@ -384,7 +384,7 @@ L</"Evaluate Perl code (eval)">
 
 L</"Recursively Debug into Perl code">
 
-=back 
+=back
 
 =head4 Evaluate Perl code (eval)
 
@@ -409,13 +409,13 @@ I<Examples:>
     eval $^X  # Possibly /usr/bin/perl
     eval      # Run current source-code line
     eval?     # but strips off leading 'if', 'while', ..
-              # from command 
-    eval @ARGV  # Make sure the result saved is an array rather than 
+              # from command
+    eval @ARGV  # Make sure the result saved is an array rather than
                 # an array converted to a scalar.
     @ @ARG       # Same as above if @ alias is around
     use English  # Note this is a statement, not an expression
     use English; # Same as above
-    eval$ use English # Error because this is not a valid expression 
+    eval$ use English # Error because this is not a valid expression
 
 See also C<set auto eval> to treat unrecognized debugger commands as
 Perl code.
@@ -442,11 +442,11 @@ breakpoint is removed as soon as it is hit. In a sense, stepping is
 like setting one-time breakpoints. Breakpoints can also be disabled
 which allows you to temporarily ignore stopping at that breakpoint
 while it is disabled. Finally one can control conditions under which a
-breakpoint is enacted upon. 
+breakpoint is enacted upon.
 
 Another way to force a stop is to watch to see if the value of an
 expression changes. Often that expression is simply examinging a
-variable's value. 
+variable's value.
 
 =over
 
@@ -495,7 +495,7 @@ I<Examples:>
 
  break                  # set a breakpoint on the current line
  break gcd              # set a breakpoint in function gcd
- break gcd if $a == 1   # set a breakpoint in function gcd with 
+ break gcd if $a == 1   # set a breakpoint in function gcd with
                         # condition $a == 1
  break 10               # set breakpoint on line 10
 
@@ -537,12 +537,12 @@ See also "break", "enable" and "disable".
 
 =head4 Delete some breakpoints (delete)
 
-B<delete> [I<bp-number> [I<bp-number>...]]  
+B<delete> [I<bp-number> [I<bp-number>...]]
 
 Delete some breakpoints.
 
 Arguments are breakpoint numbers with spaces in between. To delete
-all breakpoints, give no arguments.  
+all breakpoints, give no arguments.
 
 See also the C<clear> command which clears breakpoints by line number
 and C<info break> to get a list of breakpoint numbers.
@@ -550,7 +550,7 @@ and C<info break> to get a list of breakpoint numbers.
 =head4 Enable some breakpoints (enable)
 
 B<enable> I<num> [I<num> ...]
-    
+
 Enables breakpoints, watch expressions or actions given as a space
 separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
 The prefaces are interpreted as follows:
@@ -570,7 +570,7 @@ If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
 =head4 Disable some breakpoints (disable)
 
 B<disable> I<bp-number> [I<bp-number> ...]
-    
+
 Disables the breakpoints given as a space separated list of breakpoint
 numbers. See also C<info break> to get a list of breakpoints
 
@@ -584,15 +584,15 @@ of steps taken by the debugger is:
 
 =over
 
-=item 1. check for a breakpoint at this line 
+=item 1. check for a breakpoint at this line
 
-=item 2. print the line if necessary (tracing) 
+=item 2. print the line if necessary (tracing)
 
-=item 3. do any actions associated with that line 
+=item 3. do any actions associated with that line
 
-=item 4. prompt user if at a breakpoint or in single-step 
+=item 4. prompt user if at a breakpoint or in single-step
 
-=item 5. evaluate line 
+=item 5. evaluate line
 
 =back
 
@@ -653,7 +653,7 @@ L</"Move to a less recent frame (down)">
 B<backtrace> [I<count>]
 
 Print a stack trace, with the most recent frame at the top. With a
-positive number, print at most many entries. 
+positive number, print at most many entries.
 
 In the listing produced, an arrow indicates the 'current frame'. The
 current frame determines the context used for many debugger commands
@@ -734,7 +734,7 @@ L</"Modify parts of the Debugger Environment">
 
 B<alias> I<alias> I<command>
 
-Add alias I<alias> for a debugger command I<command>.  
+Add alias I<alias> for a debugger command I<command>.
 
 Add an alias when you want to use a command abbreviation for a command
 that would otherwise be ambigous. For example, by default we make C<s>
@@ -799,7 +799,7 @@ you could do it this way:
                   ['finish', 'step ' . (shift)] \
                 }
 
-Invoking with: 
+Invoking with:
 
   fin+ 3
 
@@ -822,7 +822,7 @@ B<quit>[B<!>] [B<unconditionally>] [I<exit-code>]
 
 B<server> [I<options>]
 
-options: 
+options:
 
     -p | --port NUMBER
     -a | --address
@@ -834,7 +834,7 @@ which opens a socket for debugger connections
 
 B<source> [I<options>] I<file>
 
-options: 
+options:
 
     -q | --quiet | --no-quiet
     -c | --continue | --no-continue
@@ -889,7 +889,7 @@ B<Set commands>
 
 =over
 
-=item abbrev  
+=item abbrev
 
 Set to allow unique abbreviations of commands
 
@@ -897,15 +897,15 @@ Set to allow unique abbreviations of commands
 
 Set controls for some "automatic" default behaviors
 
-=item basename 
+=item basename
 
 Set to show only file basename in showing file names
 
-=item confirm 
+=item confirm
 
 Set whether to confirm potentially dangerous operations.
 
-=item debug 
+=item debug
 
 Set debugging controls
 
@@ -913,7 +913,7 @@ Set debugging controls
 
 Set to make sure 'next/step' move to a new position.
 
-=item display 
+=item display
 
 Set display attributes
 
@@ -921,23 +921,23 @@ Set display attributes
 
 Set whether we use terminal highlighting
 
-=item max 
+=item max
 
 Set maximum length sizes of various things
 
-=item return 
+=item return
 
 Set the value about to be returned
 
-=item timer 
+=item timer
 
 Set to show elapsed time between debugger events
 
-=item trace 
+=item trace
 
 Set tracing of various sorts.
 
-=item variable 
+=item variable
 
 Set a I<my> or I<our> variable
 
@@ -947,15 +947,15 @@ B<Show commands>
 
 =over
 
-=item abbrev 
+=item abbrev
 
 Show whether we allow abbreviated debugger command names
 
-=item aliases 
+=item aliases
 
 Show defined aliases
 
-=item args 
+=item args
 
 Arguments to restart program
 
@@ -963,15 +963,15 @@ Arguments to restart program
 
 Show controls for things with some sort of "automatic" default behavior
 
-=item basename 
+=item basename
 
 Show only file basename in showing file names
 
-=item confirm 
+=item confirm
 
 Show confirm potentially dangerous operations setting
 
-=item debug 
+=item debug
 
 Show debugging controls
 
@@ -979,7 +979,7 @@ Show debugging controls
 
 Show status of 'set different'
 
-=item display 
+=item display
 
 Show display-related controls
 
@@ -991,19 +991,19 @@ Show whether we use terminal highlighting
 
 Show whether debugger input is a terminal
 
-=item max 
+=item max
 
 Show "maximum length" settings
 
-=item timer 
+=item timer
 
 Show status of the timing hook
 
-=item trace 
+=item trace
 
 Set tracing of various sorts
 
-=item version 
+=item version
 
 Show debugger name and version
 
@@ -1018,7 +1018,7 @@ is ignored.
 
 Commands are split at whereever C<;;> appears. This process disregards
 any quotes or other symbols that have meaning in Perl. The strings
-after the leading command string are put back on a command queue. 
+after the leading command string are put back on a command queue.
 
 Within a single command, tokens are then white-space split. Again,
 this process disregards quotes or symbols that have meaning in Perl.
@@ -1033,7 +1033,7 @@ omitted depending on early success or some debugger settings:
 the table, the expansion is replaces the current command and possibly
 other commands pushed onto a command queue. See the "help macros" for
 help on how to define macros, and "info macro" for current macro
-definitions. 
+definitions.
 
 2. The leading token is next looked up in the debugger alias table and
 the name may be substituted there. See "help alias" for how to define
@@ -1066,18 +1066,18 @@ is "undefined".
       # any amount of leading space is also ok
 
 =head4 Splitting Commands
- 
+
 The following runs two commands: C<info program> and C<list>
 
- info program;; list 
+ info program;; list
 
 The following gives a syntax error since C<;;> splits the line and the
 simple debugger parse then thinks that the quote (") is not closed.
 
- print "hi ;;-)\n" 
- 
+ print "hi ;;-)\n"
+
 If you have the Devel::Trepan::Shell plugin, you can go into a real
-shell and run the above. 
+shell and run the above.
 
 =head4 Command Continuation
 
@@ -1092,7 +1092,7 @@ The string in variable C<$x> will have a C<\n> before the article "a".
 =head4 Command suffixes which have special meaning
 
 Some commands like C<step>, or C<list> do different things when an
-alias to the command ends in a particular suffix like ">". 
+alias to the command ends in a particular suffix like ">".
 
 Here are a list of commands and the special suffixes:
 
@@ -1100,7 +1100,7 @@ Here are a list of commands and the special suffixes:
     -------   ------
     list       >
     step       +,-,<,>
-    next       +,-,<,> 
+    next       +,-,<,>
     quit       !
     kill       !
     eval       ?
@@ -1152,7 +1152,7 @@ L<Location, Location, Location|http://blogs.perl.org/users/rockyb/2012/08/locati
 
 L<Devel::Trepan github wiki|https://github.com/rocky/Perl-Devel-Trepan/wiki>
 
-=back 
+=back
 
 =head2 Plugins
 
@@ -1167,7 +1167,7 @@ L<Devel::Trepan::Shell> adds a debugger C<shell> command support via L<Devel::RE
 L<Devel::Trepan::Disassemble> adds a debugger C<disassemble> command
 support via L<B::Concise>
 
-=back 
+=back
 
 =head2 Recommended Modules
 
@@ -1175,7 +1175,7 @@ support via L<B::Concise>
 
 =item *
 
-L<Devel::Callsite> allows you to see the exact location of where you are stopped. 
+L<Devel::Callsite> allows you to see the exact location of where you are stopped.
 
 =item *
 L<Enbugger> allows you to enter the debugger via a direct call in source code

@@ -427,7 +427,9 @@ sub getline($$;$)
             my $sep = ($plain_lines eq $lines) ? '' : "\n";
             my $plain_line = $plain_lines->[$index];
             while (--$max_continue && !DB::eval_ok($plain_line)) {
-                $line .= ($sep . $lines->[++$index]);
+		my $next_line = $lines->[++$index];
+		last unless $next_line;
+                $line .= ($sep . $next_line);
                 $plain_line .= $plain_lines->[$index];
 		last if $file_cache{$filename}{trace_nums}{$index+1};
             }

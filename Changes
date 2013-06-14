@@ -5,7 +5,9 @@ Revision history for Devel-Trepan
 - Add "set substitute path" and "set substitute string" commands
 - Add provision for tracing use (Use.pm and debuggable SelfLoader.pm)
 - Bump $deep based on discussion in RT #117407
-- eval file remaping fixes
+- First use of Term::ReadLine::Perl5 so we can now have command history
+  saving enabled - set PERL_RL=Perl5 to use.
+- eval file remapping fixes
 - Perl bug #116358
 - Misc bug fixes
 

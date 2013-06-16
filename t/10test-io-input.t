@@ -11,13 +11,13 @@ use_ok( 'Devel::Trepan::IO::Input' );
 
 note("term_readline_capability and priority");
 
-my @TERMS = ('Perl5', 'Perl', 'Gnu', 'Plain');
+my @TERMS = ('Perl5', 'Perl', 'Gnu', 'Stub');
 
 my %HAVE_READLINE;
 
 delete $ENV{PERL_RL} if $ENV{PERL_RL};
 foreach my $ilk (@TERMS) {
-    my $pkg_name = $ilk eq 'Plain' ?
+    my $pkg_name = $ilk eq 'Stub' ?
 	'Term::ReadLine' :
 	"Term::ReadLine::$ilk" ;
     $HAVE_READLINE{$ilk} = eval "use $pkg_name; 1";
@@ -45,7 +45,7 @@ if ($have_some_readline) {
 }
 
 foreach my $ilk (@TERMS) {
-    next if $ilk eq 'Plain';
+    next if $ilk eq 'Stub';
     if ($HAVE_READLINE{$ilk}) {
 	$ENV{PERL_RL} = $ilk;
 	ok(term_readline_capability(),

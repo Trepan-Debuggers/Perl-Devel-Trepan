@@ -82,6 +82,12 @@ Trepan.pod is useful in the Github wiki:
 https://github.com/rocky/Perl-Devel-Trepan/wiki
 where we can immediately see the results and others can contribute.
 
+=begin html
+
+<a href="https://travis-ci.org/rocky/Perl-Devel-Callsite"><img src="https://travis-ci.org/rocky/Perl-Devel-Callsite.png"></a>
+
+=end html
+
 =for comment
 The version Trepan.pm however is what is seen at https://metacpan.org/module/Devel::Trepan and when folks download this file
 
@@ -933,6 +939,10 @@ Set maximum length sizes of various things
 =item return
 
 Set the value about to be returned
+
+=item substitute
+
+Influence how filenames in the debugger map to local filenames
 
 =item timer
 

@@ -8,7 +8,7 @@ env:
 
 install:
   # Prerequisites
-  - "cpanm install rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker && perl ./Build installdeps"
+  - "cpanm install rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker"
 
 perl:
   - "5.16"

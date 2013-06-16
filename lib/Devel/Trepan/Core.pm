@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings;
 # FIXME: Can't use strict;
 
@@ -21,7 +21,6 @@ use Devel::Trepan::Util;
 use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
 
 BEGIN {
-    $ENV{'PERL_RL'} ||= 'perl';
     $HAVE_BULLWINKLE = eval("use Devel::Trepan::BWProcessor; 1") ? 1 : 0;
 }
 

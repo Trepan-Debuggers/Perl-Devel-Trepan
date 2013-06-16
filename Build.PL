@@ -67,7 +67,7 @@ my $builder = Module::Build->new(
         'Eval::WithLexicals'                => 0,
         'Pod::Text::Color'                  => 2.06,
         'Term::ReadKey'                     => 0,
-        'Term::ReadLine::Perl5'             => 1.08,
+        'Term::ReadLine::Perl5'             => 1.09,
     },
 
     requires => {

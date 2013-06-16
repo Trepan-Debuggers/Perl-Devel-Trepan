@@ -10,37 +10,37 @@ use Exporter;
 
 package Devel::Trepan::IO::Input;
 
-use rlib '../../..';
-use Devel::Trepan::Util qw(hash_merge);
-use Devel::Trepan::IO;
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../../..';
+    use Devel::Trepan::Util qw(hash_merge);
+    use Devel::Trepan::IO;
+    @INC = @OLD_INC;
+}
 
 use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
 @ISA = qw(Devel::Trepan::IO::InputBase Exporter);
-@EXPORT = qw($HAVE_TERM_READLINE);
+@EXPORT = qw($HAVE_TERM_READLINE term_readline_capability);
 
-sub term_readline_capability {
-    # FIXME: Revist.
-    # Term::ReadLine::Perl5 isn't stable yet. So for now to use
-    # Term::ReadLine::Perl5, you need to have this package installed
-    # as well as setting environment variable PERL_RL to 'Perl5'.
-    #
-    my $have_term_readline =
-	!! eval q(use Term::ReadLine::Perl5; $ENV{PERL_RL} && $ENV{PERL_RL} eq 'Perl5');
-    return 'Perl5' if $have_term_readline;
+sub term_readline_capability() {
+    # Prefer Term::ReadLine::Perl5 if we have it
+    return 'Perl5' if
+	(!$ENV{PERL_RL} || $ENV{PERL_RL} eq 'Perl5') &&
+	eval q(use Term::ReadLine::Perl5; 1);
 
     if ($ENV{PERL_RL}) {
-	return eval qq(use Term::ReadLine; 1);
+	return eval q(use Term::ReadLine; 1);
     } else {
-	# Prefer Term::ReadLine::Perl for Term::Readline
+	# Prefer Term::ReadLine::Perl for Term::ReadLine
 	foreach my $ilk (qw(Perl Gnu)) {
 	    return $ilk if eval qq(use Term::ReadLine::$ilk; 1);
 	}
-	return 'Stub' if eval qq(use Term::ReadLine; 1);
+	return 'Stub' if eval q(use Term::ReadLine; 1);
     }
     return 0;
 }
 
-BEGIN { $HAVE_TERM_READLINE = term_readline_capability(); }
+$HAVE_TERM_READLINE = term_readline_capability();
 
 sub new($;$$) {
     my ($class, $inp, $opts) = @_;
@@ -49,7 +49,7 @@ sub new($;$$) {
     if ($opts->{readline} && $HAVE_TERM_READLINE) {
         my $rc = 0;
         $rc = eval {
-	    ## FIXME: Simplfiy after Term::ReadLine::Perl5 is in Term::ReadLine
+	    ## FIXME: Simplify after Term::ReadLine::Perl5 is in Term::ReadLine
 	    if ($HAVE_TERM_READLINE eq 'Perl5') {
 		$self->{readline} = Term::ReadLine::Perl5->new('trepan.pl');
 	    } else {
@@ -111,6 +111,7 @@ unless (caller) {
     require Data::Dumper; import Data::Dumper;
     print Dumper($in), "\n";
     printf "Is interactive: %s\n", ($in->is_interactive ? "yes" : "no");
+    printf "term_readline_capability: %s\n", term_readline_capability();
     printf "Have Term::ReadLine: %s\n", ($HAVE_TERM_READLINE ? "yes" : "no");
     if (scalar(@ARGV) > 0) {
         print "Enter some text: ";

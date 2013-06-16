@@ -1,22 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Client;
 use strict;
-use rlib;
-
-# require_relative 'default'                # default debugger settings
-
-use Devel::Trepan::Interface::ComCodes;
-use Devel::Trepan::Interface::Client;
-use Devel::Trepan::Interface::Script;
 use English qw( -no_match_vars );
+
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../..';
+    use Devel::Trepan::Interface::ComCodes;
+    use Devel::Trepan::Interface::Client;
+    use Devel::Trepan::Interface::Script;
+    @INC = @OLD_INC;
+}
 
 sub new
 {
     my ($class, $settings) = @_;
-    my  $intf = Devel::Trepan::Interface::Client->new( 
-        undef, undef, undef, undef, 
+    my  $intf = Devel::Trepan::Interface::Client->new(
+        undef, undef, undef, undef,
         {host => $settings->{host},
          port => $settings->{port}}
         );
@@ -49,13 +51,13 @@ sub run_command($$$$)
         my $cmd_name = shift @args;
         my $script_file = shift @args;
         if ('source' eq $cmd_name) {
-            my $result = 
+            my $result =
                 Devel::Trepan::Util::invalid_filename($script_file);
             unless (defined $result) {
                 $self->errmsg($result);
                 return 0;
             }
-            my $script_intf = 
+            my $script_intf =
                 Devel::Trepan::Interface::Script->new($script_file);
             unshift @{$self->{user_inputs}}, $script_intf->{input};
             $current_command = $script_intf->read_command;
@@ -126,9 +128,9 @@ sub start_client($)
                     last;
                 }
             }
-        } elsif (QUIT eq $control_code) { 
+        } elsif (QUIT eq $control_code) {
             last;
-        } elsif (RESTART eq $control_code) { 
+        } elsif (RESTART eq $control_code) {
             $intf->close;
             # Make another connection..
             $client = Devel::Trepan::Client->new(

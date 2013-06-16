@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
-use rlib '../..';
-use Devel::Trepan::DB::Breakpoint;
+
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../..';
+    use Devel::Trepan::DB::Breakpoint;
+    @INC = @OLD_INC;
+}
+
 package Devel::Trepan::BrkptMgr;
 
 
@@ -17,14 +23,14 @@ sub new($$)
     $self;
 }
 
-sub clear($) 
+sub clear($)
 {
     my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
 }
 
-sub inspect($) 
+sub inspect($)
 {
     my $self = shift;
     my $str = '';
@@ -150,7 +156,7 @@ unless (caller) {
 
     eval <<'EOE';
     sub bp_status($$)
-    { 
+    {
         my ($brkpts, $i) = @_;
         printf "list size: %s\n", $brkpts->size();
         printf "max: %d\n", $brkpts->max() // -1;

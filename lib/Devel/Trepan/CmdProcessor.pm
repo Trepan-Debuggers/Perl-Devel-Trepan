@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
-use rlib '../..';
-
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
 package Devel::Trepan::CmdProcessor;
@@ -23,6 +21,8 @@ use Exporter;
 use warnings; no warnings 'redefine';
 
 use vars qw(@EXPORT @ISA $eval_result);
+
+use rlib '../..';
 
 # Showing eval results can be done using either data dump package.
 unless (@ISA) {
@@ -48,6 +48,7 @@ use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 @ISA = qw(Exporter Devel::Trepan::Processor);
 
 BEGIN {
+    no warnings;
     @DB::D = ();  # Place to save eval results;
 }
 
@@ -447,8 +448,10 @@ sub run_command($$)
             chomp $current_command;
             $self->eval($current_command, $opts, 2);
         } else {
+	    no warnings;
             my $return_type = $DB::eval_opts->{return_type} =
                 $opts->{return_type};
+	    use warnings;
             if ('$' eq $opts->{return_type}) {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             } elsif ('@' eq $opts->{return_type}) {

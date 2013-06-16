@@ -214,6 +214,7 @@ t/10test-db-brkpt.t
 t/10test-db-eval.t
 t/10test-intf-script.t
 t/10test-intf-user.t
+t/10test-io-input.t
 t/10test-io-output.t
 t/10test-io-stringarray.t
 t/10test-io-tcppack.t

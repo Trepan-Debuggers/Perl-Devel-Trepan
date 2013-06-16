@@ -18,8 +18,8 @@ my %HAVE_READLINE;
 delete $ENV{PERL_RL} if $ENV{PERL_RL};
 foreach my $ilk (@TERMS) {
     my $pkg_name = $ilk eq 'Plain' ?
-	"Term::ReadLine::$ilk" :
-	'Term::ReadLine' ;
+	'Term::ReadLine' :
+	"Term::ReadLine::$ilk" ;
     $HAVE_READLINE{$ilk} = eval "use $pkg_name; 1";
 }
 

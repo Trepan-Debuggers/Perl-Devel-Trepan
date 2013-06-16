@@ -1,4 +1,4 @@
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use warnings;
 package Devel::Trepan::Options;
@@ -6,17 +6,18 @@ use Getopt::Long qw(GetOptionsFromArray);
 use Pod::Usage;
 use Pod::Find qw(pod_where);
 use File::Spec;
-use rlib '../..';
+use File::HomeDir;
 
 use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME);
 our @ISA;
 
-# Not used, but keeps the CPAN indexer happy
-our $VERSION = 0.37;
-
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
+    my @OLD_INC = @INC;
+    use rlib '../..';
+    use Devel::Trepan::Version;
+    @INC = @OLD_INC;
 }
 
 use constant PROGRAM_NAME => $PROGRAM_NAME;
@@ -25,13 +26,13 @@ use constant PROGRAM_NAME => $PROGRAM_NAME;
 
 # Return whether we want Terminal highlighting by default
 sub default_term() {
-    ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' || 
+    ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' ||
                      (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
         ?  'term' : 0
 }
 
-my $home = $ENV{'HOME'} || glob("~");
-my $initfile = File::Spec->catfile($home, '.treplrc');
+my $HOME = File::HomeDir->my_home;
+my $initfile = File::Spec->catfile($HOME, '.treplrc');
 $DEFAULT_OPTIONS = {
     basename     => 0,
     batchfile    => undef,
@@ -40,24 +41,23 @@ $DEFAULT_OPTIONS = {
     cmddir       => [],      # Additional directories of debugger commands
     cmdfiles     => [],      # Files containing debugger commands to 'source'
     exec_strs    => [],      # Perl strings to evaluate
-    fall_off_end => 0,       # Don't go into debugger on termination? 
-    highlight    => default_term(),    
+    fall_off_end => 0,       # Don't go into debugger on termination?
+    highlight    => default_term(),
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
-    host         => 'localhost', 
+    host         => 'localhost',
     initfile     => $initfile,
     initial_dir  => undef, # If --cd option was given, we save it here.
     nx           => 0,     # Don't run user startup file (e.g. .treplrc)
     port         => 1954,
-    post_mortem  => 0,       # Go into debugger on die? 
+    post_mortem  => 0,       # Go into debugger on die?
     readline     => 1,       # Try to use GNU Readline?
     testing      => undef,
-    traceprint   => 0,       # set -x tracing? 
+    traceprint   => 0,       # set -x tracing?
 
 };
 
 sub show_version()
 {
-    require Devel::Trepan::Version;
     printf "$PROGRAM_NAME, version %s\n", $Devel::Trepan::Version::VERSION;
     exit 10;
 }
@@ -94,8 +94,8 @@ sub process_options($)
          'version'      => \$show_version,
          'x|trace'      => \$opts->{traceprint},
         );
-    
-    pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__), 
+
+    pod2usage(-input => pod_where({-inc => 1}, __PACKAGE__),
               -exitstatus => 1) if $help;
     pod2usage(-exitstatus => 10, -verbose => 2,
               -input => pod_where({-inc => 1}, __PACKAGE__)) if $man;
@@ -106,14 +106,14 @@ sub process_options($)
     $batch_filename = $opts->{batchfile} unless defined $batch_filename;
     if ($batch_filename) {
         if (scalar(@{$opts->{cmdfiles}}) != 0) {
-            printf(STDERR "--batch option disables command files: %s\n", 
+            printf(STDERR "--batch option disables command files: %s\n",
                    join(', ', @{$opts->{cmdfiles}}));
             $opts->{cmdfiles} = [];
         }
         $opts->{nx} = 1;
     }
     if ($opts->{server} and $opts->{client}) {
-        printf STDERR 
+        printf STDERR
             "Pick only on from of the --server or --client options\n";
     }
     $opts;
@@ -126,7 +126,7 @@ sub whence_file($)
     my $prog_script = shift;
 
     # If we have an relative or absolute file name, don't do anything.
-    return $prog_script if 
+    return $prog_script if
         File::Spec->file_name_is_absolute($prog_script);
     my $first_char = substr($prog_script, 0, 1);
     return $prog_script if index('./', $first_char) != -1;
@@ -190,10 +190,10 @@ unless (caller) {
 1;
 
 __END__
-    
+
 =head1 TrepanPl
 
-trepan.pl - Perl "Trepanning" Debugger 
+trepan.pl - Perl "Trepanning" Debugger
 
 =head1 SYNOPSIS
 
@@ -202,7 +202,7 @@ trepan.pl - Perl "Trepanning" Debugger
    Options:
       --help               brief help message
       --man                full documentation
-      --basename           Show basename only on source file listings. 
+      --basename           Show basename only on source file listings.
                            (Needed in regression tests)
       --bw                 Use Bullwinkle Processor (for front-ends) rather
                            that the command-line processor
@@ -216,10 +216,10 @@ trepan.pl - Perl "Trepanning" Debugger
                            Works like Perl's -e switch
       --nx                 Don't run user startup file (e.g. .treplrc)
 
-      --client | --server  Set for out-of-process debugging. The server 
-                           rus the Perl program to be debugged runs. 
+      --client | --server  Set for out-of-process debugging. The server
+                           rus the Perl program to be debugged runs.
                            The client runs outside of this process.
-                          
+
       --fall-off-end       Don't stay in debugger when program terminates
 
       --host NAME          Set DNS name or IP address to communicate on.
@@ -231,7 +231,7 @@ trepan.pl - Perl "Trepanning" Debugger
       --readline  | --no-readline
                            Try or don't try to use Term::Readline
       -x|--trace           Simulate line tracing (think POSIX shell set -x)
-      --highlight | --no-highlight 
+      --highlight | --no-highlight
                            Use or don't use ANSI terminal sequences for syntax
                            highlight
 

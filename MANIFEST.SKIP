@@ -62,10 +62,12 @@ how-to-make-a-release\.txt
 # Avoid Devel::Cover and Devel::CoverX::Covered files.
 \bcover_db\b
 \bcovered\b
- 
+
 # Avoid MYMETA files
 ^MYMETA\.
 #!end included /usr/local/share/perl/5.10.1/ExtUtils/MANIFEST.SKIP
+
+^\.travis\.yml$
 
 # Avoid configuration metadata file
 ^MYMETA\.
@@ -105,5 +107,3 @@ how-to-make-a-release\.txt
 
 # Avoid Devel::Cover files.
 \bcover_db\b
-
-

@@ -1,0 +1,17 @@
+language: perl
+
+env:
+  - AUTOMATED_TESTING=1
+  - AUTOMATED_TESTING=1
+  - AUTOMATED_TESTING=1
+  - AUTOMATED_TESTING=1
+
+install:
+  # Prerequisites
+  - "cpanm install rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::text Syntax::Highlight::Perl::Improved Scalar::Util"
+
+perl:
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel_Trepan)
+[![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel-Trepan)
 
 Devel::Trepan -- A new Perl debugger
 ====================================

@@ -84,7 +84,7 @@ where we can immediately see the results and others can contribute.
 
 =begin html
 
-<a href="https://travis-ci.org/rocky/Perl-Devel-Callsite"><img src="https://travis-ci.org/rocky/Perl-Devel-Callsite.png"></a>
+<a href="https://travis-ci.org/rocky/Perl-Devel-Trepan"><img src="https://travis-ci.org/rocky/Perl-Devel-Trepan.png"></a>
 
 =end html
 

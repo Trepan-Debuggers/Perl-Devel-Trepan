@@ -72,7 +72,8 @@ or to install from CPAN:
 LICENSE AND COPYRIGHT
 ---------------------
 
-Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+[![endorse](https://api.coderwall.com/rocky/endorsecount.png)](https://coderwall.com/rocky)
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

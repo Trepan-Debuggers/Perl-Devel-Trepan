@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Auto::List;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
+
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../../../../../..';
+    use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
+    @INC = @OLD_INC
+};
 
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
@@ -17,6 +22,8 @@ our $IN_LIST      = 1;
 our $HELP         = <<'HELP';
 =pod
 
+B<set auto list> [B<on>|B<off>]
+
 Set to run a C<list> command each time we enter the debugger.
 =cut
 HELP
@@ -24,7 +31,7 @@ HELP
 our $MIN_ABBREV   = length('li');
 use constant MAX_ARGS => 1;
 our $SHORT_HELP   = "Set to run a 'list' command each time we enter the debugger";
- 
+
 sub run($$)
 {
     my ($self, $args) = @_;
@@ -44,7 +51,7 @@ unless (caller) {
   # name = File.basename(__FILE__, '.rb')
 
   # dbgr, set_cmd = MockDebugger::setup('set')
-  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
+  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor,
   #                                                     set_cmd)
   # cmd_ary       = Trepan::SubSubcommand::SetMaxList::PREFIX
   # cmd_name      = cmd_ary.join(' ')

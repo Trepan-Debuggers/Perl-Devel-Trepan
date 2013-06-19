@@ -2,6 +2,8 @@
 set basename on
 set highlight off
 set autoeval on
+# Unlimited string length
+set max string 0
 set display eval dumper
 # A should be undefined here.
 $a

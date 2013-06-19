@@ -1,5 +1,7 @@
 # test of eval and bugs we once had.
 # use with example/gcd.pl 3 5
+# Unlimited string length
+set max string 0
 set auto eval on
 set display eval dumper
 1 + 2

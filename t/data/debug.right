@@ -4,6 +4,7 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 basename is on.
 highlight is off.
 set auto eval is on.
+set max string is 0.
 Eval result display style is dumper.
 $DB::D[0] = <undef>
 -- main::((eval 1955)[Eval.pm:73] remapped bogus.pl:6)

@@ -32,12 +32,20 @@ $opts = {
 	my $skip = 0;
         foreach (split("\n", $got_lines)) {
 	    if ($skip) {
-		$skip--; 
+		$skip--;
 		next;
 	    }
+
+	    # Some perl's mess up on eval lines, so they won't show
+	    # the following source code line.
+	    # So we have to skip them all the time since some Perl's miss them
+	    next if $_ eq '    my @args = @_;';
+
             # if (/main::\(\(eval .+:\d+\).* remapped /) {
             if (/main::\(\(eval .+:\d+.* remapped /) {
                 s/main::\(\(eval .+:\d+.* remapped (?:.+):(\d+)/main::((eval 1955)[eval.pl:10]:$1 remapped bogus.pl:$1/;
+            } elsif (/main::\(\(eval \d+\).*:(\d+)/) {
+                s/main::\(\(eval \d+\).*:(\d+)/main::((eval 1955)[eval.pl:10]:$1 remapped bogus.pl:$1/;
             } elsif (/.. \(.+\:\d+\)/) {
                 if ($OSNAME eq 'MSWin32') {
                     s/\((?:.+\\)?(.+\:\d+)\)/($1)/;

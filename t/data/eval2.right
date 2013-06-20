@@ -49,5 +49,4 @@ eval $eval_sub;
 -- main::(eval.pl:14)
 $y = five();
 -- main::((eval 1955)[eval.pl:10]:3 remapped bogus.pl:3)
-    my @args = @_;
 trepan.pl: That's all, folks...

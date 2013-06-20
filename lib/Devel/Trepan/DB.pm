@@ -4,8 +4,6 @@
 # Documentation is at the __END__
 #
 
-use rlib '../..';
-
 # use Devel::Trepan::SelfLoader;
 
 =pod
@@ -30,11 +28,17 @@ use vars qw($running $caller
             $OP_addr
             %HAVE_MODULE);
 
-use Devel::Trepan::DB::Backtrace;
-use Devel::Trepan::DB::Breakpoint;
-use Devel::Trepan::DB::Eval;
-use Devel::Trepan::DB::Sub;
-use Devel::Trepan::Terminated;
+
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../..';
+    use Devel::Trepan::DB::Backtrace;
+    use Devel::Trepan::DB::Breakpoint;
+    use Devel::Trepan::DB::Eval;
+    use Devel::Trepan::DB::Sub;
+    use Devel::Trepan::Terminated;
+    @INC = @OLD_INC;
+}
 
 # "private" globals
 my (@saved, @skippkg);

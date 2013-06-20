@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine'; 
-use rlib '../../..';
+use warnings; no warnings 'redefine';
 
 # Interface for debugging a program but having user control
 # reside outside of the debugged process, possibly on another
@@ -12,12 +11,18 @@ use English qw( -no_match_vars );
 our (@ISA);
 
 # Our local modules
-use if !@ISA, Devel::Trepan::Interface;
-use if !@ISA, Devel::Trepan::Interface::ComCodes;
-use if !@ISA, Devel::Trepan::IO::Input;
-use Devel::Trepan::Util qw(hash_merge YES NO);
-use if !@ISA, Devel::Trepan::IO::TCPServer;
-use strict; 
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../../..';
+    use if !@ISA, Devel::Trepan::Interface;
+    use if !@ISA, Devel::Trepan::Interface::ComCodes;
+    use if !@ISA, Devel::Trepan::IO::Input;
+    use Devel::Trepan::Util qw(hash_merge YES NO);
+    use if !@ISA, Devel::Trepan::IO::TCPServer;
+    @INC = @OLD_INC;
+}
+
+use strict;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
@@ -42,7 +47,7 @@ sub new
         # }
     }
     my $self = {
-        # For Compatability 
+        # For Compatability
         output => $inout,
         inout  => $inout,
         input  => $inout,
@@ -53,7 +58,7 @@ sub new
     bless $self, $class;
     return $self;
 }
-  
+
   # Closes both input and output
 sub close($)
 {
@@ -63,8 +68,8 @@ sub close($)
         $self->{inout}->close;
     }
 }
-  
-sub is_closed($) 
+
+sub is_closed($)
 {
     my ($self) = @_;
     $self->{inout}->is_closed
@@ -109,14 +114,14 @@ sub confirm($;$$)
     }
     return $default;
 }
-  
+
 # Return 1 if we are connected
 sub is_connected($)
 {
     my ($self) = @_;
     'connected' eq $self->{inout}->{state};
 }
-    
+
 # print exit annotation
 sub finalize($;$)
 {
@@ -125,7 +130,7 @@ sub finalize($;$)
     $self->{inout}->writeline($last_wishes) if $self->is_connected;
     $self->close;
 }
-  
+
 sub is_input_eof($)
 {
     my ($self) = @_;
@@ -151,24 +156,24 @@ sub errmsg($;$)
 # used to write to a debugger that is connected to this
 # server; `str' written will not have a newline added to it
 sub msg_nocr($$)
-{    
+{
     my ($self, $msg) = @_;
     $self->{inout}->write(PRINT .  $msg);
 }
-  
+
 # read a debugger command
 sub read_command($$)
 {
     my ($self, $prompt) = @_;
     $self->readline($prompt);
 }
-  
+
 sub read_data($)
 {
     my ($self, $prompt) = @_;
     $self->{inout}->read_data;
 }
-  
+
 sub readline($;$)
 {
     my ($self, $prompt, $add_to_history) = @_;
@@ -205,20 +210,20 @@ sub state($)
     my ($self) = @_;
     $self->{inout}->{state};
 }
-  
+
 sub write_prompt($$)
 {
     my ($self, $prompt) = @_;
     $self->{inout}->write(PROMPT . $prompt);
 }
-  
+
 sub write_confirm($$$)
 {
     my ($self, $prompt, $default) = @_;
     my $code = $default ? CONFIRM_TRUE : CONFIRM_FALSE;
     $self->{inout}->write($code . $prompt)
 }
-    
+
 # Demo
 unless (caller) {
     my $intf = Devel::Trepan::Interface::Server->new(undef, undef, {open => 0});

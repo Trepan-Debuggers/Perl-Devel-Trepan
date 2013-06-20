@@ -1,29 +1,33 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 # Debugger Server Input/Output interface.
 
 use warnings; use strict;
 
-use rlib '../../..';
 
 package Devel::Trepan::IO::TCPServer;
 
 use English qw ( -no_match_vars );
 use IO::Socket qw(SOCK_STREAM);
 
-use Devel::Trepan::IO::TCPPack;
-use Devel::Trepan::Util qw(hash_merge);
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../../..';
+    use Devel::Trepan::IO::TCPPack;
+    use Devel::Trepan::Util qw(hash_merge);
+    @INC = @OLD_INC;
+}
 
 use constant DEFAULT_INIT_OPTS => {open => 1};
 
 use constant SERVER_SOCKET_OPTS => {
-    host    => '127.0.0.1',  # or ::1? or localhost? 
+    host    => '127.0.0.1',  # or ::1? or localhost?
     port    => 1954,
     timeout => 5,     # FIXME: not used
     reuse   => 1,     # FIXME: not used. Allow port to be resued on close?
     open    => 1,
     logger  => undef  # Complaints should be sent here.
-    # Python has: 'posix' == os.name 
+    # Python has: 'posix' == os.name
 };
 
 sub new($;$)
@@ -47,18 +51,18 @@ sub new($;$)
 sub is_connected($)
 {
     my $self = shift;
-    $self->{state} = 'connected' if 
+    $self->{state} = 'connected' if
         $self->{inout} and $self->{inout}->connected;
     return $self->{state} eq 'connected';
 }
-    
+
 sub is_interactive($)  {
     my $self = shift;
     return -t $self->{input};
 }
 
 
-sub have_term_readline($) 
+sub have_term_readline($)
 {
     return 0;
 }
@@ -82,7 +86,7 @@ sub open($;$)
     $opts = hash_merge($opts, SERVER_SOCKET_OPTS);
     $self->{host} = $opts->{host};
     $self->{port} = $opts->{port};
-    $self->{server} = 
+    $self->{server} =
         IO::Socket::INET->new(
             LocalPort => $self->{port},
             LocalAddr => $self->{host},
@@ -97,13 +101,13 @@ sub open($;$)
     #                   # @opts[:timeout])
     $self->{state} = 'listening';
 }
-    
-sub is_empty($) 
+
+sub is_empty($)
 {
     my($self) = @_;
     0 == length($self->{buf});
 }
-    
+
 # Read one message unit. It's possible however that
 # more than one message will be set in a receive, so we will
 # have to buffer that for the next read.
@@ -113,7 +117,7 @@ sub read_msg($)
     my($self) = @_;
     $self->wait_for_connect unless $self->is_connected;
     my ($buf, $data, $info);
-    while (!$self->{buf} || is_empty($self)) { 
+    while (!$self->{buf} || is_empty($self)) {
         $self->{session}->recv($self->{buf}, TCP_MAX_PACKET);
     }
     eval {
@@ -130,17 +134,17 @@ sub wait_for_connect
 {
     my($self) = @_;
     if ($self->{logger}) {
-        my $msg = sprintf("Waiting for a connection on port %d at " . 
+        my $msg = sprintf("Waiting for a connection on port %d at " .
                           "address %s...",
                           $self->{port}, $self->{host});
         print {$self->{logger}} "$msg\n";
     }
-    $self->{input} = $self->{output} = $self->{session} = 
+    $self->{input} = $self->{output} = $self->{session} =
         $self->{server}->accept;
     print {$self->{logger}} "Got connection\n" if $self->{logger};
     $self->{state} = 'connected';
 }
-    
+
 # This method the debugger uses to write. In contrast to
 # writeline, no newline is added to the } to `str'. Also
 # msg doesn't have to be a string.
@@ -148,7 +152,7 @@ sub write($$)
 {
     my($self, $msg) = @_;
     $self->wait_for_connect unless $self->is_connected;
-    # FIXME: do we have to check the size of msg and split output? 
+    # FIXME: do we have to check the size of msg and split output?
     $self->{session}->print(pack_msg($msg));
 }
 
@@ -185,7 +189,7 @@ if (scalar @ARGV) {
     #     }
     #   }
     # }
-    # threads << Thread.new do 
+    # threads << Thread.new do
     #   t = TCPSocket.new('localhost', 1027)
     #   while 1 do
     #     begin

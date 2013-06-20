@@ -13,18 +13,20 @@ my $file = File::Spec->rel2abs(__FILE__);
 my $TREPAN_DIR = File::Spec->catfile(dirname($file), '..', 'lib');
 
 eval <<'EOE';
+    use Data::Dumper;
+    my @OLD_INC = @INC;
     use lib $TREPAN_DIR;
     use Devel::Trepan::Options;
     use Devel::Trepan::Client;
     use Devel::Trepan::Util;
-    use Data::Dumper;
+    @INC = @OLD_INC;
 EOE
 die $EVAL_ERROR if $EVAL_ERROR;
 
 my $opts = Devel::Trepan::Options::process_options(\@ARGV);
 
 if ($opts->{client}) {
-    Devel::Trepan::Client::start_client({host=>$opts->{host}, 
+    Devel::Trepan::Client::start_client({host=>$opts->{host},
                                          port=>$opts->{port}});
     exit;
 }
@@ -35,7 +37,7 @@ my $cmd;
 if (scalar @exec_strs) {
     $cmd = join(' ', @exec_strs_with_e) . join(' ', @ARGV);
 } else {
-    die "You need a Perl program to run or pass an string to eval" 
+    die "You need a Perl program to run or pass an string to eval"
         unless @ARGV;
 
     # Resolve program name if it is not readable
@@ -54,7 +56,7 @@ $opts->{dollar_0} = $ARGV[0];
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
 # print Dumper($opts), "\n";
 
-# And just when you thought we'd never get around to actually 
+# And just when you thought we'd never get around to actually
 # doing something...
 my $i=0;
 foreach my $arg (@exec_strs_with_e) {
@@ -64,7 +66,7 @@ foreach my $arg (@exec_strs_with_e) {
     }
 }
 
-my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan', 
+my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan',
             @exec_strs_with_e, @ARGV);
 #print Dumper(\@ARGS), "\n";
 if ($OSNAME eq 'MSWin32') {

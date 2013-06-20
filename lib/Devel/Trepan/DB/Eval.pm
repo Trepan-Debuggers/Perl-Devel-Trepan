@@ -21,6 +21,34 @@ BEGIN {
     %DB::eval_result = ();      # place for result if hash
 }
 
+# # A replacement for CORE::caller which strips off the DB: entry
+# BEGIN {
+#     *old_caller = *CORE::GLOBAL::caller;
+#     *CORE::GLOBAL::caller = sub{
+# 	my ($pkg, $filename, $line) = caller(0);
+# 	if ($pkg eq __PACKAGE__
+# 	    && $filename eq __FILE__ &&
+# 	    $line > __LINE__ + 40) {
+# 	    print "YES\n";
+# 	    # Strip off call from here in package DB.
+# 	    if (@_) {
+# 		my $expr = shift;
+# 		return caller($expr+1);
+# 	    } else {
+# 		my ($pkg, $filename, $line) = caller(1);
+# 		return ($pkg, $filename, $line);
+# 	    }
+# 	} else {
+# 	    if (@_) {
+# 		my $expr = shift;
+# 		return caller($expr);
+# 	    } else {
+# 		return caller;
+# 	    }
+# 	}
+#     }
+# }
+
 # evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
 # $return_type indicates the return context:

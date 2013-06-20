@@ -3,20 +3,23 @@
 use warnings;
 # FIXME: Can't use strict;
 
-use rlib '../..';
-
 package Devel::Trepan::Core;
 
-use Devel::Trepan::DB::Use;
-use Devel::Trepan::DB;
-use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
-use Devel::Trepan::CmdProcessor;
-use Devel::Trepan::SigHandler;
-use Devel::Trepan::WatchMgr;
-use Devel::Trepan::IO::Output;
-use Devel::Trepan::Interface::Script;
-use Devel::Trepan::Interface::Server;
-use Devel::Trepan::Util;
+BEGIN {
+    my @OLD_INC = @INC;
+    use rlib '../..';
+    use Devel::Trepan::DB::Use;
+    use Devel::Trepan::DB;
+    use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
+    use Devel::Trepan::CmdProcessor;
+    use Devel::Trepan::SigHandler;
+    use Devel::Trepan::WatchMgr;
+    use Devel::Trepan::IO::Output;
+    use Devel::Trepan::Interface::Script;
+    use Devel::Trepan::Interface::Server;
+    use Devel::Trepan::Util;
+    @INC = @OLD_INC;
+}
 
 use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
 

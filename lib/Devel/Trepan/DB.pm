@@ -4,6 +4,8 @@
 # Documentation is at the __END__
 #
 
+use rlib '../..';
+
 # use Devel::Trepan::SelfLoader;
 
 =pod
@@ -28,8 +30,6 @@ use vars qw($running $caller
             $OP_addr
             %HAVE_MODULE);
 
-
-use rlib '.';
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::Eval;

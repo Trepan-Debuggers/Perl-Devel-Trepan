@@ -28,6 +28,7 @@ sub eval_ok ($)
     return !$@;
 }
 
+use rlib '../../..';
 package Devel::Trepan::DB::LineCache;
 
 =pod
@@ -92,15 +93,8 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
-## FIXME: Make conditional
-
-BEGIN {
-    my @OLD_INC = @INC;
-    use rlib '..';
-    use Devel::Trepan::DB::Colors;
-    @INC = @OLD_INC;
-}
-
+## FIXME:: Make conditional
+use Devel::Trepan::DB::Colors;
 my $perl_formatter = Devel::Trepan::DB::Colors::setup();
 
 ## struct(stat => '$', lines => '%', path => '$', sha1 => '$');

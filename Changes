@@ -1,6 +1,9 @@
 Revision history for Devel-Trepan
 
-0.49
+0.50 Jun 22, 2013
+- Address smoker bugs.
+
+0.49 Jun 12, 2013
 
 - Add "set substitute path" and "set substitute string" commands
 - Add provision for tracing use (Use.pm and debuggable SelfLoader.pm)

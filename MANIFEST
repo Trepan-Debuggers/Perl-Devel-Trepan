@@ -3,6 +3,7 @@ Build.PL			Proto Build creator
 ChangeLog
 Changes
 GNUmakefile
+LICENSE
 MANIFEST			This list of files
 META.json
 META.yml

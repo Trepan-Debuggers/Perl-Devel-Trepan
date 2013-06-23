@@ -96,7 +96,7 @@ use File::stat;
 
 BEGIN {
     my @OLD_INC = @INC;
-    use rlib '../../..';
+    use rlib '..';
     use Devel::Trepan::DB::Colors;
     @INC = @OLD_INC;
 }

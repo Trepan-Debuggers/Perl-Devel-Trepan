@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -26,15 +26,20 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-B<delete> [I<bp-number> [I<bp-number>...]]  
+B<delete> [I<bp-number> [I<bp-number>...]]
 
 Delete some breakpoints.
 
 Arguments are breakpoint numbers with spaces in between.  To delete
-all breakpoints, give no arguments.  
+all breakpoints, give no arguments.
 
 See also the C<clear> command which clears breakpoints by line number
 and C<info break> to get a list of breakpoint numbers.
+
+=head2 Examples:
+
+    delete 1  # delete breakpoint number 1
+
 =cut
 HELP
 
@@ -42,7 +47,7 @@ HELP
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my @args = @$args; 
+    my @args = @$args;
 
     if (scalar @args == 1) {
         if ($proc->confirm('Delete all breakpoints?', 0)) {
@@ -57,7 +62,7 @@ sub run($$) {
         $proc->msg("Deleted breakpoint $bp_num") if $success;
     }
 }
-        
+
 unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();

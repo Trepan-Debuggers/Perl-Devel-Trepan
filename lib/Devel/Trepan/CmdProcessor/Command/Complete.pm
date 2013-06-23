@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -12,7 +12,7 @@ unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY   => 'support';
     use constant SHORT_HELP => 'List the completions for the rest of the line as a command';
-    use constant MAX_ARGS   => undef;  # Need at most this many - 
+    use constant MAX_ARGS   => undef;  # Need at most this many -
                                        # undef -> unlimited
     use constant NEED_STACK => 0;
 EOE
@@ -25,11 +25,16 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<"HELP";
-=pod 
+=pod
 
-complete I<comamand-prefix>
+B<complete> I<comamand-prefix>
 
 List the command completions of I<command-prefix>.
+
+=head2 Examples:
+
+    complete se   # => set server
+
 =cut
 HELP
 

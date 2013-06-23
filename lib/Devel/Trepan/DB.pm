@@ -29,16 +29,12 @@ use vars qw($running $caller
             %HAVE_MODULE);
 
 
-BEGIN {
-    my @OLD_INC = @INC;
-    use rlib '../..';
-    use Devel::Trepan::DB::Backtrace;
-    use Devel::Trepan::DB::Breakpoint;
-    use Devel::Trepan::DB::Eval;
-    use Devel::Trepan::DB::Sub;
-    use Devel::Trepan::Terminated;
-    @INC = @OLD_INC;
-}
+use rlib '.';
+use Devel::Trepan::DB::Backtrace;
+use Devel::Trepan::DB::Breakpoint;
+use Devel::Trepan::DB::Eval;
+use Devel::Trepan::DB::Sub;
+use Devel::Trepan::Terminated;
 
 # "private" globals
 my (@saved, @skippkg);

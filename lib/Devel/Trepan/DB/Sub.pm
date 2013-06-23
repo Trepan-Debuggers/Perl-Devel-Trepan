@@ -10,6 +10,7 @@ use constant SINGLE_STEPPING_EVENT =>  1;
 use constant NEXT_STEPPING_EVENT   =>  2;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
+use constant USE_EVENT             => 64;
 
 use vars qw($return_value @return_value @stack);
 

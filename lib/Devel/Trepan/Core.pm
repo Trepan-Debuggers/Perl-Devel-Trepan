@@ -5,21 +5,18 @@ use warnings;
 
 package Devel::Trepan::Core;
 
-BEGIN {
-    my @OLD_INC = @INC;
-    use rlib '../..';
-    use Devel::Trepan::DB::Use;
-    use Devel::Trepan::DB;
-    use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
-    use Devel::Trepan::CmdProcessor;
-    use Devel::Trepan::SigHandler;
-    use Devel::Trepan::WatchMgr;
-    use Devel::Trepan::IO::Output;
-    use Devel::Trepan::Interface::Script;
-    use Devel::Trepan::Interface::Server;
-    use Devel::Trepan::Util;
-    @INC = @OLD_INC;
-}
+use rlib '.';
+use Devel::Trepan::DB;
+use Devel::Trepan::DB::Use;
+use Devel::Trepan::DB::LineCache;  # for remap_e_string_to_file();
+use Devel::Trepan::CmdProcessor;
+use Devel::Trepan::SigHandler;
+use Devel::Trepan::WatchMgr;
+use Devel::Trepan::IO::Output;
+use Devel::Trepan::Interface::Script;
+use Devel::Trepan::Interface::Server;
+use Devel::Trepan::Util;
+# print join(', ', @INC, "\n");
 
 use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
 
@@ -90,7 +87,7 @@ sub signal_handler($$$)
     ) = @{$DB::caller};
     my $proc = $self->{proc};
     $self->{caught_signal} = 1;
-    $DB::signal = 2;
+    $DB::signal |= 2;
 }
 
 sub output($)

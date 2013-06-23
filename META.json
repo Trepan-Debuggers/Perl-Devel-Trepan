@@ -61,7 +61,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.49_01"
+         "version" : "0.50"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -685,7 +685,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.49_01"
+         "version" : "0.50"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -704,7 +704,7 @@
          "version" : 0
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
@@ -716,5 +716,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.49_01"
+   "version" : "0.50"
 }

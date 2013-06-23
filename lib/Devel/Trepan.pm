@@ -23,7 +23,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.50'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.50_01'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -1209,7 +1209,7 @@ L<Data::Dumper::Perltidy> allows one to Use I<Data::Dumper::Perltidy> to format 
 
 =item *
 
-L<Term::ReadLine::Perl> allows editing on the command line and command completion. This Module is preferred over L<Term::ReadLine::Gnu>.
+L<Term::ReadLine::Perl5> allows editing on the command line, command completion, and saving command history. This Module is preferred over L<Term::ReadLine::Perl> or L<Term::ReadLine::Gnu>.
 
 =item *
 

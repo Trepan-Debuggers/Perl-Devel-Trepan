@@ -112,7 +112,7 @@ sub run_debugger($;$$$)
 	    # Windows doesn't do diff.
 	    diag("Got:\n", $output, "Need:\n", $right_string);
 	} else {
-	    my $output = `diff -u $right_filename $got_filename 2>&1`;
+	    my $output = `diff -au $right_filename $got_filename 2>&1`;
 	    my $rc = $? >> 8;
 	    # GNU diff returns 0 if files are equal, 1 if different and 2
 	    # if something went wrong. We also should take care of the

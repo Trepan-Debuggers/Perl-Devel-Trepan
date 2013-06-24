@@ -1,18 +1,13 @@
 #!/usr/bin/env perl
-# Copyright (C) 2012-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
 use strict; use warnings;
 
+use rlib '..';
+use Devel::Trepan::Version;
+use Devel::Trepan::Core;
+
 package Devel::Trepan;
-
-BEGIN {
-    my @OLD_INC = @INC;
-    use rlib '..';
-    use Devel::Trepan::Version;
-    use Devel::Trepan::Core;
-    @INC = @OLD_INC
-};
-
 
 use vars qw(@ISA @EXPORT @EXPORT_OK $VERSION $TREPAN_CMDPROC $PROGRAM);
 use Exporter;

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 use Data::Dumper;
+$Data::Dumper::Sortkeys = 1;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::My;
 use vars qw(@ISA @SUBCMD_VARS);
@@ -44,14 +45,14 @@ our $SHORT_HELP   = "Information about 'my' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
-sub get_var_hash($;$) 
+sub get_var_hash($;$)
 {
     my ($self, $fixup_num) = @_;
     # FIXME: combine with My.pm
     my $i = 0;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
     my $diff = $i - $DB::stack_depth;
-    
+
     # FIXME: 5 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     $fixup_num = 5 unless defined($fixup_num);
@@ -60,18 +61,18 @@ sub get_var_hash($;$)
 }
 
 sub complete($$;$)
-{ 
+{
     my ($self, $prefix, $fixup_num) = @_;
-    
+
     # This is really hacky
     unless ($fixup_num) {
 	my $i = 0;
-	while (my ($pkg, $file, $line, $fn) = caller($i++)) { 
+	while (my ($pkg, $file, $line, $fn) = caller($i++)) {
 	    last if $pkg eq 'Devel::Trepan::CmdProcessor' && $fn eq '(eval)';
-	    last if $pkg eq 'Devel::Trepan::Core' && 
+	    last if $pkg eq 'Devel::Trepan::Core' &&
 		$fn eq 'Devel::Trepan::CmdProcessor::process_commands';
 	};
-	
+
 	$fixup_num = $i;
     }
 
@@ -83,7 +84,7 @@ sub complete($$;$)
 }
 
 
-sub show_var($$$) 
+sub show_var($$$)
 {
     my ($proc, $var_name, $ref) = @_;
     my $dumper;
@@ -94,20 +95,20 @@ sub show_var($$$)
         $dumper->Terse(1);
         $dumper->Indent(0);
         $proc->msg("$var_name = ".  $dumper->Dump);
-    } elsif ('@' eq $type) { 
-        $dumper = Data::Dumper->new([$ref]); 
+    } elsif ('@' eq $type) {
+        $dumper = Data::Dumper->new([$ref]);
         $dumper->Useqq(0);
         $dumper->Terse(1);
         $dumper->Indent(0);
         $proc->msg("$var_name = ".  $dumper->Dump);
-    } elsif ('%' eq $type) { 
+    } elsif ('%' eq $type) {
         $dumper = Data::Dumper->new([$ref], [$var_name]);
         $dumper->Useqq(0);
         $dumper->Terse(0);
         $dumper->Indent(0);
         $proc->msg($dumper->Dump);
     } else {
-        $dumper = Data::Dumper->new([$ref], [$var_name]); 
+        $dumper = Data::Dumper->new([$ref], [$var_name]);
         $dumper->Useqq(0);
         $dumper->Terse(1);
         $dumper->Indent(0);
@@ -160,13 +161,13 @@ sub run($$;$)
     $self->process_args(\@ARGS, $var_hash);
 }
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     require Devel::Trepan;
     my $proc = Devel::Trepan::CmdProcessor->new;
-    my $grandparent = 
+    my $grandparent =
 	Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
-    my $parent = 
+    my $parent =
 	Devel::Trepan::CmdProcessor::Command::Info::Variables->new($grandparent,
 								   'variables');
     my $cmd = __PACKAGE__->new($parent, 'my');

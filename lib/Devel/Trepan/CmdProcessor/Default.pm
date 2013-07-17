@@ -1,4 +1,4 @@
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -17,7 +17,7 @@ our @ISA;
 
 BEGIN {
     $HAVE_DATA_PRINT =
-        eval("use Data::Printer { colored => 1}; 1") ?
+        eval("use Data::Printer { colored => 1, sort_keys => 1}; 1") ?
         1 : 0;
     $HAVE_PERLTIDY   = eval {
         require Data::Dumper::Perltidy;

@@ -6,7 +6,7 @@
 use Digest::SHA;
 use Scalar::Util;
 
-use version; $VERSION = '0.2';
+use version; $VERSION = '0.3';
 
 package Devel::Trepan::DB::LineCache;
 

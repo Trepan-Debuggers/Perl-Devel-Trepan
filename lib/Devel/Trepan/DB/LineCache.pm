@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-#   Copyright (C) 2011-2013 Rocky Bernstein <rockyb@cpan.org>
+#   Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
 #
 #
 use Digest::SHA;
@@ -8,7 +8,7 @@ use Scalar::Util;
 
 use version; $VERSION = '0.2';
 
-package DB;
+package Devel::Trepan::DB::LineCache;
 
 # FIXME: Figure out where to put this
 # *pod
@@ -426,7 +426,7 @@ sub getline($$;$)
             # FIXME: should cache results
             my $sep = ($plain_lines eq $lines) ? '' : "\n";
             my $plain_line = $plain_lines->[$index];
-            while (--$max_continue && !DB::eval_ok($plain_line)) {
+            while (--$max_continue && !eval_ok($plain_line)) {
 		my $next_line = $lines->[++$index];
 		last unless $next_line;
                 $line .= ($sep . $next_line);

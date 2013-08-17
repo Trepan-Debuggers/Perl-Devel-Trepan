@@ -4,7 +4,7 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
-# For DB::Linecache;
+# For highight_string
 use Devel::Trepan::DB::LineCache;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Macros;
@@ -19,7 +19,7 @@ our $CMD  = "info macros";
 our $HELP = <<'HELP';
 =pod
 
-info macros 
+info macros
 
 info macros *
 
@@ -31,7 +31,7 @@ in column format.
 In the second form, all macro names and their definitions are shown.
 
 In the last form the only definitions of the given macro names is shown.
-show macro [I<name1> I<name2> ...] 
+show macro [I<name1> I<name2> ...]
 
 If macros names are given, show their definition. If left blank, show
 all macro names.
@@ -67,7 +67,7 @@ sub run($$) {
             if (exists $proc->{macros}{$macro_name}) {
 		my $line = $proc->{macros}{$macro_name}->[1];
 		if ($proc->{settings}{highlight} eq 'term') {
-		    $line = DB::LineCache::highlight_string($line);
+		    $line = Devel::Trepan::DB::LineCache::highlight_string($line);
 		}
                 my $msg = sprintf("%s: %s", $macro_name, $line);
                 $proc->msg($msg);

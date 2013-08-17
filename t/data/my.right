@@ -22,10 +22,10 @@ $DB::D[1] = 101
 @b = [1,'b']
 -- main::(my.pl:13)
     bar \%h;
-$%h = {'food' => 'fight','1' => 'foo'};
+$%h = {'1' => 'foo','food' => 'fight'};
 -- main::(my.pl:5)
     my $h = shift;
 -- main::(my.pl:6)
     return $h;
-$h = {'food' => 'fight','1' => 'foo'}
+$h = {'1' => 'foo','food' => 'fight'}
 trepan.pl: That's all, folks...

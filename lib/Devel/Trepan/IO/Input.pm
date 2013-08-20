@@ -25,7 +25,7 @@ use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
 sub term_readline_capability() {
     # Prefer Term::ReadLine::Perl5 if we have it
     return 'Perl5' if
-	(!$ENV{PERL_RL} || $ENV{PERL_RL} eq 'Perl5') &&
+	(!$ENV{PERL_RL} || $ENV{PERL_RL} =~ /\bperl5\b/i) &&
 	eval q(use Term::ReadLine::Perl5; 1);
 
     if ($ENV{PERL_RL}) {

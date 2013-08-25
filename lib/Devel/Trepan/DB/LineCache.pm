@@ -23,13 +23,14 @@ sub eval_ok ($)
     no strict; no warnings;
     $DB::namespace_package = 'package main' unless $DB::namespace_package;
     my $wrapped = "$DB::namespace_package; sub { $code }";
+    my %orig_sub = %DB::sub;
     eval $wrapped;
+    %DB::sub = %orig_sub;
     # print $@, "\n" if $@;
     return !$@;
 }
 
 use rlib '../../..';
-package Devel::Trepan::DB::LineCache;
 
 =pod
 

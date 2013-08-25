@@ -19,7 +19,7 @@ sub new() {
 }
 
 my @warnings = ();
-sub warning($) 
+sub warning($)
 {
     my ($self, $msg) = @_;
     push @warnings, $msg;
@@ -27,7 +27,7 @@ sub warning($)
 
 
 my @output = ();
-sub output($) 
+sub output($)
 {
     my ($self, $msg) = @_;
     push @output, $msg;
@@ -41,7 +41,7 @@ our $self = __PACKAGE__->new;
 package main;
 $DB::filename = __FILE__;
 no warnings 'once';
-$DB::dbline = [] unless defined($DB::line); 
+$DB::dbline = [] unless defined($DB::line);
 $DB::dbline[__LINE__+1] = 1;
 my $brkpt = DB::set_break($self, __FILE__, __LINE__, '1', undef, 'brkpt');
 ok ($brkpt);
@@ -49,7 +49,8 @@ ok ($brkpt);
 is($brkpt->type, 'brkpt');
 
 $DB::filename = __FILE__;
-my $msg = DB::break_invalid(undef, __FILE__, __LINE__ - 1);
+my $filename = __FILE__;
+my $msg = DB::break_invalid(undef, \$filename, __LINE__ - 1);
 ok($msg);
 
 done_testing;

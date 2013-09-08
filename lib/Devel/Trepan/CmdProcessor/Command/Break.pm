@@ -119,7 +119,7 @@ sub run($$) {
                               " got ${args[0]}");
             }
         }
-        my $msg = $self->{dbgr}->break_invalid($filename, $line_or_fn);
+        my $msg = $self->{dbgr}->break_invalid(\$filename, $line_or_fn);
         my $force = 0;
         if ($msg) {
             if ($msg =~ /not known to be a trace line/) {

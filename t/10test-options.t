@@ -8,19 +8,18 @@ use rlib '../lib';
 use Test::More;
 note( "Testing Devel::Trepan::Options" );
 
-if( $Test::More::VERSION >= 1.0 ) {
-    plan skip_all => "Test::More::VERSION >= 1.0 causes weird problems";
-}
-
-
 BEGIN {
-    use_ok( 'Devel::Trepan::Options' );
+    if( $Test::More::VERSION >= 1.0 ) {
+	plan skip_all => "Test::More::VERSION >= 1.0 causes weird problems";
+    } else {
+	use_ok( 'Devel::Trepan::Options' );
+    }
 }
 
 import Devel::Trepan::Options;
 
 note 'Test whence_file';
-for my $not_found_program 
+for my $not_found_program
     (qw(./bogus/program ../bogus/program /bogus/program)) {
 	is(whence_file($not_found_program), $not_found_program,
 	   "when program ${not_found_program} is not found, it is unchanged");

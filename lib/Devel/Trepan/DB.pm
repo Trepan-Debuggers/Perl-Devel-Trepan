@@ -827,9 +827,12 @@ Name of current executing subroutine.
 
 =item  %DB::sub
 
-The keys of this hash are the names of all the known subroutines.  Each value
-is an encoded string that has the sprintf(3) format
+The keys of this hash are the names of all the known subroutines.
+Each value is an encoded string that has the sprintf(3) format
 C<("%s:%d-%d", filename, fromline, toline)>.
+
+This hash is maintained by Perl.  I<filename> has the form (eval 34) for
+subroutines defined inside evals.
 
 =item  $DB::single
 

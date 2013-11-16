@@ -1,3 +1,28 @@
+2013-11-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get Ready for
+	release 0.51
+
+2013-11-16  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, Changes: No longer require Term::ReadKey, that's
+	Term::ReadLine::Perl5's job now.
+
+2013-11-16  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Finish.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Breakpoint.pm,
+	lib/Devel/Trepan/DB/Sub.pm, lib/Devel/Trepan/Processor/Frame.pm,
+	lib/Devel/Trepan/Processor/Running.pm, t/data/break.right,
+	t/data/break2.right, t/data/cont.right, t/data/eval.cmd,
+	t/data/eval.right, t/data/fin.cmd, t/data/fin.right,
+	t/data/fin2.cmd, t/data/fin2.right, t/data/list4.right,
+	t/data/seq1.cmd, t/data/seq1.right, t/data/trace2.cmd,
+	t/data/watch1.cmd, t/data/watch1.right: Start to have true
+	subroutine breakpoints. This is fragile, and more work would be
+	nice.. But it's more honest.
+
 2013-11-15  Rocky Bernstein <rocky@cpan.org>
 
 	* .travis.yml: Debug travis on failure - 2nd try

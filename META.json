@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Module::Build version 0.4007, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "open_source"
    ],
@@ -31,8 +31,7 @@
             "Devel::Callsite" : "0.06",
             "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
-            "Term::ReadKey" : "0",
-            "Term::ReadLine::Perl5" : "1.09"
+            "Term::ReadLine::Perl5" : "1.21"
          },
          "requires" : {
             "Array::Columnize" : "1.04",
@@ -61,7 +60,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.50"
+         "version" : "0.51"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -685,7 +684,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.50"
+         "version" : "0.51"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -716,5 +715,10 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.50"
+   "version" : "0.51",
+   "x_test_requires" : {
+      "Test::More" : "0.81",
+      "Time::HiRes" : "1.9721",
+      "rlib" : "0.02"
+   }
 }

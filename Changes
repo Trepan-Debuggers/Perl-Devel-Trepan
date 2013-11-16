@@ -1,6 +1,8 @@
 Revision history for Devel-Trepan
 
 0.51 Nov 17, 2013 Sister Release
+- Start to have true subroutine breakpoints. This is fragile, and more
+  work would be nice.. But it's more honest.
 - Skip test 10test-options.t if Test::More is >= 1.0. See issue 25
 - Match PERL_RL environment var test for presence of
   Term:ReadLine:Perl5 to match that used in Term::ReadLine. In

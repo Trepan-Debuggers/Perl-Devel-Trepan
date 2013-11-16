@@ -66,8 +66,7 @@ my $builder = Module::Build->new(
         'Devel::Callsite'                   => 0.06,
         'Eval::WithLexicals'                => 0,
         'Pod::Text::Color'                  => 2.06,
-        'Term::ReadKey'                     => 0,
-        'Term::ReadLine::Perl5'             => 1.09,
+        'Term::ReadLine::Perl5'             => 1.20,
     },
 
     requires => {

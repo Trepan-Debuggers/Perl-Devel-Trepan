@@ -82,17 +82,6 @@ sub find_subline($;$) {
         my($filename, $from, $to) = ($DB::sub{$fn_name} =~ /^(.*):(\d+)-(\d+)$/);
         if ($from) {
             local *DB::dbline = "::_<$filename";
-	    # Using Sub::Signatures, a string can be stored in @DB::dbline
-	    ++$from while $DB::dbline[$from] && $DB::dbline[$from] == 0 &&
-		$from < $to;
-	    # for ( ; $from < $to; $from ++ ) {
-	    # 	my $line = $DB::dbline[$from];
-	    # 	unless (Scalar::Util::looks_like_number($line)) {
-	    # 	    last if Devel::Trepan::DB::LineCache::eval_ok($line);
-	    # 	    next;
-	    # 	};
-	    # 	last if $DB::dbline[$from] != 0;
-	    # }
             return ($filename, $fn_name, $from);
         }
     }
@@ -130,10 +119,12 @@ sub break_invalid {
             *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
         }
 	$$filename_ref = $filename;
-    }
-    if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
-        *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-        return "Line $lineno of $filename not known to be a trace line";
+	return undef;
+    } else {
+	if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
+	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+	    return "Line $lineno of $filename not known to be a trace line";
+	}
     }
     return undef;
 }
@@ -160,9 +151,10 @@ sub set_break {
     }
 
     my $lineno = $fn_or_lineno;
+    my $function = undef;
     if ($fn_or_lineno =~ /\D/) {
         my $junk;
-        ($filename, $junk, $lineno) = find_subline($fn_or_lineno, $filename) ;
+        ($filename, $function, $lineno) = find_subline($fn_or_lineno, $filename) ;
         unless ($lineno) {
             $s->warning("Subroutine $fn_or_lineno not found.\n");
             *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
@@ -174,12 +166,13 @@ sub set_break {
             my $filekey = '_<' . $filename;
             *DB::dbline   = $main::{ $filekey } if exists $main::{ $filekey };
         }
-    }
-    unless (is_breakable($filename, $lineno) || $force) {
-        $s->warning("Line $lineno of $filename not known to be a trace line.\n");
+    } else {
+	unless (is_breakable($filename, $lineno) || $force) {
+	    $s->warning("Line $lineno of $filename not known to be a trace line.\n");
 
-        *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
-        return undef;
+	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+	    return undef;
+	}
     }
     unless (defined $id) {
         if ($type eq 'action') {
@@ -199,8 +192,13 @@ sub set_break {
         );
 
     my $ary_ref;
-    $DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
-    $ary_ref = $DB::dbline{$lineno};
+    if (defined($function)) {
+	$DB::fn_brkpt{$function} = [] unless exists $DB::fn_brkpt{$fn_or_lineno};
+	$ary_ref = $DB::fn_brkpt{$function};
+    } else {
+	$DB::dbline{$lineno} = [] unless (exists $DB::dbline{$lineno});
+	$ary_ref = $DB::dbline{$lineno};
+    }
     push @$ary_ref, $brkpt;
     *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
     return $brkpt;

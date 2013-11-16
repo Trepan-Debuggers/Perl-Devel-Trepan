@@ -340,12 +340,14 @@ sub process_commands($$$;$)
             # }
         }
     }
-    unless ($self->{terminated}) {
+    if ($self->{terminated}) {
+	$DB::running = $self->{DB_running};
+    } else {
         $self->{cmdloop_posthooks}->run;
         $self->{last_tid} = $DB::tid;
+	$DB::running = $self->{DB_running};
         $DB::single       = $self->{DB_single};
     }
-    $DB::running = $self->{DB_running};
 }
 
 # run current_command, a string. @last_command is set after the

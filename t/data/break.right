@@ -2,7 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 Breakpoint 1 set in gcd.pl at line 18
-Breakpoint 2 set in gcd.pl at line 9
+Breakpoint 2 set in gcd.pl at line 8
 Breakpoint 3 set in gcd.pl at line 11
 Breakpoint 4 set in gcd.pl at line 3
 Warning: 'use' statements get evaluated at compile time... You may have already passed this statement.
@@ -15,6 +15,7 @@ Possible breakpoint line numbers:
 *** Line 10 of XXX not known to be a trace line.
 Use 'info file XXX brkpts' to see breakpoints I know about
 *** Subroutine gcd1 not found.
-x1 main::(gcd.pl:9)
+-> main::(gcd.pl:8)
+{ 
     my ($a, $b) = @_;
 trepan.pl: That's all, folks...

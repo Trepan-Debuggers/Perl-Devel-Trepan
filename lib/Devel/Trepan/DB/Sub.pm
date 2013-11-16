@@ -11,7 +11,7 @@ use constant NEXT_STEPPING_EVENT   =>  2;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
 
-use vars qw($return_value @return_value @stack);
+use vars qw($return_value @return_value @stack %fn_brkpt);
 
 my ($deep);
 
@@ -19,19 +19,146 @@ BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
     $DB::ret = '';    # return value of last sub executed in scalar context
     $DB::return_type = 'undef';
+    %DB::fn_brkpt    = ();
 
     # $deep: Maximium stack depth before we complain.
     # See RT #117407
     # https://rt.perl.org/rt3//Public/Bug/Display.html?id=117407
     # for justification for why this should be 1000 rather than something
     # smaller.
-    $deep = 1000;
+    $deep = 500;
 
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as
     # a simple way to keep track of #stack.
     $stack_depth = 0;
     @stack = (0);     # Per-frame debugger flags
+}
+
+sub subcall_debugger {
+    if ($DB::single || $DB::signal) {
+        _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
+	local $DB::event = 'call';
+        $DB::single = 0;
+        $DB::signal = 0;
+        $running = 0;
+
+	$DB::subroutine =  $sub;
+	my $entry = $DB::sub{$sub};
+	if ($entry =~ /^(.*)\:(\d+)-(\d+)$/) {
+	    $DB::filename   = $1;
+	    $DB::lineno     = $2;
+	    $DB::caller = [
+		$DB::filename, $DB::lineno, $DB::subroutine,
+		0 != scalar(@_), $DB::wantarray
+		];
+	}
+        for my $c (@clients) {
+            # Now sit in an event loop until something sets $running
+            my $after_eval = 0;
+            do {
+                # Show display expresions
+                my $display_aref = $c->display_lists;
+                for my $disp (@$display_aref) {
+                    next unless $disp && $disp->enabled;
+                    my $opts = {return_type => $disp->return_type,
+                                namespace_package => $namespace_package,
+                                fix_file_and_line => 1,
+                                hide_position     => 0};
+                    # FIXME: allow more than just scalar contexts.
+                    my $eval_result =
+                        &DB::eval_with_return($disp->arg, $opts, @saved);
+		    my $mess;
+		    if (defined($eval_result)) {
+			$mess = sprintf("%d: $eval_result", $disp->number);
+		    } else {
+			$mess = sprintf("%d: undef", $disp->number);
+		    }
+                    $c->output($mess);
+                }
+
+                if (1 == $after_eval ) {
+                    $event = 'after_eval';
+                } elsif (2 == $after_eval) {
+                    $event = 'after_nest'
+                }
+
+                # call client event loop; must not block
+                $c->idle($event, $watch_triggered);
+                $after_eval = 0;
+                if ($running == 2 && defined($eval_str)) {
+                    # client wants something eval-ed
+                    # FIXME: turn into subroutine.
+
+                    local $nest = $eval_opts->{nest};
+                    my $return_type = $eval_opts->{return_type};
+                    $return_type = '' unless defined $return_type;
+                    my $opts = $eval_opts;
+                    $opts->{namespace_package} = $namespace_package;
+
+                    if ('@' eq $return_type) {
+                        &DB::eval_with_return($eval_str, $opts, @saved);
+                    } elsif ('%' eq $return_type) {
+                        &DB::eval_with_return($eval_str, $opts, @saved);
+                    } else {
+                        $eval_result =
+                            &DB::eval_with_return($eval_str, $opts, @saved);
+                    }
+
+                    if ($nest) {
+                        $DB::in_debugger = 1;
+                        $after_eval = 2;
+                    } else {
+                        $after_eval = 1;
+                    }
+                    $running = 0;
+                }
+            } until $running;
+        }
+    }
+}
+
+sub check_breakpoints() {
+    my $brkpts = $DB::fn_brkpt{$sub};
+    if ($brkpts) {
+	my @action = ();
+        for (my $i=0; $i < @$brkpts; $i++) {
+            my $brkpt = $brkpts->[$i];
+            next unless defined $brkpt;
+            if ($brkpt->type eq 'action') {
+                push @action, $brkpt;
+                next ;
+            }
+            $stop = 0;
+            if ($brkpt->condition eq '1') {
+                # A cheap and simple test for unconditional.
+                $stop = 1;
+            } else  {
+                my $eval_str = sprintf("\$DB::stop = do { %s; }",
+                                       $brkpt->condition);
+                my $opts = {return_type => ';',  # ignore return
+                            namespace_package => $namespace_package,
+                            fix_file_and_line => 1,
+                            hide_position     => 0};
+                &DB::eval_with_return($eval_str, $opts, @saved);
+            }
+            if ($stop && $brkpt->enabled && !($DB::single & RETURN_EVENT)) {
+                $DB::brkpt = $brkpt;
+                $event = $brkpt->type;
+                if ($event eq 'tbrkpt') {
+                    # breakpoint is temporary and remove it.
+                    undef $brkpts->[$i];
+                } else {
+                    my $hits = $brkpt->hits + 1;
+                    $brkpt->hits($hits);
+                }
+		$DB::single = 1;
+		$DB::wantarray = wantarray;
+		&subcall_debugger() ;
+                last;
+            }
+        }
+    }
 }
 
 ####
@@ -78,6 +205,8 @@ sub DB::sub {
     # If we've gotten really deeply recursed, turn on the flag that will
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+
+    check_breakpoints();
 
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
@@ -173,6 +302,8 @@ sub DB::lsub : lvalue {
     # If we've gotten really deeply recursed, turn on the flag that will
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+
+    check_breakpoints();
 
     if (wantarray) {
         # Called in array context. call sub and capture output.

@@ -7,6 +7,9 @@ Eval result display style is dumper.
 No breakpoints.
 No actions.
 No watch expressions defined.
+-> main::(gcd.pl:8)
+{ 
+    my ($a, $b) = @_;
 x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 -- main::(gcd.pl:11)
@@ -21,19 +24,22 @@ old value	5
 new value	3
 wa main::(gcd.pl:13)
     return undef if $a <= 0;
-gcd.pl [9-18]
-  9    	    my ($a, $b) = @_;
+xx main::(gcd.pl:14)
+    return $a if ($a == 1) or ($b-$a == 0);
+gcd.pl [10-19]
  10    	    # Make: a <= b
  11    	    ($a, $b) = ($b, $a) if ($a > $b);
  12    	
- 13  ->	    return undef if $a <= 0;
- 14 B02	    return $a if ($a == 1) or ($b-$a == 0);
+ 13    	    return undef if $a <= 0;
+ 14 B->	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}
  17    	
  18    	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+ 19    	    @ARGV == 2;
 Num Type          Disp Enb Where
 2   breakpoint    keep y   at gcd.pl:14
+	breakpoint already hit 1 time
 No actions.
 Num Type       Enb Expression
 1   watchpoint y   $a

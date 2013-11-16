@@ -1,5 +1,9 @@
 -- TCPPack::(TCPPack.pm:9)
 our (@ISA, @EXPORT);
+-> TCPPack::(TCPPack.pm:17)
+{
+    my $msg = shift;
+*** Can't run finish while inside a call. Step and try again.
 x1 TCPPack::(TCPPack.pm:18)
     my $msg = shift;
 <- TCPPack::(TCPPack.pm:37) TCPPack::pack_msg

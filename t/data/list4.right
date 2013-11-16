@@ -3,6 +3,32 @@ die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
     @ARGV == 2;
 basename is on.
 highlight is off.
+-> main::(gcd.pl:8)
+{ 
+    my ($a, $b) = @_;
+gcd.pl [4-13]
+  4    	
+  5    	# GCD. We assume positive numbers
+  6    	sub gcd($$);
+  7    	sub gcd($$) 
+  8  ->	{ 
+  9    	    my ($a, $b) = @_;
+ 10    	    # Make: a <= b
+ 11    	    ($a, $b) = ($b, $a) if ($a > $b);
+ 12    	
+ 13    	    return undef if $a <= 0;
+Breakpoint 2 set in gcd.pl at line 8
+gcd.pl [4-13]
+  4    	
+  5    	# GCD. We assume positive numbers
+  6    	sub gcd($$);
+  7    	sub gcd($$) 
+  8  ->	{ 
+  9    	    my ($a, $b) = @_;
+ 10    	    # Make: a <= b
+ 11    	    ($a, $b) = ($b, $a) if ($a > $b);
+ 12    	
+ 13    	    return undef if $a <= 0;
 x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 gcd.pl [5-14]
@@ -16,29 +42,4 @@ gcd.pl [5-14]
  12    	
  13    	    return undef if $a <= 0;
  14    	    return $a if ($a == 1) or ($b-$a == 0);
-Breakpoint 2 set in gcd.pl at line 9
-gcd.pl [5-14]
-  5    	# GCD. We assume positive numbers
-  6    	sub gcd($$);
-  7    	sub gcd($$) 
-  8    	{ 
-  9 B->	    my ($a, $b) = @_;
- 10    	    # Make: a <= b
- 11    	    ($a, $b) = ($b, $a) if ($a > $b);
- 12    	
- 13    	    return undef if $a <= 0;
- 14    	    return $a if ($a == 1) or ($b-$a == 0);
--- main::(gcd.pl:11)
-    ($a, $b) = ($b, $a) if ($a > $b);
-gcd.pl [7-16]
-  7    	sub gcd($$) 
-  8    	{ 
-  9 B02	    my ($a, $b) = @_;
- 10    	    # Make: a <= b
- 11  ->	    ($a, $b) = ($b, $a) if ($a > $b);
- 12    	
- 13    	    return undef if $a <= 0;
- 14    	    return $a if ($a == 1) or ($b-$a == 0);
- 15    	    return gcd($b-$a, $a);
- 16    	}
 trepan.pl: That's all, folks...

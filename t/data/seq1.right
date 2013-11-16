@@ -1,8 +1,10 @@
-The GCD of 3 and 5 is 10
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 --> #0 file `gcd.pl' at line 18
+-> main::(gcd.pl:8)
+{ 
+    my ($a, $b) = @_;
 x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 --> #0 @ = main::gcd(3, 5) in file `gcd.pl' at line 9
@@ -22,3 +24,4 @@ Return array value for main::gcd is:
 Return array value set to:
 10
 
+trepan.pl: That's all, folks...

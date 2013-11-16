@@ -303,6 +303,7 @@ sub DB {
         my $hits = $action->hits + 1;
         $action->hits($hits);
     }
+
     if ($DB::single || $DB::signal || $watch_triggered) {
         _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
         $DB::single = 0;
@@ -372,6 +373,7 @@ sub DB {
             } until $running;
         }
     }
+
     $DB::event = undef;
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
      $OUTPUT_FIELD_SEPARATOR,

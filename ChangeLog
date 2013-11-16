@@ -1,3 +1,200 @@
+2013-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Debug travis on failure - 2nd try
+
+2013-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Debug travis on failure
+
+2013-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, t/10test-options.t: Really skip this test
+	if Test::More is >= 1.0. See issue 25
+
+2013-09-07  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit bdc2edfb897b735b774c7b30639e3da54ab0f3f6 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sat Sep 7 21:35:11 2013 -0400
+
+2013-08-25  Rocky Bernstein <rocky@cpan.org>
+
+	* example/signature.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/10test-db-brkpt.t: Attempt to
+	find a bug encountered with Sub::Signatures. Not successful though.
+
+2013-08-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/IO/Input.pm: Match PERL_RL environment var test
+	for presence of Term:ReadLine:Perl5 to match that used in
+	Term::ReadLine. In particular, ignore case.
+
+2013-08-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Update dates, versions
+
+2013-08-17  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 23ae207d02268761b973eb8ecbdef63641c1e885 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Sat Aug 17 13:02:02 2013 -0400
+
+2013-07-17  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: Reduce version required on Time::HiRes based on
+	empirical travis tests
+
+2013-07-17  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm, lib/Devel/Trepan/CmdProcessor/Default.pm, t/data/my.right: 
+	Order hash values by default (and in 20test-my.t). Issue #23. Thanks
+	to andyk
+
+2013-06-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Blind attempt to Andrea Koenig's CPAN Testers
+	reports. See for example
+
+	http://www.cpantesters.org/cpan/report/d55014de-dbbd-11e2-868c-1e44697f9654
+
+2013-06-24  Rocky Bernstein <rocky@cpan.org>
+
+	* t/Helper.pm: Use "diff -au" rather than "diff -u as suggested by
+	Andreas Koenig.
+
+2013-06-23  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Over with of release 0.50. Hope it went
+	well
+
+2013-06-23  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/DB/Sub.pm: Fix up
+	broken relative paths, I hope
+
+2013-06-22  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, LICENSE, MANIFEST, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/DB/Sub.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for release 0.50
+
+2013-06-20  Rocky Bernstein <rocky@cpan.org>
+
+	* t/20test-eval.t, t/data/eval2.right: Tolerate Perl's whose eval
+	doesn't set @DB::line.
+
+2013-06-19  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Interface/Server.pm: More aggressive about saving
+	and restoring @INC around rlib.
+
+2013-06-19  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Again too loud - Try again a masterbranch endorse
+
+2013-06-19  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Try a masterbranch endorse
+
+2013-06-19  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.
+	pm, t/data/debug.cmd, t/data/debug.right, t/data/eval.cmd,
+	t/data/eval.right, t/data/eval2.cmd, t/data/eval2.right: Don't
+	truncate strings in output which can bolix regex compares in
+	testing. Add better POD documentation on some "set" commands and
+	narrow use of rlib there too.
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Wrong link
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Even more stuff
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Put different env-vars first
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: 2nd try at different packages installed
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, README.md: Fix travis link and try with more stuff
+	(for some perls?)
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm: Add 'set substitute' and travis
+	link to project
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-io-input.t: Fix up test
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-io-input.t: Bug in Term::ReadLine setting
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Travis yet again
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Travis yet again
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Pod::text -> Pod::Text
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Build.PL, MANIFEST.SKIP, lib/Devel/Trepan/Options.pm: 
+	Try travis. Options.pm: use HomeDir
+
+2013-06-16  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, MANIFEST, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/BrkptMgr.pm, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/Version.pm,
+	t/10test-io-input.t: Sort out Term::ReadLine preferencesbetter.
+	reduce scope of some 'use rlib'. Version: we are in 0.49_01 now.
+	Start IO::Input test.
+
+2013-06-14  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Guard against using uninit
+	variable. See
+
+	http://www.cpantesters.org/cpan/report/1f9f1e00-d35c-11e2-8732-04d3bcbf7481 .
+
+2013-06-12  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, GNUmakefile, lib/Devel/Trepan/Version.pm: Get
+	ready for release 0.49
+
 2013-06-11  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/CmdProcessor/Command/List.pm, t/Helper.pm: Had

@@ -1,5 +1,13 @@
 Revision history for Devel-Trepan
 
+0.51 Nov 17, 2013 Sister Release
+- Skip test 10test-options.t if Test::More is >= 1.0. See issue 25
+- Match PERL_RL environment var test for presence of
+  Term:ReadLine:Perl5 to match that used in Term::ReadLine. In
+  particular, ignore case.
+-  Reduce version required on Time::HiRes based on
+   empirical travis tests
+
 0.50 Jun 22, 2013
 - Address smoker bugs.
 

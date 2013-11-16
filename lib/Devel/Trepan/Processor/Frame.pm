@@ -84,6 +84,17 @@ sub frame_setup($$)
             } else {
                 $stack_size -= ($i-3);
             }
+	    if ($self->{event} eq 'call') {
+		$frames[0] =
+		     {
+			 file      => $DB::filename,
+			 fn        => $DB::subroutine,
+			 line      => $DB::lineno,
+			 pkg       => $DB::package,
+			 # FIXME: more later...
+		     };
+
+	    }
         }
         $self->{frames} = \@frames;
         $self->{stack_size}    = $stack_size;

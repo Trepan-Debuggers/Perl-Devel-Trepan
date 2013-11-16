@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 use rlib '../../..';
 
@@ -36,7 +36,7 @@ sub continue($$) {
     }
     if (scalar @{$args} != 1) {
         # Form is: "continue"
-        # my $(line_number, $condition, $negate) = 
+        # my $(line_number, $condition, $negate) =
         #    $self->breakpoint_position($self->{proc}{cmd_argstr}, 0);
         # return unless iseq && vm_offset;
         # $bp = $self->.breakpoint_offset($condition, $negate, 1);
@@ -70,13 +70,13 @@ sub parse_next_step_suffix($$)
     my $sigil = substr($step_cmd, -1);
     if ('-' eq $sigil) {
         $opts->{different_pos} = 0;
-    } elsif ('+' eq $sigil) { 
+    } elsif ('+' eq $sigil) {
         $opts->{different_pos} = 1;
-    } elsif ('=' eq $sigil) { 
-        $opts->{different_pos} = $self->{settings}{different}; 
+    } elsif ('=' eq $sigil) {
+        $opts->{different_pos} = $self->{settings}{different};
         # when ('!') { $opts->{stop_events} = {'raise' => 1} };
         # when ('<') { $opts->{stop_events} = {'return' => 1}; }
-        # when ('>') { 
+        # when ('>') {
         #     if (length($step_cmd) > 1 && substr($step_cmd, -2, 1) eq '<')  {
         #       $opts->{stop_events} = {'return' => 1 };
         #     } else {
@@ -94,12 +94,12 @@ sub parse_next_step_suffix($$)
 sub finish($$) {
     my ($self, $level_count) = @_;
     $self->{leave_cmd_loop} = 1;
-    $self->{dbgr}->finish($level_count);
-    $self->{DB_running} = 1;
     $self->{skip_count} = -1;
+    $self->{DB_running} = 1;
+    $self->{dbgr}->finish($level_count);
 }
 
-sub next($$) 
+sub next($$)
 {
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
@@ -111,7 +111,7 @@ sub next($$)
     $self->{DB_running} = 1;
 }
 
-sub step($$) 
+sub step($$)
 {
     my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
@@ -131,11 +131,11 @@ sub running_initialize($)
                                                    line =>'', event=>'');
 }
 
-# Should we not stop here? 
-# Some reasons for skipping: 
-# -  step count was given. 
+# Should we not stop here?
+# Some reasons for skipping:
+# -  step count was given.
 # - We want to make sure we stop on a different line
-# - We want to stop only when some condition is reached (step until ...). 
+# - We want to stop only when some condition is reached (step until ...).
 sub is_stepping_skip($)
 {
 
@@ -154,8 +154,8 @@ sub is_stepping_skip($)
 
     my $frame = $self->{frame};
 
-    my $new_pos = TrepanPosition->new(pkg       => $frame->{pkg}, 
-                                      filename  => $frame->{file}, 
+    my $new_pos = TrepanPosition->new(pkg       => $frame->{pkg},
+                                      filename  => $frame->{file},
                                       line      => $frame->{line},
                                       event     => $self->{event});
 
@@ -166,10 +166,10 @@ sub is_stepping_skip($)
 
     my $last_pos = $self->{last_pos};
     # $skip_val ||= ($last_pos->event eq 'brkpt' && $self->{event} eq 'line');
-    
+
     if ($self->{settings}{'debugskip'}) {
-        $self->msg("skip: $skip_val, last: $self->{last_pos}->inspect(), " . 
-                   "new: $new_pos->inspect()"); 
+        $self->msg("skip: $skip_val, last: $self->{last_pos}->inspect(), " .
+                   "new: $new_pos->inspect()");
     }
 
     # @last_pos[2] = new_pos[2] if 'nostack' eq $self->{different_pos};
@@ -180,19 +180,19 @@ sub is_stepping_skip($)
     #       puts 'stop_cond' if @settings[:'debugskip'];
     #       debug_eval_no_errmsg(@stop_condition);
     # } elsif (@to_method) {
-    #   puts "method #{@frame.method} #{@to_method}" if 
+    #   puts "method #{@frame.method} #{@to_method}" if
     #       $self->{setting}{'debugskip'};
     #   @frame.method == @to_method;
     # } else {
     #   puts 'uncond' if $self->{settings}{'debugskip'};
     #   1;
     # };
-          
+
     # $self->msg("condition_met: #{condition_met}, last: $self->{last_pos}, " .
-    #      "new: $new_pos->inspect(), different #{@different_pos.inspect}") if 
+    #      "new: $new_pos->inspect(), different #{@different_pos.inspect}") if
     #          $self->{settings}{'debugskip'};
 
-    $skip_val = (($last_pos && $last_pos->eq($new_pos) && !!$self->{different_pos}) 
+    $skip_val = (($last_pos && $last_pos->eq($new_pos) && !!$self->{different_pos})
                  || !$condition_met);
 
     $self->{last_pos} = $new_pos;
@@ -226,7 +226,7 @@ sub restart_args($$) {
     # Save the current @init_INC in the environment.
     DB::set_list( "PERLDB_INC", @DB::ini_INC );
 
-    ( $EXECUTABLE_NAME, @flags, '-d:Trepan', $DB::ini_dollar0, 
+    ( $EXECUTABLE_NAME, @flags, '-d:Trepan', $DB::ini_dollar0,
       @{$self->{dbgr}{exec_strs}},
       @DB::ini_ARGV );
 }

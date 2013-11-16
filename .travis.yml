@@ -4,7 +4,8 @@ env:
   - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker"
   - AUTOMATED_TESTING=1 PREREQS="Devel::Callsite Term::ReadLine::Perl5 Data::Printer B::CodeLines Eval::WithLexicals rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker"
 
-after_failure: cat /home/travis/.cpanm/work/*/build.log
+after_failure:
+  - cat /home/travis/.cpanm/work/*/build.log
 
 install:
   # Prerequisites

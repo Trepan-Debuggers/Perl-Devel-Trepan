@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
 use strict; use warnings;
 
@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.50_01'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.51'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 

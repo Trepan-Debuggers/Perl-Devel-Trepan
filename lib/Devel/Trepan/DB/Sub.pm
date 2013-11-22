@@ -6,10 +6,11 @@ use warnings; no warnings 'redefine';
 no warnings 'once';
 use English qw( -no_match_vars );
 
-use constant SINGLE_STEPPING_EVENT =>  1;
-use constant NEXT_STEPPING_EVENT   =>  2;
-use constant DEEP_RECURSION_EVENT  =>  4;
-use constant RETURN_EVENT          => 32;
+use constant SINGLE_STEPPING_EVENT =>   1;
+use constant NEXT_STEPPING_EVENT   =>   2;
+use constant DEEP_RECURSION_EVENT  =>   4;
+use constant RETURN_EVENT          =>  32;
+use constant CALL_EVENT            =>  64;
 
 use vars qw($return_value @return_value @stack %fn_brkpt);
 
@@ -118,7 +119,7 @@ sub subcall_debugger {
     }
 }
 
-sub check_breakpoints() {
+sub check_for_stop() {
     my $brkpts = $DB::fn_brkpt{$sub};
     if ($brkpts) {
 	my @action = ();
@@ -206,7 +207,7 @@ sub DB::sub {
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
 
-    check_breakpoints();
+    check_for_stop();
 
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
@@ -235,7 +236,10 @@ sub DB::sub {
         }
         @ret;
     } else {
-	# Scalar context.
+        # Called in array context. call sub and capture output.
+        # DB::DB will recursively get control again if appropriate;
+        # we'll come back here when the sub is finished.
+
         if ( defined wantarray ) {
             no strict 'refs';
 	    # call the original subroutine and save the array value.
@@ -263,7 +267,6 @@ sub DB::sub {
 }
 
 sub DB::lsub : lvalue {
-    no strict 'refs';
     # Possibly [perl #66110] also applies here as in sub.
 
     # lock ourselves under threads
@@ -303,13 +306,16 @@ sub DB::lsub : lvalue {
     # make us stop with the 'deep recursion' message.
     $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
 
-    check_breakpoints();
+    check_for_stop();
 
     if (wantarray) {
         # Called in array context. call sub and capture output.
         # DB::DB will recursively get control again if appropriate; we'll come
         # back here when the sub is finished.
-        @ret = &$sub;
+	{
+	    no strict 'refs';
+	    @ret = &$sub;
+	}
 
         # Pop the single-step value back off the stack.
         $DB::single |= $stack[ $stack_depth-- ];
@@ -321,10 +327,16 @@ sub DB::lsub : lvalue {
         }
         @ret;
     } else {
+        # Called in array context. call sub and capture output.
+        # DB::DB will recursively get control again if appropriate;
+        # we'll come back here when the sub is finished.
+
         if ( defined wantarray ) {
+            no strict 'refs';
             # Save the value if it's wanted at all.
             $ret = &$sub;
         } else {
+            no strict 'refs';
             # Void return, explicitly.
             &$sub;
             undef $ret;

@@ -322,6 +322,8 @@ sub process_commands($$$;$)
         }
     }
     unless ($next_skip) {
+	# Individual commands force a leave from by the below loop by
+	# setting leave_cmd_loop.
         $self->{leave_cmd_loop} = 0;
         while (!$self->{leave_cmd_loop}) {
             # begin
@@ -346,7 +348,7 @@ sub process_commands($$$;$)
         $self->{cmdloop_posthooks}->run;
         $self->{last_tid} = $DB::tid;
 	$DB::running = $self->{DB_running};
-        $DB::single       = $self->{DB_single};
+        $DB::single  = $self->{DB_single};
     }
 }
 

@@ -162,6 +162,25 @@ sub check_for_stop() {
     }
 }
 
+# Push the $DB:single onto @DB::stack and set $DB_single.
+sub push_DB_single_and_set()
+{
+    # Expand @stack.
+    $#DB::stack = $DB::stack_depth;
+
+    # Save current single-step setting.
+    $DB::stack[-1] = $DB::single;
+
+    # printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
+    # Turn off all flags except single-stepping or return event.
+    $DB::single &= SINGLE_STEPPING_EVENT;
+
+    # If we've gotten really deeply recursed, turn on the flag that will
+    # make us stop with the 'deep recursion' message.
+    $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+}
+
+
 ####
 # entry point for all subroutine calls
 #
@@ -192,20 +211,7 @@ sub DB::sub {
     # at once. Localizing the stack pointer means that it will automatically
     # unwind the same amount when multiple stack frames are unwound.
     local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
-
-    # Expand @stack.
-    $#stack = $stack_depth;
-
-    # Save current single-step setting.
-    $stack[-1] = $DB::single;
-
-    ## printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
-    # Turn off all flags except single-stepping or return event.
-    $DB::single &= SINGLE_STEPPING_EVENT;
-
-    # If we've gotten really deeply recursed, turn on the flag that will
-    # make us stop with the 'deep recursion' message.
-    $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+    push_DB_single_and_set();
 
     check_for_stop();
 
@@ -291,20 +297,7 @@ sub DB::lsub : lvalue {
     # at once. Localizing the stack pointer means that it will automatically
     # unwind the same amount when multiple stack frames are unwound.
     local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
-
-    # Expand @stack.
-    $#stack = $stack_depth;
-
-    # Save current single-step setting.
-    $stack[-1] = $DB::single;
-
-    # printf "++ \$DB::single for $sub: 0%x\n", $DB::single if $DB::single;
-    # Turn off all flags except single-stepping or return event.
-    $DB::single &= SINGLE_STEPPING_EVENT;
-
-    # If we've gotten really deeply recursed, turn on the flag that will
-    # make us stop with the 'deep recursion' message.
-    $DB::single |= DEEP_RECURSION_EVENT if $#stack == $deep;
+    push_DB_single_and_set();
 
     check_for_stop();
 

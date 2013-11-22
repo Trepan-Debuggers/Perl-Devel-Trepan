@@ -108,7 +108,7 @@ BEGIN {
 
     # initialize private globals to avoid warnings
 
-    $running = 1;         # are we running, or are we stopped?
+    $DB::running = 1;         # are we running, or are we stopped?
     $in_debugger = 0;
     @clients = ();
     $ready = 0;
@@ -308,7 +308,7 @@ sub DB {
         _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
         $DB::single = 0;
         $DB::signal = 0;
-        $running = 0;
+        $DB::running = 0;
 
         for my $c (@clients) {
             # Now sit in an event loop until something sets $running
@@ -368,7 +368,7 @@ sub DB {
                     } else {
                         $after_eval = 1;
                     }
-                    $running = 0;
+                    $DB::running = 0;
                 }
             } until $running;
         }

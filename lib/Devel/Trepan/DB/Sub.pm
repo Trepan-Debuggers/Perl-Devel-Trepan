@@ -42,7 +42,7 @@ sub subcall_debugger {
 	local $DB::event = 'call';
         $DB::single = 0;
         $DB::signal = 0;
-        $running = 0;
+        $DB::running = 0;
 
 	$DB::subroutine =  $sub;
 	my $entry = $DB::sub{$sub};
@@ -67,8 +67,9 @@ sub subcall_debugger {
                                 fix_file_and_line => 1,
                                 hide_position     => 0};
                     # FIXME: allow more than just scalar contexts.
+		    &DB::save_vars();
                     my $eval_result =
-                        &DB::eval_with_return($disp->arg, $opts, @saved);
+                        &DB::eval_with_return($disp->arg, $opts, @DB::saved);
 		    my $mess;
 		    if (defined($eval_result)) {
 			$mess = sprintf("%d: $eval_result", $disp->number);
@@ -97,13 +98,14 @@ sub subcall_debugger {
                     my $opts = $eval_opts;
                     $opts->{namespace_package} = $namespace_package;
 
+		    &DB::save_vars();
                     if ('@' eq $return_type) {
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     } elsif ('%' eq $return_type) {
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     } else {
                         $eval_result =
-                            &DB::eval_with_return($eval_str, $opts, @saved);
+                            &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     }
 
                     if ($nest) {
@@ -141,7 +143,8 @@ sub check_for_stop() {
                             namespace_package => $namespace_package,
                             fix_file_and_line => 1,
                             hide_position     => 0};
-                &DB::eval_with_return($eval_str, $opts, @saved);
+		&DB::save_vars();
+                &DB::eval_with_return($eval_str, $opts, @DB::saved);
             }
             if ($stop && $brkpt->enabled && !($DB::single & RETURN_EVENT)) {
                 $DB::brkpt = $brkpt;
@@ -213,7 +216,10 @@ sub DB::sub {
     local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
     push_DB_single_and_set();
 
-    check_for_stop();
+    if (defined($DB::running) && $DB::running == 1) {
+	local @DB::_ = @_;
+	check_for_stop();
+    }
 
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {

@@ -1,0 +1,8 @@
+-- main::(callbug.pl:8)
+if (scalar @ARGV) {
+        iamnotok(@ARGV);
+-> main::(callbug.pl:4)
+sub iamnotok {
+   no warnings qw(uninitialized);
+$DB::D[0] = foo
+trepan.pl: That's all, folks...

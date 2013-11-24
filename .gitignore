@@ -9,6 +9,7 @@
 /Makefile.PL
 /_build
 /blib
+/cover_db
 /pod2htmd.tmp
 /pod2htmi.tmp
 /tmp

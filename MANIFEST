@@ -13,6 +13,7 @@ README.md			README in Markdown format for github
 bin/trepan.pl
 example/TCPPack.pm
 example/action-bug.pl
+example/callbug.pl
 example/eval.pl
 example/except-bug1.pl
 example/fns.pl
@@ -239,6 +240,7 @@ t/20test-alias.t
 t/20test-autoeval.t
 t/20test-autolist.t
 t/20test-break.t
+t/20test-breakcall.t
 t/20test-cont.t
 t/20test-debug.t
 t/20test-display.t
@@ -278,6 +280,8 @@ t/data/break.cmd
 t/data/break.right
 t/data/break2.cmd
 t/data/break2.right
+t/data/breakcall.cmd
+t/data/breakcall.right
 t/data/cont.cmd
 t/data/cont.right
 t/data/debug.cmd

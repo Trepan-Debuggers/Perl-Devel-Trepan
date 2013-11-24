@@ -37,7 +37,7 @@ use Devel::Trepan::DB::Sub;
 use Devel::Trepan::Terminated;
 
 # "private" globals
-my (@saved, @skippkg);
+my (@skippkg);
 
 my $ineval = {};
 
@@ -112,7 +112,7 @@ BEGIN {
     $in_debugger = 0;
     @clients = ();
     $ready = 0;
-    @saved = ();
+    @DB::saved = ();
     @skippkg = ();
 
     # ensure we can share our non-threaded variables or no-op
@@ -221,7 +221,7 @@ sub DB {
                         namespace_package => $namespace_package,
                         fix_file_and_line => 1,
                         hide_position     => 0};
-            my $new_val = &DB::eval_with_return($wp->expr, $opts, @saved);
+            my $new_val = &DB::eval_with_return($wp->expr, $opts, @DB::saved);
             my $old_val = $wp->old_value;
             no warnings 'once';
             next if !defined($old_value) and !defined($new_val);
@@ -258,7 +258,7 @@ sub DB {
                             namespace_package => $namespace_package,
                             fix_file_and_line => 1,
                             hide_position     => 0};
-                &DB::eval_with_return($eval_str, $opts, @saved);
+                &DB::eval_with_return($eval_str, $opts, @DB::saved);
             }
             if ($stop && $brkpt->enabled && !($DB::single & RETURN_EVENT)) {
                 $DB::signal |= 1;
@@ -298,7 +298,7 @@ sub DB {
 
     for my $action (@action) {
         &DB::eval_with_return($action->condition, {return_type => '$'},
-			      @saved)
+			      @DB::saved)
             if $action->enabled;
         my $hits = $action->hits + 1;
         $action->hits($hits);
@@ -324,7 +324,7 @@ sub DB {
                                 hide_position     => 0};
                     # FIXME: allow more than just scalar contexts.
                     my $eval_result =
-                        &DB::eval_with_return($disp->arg, $opts, @saved);
+                        &DB::eval_with_return($disp->arg, $opts, @DB::saved);
 		    my $mess;
 		    if (defined($eval_result)) {
 			$mess = sprintf("%d: $eval_result", $disp->number);
@@ -354,12 +354,12 @@ sub DB {
                     $opts->{namespace_package} = $namespace_package;
 
                     if ('@' eq $return_type) {
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     } elsif ('%' eq $return_type) {
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     } else {
                         $eval_result =
-                            &DB::eval_with_return($eval_str, $opts, @saved);
+                            &DB::eval_with_return($eval_str, $opts, @DB::saved);
                     }
 
                     if ($nest) {
@@ -378,7 +378,7 @@ sub DB {
     ($EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
      $OUTPUT_FIELD_SEPARATOR,
      $INPUT_RECORD_SEPARATOR,
-     $OUTPUT_RECORD_SEPARATOR, $WARNING) = @saved;
+     $OUTPUT_RECORD_SEPARATOR, $WARNING) = @DB::saved;
     ();
 }
 
@@ -447,7 +447,7 @@ sub save { die "Remember to update Enbugger/trepan.pm" };
 # reduce prototype conflict of save $ vs none if we use perl5db.pl to
 # debug Devel::Trepan.
 sub save_vars() {
-  @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
+  @DB::saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
              $OUTPUT_FIELD_SEPARATOR,
              $INPUT_RECORD_SEPARATOR,
              $OUTPUT_RECORD_SEPARATOR, $WARNING );
@@ -486,7 +486,7 @@ sub catch {
                     fix_file_and_line => 1,
                     hide_position     => 0};
                 my $eval_result = &DB::eval_with_return($disp->arg, $opts,
-                                                        @saved);
+                                                        @DB::saved);
                 my $mess = sprintf("%d: $eval_result", $disp->number);
                 $c->output($mess);
             }
@@ -508,12 +508,12 @@ sub catch {
                 $opts->{namespace_package} = $namespace_package;
 
                 if ('@' eq $opts->{return_type}) {
-                    &DB::eval_with_return($eval_str, $opts, @saved);
+                    &DB::eval_with_return($eval_str, $opts, @DB::saved);
                 } elsif ('%' eq $opts->{return_type}) {
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                 } else {
                     $eval_result =
-                        &DB::eval_with_return($eval_str, $opts, @saved);
+                        &DB::eval_with_return($eval_str, $opts, @DB::saved);
                 }
 
                 $after_eval = 1;

@@ -50,7 +50,7 @@ sub eval_with_return {
         # Set package namespace for running eval's in the namespace
         # of the debugged program.
         my $eval_setup = $opts->{namespace_package} || $DB::namespace_package;
-        $eval_setup   .= "\n\@_ = \@DB::_;";
+        $eval_setup   .= ";\n\@_ = \@DB::_;";
 
         # Make sure __FILE__ and __LINE__ are set correctly
         if( $opts->{fix_file_and_line}) {
@@ -60,8 +60,10 @@ sub eval_with_return {
 
         my $return_type = $opts->{return_type};
         if ('$' eq $return_type) {
+            # print "+++ eval $return: $eval_setup \$DB::eval_result=$eval_str\n";
             eval "$eval_setup \$DB::eval_result=$eval_str\n";
         } elsif ('@' eq $return_type) {
+            # print "+++ eval @return: $eval_setup \@DB::eval_result=$eval_str\n";
             eval "$eval_setup \@DB::eval_result=$eval_str\n";
         } elsif ('%' eq $return_type) {
             eval "$eval_setup \%DB::eval_result=$eval_str\n";
@@ -73,6 +75,7 @@ sub eval_with_return {
         #     $eval_result = capture_merged {
         #       eval "$eval_setup $eval_str\n";
         } else {
+            # print "+++ eval $eval_setup $eval_str\n";
             $eval_result = eval "$eval_setup $eval_str\n";
         };
 

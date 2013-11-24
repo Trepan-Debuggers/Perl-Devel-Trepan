@@ -178,7 +178,7 @@ sub DB {
     # figure out where we last were executing. Sneaky, eh? This works because
     # caller is returning all the extra information when called from the
     # debugger.
-    $DB::caller = [caller];
+    $DB::caller = [CORE::caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
@@ -460,7 +460,7 @@ sub save_vars() {
 
 sub catch {
     @DB::_ = @_;
-    $DB::caller = [caller];
+    $DB::caller = [CORE::caller];
     ($DB::package, $DB::filename, $DB::lineno, $DB::subroutine, $DB::hasargs,
      $DB::wantarray, $DB::evaltext, $DB::is_require, $DB::hints, $DB::bitmask,
      $DB::hinthash
@@ -594,7 +594,7 @@ sub finish($;$$) {
 
     if ($scan_for_DB_sub) {
         my $i = 0;
-        while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+        while (my ($pkg, $file, $line, $fn) = CORE::caller($i++)) {
             if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
                 # FIXME: This is hoaky. 4 is somehow how far off
                 # @stack is from caller.

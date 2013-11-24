@@ -21,6 +21,26 @@ BEGIN {
     %DB::eval_result = ();      # place for result if hash
 }
 
+# A replacement for CORE::caller inside of eval. We need to
+# remove DB calls in the top levels that appear in CORE::caller.
+# FIXME: figure out how to change caller inside eval!
+sub caller_with_db_hide {
+    my $count = shift;
+    $count = 0 unless defined $count;
+    my $skip = 1;
+    while (my ($pkg, $file, $line, $fn) = caller($skip++)) {
+	last if 'DB' ne $pkg;
+    }
+
+    if (wantarray) {
+	my @result = CORE::caller($skip + $count);
+	return @result;
+    } else {
+	my $result = CORE::caller($skip + $count);
+	return $result;
+    }
+}
+
 # evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
 # $return_type indicates the return context:
@@ -123,7 +143,7 @@ sub eval_not_ok ($)
     }
 }
 
-unless (caller) {
+unless (CORE::caller) {
     eval {
         sub doit($) {
             my $code = shift;

@@ -177,6 +177,7 @@ lib/Devel/Trepan/DB/Display.pm
 lib/Devel/Trepan/DB/Eval.pm
 lib/Devel/Trepan/DB/LineCache.pm
 lib/Devel/Trepan/DB/SelfLoader.pm
+lib/Devel/Trepan/DB/Sig.pm
 lib/Devel/Trepan/DB/Sub.pm
 lib/Devel/Trepan/DB/Use.pm
 lib/Devel/Trepan/IO.pm

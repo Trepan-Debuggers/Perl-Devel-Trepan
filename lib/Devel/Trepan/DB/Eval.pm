@@ -42,7 +42,6 @@ sub caller_sans_DB(;$) {
     CORE::caller($skip+$levels);
 }
 
-
 # evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
 # $return_type indicates the return context:
@@ -156,7 +155,7 @@ sub eval_not_ok ($)
     }
 }
 
-unless (caller) {
+unless (CORE::caller) {
     eval {
         sub doit($) {
             my $code = shift;

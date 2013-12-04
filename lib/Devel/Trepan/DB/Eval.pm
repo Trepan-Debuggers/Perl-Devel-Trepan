@@ -38,6 +38,7 @@ sub caller_sans_DB(;$) {
 	    last ;
 	}
     }
+    # FIXME: if called in an array context it appears as though fn
     CORE::caller($skip+$levels);
 }
 

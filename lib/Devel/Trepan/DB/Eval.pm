@@ -21,6 +21,27 @@ BEGIN {
     %DB::eval_result = ();      # place for result if hash
 }
 
+# Like builtin caller but we strip off DB:: routines which are presumably
+# are calls from inside inside the debugger (package DB).
+# NOTE: we assume the original builtin caller has been saved inside
+# local-declared *orig_caller. See below in eval_with_return.
+
+sub caller_sans_DB(;$) {
+    my $levels = shift;
+    $levels = 0 unless defined($levels);
+    my $skip=0;
+    my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
+    while (my ($pkg, $file, $line, $fn) = caller($skip++)) {
+	if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
+	    ## print("XXX kip $skip\n");
+	    $skip--;
+	    last ;
+	}
+    }
+    CORE::caller($skip+$levels);
+}
+
+
 # evaluate $eval_str in the context of $package_namespace (a package name).
 # @saved contains an ordered list of saved global variables.
 # $return_type indicates the return context:
@@ -59,6 +80,17 @@ sub eval_with_return {
         }
 
         my $return_type = $opts->{return_type};
+
+	# Override caller inside the eval below. Many thanks to Toby
+        # Inkster and educated_foo via
+        # http://www.perlmonks.org/?node_id=1065502
+
+	local *CORE::GLOBAL::caller = \&caller_sans_DB;
+
+	# Note: our code shouldn't use caller for itself below (or if
+	# it is needed use it by the name CORE::caller, since we've
+	# overwritten it above.
+
         if ('$' eq $return_type) {
             # print "+++ eval $return: $eval_setup \$DB::eval_result=$eval_str\n";
             eval "$eval_setup \$DB::eval_result=$eval_str\n";

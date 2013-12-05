@@ -295,6 +295,8 @@ t/data/eval.cmd
 t/data/eval.right
 t/data/eval2.cmd
 t/data/eval2.right
+t/data/eval3.cmd
+t/data/eval3.right
 t/data/fin.cmd
 t/data/fin.right
 t/data/fin2.cmd

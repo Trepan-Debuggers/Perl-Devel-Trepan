@@ -1,0 +1,30 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+Eval result display style is dumper.
+set auto eval is on.
+set max width is 300.
+$DB::D[0] =
+@{[
+  'main',
+  'gcd.pl',
+  18
+]}
+-> main::(gcd.pl:8)
+{ 
+    my ($a, $b) = @_;
+x1 main::(gcd.pl:9)
+    my ($a, $b) = @_;
+$DB::D[1] =
+@{[
+  'main',
+  'gcd.pl',
+  9
+]}
+$DB::D[2] =
+@{[
+  'main',
+  'gcd.pl',
+  21
+]}
+trepan.pl: That's all, folks...

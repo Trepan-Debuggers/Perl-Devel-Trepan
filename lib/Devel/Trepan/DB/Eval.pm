@@ -26,20 +26,30 @@ BEGIN {
 # NOTE: we assume the original builtin caller has been saved inside
 # local-declared *orig_caller. See below in eval_with_return.
 
+# no critic
+
+# Provide a replacement for built-in CORE::caller
 sub caller_sans_DB(;$) {
     my $levels = shift;
     $levels = 0 unless defined($levels);
     my $skip=0;
     my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
+
+    # Warning: There is a bug caller that lists DB:DB as the function
+    # name rather than the name the debugged program may have been in
     while (my ($pkg, $file, $line, $fn) = caller($skip++)) {
 	if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
-	    ## print("XXX kip $skip\n");
+	    ## print("XXX $skip\n");
 	    $skip--;
 	    last ;
 	}
     }
-    # FIXME: if called in an array context it appears as though fn
-    CORE::caller($skip+$levels);
+    my @caller = CORE::caller($skip+$levels);
+
+    return if ! @caller;                  # empty
+    return $caller[0] if ! wantarray;     # scalar context
+    return @caller[0..2];                 # outside of DB, array info just gives 3 itmes
+
 }
 
 # evaluate $eval_str in the context of $package_namespace (a package name).

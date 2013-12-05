@@ -70,4 +70,27 @@ $opts = {
 };
 
 run_debugger("$test_prog", 'eval2.cmd', undef, $opts);
+
+
+$test_prog = prog_file('gcd.pl');
+$opts->{filter} = sub{
+    my ($got_lines, $correct_lines) = @_;
+    my @result = ();
+    my $skip = 0;
+    foreach (split("\n", $got_lines)) {
+	if ($skip) {
+	    $skip--;
+	    next;
+	}
+	# FIXME
+	# '/tmp/t/../example/gcd.pl', => 'gcd.pl',
+	s/^\s+ '.*gcd.pl\',$/  'gcd.pl',/;
+	push @result, $_;
+    };
+    $got_lines = join("\n", @result);
+    return ($got_lines, $correct_lines);
+};
+run_debugger("$test_prog 3 5", 'eval3.cmd', undef, $opts);
+
+
 done_testing();

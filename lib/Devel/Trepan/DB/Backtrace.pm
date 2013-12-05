@@ -64,6 +64,8 @@ sub backtrace($;$$$) {
     my $i=0;
     if ($scan_for_DB_sub) {
         my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
+	# Warning: There is a bug caller that lists DB:DB as the function
+	# name rather than the name the debugged program may have been in
         while (my ($pkg, $file, $line, $fn) = caller($i++)) {
             if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
                 $i--;

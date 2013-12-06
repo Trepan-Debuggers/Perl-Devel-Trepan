@@ -256,7 +256,7 @@ sub process_commands($$$;$)
 
     my $next_skip = 0;
     if ($event eq 'after_eval' or $event eq 'after_nest') {
-        handle_eval_result($self);
+        $self->handle_eval_result();
         if ($event eq 'after_nest') {
             $self->msg("Leaving nested debug level $DB::level");
             $self->{prompt} = compute_prompt($self);
@@ -465,7 +465,7 @@ sub run_command($$)
             } else {
                 $DB::eval_result = $self->eval($current_command, $opts, 2);
             }
-            handle_eval_result($self);
+            $self->handle_eval_result();
         }
         return;
     }

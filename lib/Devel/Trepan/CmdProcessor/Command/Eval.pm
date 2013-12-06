@@ -19,7 +19,7 @@ EOE
 use strict;
 use Devel::Trepan::Util;
 
-use vars qw(@ISA); @ISA = @CMD_ISA; 
+use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
@@ -49,7 +49,7 @@ to look to see if expr is split across a line or whether var an assigment
 might have multiple variables on the left-hand side.
 
 The value of the expression is stored into global array I<@DB:D> so it
-may be used again easily. 
+may be used again easily.
 
 Normally eval assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
@@ -63,21 +63,21 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
  eval $^X  # Possibly /usr/bin/perl
  eval      # Run current source-code line
  eval?     # but strips off leading 'if', 'while', ..
-           # from command 
- eval@ @ARGV  # Make sure the result saved is an array rather than 
+           # from command
+ eval@ @ARGV  # Make sure the result saved is an array rather than
               # an array converted to a scalar.
  @ @ARG       # Same as above if @ alias is around
  eval% %ENV   # Make sure the result saved is a hash
  use English  # Note this is a statement, not an expression
  use English; # Same as above
- eval$ use English # Error because this is not a valid expression 
+ eval$ use English # Error because this is not a valid expression
 
 See also C<set auto eval>. The command can help one predict future execution.
 =cut
 HELP
 
 sub complete($$)
-{ 
+{
     my ($self, $prefix) = @_;
     if (!$prefix) {
         if (0 == index($self->{proc}{leading_str}, 'eval?')) {
@@ -111,7 +111,7 @@ sub run($$)
         $hide_position = 0;
         if ('?' eq substr($cmd_name, -1)) {
             $cmd_name = substr($cmd_name, 0, length($cmd_name)-1);
-            $code_to_eval = 
+            $code_to_eval =
                 Devel::Trepan::Util::extract_expression($code_to_eval);
             $proc->msg("eval: ${code_to_eval}");
             my @eval_args = split /\s+/, $code_to_eval;

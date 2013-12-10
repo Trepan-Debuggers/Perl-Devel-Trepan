@@ -35,9 +35,11 @@ sub caller_sans_DB(;$) {
     my $skip=0;
     my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
 
-    # Warning: There is a bug caller that lists DB:DB as the function
-    # name rather than the name the debugged program may have been in
     while (my ($pkg, $file, $line, $fn) = caller($skip++)) {
+	# Note: The function parameter of caller(), $fn, gives the
+	# function that was used rather than the function that the
+	# caller is currently in. Therefore, the implicitly line
+	# calling DB:DB is the one we want to stop at.
 	if ("DB::$db_fn" eq $fn or ('DB' eq $pkg && $db_fn eq $fn)) {
 	    ## print("XXX $skip\n");
 	    $skip--;

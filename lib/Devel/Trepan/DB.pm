@@ -595,6 +595,10 @@ sub finish($;$$) {
     if ($scan_for_DB_sub) {
         my $i = 0;
         while (my ($pkg, $file, $line, $fn) = CORE::caller($i++)) {
+	    # Note: The function parameter of caller(), $fn, gives the
+	    # function that was used rather than the function that the
+	    # caller is currently in. Therefore, the implicitly line
+	    # calling DB:DB is the one we want to stop at.
             if ('DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn)) {
                 # FIXME: This is hoaky. 4 is somehow how far off
                 # @stack is from caller.

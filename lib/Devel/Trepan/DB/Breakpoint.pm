@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 # largely rewritten from perl5db.
 
 use Class::Struct;
@@ -123,6 +123,7 @@ sub break_invalid {
     } else {
 	if (!defined($DB::dbline[$lineno]) || $DB::dbline[$lineno] == 0) {
 	    *DB::dbline   = $main::{ '_<' . $DB::filename } if $change_dbline;
+	    $$filename_ref = $filename;
 	    return "Line $lineno of $filename not known to be a trace line";
 	}
     }

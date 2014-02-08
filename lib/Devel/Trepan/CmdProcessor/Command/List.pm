@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -109,7 +109,7 @@ currently stopped. On line 253 there is a breakpoint 1 which is
 enabled, while at line 255 there is an breakpoint 2 which is
 disabled.
 
-See also C<set autolist>.
+See also C<set autolist> and C<help syntax location>.
 
 =cut
 HELP

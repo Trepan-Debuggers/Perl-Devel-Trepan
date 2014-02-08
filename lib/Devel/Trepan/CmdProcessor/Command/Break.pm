@@ -89,7 +89,7 @@ sub run($$) {
                 }
             }
         } else {
-            # $arg_count == 1.
+            # $arg_count <= 2.
             $line_or_fn = $args[0];
             if ($line_or_fn =~ /^\d+/) {
                 $filename = $DB::filename;
@@ -98,7 +98,8 @@ sub run($$) {
                 if (scalar(@matches) == 1) {
                     $filename = $matches[0][0];
                 } else {
-                    my $canonic_name = map_file($args[0]);
+		    $filename = $args[0];
+                    my $canonic_name = map_file($filename);
                     if (is_cached($canonic_name)) {
                         $filename = $canonic_name;
                     }
@@ -171,6 +172,7 @@ unless (caller) {
     db_setup();
 
     $cmd->run([$NAME]);
+    # $cmd->run([$NAME, "/usr/share/perl/5.14.2/File/Basename.pm", "3"]);
 }
 
 1;

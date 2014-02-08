@@ -208,6 +208,7 @@ lib/Devel/Trepan/Version.pm
 lib/Devel/Trepan/WatchMgr.pm
 t/00test-pod.t
 t/10test-brkptmgr.t		Note: t/10*.t tests are unit tests
+t/10test-cmd-break.t
 t/10test-cmd-complete.t
 t/10test-cmd-kill.t
 t/10test-cmd-macro.t

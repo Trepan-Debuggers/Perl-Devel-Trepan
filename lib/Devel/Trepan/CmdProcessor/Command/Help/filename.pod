@@ -13,6 +13,7 @@ There are two ways you can give a file name:
 =item * unadorned (without double-quotes) with possible escapes
 
 =item * a double-quoted string with possible escapes in the string
+
 =back
 
 Probably most of the time a file name will be specified in the first

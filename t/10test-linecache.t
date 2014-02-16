@@ -85,7 +85,7 @@ if ($have_codelines) {
     update_cache($podtest_file, {use_perl_d_file => 1});
 
     my @line_nums = trace_line_numbers($podtest_file);
-    is($line_nums[0], 3, "trace_line_numbers for $podtest_file");
+    is($line_nums[0], 7, "trace_line_numbers for $podtest_file");
 }
 
 done_testing();

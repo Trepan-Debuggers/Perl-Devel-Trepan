@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Util;
 use strict; use warnings; use English qw( -no_match_vars );
@@ -42,6 +42,7 @@ sub safe_repr($$;$)
     my ($str, $max, $elipsis) = @_;
     $elipsis = '... ' unless defined $elipsis;
     my $strlen = length($str);
+    $str = '' unless $str;
     if ($max > 0 && $strlen > $max && -1 == index($str, "\n")) {
         sprintf("%s%s%s", substr($str, 0, $max/2),
                 $elipsis,  substr($str, $strlen+1-($max)/2));

@@ -120,6 +120,7 @@ test:
 testcover:
 	perl Build --makefile_env_macros 1 testcover
 
+#: Remove change log: ChangeLog
 rmChangeLog:
 	rm ChangeLog || true
 

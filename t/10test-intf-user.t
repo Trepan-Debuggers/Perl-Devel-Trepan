@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict; use warnings; no warnings 'redefine';
 use rlib '../lib';
-use vars qw($response); 
+use vars qw($response);
 
 use Test::More;
 note( "Testing Devel::Trepan::Interface::User" );
@@ -20,13 +20,13 @@ package main;
 my $user_intf = Devel::Trepan::Interface::User->new;
 
 for my $s ('y', 'Y', 'Yes', '  YES  ') {
-    $response = $s;
+    $main::response = $s;
     my $ans = $user_intf->confirm('Testing', 1);
     is($ans, 1);
 }
 
 for my $s ('n', 'N', 'No', '  NO  ') {
-    $response = $s;
+    $main::response = $s;
     my $ans = $user_intf->confirm('Testing', 1);
     is($ans, 0);
 }

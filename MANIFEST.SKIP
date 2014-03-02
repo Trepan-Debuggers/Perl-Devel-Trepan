@@ -67,7 +67,11 @@ how-to-make-a-release\.txt
 ^MYMETA\.
 #!end included /usr/local/share/perl/5.10.1/ExtUtils/MANIFEST.SKIP
 
+# Skip Travis Continuous Integration configuration
 ^\.travis\.yml$
+
+# Skip testing via Test::Aggregate
+^\t/test-aggregate.pl$
 
 # Avoid configuration metadata file
 ^MYMETA\.

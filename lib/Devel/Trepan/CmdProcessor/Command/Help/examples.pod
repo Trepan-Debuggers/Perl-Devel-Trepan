@@ -1,29 +1,21 @@
-Command examples
-=for command
-The intent of this file is to live in both in the github wiki and as
-part of on-line help documentation
-lib/Devel/Trepan/CmdProcess/Command/Help/...
-
-=head1 Debugger Command Examples
-
 =head2 Commenting
  # This line does nothing. It is a comment and is useful
  # in debugger command files.
       # any amount of leading space is also ok
 
 =head2 Splitting Commands
- 
+
 The following runs two commands: C<info program> and C<list>
 
- info program;; list 
+ info program;; list
 
 The following gives a syntax error since C<;;> splits the line and the
 simple debugger parse then thinks that the quote (") is not closed.
 
- print "hi ;;-)\n" 
- 
+ print "hi ;;-)\n"
+
 If you have the Devel::Trepan::Shell plugin, you can go into a real
-shell and run the above. 
+shell and run the above.
 
 =head2 Command Continuation
 

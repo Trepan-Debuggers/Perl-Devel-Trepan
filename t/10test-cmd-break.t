@@ -45,10 +45,10 @@ my $cmd = Devel::Trepan::CmdProcessor::Command::Break->new($proc);
 
 my @args = ('break');
 $cmd->run(\@args);
-is($break_args[1], '');
+is($main::break_args[1], '');
 my $line = __LINE__;
 @args = ('break', __FILE__, $line);
 $cmd->run(\@args);
-is($break_args[5], $line);
+is($main::break_args[5], $line);
 
 done_testing();

@@ -21,7 +21,7 @@ push @cmds, Devel::Trepan::CmdProcessor::Command::Set->new($cmdproc, 'set');
 push @cmds, Devel::Trepan::CmdProcessor::Command::Show->new($cmdproc, 'show');
 push @cmds, Devel::Trepan::CmdProcessor::Command::Load->new($cmdproc, 'load');
 foreach my $cmd (@cmds) {
-    foreach my $subcmd_name (keys $cmd->{subcmds}) {
+    foreach my $subcmd_name (keys %{$cmd->{subcmds}}) {
 	my $subcmd = $cmd->{subcmds}{$subcmd_name};
 	for my $field (qw(name prefix min_abbrev short_help)) {
 	    ok($subcmd->{$field},

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 
@@ -86,7 +86,7 @@ sub new($$)
 # those files and for each class name, we will create an instance of
 # that class. The set of TrepanCommand class instances form set of
 # possible debugger commands.
-sub load_debugger_subcommands($$)
+sub load_debugger_subcommands($)
 {
     my ($self) = @_;
     $self->{cmd_names}     = ();

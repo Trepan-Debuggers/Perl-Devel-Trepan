@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -18,14 +18,14 @@ our $CMD  = 'show display eval';
 our $HELP = <<"EOH";
 $CMD
 
-Shows whether Data::Dumper ('dumper') or Data::Dumper::Perltidy ('tidy') 
+Shows whether Data::Dumper ('dumper') or Data::Dumper::Perltidy ('tidy')
 is used to format evaluation results.
 
 See also 'set display eval', 'eval', and 'set autoeval'.
 EOH
 
-our $SHORT_HELP = 'Show how the evaluation results shown';
-our $MIN_ABBREV = length('evaldi');
+our $SHORT_HELP = 'Show how the evaluation results are displayed';
+our $MIN_ABBREV = length('ev');
 
 sub run($$)
 {
@@ -38,16 +38,17 @@ sub run($$)
 }
 
 unless (caller) {
-  # Demo it.
-  # require_relative '../../mock'
+    # Demo it.
+    require Devel::Trepan;
+    # require_relative '../../mock'
 
-  # # FIXME: DRY the below code
-  # my ($dbgr, $cmd) = MockDebugger::setup('show');
-  # $subcommand = __PACKAGE__->new(cmd);
-  # $testcmdMgr = Trepan::Subcmd->new(subcommand);
+    # # FIXME: DRY the below code
+    # my ($dbgr, $cmd) = MockDebugger::setup('show');
+    # $subcommand = __PACKAGE__->new(cmd);
+    # $testcmdMgr = Trepan::Subcmd->new(subcommand);
 
-  # $subcommand->run_show_bool();
-  # $subcommand->summary_help($NAME);
+    # $subcommand->run_show_bool();
+    # $subcommand->summary_help($NAME);
 }
 
 1;

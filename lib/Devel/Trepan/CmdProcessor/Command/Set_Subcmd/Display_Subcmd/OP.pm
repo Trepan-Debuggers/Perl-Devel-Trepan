@@ -24,7 +24,7 @@ Set to show the OP address in location status.
 The OP address is the address of the Perl Tree Opcode that is about
 to be run. It gives the most precise indication of where you are.
 This can be useful in disambiguating where among Perl several
-statements in a line you are at. 
+statements in a line you are at.
 
 In the future we may also allow a breakpoint at a COP address.
 
@@ -39,11 +39,11 @@ HELP
 our $MIN_ABBREV   = length('co');
 use constant MAX_ARGS => 1;
 our $SHORT_HELP   = "Set to show OP address in locations";
- 
+
 sub run($$)
-{ 
+{
     my ($self, $args) = @_;
-    if ($DB::HAVE_DEVEL_CALLSITE) {
+    if ($DB::HAVE_MODULE{'Devel::Callsite'}) {
         $self->SUPER::run($args);
     } else {
         $self->{proc}->errmsg("You need Devel::Callsite installed to run this");
@@ -51,23 +51,21 @@ sub run($$)
 }
 
 unless (caller) {
-  # Demo it.
-  # require_relative '../../../mock'
-  # name = File.basename(__FILE__, '.rb')
-
-  # dbgr, set_cmd = MockDebugger::setup('set')
-  # $max_cmd       = __PACKAGE__->new(dbgr.core.processor, $set_cmd)
-  # $cmd_ary       = Trepan::SubSubcommand::SetMaxList::PREFIX
-  # $cmd_name      = cmd_ary.join(' ')
-  # $subcmd        = __PACKAGE__->new($set_cmd->{proc}, $max_cmd, $cmd_name);
-  # $prefix_run = cmd_ary[1..-1]
-  # $subcmd->run(prefix_run);
-  # $subcmd-.run(prefix_run, qw(0));
-  # $subcmd->run(prefix_run, qw(20));
-  # $subcmd->summary_help(name);
-  # print
-  # print '-' x 20;
-  # print $subcmd->save_command
+    # Demo it.
+    # DRY this.
+    require Devel::Trepan::CmdProcessor;
+    my $cmdproc = Devel::Trepan::CmdProcessor->new();
+    my $subcmd  =  Devel::Trepan::CmdProcessor::Command::Set->new($cmdproc, 'set');
+    my $dispcmd =  Devel::Trepan::CmdProcessor::Command::Set::Display->new($subcmd, 'display');
+    my $opcmd   =  Devel::Trepan::CmdProcessor::Command::Set::Display::OP->new($dispcmd, 'op');
+    # Add common routine
+    foreach my $field (qw(min_abbrev name)) {
+	printf "Field %s is: %s\n", $field, $opcmd->{$field};
+    }
+    my @args = qw(set display op on);
+    $opcmd->run(\@args);
+    @args = qw(set display op off);
+    $opcmd->run(\@args);
 }
 
 1;

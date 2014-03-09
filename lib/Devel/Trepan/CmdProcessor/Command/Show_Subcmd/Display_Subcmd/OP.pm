@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -25,26 +25,22 @@ C<disassemble> via plugin L<Devel::Trepan::Disassemble>
 =cut
 HELP
 
-our $MIN_ABBREV   = length('ev');
+our $MIN_ABBREV   = length('op');
 our $SHORT_HELP   = "Show OP address setting";
- 
-unless (caller) {
-  # Demo it.
-  # require_relative '../../../mock'
 
-  # dbgr, set_cmd = MockDebugger::setup('set');
-  # $max_cmd       = __PACKAGE__->new(dbgr.core.processor, $set_cmd);
-  # $cmd_ary       = __PACKAGE__->{prefix};
-  # $cmd_name      = cmd_ary.join(' ');
-  # $subcmd        = __PACAKGE__->new(set_cmd.proc, max_cmd, cmd_name);
-  # prefix_run = cmd_ary[1..-1]
-  # $subcmd->run(prefix_run)
-  # $subcmd->run(($prefix_run, qw(0)));
-  # $subcmd->run(($prefix_run, qw(20)));
-  # $subcmd->summary_help($name);
-  # print
-  # print '-' x 20;
-  # print $subcmd->save_command
+unless (caller) {
+    # Demo it.
+    # DRY this.
+    require Devel::Trepan::CmdProcessor;
+    my $cmdproc = Devel::Trepan::CmdProcessor->new();
+    my $subcmd  =  Devel::Trepan::CmdProcessor::Command::Show->new($cmdproc, 'show');
+    my $dispcmd =  Devel::Trepan::CmdProcessor::Command::Show::Display->new($subcmd, 'display');
+    my $opcmd   =  Devel::Trepan::CmdProcessor::Command::Show::Display::OP->new($dispcmd, 'op');
+    # Add common routine
+    foreach my $field (qw(min_abbrev name)) {
+	printf "Field %s is: %s\n", $field, $opcmd->{$field};
+    }
+    $opcmd->run();
 }
 
 1;

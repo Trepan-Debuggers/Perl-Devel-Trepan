@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -12,6 +12,7 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('au');
 our $HELP   = 'Show display-related controls';
+our $SHORT_HELP  = $HELP;
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 
@@ -21,15 +22,15 @@ our $HELP   = 'Show display-related controls';
 #     $self->SUPER;
 # }
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     require Devel::Trepan;
     # require_relative '../../mock'
     # dbgr, parent_cmd = MockDebugger::setup('set', false);
-    # $cmd              = __PACKAGE__->new(dbgr.core.processor, 
+    # $cmd              = __PACKAGE__->new(dbgr.core.processor,
     #                                     parent_cmd);
     # $cmd->run(($cmd->prefix  ('string', '30'));
-    
+
     # for my $prefix qw(s lis foo) {
     #   p [prefix, cmd.complete(prefix)];
     # }

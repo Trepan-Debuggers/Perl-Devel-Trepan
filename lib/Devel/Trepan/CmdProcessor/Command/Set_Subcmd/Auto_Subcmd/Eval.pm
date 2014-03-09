@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval;
@@ -20,8 +20,6 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 our $HELP         = <<'HELP';
-=pod
-
 =pod
 
 B<set auto <eval> [B<on>|B<off>]

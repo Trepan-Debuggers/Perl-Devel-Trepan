@@ -179,7 +179,9 @@ sub source_location_info($)
     my $line_number = $self->line() || 0;
 
     my $op_addr = '';
-    if ($self->{settings}{displayop} && $DB::OP_addr) {
+    if ($self->{settings}{displayop}
+	&& $DB::OP_addr
+	&& $self->{frame_index}== 0) {
         $op_addr = sprintf " \@0x%x", $DB::OP_addr;
     }
     if (filename_is_eval($filename)) {

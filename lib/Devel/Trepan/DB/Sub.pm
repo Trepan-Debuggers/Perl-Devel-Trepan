@@ -192,7 +192,7 @@ sub DB::sub {
     # memory See: [perl #66110]
 
     # lock ourselves under threads
-    lock($DBGR);
+    lock($DBGR) if $ENV{PERL5DB_THREADED};
 
     # Whether or not the autoloader was running, a scalar to put the
     # sub's return value in (if needed), and an array to put the sub's
@@ -282,7 +282,7 @@ sub DB::lsub : lvalue {
     # Possibly [perl #66110] also applies here as in sub.
 
     # lock ourselves under threads
-    lock($DBGR);
+    lock($DBGR) if $ENV{PERL5DB_THREADED};
 
     # Whether or not the autoloader was running, a scalar to put the
     # sub's return value in (if needed), and an array to put the sub's

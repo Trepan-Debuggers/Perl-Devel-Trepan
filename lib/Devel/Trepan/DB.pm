@@ -162,10 +162,10 @@ sub save_vars();
 sub DB {
 
     # print "+++ in DB single: ${DB::single}\n";
-    # lock the debugger and get the thread id for the prompt
-    lock($DBGR);
 
+    # lock the debugger and get the thread id for the prompt
     if ($ENV{PERL5DB_THREADED}) {
+	lock($DBGR);
         $tid = eval { "[".threads->tid."]" };
     }
 

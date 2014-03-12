@@ -157,7 +157,11 @@ END {
 sub save_vars();
 
 ####
-# this is called by Perl for every statement
+# This is called by Perl for every statement
+#
+# IMPORTANT NOTE: We allow DB:DB() to get called recursively and due
+# to Perl bug RT #115742 and advisement from Ben Morrow, we shouldn't
+# use lexical variables on versions of Perl before 5.18.0.
 #
 sub DB {
 
@@ -211,21 +215,22 @@ sub DB {
     local $DB::level = $DB::level + 1;
 
     # Test watch expressions;
-    my $watch_triggered = undef;
-    for my $c (@clients) {
-        my $n = 0;
-        my @list= @{$c->{watch}->{list}};
-        for my $wp (@list) {
+    local $watch_triggered = undef;
+    local $c;
+    for $c (@clients) {
+        local @list= @{$c->{watch}->{list}};
+	local $wp;
+        for $wp (@list) {
             next unless $wp->enabled;
-            my $opts = {return_type => '$',
+            local $opts = {return_type => '$',
                         namespace_package => $namespace_package,
                         fix_file_and_line => 1,
                         hide_position     => 0};
-            my $new_val = &DB::eval_with_return($wp->expr, $opts, @DB::saved);
-            my $old_val = $wp->old_value;
+            local $new_val = &DB::eval_with_return($wp->expr, $opts, @DB::saved);
+            local $old_val = $wp->old_value;
             no warnings 'once';
             next if !defined($old_value) and !defined($new_val);
-            my $not_same = !defined($old_val) || !defined($new_val);
+            local $not_same = !defined($old_val) || !defined($new_val);
             if ( $not_same || $new_val ne $wp->old_value ) {
                 # Yep! Record change.
                 $wp->current_val($new_val);
@@ -237,11 +242,11 @@ sub DB {
     }
 
     # Test for breakpoints and action events.
-    my @action = ();
+    local @action = ();
     if (exists $DB::dbline{$DB::lineno} and
-        my $brkpts = $DB::dbline{$DB::lineno}) {
-        for (my $i=0; $i < @$brkpts; $i++) {
-            my $brkpt = $brkpts->[$i];
+        local $brkpts = $DB::dbline{$DB::lineno}) {
+        for (local $i=0; $i < @$brkpts; $i++) {
+            local $brkpt = $brkpts->[$i];
             next unless defined $brkpt;
             if ($brkpt->type eq 'action') {
                 push @action, $brkpt;
@@ -296,7 +301,8 @@ sub DB {
         loadfile($DB::filename, $DB::lineno);
     }
 
-    for my $action (@action) {
+    local $action;
+    for $action (@action) {
         &DB::eval_with_return($action->condition, {return_type => '$'},
 			      @DB::saved)
             if $action->enabled;
@@ -310,22 +316,24 @@ sub DB {
         $DB::signal = 0;
         $DB::running = 0;
 
-        for my $c (@clients) {
+	local $c;
+        for $c (@clients) {
             # Now sit in an event loop until something sets $running
-            my $after_eval = 0;
+            local $after_eval = 0;
             do {
                 # Show display expresions
-                my $display_aref = $c->display_lists;
-                for my $disp (@$display_aref) {
+                local $display_aref = $c->display_lists;
+		local $disp;
+                for $disp (@$display_aref) {
                     next unless $disp && $disp->enabled;
-                    my $opts = {return_type => $disp->return_type,
+                    local $opts = {return_type => $disp->return_type,
                                 namespace_package => $namespace_package,
                                 fix_file_and_line => 1,
                                 hide_position     => 0};
                     # FIXME: allow more than just scalar contexts.
-                    my $eval_result =
+                    local $eval_result =
                         &DB::eval_with_return($disp->arg, $opts, @DB::saved);
-		    my $mess;
+		    local $mess;
 		    if (defined($eval_result)) {
 			$mess = sprintf("%d: $eval_result", $disp->number);
 		    } else {

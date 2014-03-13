@@ -1,3 +1,157 @@
+2014-03-11  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #27 from rocky/Perl-Bug-RT-115742 Attempt to address issue #26 and perl bug RT 115742.
+
+2014-03-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Sub.pm: Don't use lock
+	if we aren't threaded
+
+2014-03-09  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Try adding Perl 5.8 to Travis testing
+
+2014-03-09  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-cmd.t, t/10test-subcmd.t: cmd and subcmd tests need hash
+	not hash refs for some Perl versions
+
+2014-03-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm: For now, only show op
+	address on top-most (index 0) frame. Down the line when we have an
+	updated Devel::Callstack, we can show other ops.
+
+2014-03-08  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Ev
+	al.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP
+	.pm, lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	t/10test-cmd.t, t/10test-subcmd.t: Set_Subcmd/Display_Subcmd/OP.pm:
+	Fix up 'set display op on'. Add tests for required command fields.
+	SubMgr.pm: wrong prototype. *Subcmd/* start to add some real demo
+	code.
+
+2014-03-02  Rocky Bernstein <rocky@cpan.org>
+
+	* GNUmakefile, MANIFEST.SKIP,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod,
+	t/10test-cmd-break.t, t/10test-intf-user.t, t/20test-action.t,
+	t/20test-break.t, t/test-aggregate.pl: Accomodations for
+	Test::Aggregate which isn't a win right now. examples.pod: command
+	syntax examples shared with wiki.
+
+2014-02-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod: POD needs
+	a blank line befor =back
+
+2014-02-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Travis yet again
+
+2014-02-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod,
+	lib/Devel/Trepan/Util.pm, t/00test-pod.t, t/10test-linecache.t: 
+	Help/*.pod: Turn help PODs into something printable. t/00test-pod.t:
+	test *all* .pms and help PODs. Util.pm: more robust safe_repr.
+
+2014-02-08  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm, t/10test-cmd-break.t: 
+	Break.pm: Was not setting $filename if break file was not cached by
+	DB::LineCache. List.pm: cross reference "help syntax location".
+	10test-cmd-break.t: start unit test of break command. Not very good
+	though.
+
+2014-02-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/DB/Breakpoint.pm: DB/Breakpoint.pm: set filename
+	reference even on error.  Command/Break.pm: Suggest where to go to
+	look up a location.
+
+2013-12-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm: Document
+	what's up with the function parameter of caller().
+
+2013-12-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm: Strip some blanks and use
+	$self->x for x($self...
+
+2013-12-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/DB/Eval.pm, t/20test-eval.t, t/data/eval3.cmd,
+	t/data/eval3.right: DB's replacement caller for debugger eval now
+	returns 3 items like caller() does outside of the DB package. Add a
+	test of eval'ing caller(). Note CORE::caller is actually returns the
+	wrong name and we rely on it.
+
+2013-12-03  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 426b551c3b3bc4febf681b0009a01f86d4f56ec6 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Tue Dec 3 23:37:19 2013 -0500
+
+2013-12-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Eval.pm: Fake CORE::caller in debugger eval's
+	so that it reflects caller as seend by the debugged program, not as
+	seen by the debugger at the point of call. YAY! Thanks to
+	Perlmongers and in particular tobyink and educated_foo.
+
+2013-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Eval.pm,
+	t/data/breakcall.cmd: Write a DB-aware caller(). Now we "just" need
+	to figure out how to hook it in when running eval.
+
+2013-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/DB/Sig.pm: Copy debugger sig handling
+	from perl5db
+
+2013-11-23  Rocky Bernstein <rocky@cpan.org>
+
+	* .gitignore, MANIFEST, example/callbug.pl, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, lib/Devel/Trepan/DB/Sub.pm,
+	t/20test-breakcall.t, t/data/breakcall.cmd, t/data/breakcall.right: 
+	@_ set correctly when in a call stop. Check only for call stop when
+	debugging.
+
+2013-11-21  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Sub.pm: 
+	pushd_DB_single_and_set(): DRY code more. $running -> $DB::running
+	to make this global more explicit.
+
+2013-11-21  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm, lib/Devel/Trepan/DB/Sub.pm: 
+	Start adding a place for call events. Start to regularize Sub code
+	for DRYing.
+
+2013-11-16  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Build.PL, ChangeLog, META.json, META.yml,
+	lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Remove
+	Term::ReadLine::Perl5 as a prereq
+
 2013-11-16  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get Ready for

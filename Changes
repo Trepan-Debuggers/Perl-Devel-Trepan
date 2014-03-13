@@ -1,5 +1,14 @@
 Revision history for Devel-Trepan
 
+0.52 Mar 10, 2014
+
+A number of serious bugs addressed:
+  * Work around perl bug RT 115742 in recursive calls to DB::DB()
+  * Test for non-threadedness
+  * Currect  showing op location. (More later for uplevel calls)
+  * fake CORE::caller in debugger eval's
+    so that it reflects caller as seen by the debugged program,
+
 0.51 Nov 17, 2013 Sister Release
 - Start to have true subroutine breakpoints. This is fragile, and more
   work would be nice.. But it's more honest.

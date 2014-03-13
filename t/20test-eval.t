@@ -85,6 +85,11 @@ $opts->{filter} = sub{
 	# FIXME
 	# '/tmp/t/../example/gcd.pl', => 'gcd.pl',
 	s/^\s+ '.*gcd.pl\',$/  'gcd.pl',/;
+	s/^\s+ 'main',$/  'main',/;
+	s/^\s+]}$/]}/;
+	s/^\s+18$/  18/;
+	s/^\s+21$/  21/;
+	s/^\s+9$/  9/;
 	push @result, $_;
     };
     $got_lines = join("\n", @result);

@@ -1,6 +1,10 @@
-2014-03-11  R. Bernstein <rocky@users.noreply.github.com>
+2014-03-12  Rocky Bernstein <rocky@cpan.org>
 
-	* : Merge pull request #27 from rocky/Perl-Bug-RT-115742 Attempt to address issue #26 and perl bug RT 115742.
+	* t/20test-eval.t: Canonical output for eval3
+
+2014-03-12  Rocky Bernstein <rocky@cpan.org>
+
+	* : Get ready for release 0.52
 
 2014-03-10  Rocky Bernstein <rocky@cpan.org>
 

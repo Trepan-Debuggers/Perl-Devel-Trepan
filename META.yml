@@ -14,6 +14,9 @@ meta-spec:
   version: 1.4
 name: Devel-Trepan
 provides:
+  Carp:
+    file: lib/Devel/Trepan/DB/Sig.pm
+    version: 0
   DBBreak:
     file: lib/Devel/Trepan/DB/Breakpoint.pm
     version: 0
@@ -22,7 +25,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.51
+    version: 0.52
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -416,6 +419,9 @@ provides:
   Devel::Trepan::DB::LineCache:
     file: lib/Devel/Trepan/DB/LineCache.pm
     version: 1.0
+  Devel::Trepan::DB::Sig:
+    file: lib/Devel/Trepan/DB/Sig.pm
+    version: 0
   Devel::Trepan::DB::Use:
     file: lib/Devel/Trepan/DB/Use.pm
     version: 0
@@ -490,7 +496,7 @@ provides:
     version: 0
   Devel::Trepan::Version:
     file: lib/Devel/Trepan/Version.pm
-    version: 0.51
+    version: 0.52
   Devel::Trepan::WatchMgr:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
@@ -527,7 +533,7 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.51
+version: 0.52
 x_test_requires:
   Test::More: 0.81
   Time::HiRes: 1.9721

@@ -28,10 +28,7 @@ BEGIN {
 
 # no critic
 
-# Provide a replacement for built-in CORE::caller
-sub caller_sans_DB(;$) {
-    my $levels = shift;
-    $levels = 0 unless defined($levels);
+sub caller_levels_skip() {
     my $skip=0;
     my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
 
@@ -46,6 +43,15 @@ sub caller_sans_DB(;$) {
 	    last ;
 	}
     }
+    $skip-- if $skip > 0;
+    return $skip;
+}
+
+# Provide a replacement for built-in CORE::caller
+sub caller_sans_DB(;$) {
+    my $levels = shift;
+    $levels = 0 unless defined($levels);
+    my $skip = caller_levels_skip();
     my @caller = CORE::caller($skip+$levels);
 
     return if ! @caller;                  # empty

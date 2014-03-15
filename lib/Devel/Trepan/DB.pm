@@ -142,8 +142,15 @@ BEGIN {
     # No extry/exit tracing.
     $frame = 0;
 
-    $HAVE_MODULE{'Devel::Callsite'} = eval("use Devel::Callsite; 1") ? 1 : 0;
-
+    if (eval("use Devel::Callsite; 1")) {
+	if ($Devel::Callsite::VERSION >= 0.08) {
+	    $HAVE_MODULE{'Devel::Callsite'} =  'call_level_param';
+	} else {
+	    $HAVE_MODULE{'Devel::Callsite'} =  'single_level';
+	}
+    } else {
+	$HAVE_MODULE{'Devel::Callsite'} =  '';
+    }
 }
 
 END {

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use Exporter;
 use warnings;
@@ -179,10 +179,17 @@ sub source_location_info($)
     my $line_number = $self->line() || 0;
 
     my $op_addr = '';
-    if ($self->{settings}{displayop}
-	&& $DB::OP_addr
-	&& $self->{frame_index}== 0) {
-        $op_addr = sprintf " \@0x%x", $DB::OP_addr;
+    if ($self->{settings}{displayop}) {
+	my $frame_index = $self->{frame_index};
+	if ($DB::OP_addr && $frame_index == 0) {
+	    $op_addr = sprintf " \@0x%x", $DB::OP_addr;
+	} elsif ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
+	    ## print "++++ WOOHOO\n";
+	    my $skip = DB::caller_levels_skip();
+	    $op_addr =
+		sprintf(" \@0x%x",
+			Devel::Callsite::callsite($frame_index + $skip));
+	}
     }
     if (filename_is_eval($filename)) {
 	### FIXME: put this all into DB::LineCache

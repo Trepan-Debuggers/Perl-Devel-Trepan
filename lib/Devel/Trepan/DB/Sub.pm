@@ -44,6 +44,19 @@ sub subcall_debugger {
         $DB::signal = 0;
         $DB::running = 0;
 
+	# lock the debugger and get the thread id for the prompt
+	if ($ENV{PERL5DB_THREADED}) {
+	    require threads;
+	    require threads::shared;
+	    import threads::shared qw(share);
+	    no strict; no warnings;
+	    lock($DBGR);
+	    $tid = eval { "[".threads->tid."]" };
+	}
+
+	local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
+	    ? Devel::Callsite::callsite(1) : undef;
+
 	$DB::subroutine =  $sub;
 	my $entry = $DB::sub{$sub};
 	if ($entry =~ /^(.*)\:(\d+)-(\d+)$/) {
@@ -158,6 +171,8 @@ sub check_for_stop() {
                 }
 		$DB::single = 1;
 		$DB::wantarray = wantarray;
+		local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
+		    ? Devel::Callsite::callsite(1) : undef;
 		&subcall_debugger() ;
                 last;
             }

@@ -5,6 +5,9 @@ use File::Basename qw(dirname basename); use File::Spec;
 # Funky terminals like xterm on cygwin can mess up output comparison.
 $ENV{'TERM'}='dumb';
 
+# Changes behavior like whether we show OP address (set display op on).
+$ENV{'AUTOMATED_TESTING'}='true';
+
 package Helper;
 use English qw( -no_match_vars ) ;
 use Config;

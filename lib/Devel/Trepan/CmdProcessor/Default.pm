@@ -50,7 +50,9 @@ use constant DEFAULT_SETTINGS => {
     cmddir        => [],     # Additional directories to load commands
                              # from
     different     => 0,      # stop *only* when  different position?
-    displayop     => 0,      # If set, show OP address in location
+    displayop     => $DB::HAVE_MODULE{'Devel::Callsite'} &&
+	!$ENV{AUTOMATED_TESTING},
+                             # If set, show OP address in location
     debugdbgr     => 0,      # Debugging the debugger
     debugexcept   => 1,      # Internal debugging of command exceptions
     debugmacro    => 0,      # debugging macros

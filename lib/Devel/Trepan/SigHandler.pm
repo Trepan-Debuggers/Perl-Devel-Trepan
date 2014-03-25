@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#   Copyright (C) 2011 Rocky Bernstein <rocky@gnu.org>
+#   Copyright (C) 2011, 2014 Rocky Bernstein <rocky@gnu.org>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,9 @@
 #  - Doublecheck handle_pass and other routines.
 #  - can remove signal handler altogether when
 #         ignore=True, print=False, pass=True
-#     
 #
-use rlib '../..'; 
+#
+use rlib '../..';
 
 # Manages Signal Handling information for the debugger
 package Devel::Trepan::SigMgr;
@@ -85,7 +85,7 @@ sub canonic_signame($)
         }
         return $signame
     }
-    
+
     $signame = uc $name_num;
     return substr($signame, 3) if 0 == index($signame, 'SIG');
     return $signame;
@@ -156,23 +156,23 @@ my %SIGNAL_DESCRIPTION = (
 #     handler.
 sub new($$$$$$)
 {
-    my ($class, $handler, $print_fn, $errprint_fn, $secprint_fn, 
+    my ($class, $handler, $print_fn, $errprint_fn, $secprint_fn,
         $ignore_list) = @_;
     # Ignore signal handling initially for these known signals.
     unless (defined($ignore_list)) {
         $ignore_list = {
-            'ALRM'    => 1,    
-            'CHLD'    => 1,  
+            'ALRM'    => 1,
+            'CHLD'    => 1,
             'URG'     => 1,
-            'IO'      => 1, 
+            'IO'      => 1,
             'CLD'     => 1,
-            'VTALRM'  => 1,  
-            'PROF'    => 1,  
-            'WINCH'   => 1,  
+            'VTALRM'  => 1,
+            'PROF'    => 1,
+            'WINCH'   => 1,
             'POLL'    => 1,
-            'WAITING' => 1, 
+            'WAITING' => 1,
             'LWP'     => 1,
-            'CANCEL'  => 1, 
+            'CANCEL'  => 1,
             'TRAP'    => 1,
             'TERM'    => 1,
             'QUIT'    => 1,
@@ -192,7 +192,7 @@ sub new($$$$$$)
     };
 
     bless $self, $class;
-    
+
     $self->{header} = sprintf($self->{info_fmt}, 'Signal', 'Stop', 'Print',
                               'Stack', 'Pass', 'Description');
 
@@ -214,7 +214,7 @@ sub initialize_handler($$)
     my $signame = canonic_signame($sig);
     return 0 unless defined($signame);
     return 0 if exists($FATAL_SIGNALS{$signame});
-        
+
     # try:
     # except ValueError:
     # On some OS's (Redhat 8), SIGNUM's are listed (like
@@ -226,12 +226,12 @@ sub initialize_handler($$)
     my $signum = lookup_signum($signame);
     my $print_fn = $self->{print_fn};
     if (exists($self->{ignore_list}{$signame})) {
-        $self->{sigs}{$signame} = 
-            Devel::Trepan::SigHandler->new($print_fn, $signame, 
+        $self->{sigs}{$signame} =
+            Devel::Trepan::SigHandler->new($print_fn, $signame,
                                            $self->{handler}, 0, 0, 1);
     } else {
-        $self->{sigs}{$signame} = 
-            Devel::Trepan::SigHandler->new($print_fn, $signame, 
+        $self->{sigs}{$signame} =
+            Devel::Trepan::SigHandler->new($print_fn, $signame,
                                            $self->{handler}, 1, 0, 0);
     }
     return 1;
@@ -283,21 +283,21 @@ sub check_and_adjust_sighandlers($)
 sub print_info_signal_entry($$)
 {
     my ($self, $signame) = @_;
-    my $description = (exists $SIGNAL_DESCRIPTION{$signame}) ? 
+    my $description = (exists $SIGNAL_DESCRIPTION{$signame}) ?
         $SIGNAL_DESCRIPTION{$signame} : '';
     my $msg;
     my $sig_obj = $self->{sigs}{$signame};
     if (exists $self->{sigs}{$signame}) {
-        $msg = sprintf($self->{info_fmt}, $signame, 
+        $msg = sprintf($self->{info_fmt}, $signame,
                        bool2YN($sig_obj->{b_stop}),
                        bool2YN($sig_obj->{print_fn}),
                        bool2YN($sig_obj->{print_stack}),
                        bool2YN($sig_obj->{pass_along}),
-                       $description); 
+                       $description);
     } else {
         # Fake up an entry as though signame were in sigs.
-        $msg = sprintf($self->{info_fmt}, $signame, 
-                       'No', 'No', 'No', 'Yes', $description); 
+        $msg = sprintf($self->{info_fmt}, $signame,
+                       'No', 'No', 'No', 'Yes', $description);
     }
     $self->{print_fn}->($msg);
 }
@@ -334,7 +334,7 @@ sub action($$)
     my $signame = canonic_signame(shift @args);
     return 0 unless defined $signame;
 
-    if (scalar @args == 0) { 
+    if (scalar @args == 0) {
         $self->info_signal([$signame]);
         return 1;
     }
@@ -376,7 +376,7 @@ sub action($$)
 # Set whether we stop or not when this signal is caught.
 # If 'set_stop' is True your program will stop when this signal
 # happens.
-sub handle_print_stack($$$) 
+sub handle_print_stack($$$)
 {
     my ($self, $signame, $print_stack) = @_;
     $self->{sigs}{$signame}{print_stack} = $print_stack;
@@ -409,7 +409,7 @@ sub handle_pass($$$)
         # Pass implies nostop
         $self->{sigs}{$signame}{b_stop} = 0;
     }
-}    
+}
 
 # 'pass' and 'noignore' are synonyms. 'nopass and 'ignore' are
 # synonyms.
@@ -445,7 +445,7 @@ package Devel::Trepan::SigHandler;
 
 sub new($$$$$;$$)
 {
-    my($class, $print_fn, $signame, $handler, 
+    my($class, $print_fn, $signame, $handler,
        $b_stop, $print_stack, $pass_along) = @_;
 
     $print_stack = 0 unless defined $print_stack;
@@ -490,9 +490,13 @@ sub handle
     }
 
     if ($self->{pass_along}) {
-        # pass the signal to the program 
+        # pass the signal to the program
         if ($self->{old_handler}) {
-            $self->{old_handler}->($signame);
+	    if (ref($self->{old_handler})) {
+		$self->{old_handler}->($signame);
+	    } elsif ($self->{old_handler}) {
+		eval {$self->{old_handler}($signame)}; warn $@ if $@ and $^W;
+	    }
         }
     }
 }
@@ -502,39 +506,39 @@ unless (caller) {
     print join(', ', keys %Devel::Trepan::SigMgr::signo), "\n";
     print join(', ', sort {$a <=> $b} values %Devel::Trepan::SigMgr::signo), "\n";
     for my $i (15, -15, 300) {
-        printf("lookup_signame(%d) => %s\n", $i, 
+        printf("lookup_signame(%d) => %s\n", $i,
                Devel::Trepan::SigMgr::lookup_signame($i) || 'undef');
     }
-    
+
     for my $sig ('term', 'TERM', 'NotThere') {
-        printf("lookup_signum(%s) => %s\n", $sig, 
+        printf("lookup_signum(%s) => %s\n", $sig,
                Devel::Trepan::SigMgr::lookup_signum($sig) || 'undef');
     }
-    
+
     for my $i ('15', '-15', 'term', 'sigterm', 'TERM', '300', 'bogus') {
-        printf("canonic_signame(%s) => %s\n", $i, 
+        printf("canonic_signame(%s) => %s\n", $i,
                Devel::Trepan::SigMgr::canonic_signame($i) || 'undef');
     }
 
     my $h; # Is used in myhandler.
     eval <<'EOE';  # Have to eval else fns defined when caller() is false
     sub do_action($$$) {
-        my ($h, $arg, $sig) = @_; 
-        print "$arg\n"; 
+        my ($h, $arg, $sig) = @_;
+        print "$arg\n";
         $h->action($arg);
     }
-    sub myprint($) { 
-        my $msg = shift; 
-        print "$msg\n";  
+    sub myprint($) {
+        my $msg = shift;
+        print "$msg\n";
     }
     sub orig_sighandler($) {
-        my $name = shift; 
-        print "++ Orig Signal $name caught\n";  
+        my $name = shift;
+        print "++ Orig Signal $name caught\n";
         $h->info_signal(["USR1"]);
     }
     sub stop_sighandler($) {
-        my $name = shift; 
-        print "++ Stop Signal $name caught\n";  
+        my $name = shift;
+        print "++ Stop Signal $name caught\n";
         $h->info_signal(["USR1"]);
     }
 EOE

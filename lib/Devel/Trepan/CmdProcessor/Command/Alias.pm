@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -26,7 +26,7 @@ our $HELP = <<'HELP';
 
 B<alias> I<alias> I<command>
 
-Add alias I<alias> for a debugger command I<command>.  
+Add alias I<alias> for a debugger command I<command>.
 
 Add an alias when you want to use a command abbreviation for a command
 that would otherwise be ambigous. For example, by default we make C<s>
@@ -37,7 +37,8 @@ might be C<step>, C<show>, or C<set>, among others.
 
  alias cat list   # "cat file.pl" is the same as "list file.pl"
  alias s   step   # "s" is now an alias for "step".
-                  # The above examples done by default.
+                  # The above "s" alias is initially set up, by
+                  # default. But you can change or remove it.
 
 For more complex definitions, see C<macro>.
 See also C<unalias> and C<show alias>.

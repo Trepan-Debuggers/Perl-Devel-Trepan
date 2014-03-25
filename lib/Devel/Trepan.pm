@@ -751,7 +751,8 @@ B<Examples:>
 
  alias cat list   # "cat file.pl" is the same as "list file.pl"
  alias s   step   # "s" is now an alias for "step".
-                  # The above examples done by default.
+                  # The above "s" alias is initially set up, by
+                  # default. But you can change or remove it.
 
 For more complex definitions, see C<macro>.
 See also C<unalias> and C<show alias>.

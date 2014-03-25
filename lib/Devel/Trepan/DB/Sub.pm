@@ -54,7 +54,9 @@ sub subcall_debugger {
 	    $tid = eval { "[".threads->tid."]" };
 	}
 
-	local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
+	local $OP_addr =
+	    ($HAVE_MODULE{'Devel::Callsite'} &&
+	     $Devel::Callsite::VERSION >= 0.08)
 	    ? Devel::Callsite::callsite(1) : undef;
 
 	$DB::subroutine =  $sub;
@@ -171,7 +173,9 @@ sub check_for_stop() {
                 }
 		$DB::single = 1;
 		$DB::wantarray = wantarray;
-		local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
+		local $OP_addr =
+		    ($HAVE_MODULE{'Devel::Callsite'} &&
+		     $Devel::Callsite::VERSION >= 0.08)
 		    ? Devel::Callsite::callsite(1) : undef;
 		&subcall_debugger() ;
                 last;

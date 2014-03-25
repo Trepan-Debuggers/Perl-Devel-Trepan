@@ -15,24 +15,24 @@ use if !@ISA, Devel::Trepan::IO::Input;
 use if !@ISA, Devel::Trepan::Interface;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
-use strict; 
+use strict;
 # Interface when communicating with the user.
 
 use constant DEFAULT_USER_OPTS => {
 
     readline   =>                       # Try to use Term::ReadLine?
-        $Devel::Trepan::IO::Input::HAVE_TERM_READLINE, 
-    
+        $Devel::Trepan::IO::Input::HAVE_TERM_READLINE,
+
     # The below are only used if we want and have readline support.
     # See method Trepan::term_readline below.
     histsize => 256,                     # Use gdb's default setting
     file_history   => '.trepanpl_hist',  # where history file lives
-                                         # Note a directory will 
+                                         # Note a directory will
                                          # be appended
     history_save   => 1                  # do we save the history?
   };
 
-sub new 
+sub new
 {
     my($class, $inp, $out, $opts)  = @_;
     $opts = hash_merge($opts, DEFAULT_USER_OPTS);
@@ -42,7 +42,7 @@ sub new
     if ($inp && $inp->isa('Devel::Trepan::IO:InputBase')) {
         $self->{input} = $inp;
     } else {
-        $self->{input} = Devel::Trepan::IO::Input->new($inp, 
+        $self->{input} = Devel::Trepan::IO::Input->new($inp,
                                                        {readline => $opts->{readline}})
     }
     if ($self->{input}{term_readline}) {
@@ -77,7 +77,7 @@ sub remove_history($;$)
         $self->{input}{readline}->can("remove_history");
 }
 
-sub is_closed($) 
+sub is_closed($)
 {
     my($self)  = shift;
     $self->{input}->is_eof && $self->{output}->is_eof;
@@ -98,7 +98,7 @@ sub confirm($$$) {
         chomp($response);
         return $default if $response eq '';
         ($response = lc(unpack("A*", $response))) =~ s/^\s+//;
-        # We don't catch "Yes, I'm sure" or "NO!", but I leave that 
+        # We don't catch "Yes, I'm sure" or "NO!", but I leave that
         # as an exercise for the reader.
         last if grep(/^${response}$/, @Devel::Trepan::Util::YN);
         $self->msg( "Please answer 'yes' or 'no'. Try again.");
@@ -133,19 +133,19 @@ sub read_history($)
 sub save_history($)
 {
     my $self = shift;
-    if ($self->{histfile} && $self->{opts}{history_save} && 
+    if ($self->{histfile} && $self->{opts}{history_save} &&
         $self->want_term_readline &&
         $self->{input}{readline}) {
 
         $self->{input}{readline}->StifleHistory($self->{histsize}) if
             $self->{input}{readline}->can("StifleHistory");
 	if ($self->{input}{readline}->can("WriteHistory")) {
-	    $self->{input}{readline}->WriteHistory($self->{histfile}) 
+	    $self->{input}{readline}->WriteHistory($self->{histfile})
 	}
     }
 }
 
-# sub DESTROY($) 
+# sub DESTROY($)
 # {
 #     my $self = shift;
 #     if ($self->want_term_readline) {
@@ -180,7 +180,7 @@ sub read_command($;$) {
     my $line = '';
     $prompt .= '>> '; # continuation
     $last ||= '';
-    while ($last && '\\' eq substr($last, -1)) { 
+    while ($last && '\\' eq substr($last, -1)) {
         $line .= substr($last, 0, -1) . "\n";
         $last = $self->readline($prompt);
     }
@@ -193,7 +193,7 @@ sub readline($;$) {
     $self->{output}->flush;
     if ($self->want_term_readline) {
         $self->{input}->readline($prompt);
-    } else { 
+    } else {
         $self->{output}->write($prompt) if defined($prompt) && $prompt;
         $self->{input}->readline;
     }
@@ -215,7 +215,7 @@ sub set_completion($$)
     $attribs->{attempted_completion_function} = $completion_fn;
 
     # For Term::ReadLine::Perl
-    $readline::rl_completion_function = undef;
+    $readline::rl_completion_function = $completion_fn;
     $attribs->{completion_function} = $completion_fn;
 }
 

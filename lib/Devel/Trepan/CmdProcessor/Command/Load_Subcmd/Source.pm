@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -33,13 +33,18 @@ B<load source> {I<Perl-source-file>}
 
 Read source lines of {I<Perl-source-file>}.
 
-Somewhat simulates what Perl does in reading a file when debugging is
-turned on. We the file contents as a list of strings in
-I<_E<gt>$filename>. But also entry is a dual variable. In numeric
-context, each entry of the list is I<true> if that line is traceable
-or break-pointable (is the address of a COP instruction). In a
-non-numeric context, each entry is a string of the line contents
-including the trailing C<\n>.
+This simulates what Perl does in reading a file when debugging is
+turned on, somewhat. A description of what this means is below.
+
+The file contents are read in as a list of strings in
+I<_E<lt>$filename> for the debugger to refer to; I<$filename> contains
+the name I<Perl-source-file>. In addition, each entry of this list is
+a dual variable. In a non-numeric context, an entry is a string of the
+line contents including the trailing C<\n>.
+
+But in numeric context, an entry of the list is I<true> if that line
+is traceable or has a COP instruction in it which allows the debugger
+to take control.
 
 =cut
 HELP
@@ -54,7 +59,7 @@ our $MIN_ABBREV = length('so');
 #     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 # }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -71,10 +76,10 @@ sub run($$)
                 $proc->errmsg("$output");
             } else {
 
-                # FIXME: These two things should be one routine. Also change 
+                # FIXME: These two things should be one routine. Also change
                 # 10test-linecache.t
                 DB::LineCache::load_file($source);
-                DB::LineCache::update_cache($source, 
+                DB::LineCache::update_cache($source,
                                             {use_perl_d_file => 1});
 
                 $proc->msg("Read in lines of Perl source file $source");

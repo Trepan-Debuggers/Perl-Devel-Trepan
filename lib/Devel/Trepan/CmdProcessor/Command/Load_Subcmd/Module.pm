@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -30,9 +30,10 @@ our $HELP = <<'HELP';
 
 B<load module> {I<Perl-module-file>}
 
-Load or reload a Perl module. This is like I<require> with a file name
-but we force a load or reload. This is useful if you wanto to changes the
-Perl module while you are debugging it and want to reread the module.
+Load or reload a Perl module. This is like I<require> with a file
+name, but we force the load or reload. Use this if you change the Perl
+module while you are debugging and it want those changes to take
+effect in both the debugged program and inside the debugger.
 
 Note however that any functions along the call stack will not be
 changed.
@@ -50,7 +51,7 @@ our $MIN_ABBREV = length('mo');
 #     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 # }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};

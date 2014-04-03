@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-#   Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+#   Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 #
 #
 use Digest::SHA;
@@ -947,7 +947,7 @@ B<dualvar_lines($file_or_string, $is_file, $mark_trace)> =>
 #
 # Note: Perl implementations seem to put a COP address inside
 # @DB::db_line when there are trace lines. I am not sure if this is
-# specified as part of the API. We # don't do that here but (and might
+# specified as part of the API. We don't do that here but (and might
 # even if it is not officially defined in the API.) Instead put value
 # 1.
 #

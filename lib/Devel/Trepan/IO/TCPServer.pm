@@ -76,7 +76,6 @@ sub close
         close($self->{inout}) ;
     }
     $self->{state} = 'disconnected';
-    print "FOOO\n";
     print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 

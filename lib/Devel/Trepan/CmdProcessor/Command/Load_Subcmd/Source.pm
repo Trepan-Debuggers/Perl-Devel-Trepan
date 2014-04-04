@@ -78,8 +78,8 @@ sub run($$)
 
                 # FIXME: These two things should be one routine. Also change
                 # 10test-linecache.t
-                DB::LineCache::load_file($source);
-                DB::LineCache::update_cache($source,
+                Devel::Trepan::DB::LineCache::load_file($source);
+                Devel::Trepan::DB::LineCache::update_cache($source,
                                             {use_perl_d_file => 1});
 
                 $proc->msg("Read in lines of Perl source file $source");

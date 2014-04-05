@@ -217,7 +217,8 @@ sub source_location_info($)
                 " remapped $filename:$line_number$op_addr";
         }
     }
-    $canonic_filename = $self->canonic_file($self->filename(), 0);
+    $canonic_filename = $self->canonic_file($self->filename(), 0)
+	|| $filename;
     return "${canonic_filename}:${line_number}$op_addr";
 }
 

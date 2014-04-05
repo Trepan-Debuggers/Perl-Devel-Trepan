@@ -40,7 +40,7 @@ sub new($;$)
         session   => undef,
         buf       => '',    # Read buffer
         state     => 'disconnected',
-        logger    => $opts->{logger},
+        logger      => $opts->{logger}
         line_edit => 0
     };
     bless $self, $class;

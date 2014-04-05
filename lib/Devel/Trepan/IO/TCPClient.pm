@@ -19,6 +19,7 @@ use constant CLIENT_SOCKET_OPTS => {
       host    => 'localhost', # Symbolic name
       port    => 1027,  # Arbitrary non-privileged port
       open    => 1,
+      logger  => undef,  # Complaints should be sent here.
 };
 
 #   attr_reader :state
@@ -35,7 +36,7 @@ sub new($;$)
         line_edit => 0, # Our name for GNU readline capability
         state     => 'disconnected',
         inout     => undef,
-        logger    => undef  # Complaints should be sent here.
+        logger    => $opts->{logger}
     };
     bless $self, $class;
     $self->open($opts) if $opts->{open};
@@ -49,7 +50,7 @@ sub close($)
     $self->{state} = 'closing';
     if ($self->{inout}) {
         $self->{inout}->shutdown(2);
-        close($self->{inout}) 
+        close($self->{inout})
     }
     $self->{state} = 'disconnected';
 }
@@ -66,7 +67,7 @@ sub open($;$)
     $opts = hash_merge($opts, CLIENT_SOCKET_OPTS);
     $self->{host} = $opts->{host};
     $self->{port} = $opts->{port};
-    $self->{inout} = 
+    $self->{inout} =
         IO::Socket::INET->new(PeerAddr=> $self->{host},
                               PeerPort => $self->{port},
                               Proto    => 'tcp',
@@ -75,18 +76,18 @@ sub open($;$)
     if ($self->{inout}) {
         $self->{state} = 'connected';
     } else {
-        my $msg = sprintf("Open client for host %s on port %s gives error: %s", 
+        my $msg = sprintf("Open client for host %s on port %s gives error: %s",
                           $self->{host}, $self->{port}, $EVAL_ERROR);
         die $msg;
     }
 }
 
-sub is_empty($) 
+sub is_empty($)
 {
     my($self) = @_;
     0 == length($self->{buf});
 }
-    
+
 # Read one message unit. It's possible however that
 # more than one message will be set in a receive, so we will
 # have to buffer that for the next read.
@@ -111,7 +112,7 @@ sub read_msg($)
     }
 }
 
-sub have_term_readline($) 
+sub have_term_readline($)
 {
     return 0;
 }
@@ -120,7 +121,7 @@ sub have_term_readline($)
 sub write($$)
 {
     my ($self, $msg) = @_;
-    # FIXME: do we have to check the size of msg and split output? 
+    # FIXME: do we have to check the size of msg and split output?
     $self->{inout}->send(pack_msg($msg));
 }
 

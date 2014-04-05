@@ -204,7 +204,12 @@ sub push_DB_single_and_set()
 
 
 ####
-# entry point for all subroutine calls
+# When debugging is enabled, this routine gets called instead of
+# the orignal subroutine. $DB::sub contains the intended subroutine
+# to be called. Thus, this routine must run &$DB::sub
+# in order to get the original routine called. The fact that
+# this routine is called instead allows us to wrap or put code
+# around subroutine calls
 #
 sub DB::sub {
     # Do not use a regex in this subroutine -> results in corrupted
@@ -254,7 +259,7 @@ sub DB::sub {
 	{
 	    no strict 'refs';
 	    # call the original subroutine and save the array value.
-	    @ret = &$sub;
+	    @ret = &$DB::sub;
 	}
 
         # Pop the single-step value back off the stack.
@@ -274,12 +279,12 @@ sub DB::sub {
         if ( defined wantarray ) {
             no strict 'refs';
 	    # call the original subroutine and save the array value.
-            $ret = &$sub;
+            $ret = &$DB::sub;
         } else {
             no strict 'refs';
 	    # Call the original lvalue sub and explicitly void the return
             # value.
-            &$sub;
+            &$DB::sub;
             undef $ret;
         }
 
@@ -297,6 +302,14 @@ sub DB::sub {
     }
 }
 
+####
+# When debugging is enabled, this routine gets called instead of the
+# orignal subroutine in a left-hand (assignment) context. $DB::sub
+# contains the intended subroutine to be called. Thus, this routine
+# must run &$DB::sub in order to get the original routine called. The
+# fact that this routine is called instead allows us to wrap or
+# instrument code around subroutine calls.
+#
 sub DB::lsub : lvalue {
     # Possibly [perl #66110] also applies here as in sub.
 
@@ -352,11 +365,11 @@ sub DB::lsub : lvalue {
         if ( defined wantarray ) {
             no strict 'refs';
             # Save the value if it's wanted at all.
-            $ret = &$sub;
+            $ret = &$DB::sub;
         } else {
             no strict 'refs';
             # Void return, explicitly.
-            &$sub;
+            &$DB::sub;
             undef $ret;
         }
 

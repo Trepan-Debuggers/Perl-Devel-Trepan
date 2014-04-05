@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -38,7 +38,7 @@ the debugger however may occur via breakpoints or explicit calls, or
 exceptions.
 
 If a parameter is given, a temporary breakpoint is set at that position
-before continuing. 
+before continuing.
 
 =head2 Examples:
 
@@ -48,11 +48,10 @@ before continuing.
 
 See also L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
 L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
-L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finis> commands and
+L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finish> commands and
 C<help location>.
 
 =cut
-
 HELP
 
 

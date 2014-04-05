@@ -23,10 +23,10 @@ use constant DEFAULT_INIT_OPTS => {
     logger      => undef,  # Complaints should be sent here.
 
     # input and output names are the reverse of the client
-    input_name  => 'trepanpl.inputfifo',
+    input_name  => '/tmp/trepanpl.inputfifo',
     input_mode  => 0777,
     input       => undef,
-    output_name => 'trepanpl.outputfifo',
+    output_name => '/tmp/trepanpl.outputfifo',
     output_mode => 0777,
     output      => undef,
 
@@ -55,6 +55,14 @@ sub new($;$)
     return $self;
 }
 
+sub is_connected($)
+{
+    my $self = shift;
+    $self->{state} = 'connected' if
+        $self->{input} and $self->{output};
+    return $self->{state} eq 'connected';
+}
+
 sub is_interactive($)  {
     my $self = shift;
     return -t $self->{input};
@@ -76,6 +84,7 @@ sub close
         close($FIFO);
     }
     $self->{state} = 'uninit';
+    $self->{input} = $self->{output} = undef;
     print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 
@@ -96,7 +105,12 @@ sub open($;$)
 	}
     }
     sysopen($self->{output}, $self->{output_name}, O_RDWR) or
-	die "Can't open $self->{output_name} for writing";
+	die "Can't open $self->{output_name} for writing; $!";
+
+    # Flush output as soon as possbile (autoflush).
+    my $oldfh = select($self->{output});
+    $OUTPUT_AUTOFLUSH = 1;
+    select($oldfh);
 
     $self->{state} = 'listening';
 }

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 
@@ -19,6 +19,7 @@ BEGIN {
     use if !@ISA, Devel::Trepan::IO::Input;
     use Devel::Trepan::Util qw(hash_merge YES NO);
     use if !@ISA, Devel::Trepan::IO::TCPServer;
+    use if !@ISA, Devel::Trepan::IO::FIFOServer;
     @INC = @OLD_INC;
 }
 
@@ -33,28 +34,27 @@ use constant DEFAULT_INIT_CONNECTION_OPTS => {
 
 sub new
 {
-    my($class, $inout, $out, $connection_opts) = @_;
-    $connection_opts = hash_merge($connection_opts, DEFAULT_INIT_CONNECTION_OPTS);
+    my($class, $input, $out, $connection_opts) = @_;
+    $connection_opts = hash_merge($connection_opts,
+				  DEFAULT_INIT_CONNECTION_OPTS);
 
     # at_exit { finalize };
-    unless (defined($inout)) {
-        my $server_type = $connection_opts->{io};
-        # FIXME: complete this.
-        # if 'FIFO' == server_type
-        #     FIFOServer.new
-        # else
-        $inout = Devel::Trepan::IO::TCPServer->new($connection_opts);
-        # }
-    }
+    my $server_type = $connection_opts->{io};
     my $self = {
-        # For Compatability
-        output => $inout,
-        inout  => $inout,
-        input  => $inout,
         interactive => 1, # Or at least so we think initially
-
         logger => $connection_opts->{logger}
     };
+    unless (defined($input)) {
+	my $server;
+	if ('FIFO' eq $server_type) {
+	    $server = Devel::Trepan::IO::FIFOServer->new($connection_opts);
+	} else {
+	    $server = Devel::Trepan::IO::TCPServer->new($connection_opts);
+	}
+	# For Compatability
+	$self->{output} = $self->{input} = $self->{inout} = $server;
+    }
+
     bless $self, $class;
     return $self;
 }
@@ -63,9 +63,9 @@ sub new
 sub close($)
 {
     my ($self) = @_;
-    if ($self->{inout} && $self->{inout}->is_connected) {
-        $self->{inout}->write(QUIT . 'bye');
-        $self->{inout}->close;
+    if ($self->{output} && $self->{output}->can('is_connected')) {
+        $self->{output}->write(QUIT . 'bye');
+        $self->{output}->close;
     }
 }
 
@@ -226,7 +226,10 @@ sub write_confirm($$$)
 
 # Demo
 unless (caller) {
-    my $intf = Devel::Trepan::Interface::Server->new(undef, undef, {open => 0});
+    my $intf = __PACKAGE__->new(undef, undef, {open => 0, io => 'TCP'});
+    # $intf->close();
+    $intf = __PACKAGE__->new(undef, undef, {open => 1, io => 'FIFO'});
+    $intf->close();
 }
 
 1;

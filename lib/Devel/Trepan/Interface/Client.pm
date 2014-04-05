@@ -3,7 +3,7 @@
 # Interface for client (i.e. user to communication-device) interaction.
 # The debugged program is at the other end of the communcation.
 
-use warnings; no warnings 'redefine'; 
+use warnings; no warnings 'redefine';
 use rlib '../../..';
 
 # Interface for a user which is attached to a debugged process via
@@ -18,7 +18,8 @@ use if !@ISA, Devel::Trepan::Interface::User;
 use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 use if !@ISA, Devel::Trepan::IO::TCPClient;
-use strict; 
+use if !@ISA, Devel::Trepan::IO::FIFOClient;
+use strict;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
@@ -28,19 +29,20 @@ use constant DEFAULT_INIT_CONNECTION_OPTS => {
     io   => 'tcp'
 };
 
-sub new 
+sub new
 {
     my($class, $inp, $out, $inout, $user_opts, $connection_opts) = @_;
-    $connection_opts = hash_merge($connection_opts, DEFAULT_INIT_CONNECTION_OPTS);
-
+    $connection_opts = hash_merge($connection_opts,
+				  DEFAULT_INIT_CONNECTION_OPTS);
     unless (defined($inout)) {
-        my $server_type = $connection_opts->{'io'};
-        # FIXME: complete this.
-        # if 'FIFO' == self.server_type
-        #   Mfifoclient.FIFOClient(opts=@connection_opts)
-        # elsif :tcp == self.server_type
-        $inout = Devel::Trepan::IO::TCPClient->new($connection_opts);
-        # }
+        my $communication_protocol = $connection_opts->{'io'};
+        if ('fifo' eq $communication_protocol) {
+	    $inout = Devel::Trepan::IO::FIFOClient->new($connection_opts);
+        } elsif ('tcp' eq $communication_protocol) {
+	    $inout = Devel::Trepan::IO::TCPClient->new($connection_opts);
+	} else {
+	    die "Unknown communication protocol";
+        }
     }
     my $self = {
         output => $out,
@@ -50,10 +52,10 @@ sub new
     };
     bless $self, $class;
     return $self;
-    
+
 }
 
-sub is_closed($) 
+sub is_closed($)
 {
     my ($self) = @_;
     $self->{inout}->is_closed
@@ -96,10 +98,10 @@ sub write_remote($$$)
     # FIXME change into write_xxx
     $self->{inout}->writeline($code . $msg);
 }
-  
+
 # Demo
 unless (caller) {
-    my $intf = Devel::Trepan::Interface::Client->new(undef, undef, undef, undef, 
+    my $intf = Devel::Trepan::Interface::Client->new(undef, undef, undef, undef,
                                                      {open => 0});
 }
 

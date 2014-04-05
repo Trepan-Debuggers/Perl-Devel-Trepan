@@ -175,9 +175,14 @@ sub awaken($;$) {
 		    exists($opts->{readline});
 	    }
 	    if ($opts->{server}) {
-		my $server_opts = {
-		    host   => $opts->{host},
-		    port   => $opts->{port},
+		my $server_opts;
+		# $server_opts = {
+		#     host   => $opts->{host},
+		#     port   => $opts->{port},
+		#     logger => *STDOUT
+		# };
+		$server_opts = {
+		    io     => 'FIFO',
 		    logger => *STDOUT
 		};
 		$intf = [

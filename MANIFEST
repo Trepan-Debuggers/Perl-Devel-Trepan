@@ -181,6 +181,8 @@ lib/Devel/Trepan/DB/Sig.pm
 lib/Devel/Trepan/DB/Sub.pm
 lib/Devel/Trepan/DB/Use.pm
 lib/Devel/Trepan/IO.pm
+lib/Devel/Trepan/IO/FIFOClient.pm
+lib/Devel/Trepan/IO/FIFOServer.pm
 lib/Devel/Trepan/IO/InOutBase.pm
 lib/Devel/Trepan/IO/Input.pm
 lib/Devel/Trepan/IO/NullOutput.pm

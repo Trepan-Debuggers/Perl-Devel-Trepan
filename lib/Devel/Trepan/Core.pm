@@ -182,7 +182,7 @@ sub awaken($;$) {
 		#     logger => *STDOUT
 		# };
 		$server_opts = {
-		    io     => 'FIFO',
+		    io     => 'tty',
 		    logger => *STDOUT
 		};
 		$intf = [

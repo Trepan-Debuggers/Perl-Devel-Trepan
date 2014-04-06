@@ -74,7 +74,7 @@ sub process_options($)
          'batch:s'      => \$opts->{batchfile},
          'bw'           => \$opts->{bw},
          'cd:s'         => \$opts->{initial_dir},
-         'client'       => \$opts->{client},
+         'client=s{1,3}'=> \$opts->{client},
          'cmddir=s@'    => \$opts->{cmddir},
          'command=s@'   => \$opts->{cmdfiles},
          'e|exec=s@'    => \$opts->{exec_strs},
@@ -84,7 +84,7 @@ sub process_options($)
          'host:s'       => \$opts->{host},
          'man'          => \$man,
          'no-highlight' => sub { $opts->{highlight} = 0},
-         'no-readline' => sub { $opts->{readline} = 0},
+         'no-readline'  => sub { $opts->{readline} = 0},
          'nx'           => \$opts->{nx},
          'port:n'       => \$opts->{port},
          'post-mortem'  => \$opts->{post_mortem},
@@ -216,9 +216,13 @@ trepan.pl - Perl "Trepanning" Debugger
                            Works like Perl's -e switch
       --nx                 Don't run user startup file (e.g. .treplrc)
 
-      --client | --server  Set for out-of-process debugging. The server
+      --client {'tcp' host port} | {'tty', input-slave output-slave}
+                           Set for out-of-process debugging.
+                           The client runs outside of this process. 'tcp' uses TCP/IP
+                           'tty' uses pseudo tty.
+
+      --server             Set for out-of-process debugging. The server
                            rus the Perl program to be debugged runs.
-                           The client runs outside of this process.
 
       --fall-off-end       Don't stay in debugger when program terminates
 

@@ -17,7 +17,7 @@ use IO::Pty;
 our(@ISA);
 
 use constant DEFAULT_INIT_OPTS => {
-    open        => 1,
+    open    => 1,
     logger  => undef,  # Complaints should be sent here.
 };
 
@@ -29,10 +29,10 @@ sub new($;$)
     $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
     my $self = {
         input       => $opts->{input},
+        line_edit => 0, # Our name for GNU readline capability
+        logger      => $opts->{logger},
         output      => $opts->{output},
         state       => 'uninit',
-        logger      => $opts->{logger},
-        line_edit   => 0
     };
     bless $self, $class;
     $self->open($opts) if $opts->{open};
@@ -43,7 +43,6 @@ sub is_interactive($)  {
     my $self = shift;
     return -t $self->{input};
 }
-
 
 sub have_term_readline($)
 {
@@ -60,9 +59,8 @@ sub close
     close($self->{output});
     $self->{state} = 'uninit';
     $self->{input} = $self->{output} = undef;
-    print {$self->{logger}} "Disconnected\n" if $self->{logger};
+    print {$self->{logger}} "Disconnected tty client\n" if $self->{logger};
 }
-
 
 sub is_disconnected($)
 {
@@ -75,8 +73,35 @@ sub open($;$)
     my ($self, $opts) = @_;
     $opts = hash_merge($self, $opts);
 
-    $self->{input}  = $opts->{input}  || new IO::Pty;
-    $self->{output} = $opts->{output} || new IO::Pty;
+    my $inpty_name = $opts->{inpty_name};
+    $self->{input}  ||= $opts->{input};
+    unless ($self->{input}) {
+	if ($inpty_name) {
+	    CORE::open($self->{input}, "<", $inpty_name) ||
+		die "Can't open client input pty for reading: $!";
+	} else {
+	    $self->{input} = new IO::Pty;
+	}
+    }
+
+    my $outpty_name = $opts->{outpty_name};
+    $self->{output} ||= $opts->{output};
+    unless ($self->{output}) {
+	if ($outpty_name) {
+	    CORE::open($self->{output}, ">", $outpty_name) ||
+		die "Can't open client output pty for writing: $!";
+	} else {
+	    $self->{output} = new IO::Pty;
+	}
+    }
+
+    if ($self->{logger}) {
+	$inpty_name  ||= $self->{input}->ttyname();
+	$outpty_name ||= $self->{output}->ttyname();
+	my $msg = sprintf("input slave %s; output slave %s",
+			  $inpty_name, $outpty_name);
+	print {$self->{logger}} "$msg\n";
+    }
 
     # Flush output as soon as possible (autoflush).
     my $oldfh = select($self->{output});
@@ -94,11 +119,11 @@ sub read_msg($)
     my $fh = $self->{input};
     # print "+++ client wants input on ", $self->{input}->ttyname(), "\n";
     my $msg;
-    unless (eof($fh)) {
+    until ($msg) {
 	$msg = <$fh>;
-	return unpack_msg($msg) if $msg;
-    }
-    die "Remote client has closed connection";
+	chomp $msg if $msg;
+    };
+    return unpack_msg($msg);
 }
 
 # This method the debugger uses to write. In contrast to
@@ -123,44 +148,42 @@ sub writeline($$)
 
 # Demo
 unless (caller) {
-    my $client = __PACKAGE__-> new({'open' => 1});
-    my $client_input_name = $client->{input}->ttyname();
-    my $client_output_name = $client->{output}->ttyname();
-    print "input tty: $client_input_name, output tty: $client_output_name\n";
+    my $client = __PACKAGE__-> new({'open' => 1, logger => *STDOUT});
     if (scalar @ARGV) {
 	require Devel::Trepan::IO::TTYServer;
 	my $pid = fork();
 	if ($pid) {
-	    print "Client pid $$...\n";
+	    print "client pid $$...\n";
 	    print "client before read\n";
 	    my $msg = $client->read_msg();
-	    print "Client read from server message: $msg\n";
+	    print "client read from server message: $msg\n";
 	    $client->writeline("client to server");
 	    print "client before second read\n";
 	    $msg = $client->read_msg();
-	    print "Client read from server message: $msg\n";
-	    print "Client $$ is done but waiting on server $pid\n";
+	    print "client read from server message: $msg\n";
+	    print "client $$ is done but waiting on server $pid\n";
 	    waitpid($pid, 0);
 	    $client->close();
-	    print "Client is leaving\n";
+	    print "client is leaving\n";
 	} else {
-	    print "Server pid $$...\n";
+	    print "server pid $$...\n";
 	    require Devel::Trepan::IO::TTYServer;
 	     # Server's input goes to client's output and vice versa
 	    my $server = Devel::Trepan::IO::TTYServer->new(
 		 {'open'=> 1,
 		  'input'  => $client->{output}->slave,
 		  'output' => $client->{input}->slave,
+		  'logger' => *STDOUT
 		 });
 	    print "server before write\n";
 	    $server->writeline("server to client");
 	    print "server before read\n";
 	    my $msg = $server->read_msg();
-	    print "Server read from client message: $msg\n";
+	    print "server read from client message: $msg\n";
 	    print "server before second write\n";
 	    $server->write("server to client nocr");
 	    sleep(1);
-	    print "Server is leaving\n";
+	    print "server is leaving\n";
 	    $server->close();
 	}
     } else {

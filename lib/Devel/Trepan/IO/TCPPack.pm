@@ -29,7 +29,7 @@ sub unpack_msg($)
 	die "Protocol error - no text"
     }
     my $strnum = substr($buf, 0, LOG_MAX_MSG);
-    die "Protocol error - no length" unless ($strnum =~ /^\d+$/);
+    die "Protocol error - no length; got '$buf'" unless ($strnum =~ /^\d+$/);
     my $length  = int($strnum);
     my $data    = substr($buf, LOG_MAX_MSG, $length);
     if (length($buf) > LOG_MAX_MSG + $length) {

@@ -69,7 +69,7 @@ sub close
     close($self->{output});
     $self->{state} = 'uninit';
     $self->{input} = $self->{output} = undef;
-    print {$self->{logger}} "Disconnected\n" if $self->{logger};
+    print {$self->{logger}} "Disconnected tty server\n" if $self->{logger};
 }
 
 sub open($;$)
@@ -79,6 +79,12 @@ sub open($;$)
 
     $self->{input}  = $opts->{input}  || new IO::Pty;
     $self->{output} = $opts->{output} || new IO::Pty;
+
+    if ($self->{logger}) {
+	my $msg = sprintf("input slave %s; output slave %s",
+			  $self->{input}->ttyname(), $self->{output}->ttyname());
+	print {$self->{logger}} "$msg\n";
+    }
 
     # Flush output as soon as possible (autoflush).
     my $oldfh = select($self->{output});
@@ -96,11 +102,11 @@ sub read_msg($)
     my $fh = $self->{input};
     # print "+++ server will get input from ", $self->{input}->ttyname(), "\n";
     my $msg;
-    unless (eof($fh)) {
+    until ($msg) {
 	$msg = <$fh>;
-	return unpack_msg($msg) if $msg;
-    }
-    die "Remote client has closed connection";
+	chomp $msg if $msg;
+    };
+    return unpack_msg($msg);
 }
 
 # This method the debugger uses to write. In contrast to
@@ -110,26 +116,23 @@ sub read_msg($)
 sub write($$)
 {
     my($self, $msg) = @_;
-    # print "+++ server will output on ", $self->{output}->ttyname(), "\n";
-    my $fh = $self->{output};
-    # print '+++ XXX server write: ', pack_msg($msg), "\n";
-    print $fh pack_msg($msg) . "\n";
+   #  print '+++ XXX server write: ', pack_msg($msg);
+    print {$self->{output}} pack_msg($msg) . "\n";
 }
 
 # FIXME dry with TTYClient by making a common TTY routine
 sub writeline($$)
 {
     my($self, $msg) = @_;
-    my $fh = $self->{output};
-    print $fh pack_msg($msg . "\n")
+    my @msg = split(/\n/, $msg);
+    foreach my $line (@msg) {
+	$self->write($line . "\n");
+    }
 }
 
 # Demo
 unless (caller) {
-  my $server = __PACKAGE__->new({open => 1});
-  my $server_input_name = $server->{input}->ttyname();
-  my $server_output_name = $server->{output}->ttyname();
-  print "input tty: $server_input_name, output tty: $server_output_name\n";
+  my $server = __PACKAGE__->new({open => 1, logger=>*STDOUT});
   if (scalar @ARGV) {
       require Devel::Trepan::IO::TTYClient;
       my $pid = fork();

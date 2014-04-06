@@ -18,7 +18,7 @@ use if !@ISA, Devel::Trepan::Interface::User;
 use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 use if !@ISA, Devel::Trepan::IO::TCPClient;
-use if !@ISA, Devel::Trepan::IO::FIFOClient;
+use if !@ISA, Devel::Trepan::IO::TTYClient;
 use strict;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
@@ -31,23 +31,23 @@ use constant DEFAULT_INIT_CONNECTION_OPTS => {
 
 sub new
 {
-    my($class, $inp, $out, $inout, $user_opts, $connection_opts) = @_;
+    my($class, $inp, $out, $user_opts, $connection_opts) = @_;
     $connection_opts = hash_merge($connection_opts,
 				  DEFAULT_INIT_CONNECTION_OPTS);
-    unless (defined($inout)) {
+    my $client;
+    unless (defined($inp)) {
         my $communication_protocol = $connection_opts->{'io'};
-        if ('fifo' eq $communication_protocol) {
-	    $inout = Devel::Trepan::IO::FIFOClient->new($connection_opts);
+        if ('tty' eq $communication_protocol) {
+	    $client = Devel::Trepan::IO::TTYClient->new($connection_opts);
         } elsif ('tcp' eq $communication_protocol) {
-	    $inout = Devel::Trepan::IO::TCPClient->new($connection_opts);
+	    $client = Devel::Trepan::IO::TCPClient->new($connection_opts);
 	} else {
 	    die "Unknown communication protocol";
         }
     }
     my $self = {
-        output => $out,
-        inout  => $inout,
-        input  => $inp,
+        output => $client,
+	input  => $client,
         user   => Devel::Trepan::Interface::User->new($inp, $out, $user_opts)
     };
     bless $self, $class;
@@ -58,7 +58,7 @@ sub new
 sub is_closed($)
 {
     my ($self) = @_;
-    $self->{inout}->is_closed
+    $self->{input}->is_closed
 }
 
 # Called when a dangerous action is about to be done to make sure
@@ -83,7 +83,7 @@ sub read_remote
     my ($self) = @_;
     my $coded_line = undef;
     until ($coded_line) {
-        $coded_line = $self->{inout}->read_msg;
+        $coded_line = $self->{input}->read_msg;
     }
     my $control = substr($coded_line, 0, 1);
     my $remote_line = substr($coded_line, 1);
@@ -96,7 +96,7 @@ sub write_remote($$$)
 {
     my ($self, $code, $msg) = @_;
     # FIXME change into write_xxx
-    $self->{inout}->writeline($code . $msg);
+    $self->{output}->writeline($code . $msg);
 }
 
 # Demo

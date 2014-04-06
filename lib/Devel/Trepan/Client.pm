@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Client;
 use strict;
@@ -17,19 +17,23 @@ BEGIN {
 sub new
 {
     my ($class, $settings) = @_;
-    my $opts = {};
+    my $opts = {
+	logger => $settings->{logger}
+    };
     if ($settings->{'io'} eq 'tcp') {
 	$opts = {
 	    {host => $settings->{host},
 	     port => $settings->{port}}
 	}
     } else {
-	print "We're FIFO!\n";
-	$opts-> {'io'} = 'fifo';
+	print "We're tty!\n";
+	$opts->{'io'} = 'tty';
+	$opts->{inpty_name}  = $settings->{inpty_name};
+	$opts->{outpty_name} = $settings->{outpty_name};
     }
 
     my  $intf = Devel::Trepan::Interface::Client->new(
-        undef, undef, undef, undef, $opts );
+        undef, undef, undef, $opts );
     my $self = {
         intf => $intf,
         user_inputs => [$intf->{user}]
@@ -87,6 +91,7 @@ sub start_client($)
         client      => 1,
 	cmdfiles    => [],
 	initial_dir => $options->{chdir},
+	logger      => $options->{logger},
 	nx          => 1,
     };
 
@@ -94,7 +99,9 @@ sub start_client($)
 	$opts->{host} = $options->{host},
 	$opts->{port} = $options->{port};
     } else {
-	$opts->{io} = 'fifo'
+	$opts->{io} = 'tty';
+	$opts->{inpty_name} = $options->{inpty_name};
+	$opts->{outpty_name} = $options->{outpty_name};
     }
 
     my $client = Devel::Trepan::Client->new($opts);
@@ -168,7 +175,9 @@ sub start_client($)
 
 unless (caller) {
     # Devel::Trepan::Client::start_client({host=>'127.0.0.1', port=>1954});
-    Devel::Trepan::Client::start_client({io=>'fifo'});
+    # Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT});
+    Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT,
+					inpty_name =>'/dev/pts/8', outpty_name =>'/dev/pts/2'});
 }
 
 1;

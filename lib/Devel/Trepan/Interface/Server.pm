@@ -19,7 +19,7 @@ BEGIN {
     use if !@ISA, Devel::Trepan::IO::Input;
     use Devel::Trepan::Util qw(hash_merge YES NO);
     use if !@ISA, Devel::Trepan::IO::TCPServer;
-    use if !@ISA, Devel::Trepan::IO::FIFOServer;
+    use if !@ISA, Devel::Trepan::IO::TTYServer;
     @INC = @OLD_INC;
 }
 
@@ -46,8 +46,8 @@ sub new
     };
     unless (defined($input)) {
 	my $server;
-	if ('FIFO' eq $server_type) {
-	    $server = Devel::Trepan::IO::FIFOServer->new($connection_opts);
+	if ('tty' eq $server_type) {
+	    $server = Devel::Trepan::IO::TTYServer->new($connection_opts);
 	} else {
 	    $server = Devel::Trepan::IO::TCPServer->new($connection_opts);
 	}
@@ -232,7 +232,7 @@ sub write_confirm($$$)
 unless (caller) {
     my $intf = __PACKAGE__->new(undef, undef, {open => 0, io => 'TCP'});
     # $intf->close();
-    $intf = __PACKAGE__->new(undef, undef, {open => 1, io => 'FIFO'});
+    $intf = __PACKAGE__->new(undef, undef, {open => 1, io => 'tty'});
     $intf->close();
 }
 

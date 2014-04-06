@@ -105,7 +105,8 @@ sub start_client($)
             ($control_code, $line) = $intf->read_remote;
         };
         if ($EVAL_ERROR) {
-            $client->msg("Remote debugged process closed connection");
+            $client->msg("$EVAL_ERROR");
+            $client->msg("Remote debugged process may have closed connection");
             last;
         }
         # p [control_code, line]

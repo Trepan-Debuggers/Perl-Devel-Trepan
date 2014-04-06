@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 # Subsidiary routines used to "pack" and "unpack" TCP messages.
 use strict; use warnings; no warnings 'redefine';
 
@@ -24,11 +24,19 @@ sub pack_msg($)
 sub unpack_msg($)
 {
     my $buf = shift;
+    unless ($buf) {
+	require Enbugger; Enbugger->stop;
+	die "Protocol error - no text"
+    }
     my $strnum = substr($buf, 0, LOG_MAX_MSG);
-    die "Protocol error" unless ($strnum =~ /^\d+$/);
+    die "Protocol error - no length" unless ($strnum =~ /^\d+$/);
     my $length  = int($strnum);
     my $data    = substr($buf, LOG_MAX_MSG, $length);
-    $buf        = substr($buf, LOG_MAX_MSG + $length);
+    if (length($buf) > LOG_MAX_MSG + $length) {
+	$buf = substr($buf, LOG_MAX_MSG + $length);
+    } else {
+	$buf = '';
+    }
     return ($buf, $data);
 }
 

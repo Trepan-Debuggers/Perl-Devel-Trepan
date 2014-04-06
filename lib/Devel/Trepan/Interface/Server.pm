@@ -191,8 +191,12 @@ sub readline($;$)
         $self->errmsg("Server communication protocol error, resyncing...");
         return ('#');
     } else {
-        my $read_ctrl = substr($coded_line,0,1);
-        substr($coded_line, 1);
+	if ($coded_line)  {
+	    my $read_ctrl = substr($coded_line,0,1);
+	    return substr($coded_line, 1);
+	} else {
+	    return "";
+	}
     }
 }
 

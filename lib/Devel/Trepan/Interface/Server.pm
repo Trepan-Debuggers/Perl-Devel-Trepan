@@ -142,7 +142,10 @@ sub is_input_eof($)
 sub msg($;$)
 {
     my ($self, $msg) = @_;
-    $self->{inout}->writeline(PRINT . $msg);
+    my @msg = split(/\n/, $msg);
+    foreach my $line (@msg) {
+	$self->{inout}->writeline(PRINT . $line);
+    }
 }
 
 # used to write to a debugger that is connected to this
@@ -150,7 +153,10 @@ sub msg($;$)
 sub errmsg($;$)
 {
     my ($self, $msg) = @_;
-    $self->{inout}->writeline(SERVERERR . $msg);
+    my @msg = split(/\n/, $msg);
+    foreach my $line (@msg) {
+	$self->{inout}->writeline(SERVERERR . $line);
+    }
 }
 
 # used to write to a debugger that is connected to this
@@ -232,7 +238,8 @@ sub write_confirm($$$)
 unless (caller) {
     my $intf = __PACKAGE__->new(undef, undef, {open => 0, io => 'TCP'});
     # $intf->close();
-    $intf = __PACKAGE__->new(undef, undef, {open => 1, io => 'tty'});
+    $intf = __PACKAGE__->new(undef, undef,
+			     {open => 1, io => 'tty', logger=>\*STDOUT});
     $intf->close();
 }
 

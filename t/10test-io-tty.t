@@ -28,12 +28,12 @@ if ($pid) {
     $server->writeline("server to client");
     note "$$: server before read";
     my $msg = $server->read_msg();
-    ok($msg,  "$$: Client read from server");
+    ok($msg,  "$$: client read from server");
     note "server before second write\n";
     $server->write("server to client nocr");
     note "$$: Server is done but waiting on client";
     waitpid($pid, 0);
-    is($? >> 8, 0, "$$: Child $pid terminates normally");
+    is($? >> 8, 0, "$$: child $pid terminates normally");
     $server->close();
     note "Server $$ is leaving";
     done_testing(5);

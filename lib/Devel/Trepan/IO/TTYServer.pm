@@ -66,7 +66,9 @@ sub close
     my $self = shift;
     $self->{state} = 'closing';
     close($self->{input});
-    close($self->{output});
+    if ($self->{output}) {
+	close($self->{output});
+    }
     $self->{state} = 'uninit';
     $self->{input} = $self->{output} = undef;
     print {$self->{logger}} "Disconnected tty server\n" if $self->{logger};
@@ -86,6 +88,8 @@ sub open($;$)
 	print {$self->{logger}} "$msg\n";
     }
 
+    $self->{input}->slave->set_raw();
+
     # Flush output as soon as possible (autoflush).
     my $oldfh = select($self->{output});
     $OUTPUT_AUTOFLUSH = 1;
@@ -100,13 +104,23 @@ sub read_msg($)
 {
     my($self) = @_;
     my $fh = $self->{input};
+    unless ($fh) {
+	print {$self->{logger}} "read on disconnected input\n" if $self->{logger};
+	return '';
+    }
     # print "+++ server will get input from ", $self->{input}->ttyname(), "\n";
+    # FIXME: look over some more
     my $msg;
     until ($msg) {
 	$msg = <$fh>;
-	chomp $msg if $msg;
+	chomp $msg;
     };
-    return unpack_msg($msg);
+    if ($msg ne '-1') {
+	return unpack_msg($msg);
+    } else {
+	print {$self->{logger}} "Client disconnected\n" if $self->{logger};
+	return unpack_msg('');
+    }
 }
 
 # This method the debugger uses to write. In contrast to
@@ -124,10 +138,7 @@ sub write($$)
 sub writeline($$)
 {
     my($self, $msg) = @_;
-    my @msg = split(/\n/, $msg);
-    foreach my $line (@msg) {
-	$self->write($line . "\n");
-    }
+    $self->write($msg . "\n");
 }
 
 # Demo

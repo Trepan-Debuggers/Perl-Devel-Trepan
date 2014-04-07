@@ -25,11 +25,15 @@ sub unpack_msg($)
 {
     my $buf = shift;
     unless ($buf) {
-	require Enbugger; Enbugger->stop;
 	die "Protocol error - no text"
     }
+
+    my ($pkg, $filename, $line) = caller;
     my $strnum = substr($buf, 0, LOG_MAX_MSG);
-    die "Protocol error - no length; got '$buf'" unless ($strnum =~ /^\d+$/);
+    unless ($strnum =~ /^\d+$/) {
+	print STDERR "Protocol error - no length; got '$buf'\n";
+	return ($buf, '#');
+    }
     my $length  = int($strnum);
     my $data    = substr($buf, LOG_MAX_MSG, $length);
     if (length($buf) > LOG_MAX_MSG + $length) {

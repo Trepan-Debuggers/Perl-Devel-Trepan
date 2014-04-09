@@ -143,11 +143,12 @@ sub start_client($)
 }
 
 unless (caller) {
-
-    # Devel::Trepan::Client::start_client({host=>'127.0.0.1', port=>1954});
-    Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT});
-    #Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT,
-    #				inpty_name =>'/dev/pts/4', outpty_name =>'/dev/pts/3'});
+    # Devel::Trepan::Client::start_client(
+    # {client =>['tcp', '127.0.0.1', port=>1954]});
+    # Devel::Trepan::Client::start_client(
+    # {client =>['tty'], logger => \*STDOUT});
+    Devel::Trepan::Client::start_client(
+	{client=>['tty', '/dev/pts/4', '/dev/pts/3'],
+	 logger => \*STDOUT});
 }
-
 1;

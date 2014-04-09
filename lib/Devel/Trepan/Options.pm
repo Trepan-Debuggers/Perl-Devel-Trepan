@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use warnings;
 package Devel::Trepan::Options;
@@ -66,8 +66,21 @@ sub check_tcp_opts($$) {
     $opts->{host} ||= $DEFAULT_OPTIONS->{host};
 }
 
-sub check_tty_opts($$) {
+sub bad_tty_opts($$) {
     my ($server_client, $opts) = @_;
+    if (scalar @$opts != 3) {
+	return "For now, you need to specify an input and output pseudo tty";
+    }
+    my ($protocol, $inp_pty, $out_pty) = @$opts;
+    return "input pseudo-tty '$inp_pty' is not character device"
+	unless -c $inp_pty;
+    return "output pseudo-tty name '$out_pty' is not a character device"
+	unless -c $out_pty;
+    return "input pseudo-tty '$inp_pty' is not readable"
+	unless -r $inp_pty;
+    return "output pseudo-tty '$out_pty' is not writeable"
+	unless -w $out_pty;
+    return undef;
 }
 
 sub check_protocol($)
@@ -90,10 +103,11 @@ sub parse_client_server_opts($$)
 	check_protocol($opts);
     } elsif (scalar @$opts == 2) {
 	check_protocol($opts);
-	if ($opts->[0] == 'tcp'){
+	if ($opts->[0] eq 'tcp'){
 	    check_tcp_opts($server_client, $opts);
 	} else {
-	    check_tty_opts($server_client, $opts);
+	    my $mess = bad_tty_opts($server_client, $opts);
+	    die $mess if $mess;
 	}
     }
 }

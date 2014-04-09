@@ -26,8 +26,7 @@ die $EVAL_ERROR if $EVAL_ERROR;
 my $opts = Devel::Trepan::Options::process_options(\@ARGV);
 
 if ($opts->{client}) {
-    Devel::Trepan::Client::start_client({host=>$opts->{host},
-                                         port=>$opts->{port}});
+    Devel::Trepan::Client::start_client($opts);
     exit;
 }
 

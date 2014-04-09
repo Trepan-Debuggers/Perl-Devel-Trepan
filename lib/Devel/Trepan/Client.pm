@@ -17,23 +17,9 @@ BEGIN {
 sub new
 {
     my ($class, $settings) = @_;
-    my $opts = {
-	logger => $settings->{logger}
-    };
-    if ($settings->{'io'} eq 'tcp') {
-	$opts = {
-	    {host => $settings->{host},
-	     port => $settings->{port}}
-	}
-    } else {
-	print "We're tty!\n";
-	$opts->{'io'} = 'tty';
-	$opts->{inpty_name}  = $settings->{inpty_name};
-	$opts->{outpty_name} = $settings->{outpty_name};
-    }
-
+    my $opts = $settings;
     my  $intf = Devel::Trepan::Interface::Client->new(
-        undef, undef, undef, $opts );
+        undef, undef, undef, $settings );
     my $self = {
         intf => $intf,
         user_inputs => [$intf->{user}]
@@ -87,24 +73,7 @@ sub start_client($)
 {
     my $options = shift;
     printf "Client option given\n";
-    my $opts = {
-        client      => 1,
-	cmdfiles    => [],
-	initial_dir => $options->{chdir},
-	logger      => $options->{logger},
-	nx          => 1,
-    };
-
-    if ($options->{'io'} eq 'tcp') {
-	$opts->{host} = $options->{host},
-	$opts->{port} = $options->{port};
-    } else {
-	$opts->{io} = 'tty';
-	$opts->{inpty_name} = $options->{inpty_name};
-	$opts->{outpty_name} = $options->{outpty_name};
-    }
-
-    my $client = Devel::Trepan::Client->new($opts);
+    my $client = Devel::Trepan::Client->new($options);
     my $intf = $client->{intf};
     my ($control_code, $line);
     while (1) {
@@ -178,7 +147,7 @@ unless (caller) {
     # Devel::Trepan::Client::start_client({host=>'127.0.0.1', port=>1954});
     Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT});
     #Devel::Trepan::Client::start_client({io=>'tty', logger => \*STDOUT,
-    #				inpty_name =>'/dev/pts/12', outpty_name =>'/dev/pts/11'});
+    #				inpty_name =>'/dev/pts/4', outpty_name =>'/dev/pts/3'});
 }
 
 1;

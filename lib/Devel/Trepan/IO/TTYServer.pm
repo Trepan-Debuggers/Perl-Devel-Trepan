@@ -88,7 +88,7 @@ sub open($;$)
 	print {$self->{logger}} "$msg\n";
     }
 
-    $self->{input}->slave->set_raw();
+    $self->{input}->slave->set_raw() if $self->{input}->isa('IO::Pty');
 
     # Flush output as soon as possible (autoflush).
     my $oldfh = select($self->{output});

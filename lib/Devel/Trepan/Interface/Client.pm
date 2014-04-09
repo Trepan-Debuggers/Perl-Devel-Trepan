@@ -26,7 +26,7 @@ use strict;
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
     open => 1,
-    io   => 'tcp'
+    client => ['tcp']
 };
 
 sub new
@@ -36,10 +36,10 @@ sub new
 				  DEFAULT_INIT_CONNECTION_OPTS);
     my $client;
     unless (defined($inp)) {
-        my $communication_protocol = $connection_opts->{'io'};
-        if ('tty' eq $communication_protocol) {
+        my $client_opts = $connection_opts->{'client'};
+        if ('tty' eq $client_opts->[0]) {
 	    $client = Devel::Trepan::IO::TTYClient->new($connection_opts);
-        } elsif ('tcp' eq $communication_protocol) {
+        } elsif ('tcp' eq $client_opts->[0]) {
 	    $client = Devel::Trepan::IO::TCPClient->new($connection_opts);
 	} else {
 	    die "Unknown communication protocol";

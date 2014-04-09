@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings;
 # FIXME: Can't use strict;
 
@@ -175,16 +175,19 @@ sub awaken($;$) {
 		    exists($opts->{readline});
 	    }
 	    if ($opts->{server}) {
-		my $server_opts;
-		# $server_opts = {
-		#     host   => $opts->{host},
-		#     port   => $opts->{port},
-		#     logger => *STDOUT
-		# };
-		$server_opts = {
-		    io     => 'tty',
-		    logger => *STDOUT
-		};
+		my $server_opts = $opts->{server};
+		if ($server_opts->[0] eq 'tcp') {
+		    $server_opts = {
+			host   => $opts->{host},
+			port   => $opts->{port},
+			logger => *STDOUT
+		    };
+		} else {
+		    $server_opts = {
+			io     => 'tty',
+			logger => *STDOUT
+		    }
+		}
 		$intf = [
 		    Devel::Trepan::Interface::Server->new(undef, undef,
 							  $server_opts)

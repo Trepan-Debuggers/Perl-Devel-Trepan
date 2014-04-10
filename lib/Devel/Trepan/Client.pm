@@ -87,7 +87,7 @@ sub start_client($)
         }
         # p [control_code, line]
         if (PRINT eq $control_code) {
-            $client->msg("$line");
+            $client->msg($line);
         } elsif (CONFIRM_TRUE eq $control_code) {
             my $response = $intf->confirm($line, 1);
             $intf->write_remote(CONFIRM_REPLY, $response ? 'Y' : 'N');
@@ -148,7 +148,7 @@ unless (caller) {
     # Devel::Trepan::Client::start_client(
     # {client =>['tty'], logger => \*STDOUT});
     Devel::Trepan::Client::start_client(
-	{client=>['tty', '/dev/pts/4', '/dev/pts/3'],
+	{client=>['tty', '/dev/pts/4', '/dev/pts/2'],
 	 logger => \*STDOUT});
 }
 1;

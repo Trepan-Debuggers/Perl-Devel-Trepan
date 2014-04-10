@@ -38,7 +38,6 @@ sub new
     $connection_opts = hash_merge($connection_opts,
 				  DEFAULT_INIT_CONNECTION_OPTS);
 
-    # at_exit { finalize };
     my $server_type = $connection_opts->{io};
     my $self = {
         interactive => 1, # Or at least so we think initially
@@ -63,16 +62,21 @@ sub new
 sub close($)
 {
     my ($self) = @_;
-    if ($self->{output} && $self->{output}->can('is_connected')) {
-        $self->{output}->write(QUIT . 'bye');
-        $self->{output}->close;
+    $self->{output}->write(QUIT . 'bye');
+    # FIXME: remove sleep and figure out to find when above worked.
+    sleep 1;
+    if ($self->{output} == $self->{input}) {
+    	$self->{output}->close;
+    } else {
+    	$self->{input}->close;
+    	$self->{output}->close;
     }
 }
 
 sub is_closed($)
 {
     my ($self) = @_;
-    $self->{inout}->is_closed
+    $self->{input}->is_closed && $self->{output}->is_closed
 }
 
 sub is_interactive($)
@@ -120,15 +124,6 @@ sub is_connected($)
 {
     my ($self) = @_;
     'connected' eq $self->{inout}->{state};
-}
-
-# print exit annotation
-sub finalize($;$)
-{
-    my ($self, $last_wishes) = @_;
-    $last_wishes = 'QUIT' unless defined $last_wishes;
-    $self->{inout}->writeline($last_wishes) if $self->is_connected;
-    $self->close;
 }
 
 sub is_input_eof($)

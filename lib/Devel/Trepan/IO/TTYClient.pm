@@ -123,7 +123,6 @@ sub read_msg($)
 	$msg = <$fh>;
 	chomp $msg if $msg;
     };
-    printf "ZZ2 %d '%s'\n", length($msg), $msg;
     return unpack_msg($msg);
 }
 

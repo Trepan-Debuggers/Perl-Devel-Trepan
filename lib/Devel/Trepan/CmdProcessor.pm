@@ -136,7 +136,9 @@ sub terminated($)
     $self->msg(sprintf("%sThat's all, folks...",
 		       (defined($Devel::Trepan::PROGRAM) ?
 			"${Devel::Trepan::PROGRAM}: " : '')));
-
+    foreach my $interface (@{$self->{interfaces}}) {
+	$interface->close();
+    }
     # breakpoint_finalize
 }
 

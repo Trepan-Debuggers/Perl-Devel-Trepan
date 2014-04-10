@@ -38,7 +38,11 @@ sub new
     unless (defined($inp)) {
         my $client_opts = $connection_opts->{'client'};
         if ('tty' eq $client_opts->[0]) {
-	    $client = Devel::Trepan::IO::TTYClient->new($connection_opts);
+	    my $tty_opts = {
+		inpty_name  => $client_opts->[1],
+		outpty_name => $client_opts->[2],
+	    };
+	    $client = Devel::Trepan::IO::TTYClient->new($tty_opts);
         } elsif ('tcp' eq $client_opts->[0]) {
 	    $client = Devel::Trepan::IO::TCPClient->new($connection_opts);
 	} else {

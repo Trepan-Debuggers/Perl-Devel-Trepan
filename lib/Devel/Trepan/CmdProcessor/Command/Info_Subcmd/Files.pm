@@ -127,7 +127,7 @@ sub run($$)
     if (is_cached($canonic_name)) {
         $m .= " is cached in debugger";
         if ($canonic_name ne $filename) {
-            $m .= (" as:\n  " + $canonic_name);
+            $m .= (" as:\n  " . $canonic_name);
         }
         $m .= '.';
         $proc->msg($m);

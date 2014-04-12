@@ -32,13 +32,13 @@ BEGIN {
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as
     # a simple way to keep track of #stack.
-    $stack_depth = 0;
-    @stack = (0);     # Per-frame debugger flags
+    $DB::stack_depth = 0;
+    @DB::stack = (0);     # Per-frame debugger flags
 }
 
 sub subcall_debugger {
     if ($DB::single || $DB::signal) {
-        _warnall($#stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
+        _warnall($#DB::stack . " levels deep in subroutine calls.\n") if $DB::single & 4;
 	local $DB::event = 'call';
         $DB::single = 0;
         $DB::signal = 0;

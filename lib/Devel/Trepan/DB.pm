@@ -323,6 +323,9 @@ sub DB {
         $DB::signal = 0;
         $DB::running = 0;
 
+	# FIXME: give a warning...
+	$DB::stack_depth++ while defined caller($DB::stack_depth+1);
+
 	local $c;
         for $c (@clients) {
             # Now sit in an event loop until something sets $running

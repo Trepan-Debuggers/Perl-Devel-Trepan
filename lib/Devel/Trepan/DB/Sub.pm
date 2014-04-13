@@ -222,15 +222,15 @@ sub DB::sub {
     # sub's return value in (if needed), and an array to put the sub's
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
-    if ($sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
+    if ($DB::sub eq 'threads::new' && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
 
     # If the last ten characters are '::AUTOLOAD', note we've traced
-    # into AUTOLOAD for $sub.
-    if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
+    # into AUTOLOAD for $DB::sub.
+    if ( length($DB::sub) > 10 && substr( $DB::sub, -10, 10 ) eq '::AUTOLOAD' ) {
         no strict 'refs';
-        $al = " for $$sub" if defined $$sub;
+        $al = " for $$DB::sub" if defined $$DB::sub;
     }
 
     # We stack the stack pointer and then increment it to protect us
@@ -320,14 +320,14 @@ sub DB::lsub : lvalue {
     # sub's return value in (if needed), and an array to put the sub's
     # return value in (if needed).
     my ( $al, $ret, @ret ) = "";
-    if ($sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
+    if ($DB::sub =~ /^threads::new$/ && $ENV{PERL5DB_THREADED}) {
         print "creating new thread\n";
     }
 
     # If the last ten characters are '::AUTOLOAD', note we've traced
-    # into AUTOLOAD for $sub.
-    if ( length($sub) > 10 && substr( $sub, -10, 10 ) eq '::AUTOLOAD' ) {
-        $al = " for $$sub" if defined $$sub;;
+    # into AUTOLOAD for $DB::sub.
+    if ( length($DB::sub) > 10 && substr( $DB::sub, -10, 10 ) eq '::AUTOLOAD' ) {
+        $al = " for $$DB::sub" if defined $$DB::sub;;
     }
 
     # We stack the stack pointer and then increment it to protect us
@@ -345,7 +345,7 @@ sub DB::lsub : lvalue {
         # back here when the sub is finished.
 	{
 	    no strict 'refs';
-	    @ret = &$sub;
+	    @ret = &$DB::sub;
 	}
 
         # Pop the single-step value back off the stack.

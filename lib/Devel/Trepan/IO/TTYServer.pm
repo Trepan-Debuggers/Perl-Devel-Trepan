@@ -83,8 +83,8 @@ sub open($;$)
     $self->{output} = $opts->{output} || new IO::Pty;
 
     if ($self->{logger}) {
-	my $msg = sprintf("input slave %s; output slave %s",
-			  $self->{input}->ttyname(), $self->{output}->ttyname());
+	my $msg = sprintf("output slave %s; input slave %s",
+			  $self->{output}->ttyname(), $self->{input}->ttyname());
 	print {$self->{logger}} "$msg\n";
     }
 

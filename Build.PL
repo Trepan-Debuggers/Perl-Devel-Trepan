@@ -76,6 +76,7 @@ my $builder = Module::Build->new(
         'Data::Dumper'                      => 0,
 	'File::HomeDir'                     => 0.54,
         'Getopt::Long'                      => '2.36',
+        'IO::Pty'                           => 0,
         'Digest::SHA'                       => 0,
         'PadWalker'                         => 0,
         'Pod::Text'                         => 3.13,

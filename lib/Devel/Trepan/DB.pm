@@ -130,6 +130,7 @@ sub DB {
      $DB::hinthash
     ) = @{$DB::caller};
 
+    # print "++++ $DB::package $DB::filename, $DB::lineno\n";
     local $filename_ini = $filename;
 
     local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})

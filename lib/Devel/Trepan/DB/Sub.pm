@@ -12,7 +12,7 @@ use constant DEEP_RECURSION_EVENT  =>   4;
 use constant RETURN_EVENT          =>  32;
 use constant CALL_EVENT            =>  64;
 
-use vars qw($return_value @return_value @stack %fn_brkpt);
+use vars qw($return_value @return_value @ret $ret @stack %fn_brkpt);
 
 my ($deep);
 

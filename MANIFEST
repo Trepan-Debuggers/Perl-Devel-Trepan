@@ -180,6 +180,7 @@ lib/Devel/Trepan/DB/SelfLoader.pm
 lib/Devel/Trepan/DB/Sig.pm
 lib/Devel/Trepan/DB/Sub.pm
 lib/Devel/Trepan/DB/Use.pm
+lib/Devel/Trepan/DB/Vars.pm
 lib/Devel/Trepan/IO.pm
 lib/Devel/Trepan/IO/InOutBase.pm
 lib/Devel/Trepan/IO/Input.pm

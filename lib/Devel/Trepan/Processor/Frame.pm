@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012-2014 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
@@ -75,9 +75,15 @@ sub frame_setup($$)
             if ($stack_size <= 0) {
                 # Dynamic debugging didn't set $DB::stack_depth correctly.
                 my $j=$i;
-                while (caller($j++)) {
-                    $stack_size++;
-                }
+		if (defined caller($j+1)) {
+		    while (defined caller($j++)) {
+			$stack_size++;
+		    }
+		    $self->errmsg("DB thinks callstack is shorter than it is. We've adjusted it.");
+		} elsif ($DB::bt_truncated) {
+		    $self->errmsg("DB adjusted callstack that was too short.");
+		}
+
                 $stack_size++;
                 $DB::stack_depth = $j;
 		$stack_size -= ($j-3);
@@ -85,6 +91,7 @@ sub frame_setup($$)
                 $stack_size -= ($i-3);
             }
 	    if ($self->{event} eq 'call') {
+		no warnings 'once';  # for DB:: names below
 		$frames[0] =
 		     {
 			 file      => $DB::filename,

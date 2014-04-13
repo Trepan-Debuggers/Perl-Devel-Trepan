@@ -1,7 +1,7 @@
 # Perl's Core DB.pm library with some corrections, additions,
 # modifications and code merged from perl5db.pl
 #
-# Documentation is at the __END__
+# Documentation is after __END__
 #
 
 use rlib '../..';
@@ -21,15 +21,7 @@ package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
-use vars qw($running $caller
-            $event @ret $ret $return_value @return_value
-            $eval_opts $eval_str
-            $fall_off_on_end
-            $stop @clients $ready $tid @saved
-            $init_dollar0 $OS_STARTUP_DIR
-            $OP_addr
-            %HAVE_MODULE);
-
+use Devel::Trepan::DB::Vars;
 use Devel::Trepan::DB::Backtrace;
 use Devel::Trepan::DB::Breakpoint;
 use Devel::Trepan::DB::Eval;
@@ -48,67 +40,10 @@ my $ineval = {};
 #
 ####
 
-use Cwd;
 BEGIN {
     no warnings 'once';
     $ini_warn = $WARNING;
 
-    # these are hardcoded in perl source (some are magical)
-
-    $DB::sub      = '';    # name of current subroutine
-    $DB::single   = 0;     # single-step flags. See constants at the
-                           # top of DB/Sub.pm
-    $DB::signal   = 0;     # signal flag (will cause a stop at the next line)
-    $DB::stop     = 0;     # value of last breakpoint condition evaluation
-
-    @DB::dbline   = ();    # list of lines in currently loaded file
-    %DB::dbline   = ();    # actions in current file (keyed by line number)
-
-    # other "public" globals
-
-    @ini_INC        = @INC; # Save the contents of @INC before they are
-                            # modified elsewhere.
-    @ini_ARGV       = @ARGV;
-    $ini_dollar0    = $0;
-    $OS_STARTUP_DIR = getcwd;
-
-    @DB::args     = ();    # arguments of current subroutine or @ARGV array
-    $DB::fall_off_on_end = 0;
-    @DB::clients  = ();
-    $eval_opts    = {};    # Options controlling how the client wants the
-                           # eval to take place
-    $DB::tid      = undef; # Thread id
-
-    $DB::eval_str = '';    # Client wants to eval this string
-
-    $DB::package  = '';    # current package space
-    $DB::filename = '';    # current filename
-    $DB::subname  = '';    # currently executing sub (fully qualified name)
-
-    # This variable records how many levels we're nested in debugging. Used
-    # Used in the debugger prompt, and in determining whether it's all over or
-    # not.
-    $DB::level = 0;       # Level of nested debugging
-
-
-    $DB::lineno = '';     # current line number
-    $DB::subroutine = '';
-    $DB::hasargs = '';
-    $DB::wantarray = '';
-    $DB::evaltext = '';
-    $DB::is_require = '';
-    $DB::hints = '';
-    $DB::bitmask = '';
-    $DB::hinthash = '';
-    $DB::caller = [];
-
-    $DB::event = undef;  # The reason we have entered the debugger
-
-    $DB::VERSION = '1.04';
-
-    # initialize private globals to avoid warnings
-
-    $DB::running = 1;         # are we running, or are we stopped?
     $in_debugger = 0;
     @clients = ();
     $ready = 0;
@@ -324,6 +259,7 @@ sub DB {
         $DB::running = 0;
 
 	# FIXME: give a warning...
+	$DB::bt_truncated = defined caller($DB::stack_depth+1);
 	$DB::stack_depth++ while defined caller($DB::stack_depth+1);
 
 	local $c;
@@ -836,72 +772,6 @@ These are intended to be services performed by the clients of this API.
 
 This module attempts to be squeaky clean w.r.t C<use strict;> and when
 warnings are enabled.
-
-
-=head2 Global Variables
-
-The following "public" global names can be read by clients of this API.
-Beware that these should be considered "readonly".
-
-=over 8
-
-=item  $DB::sub
-
-Name of current executing subroutine.
-
-=item  %DB::sub
-
-The keys of this hash are the names of all the known subroutines.
-Each value is an encoded string that has the sprintf(3) format
-C<("%s:%d-%d", filename, fromline, toline)>.
-
-This hash is maintained by Perl.  I<filename> has the form (eval 34) for
-subroutines defined inside evals.
-
-=item  $DB::single
-
-Single-step flag.  Will be true if the API will stop at the next statement.
-
-=item  $DB::signal
-
-Signal flag. Will be set to a true value if a signal was caught.  Clients may
-check for this flag to abort time-consuming operations.
-
-=item  $DB::trace
-
-This flag is set to true if the API is tracing through subroutine calls.
-
-=item  @DB::args
-
-Contains the arguments of current subroutine, or the C<@ARGV> array if in the
-toplevel context.
-
-=item  @DB::dbline
-
-List of lines in currently loaded file.
-
-=item  %DB::dbline
-
-Actions in current file (keys are line numbers).  The values are strings that
-have the sprintf(3) format C<("%s\000%s", breakcondition, actioncode)>.
-
-=item  $DB::package
-
-Package namespace of currently executing code.
-
-=item  $DB::filename
-
-Currently loaded filename.
-
-=item  $DB::subname
-
-Fully qualified name of currently executing subroutine.
-
-=item  $DB::lineno
-
-Line number that will be executed next.
-
-=back
 
 =head2 API Methods
 

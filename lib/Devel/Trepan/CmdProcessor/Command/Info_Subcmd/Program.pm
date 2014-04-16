@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Program;
@@ -23,14 +23,15 @@ Information about debugged program and its environment
 =cut
 HELP
 
-sub run($$) 
+no warnings 'redefine';
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc     = $self->{proc};
     my $frame    = $proc->{frame};
     my $line     = $frame->{line};
     my $pkg      = $frame->{pkg};
-    my $function = $frame->{fn} if 
+    my $function = $frame->{fn} if
 	$frame->{fn} && $frame->{fn} ne 'DB::DB';
 
     my $m;

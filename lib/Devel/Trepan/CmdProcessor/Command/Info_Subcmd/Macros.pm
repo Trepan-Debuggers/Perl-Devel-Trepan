@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings;
 use rlib '../../../../..';
 
 # For highight_string
@@ -14,7 +14,12 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
+unless (@ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => undef;  # unlimited.
+EOE
+}
+
 our $CMD  = "info macros";
 our $HELP = <<'HELP';
 =pod
@@ -48,6 +53,7 @@ our $SHORT_HELP = "Show defined macros";
 #     Trepan::Complete.complete_token(@cmds, $prefix);
 # }
 
+no warnings 'redefine';
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};

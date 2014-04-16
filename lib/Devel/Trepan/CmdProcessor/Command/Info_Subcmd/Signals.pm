@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rockyb@cpan.org>
 
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Signals;
-require Devel::Trepan::Complete; 
+require Devel::Trepan::Complete;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 
@@ -13,12 +13,17 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
+unless (@ISA) {
+    eval <<"EOE";
 use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
+EOE
+}
+
 our $CMD = "info signals";
 our $HELP         = <<'HELP';
 =pod
 
-info signals 
+info signals
 
 info signals I<signal1> [I<signal2> ..]
 
@@ -40,6 +45,7 @@ HELP
 our $MIN_ABBREV = length('sig');
 our $SHORT_HELP = 'What debugger does when program gets various signals';
 
+no warnings 'redefine';
 sub complete($$) {
     my ($self, $prefix) = @_;
     my @matches =Devel::Trepan::Complete::signal_complete($prefix);

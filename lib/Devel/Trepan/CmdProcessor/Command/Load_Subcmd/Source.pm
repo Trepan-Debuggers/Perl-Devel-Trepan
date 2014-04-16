@@ -21,6 +21,7 @@ our $CMD = "load source";
 unless (@ISA) {
     eval <<"EOE";
     use constant MAX_ARGS => 0;  # Need at most this many - undef -> unlimited.
+    use constant NEED_STACK => 0;
 EOE
 }
 
@@ -45,7 +46,6 @@ line contents including the trailing C<\n>.
 But in numeric context, an entry of the list is I<true> if that line
 is traceable or has a COP instruction in it which allows the debugger
 to take control.
-
 =cut
 HELP
 

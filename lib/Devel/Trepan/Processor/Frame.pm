@@ -57,8 +57,9 @@ sub frame_setup($$)
         $self->{stack_size}    = $#{$self->{frames}}+1;
     } else {
         ### FIXME: look go over this code.
+	# $stack_size contains the stack ignoring frames
+	# of this debugger.
         my $stack_size = $DB::stack_depth;
-        my $i=0;
         my @frames = $self->{dbgr}->backtrace(0);
         @frames = splice(@frames, 2) if $self->{dbgr}{caught_signal};
 
@@ -69,27 +70,37 @@ sub frame_setup($$)
                 $stack_size ++;
             }
         } else {
-            while (my ($pkg, $file, $line, $fn) = caller($i++)) {
+
+	    # Figure out how many frames this debugger put in.
+	    my $debugger_frames_to_skip=0;
+            while (my ($pkg, $file, $line, $fn) =
+		   caller($debugger_frames_to_skip++)) {
                 last if 'DB::DB' eq $fn or ('DB' eq $pkg && 'DB' eq $fn);
             }
-            if ($stack_size <= 0) {
-                # Dynamic debugging didn't set $DB::stack_depth correctly.
-                my $j=$i;
-		if (defined caller($j+1)) {
-		    while (defined caller($j++)) {
-			$stack_size++;
-		    }
-		    $self->errmsg("DB thinks callstack is shorter than it is. We've adjusted it.");
-		} elsif ($DB::bt_truncated) {
-		    $self->errmsg("DB adjusted callstack that was too short.");
-		}
 
-                $stack_size++;
-                $DB::stack_depth = $j;
-		$stack_size -= ($j-3);
-            } else {
-                $stack_size -= ($i-3);
-            }
+	    # Dynamic debugging might not have set $DB::stack_depth
+	    # correctly. So we'll doublecheck it here.
+	    # $stack_size_with_debugger contains the stack depth
+	    # *including* frames added by this debugger.
+	    my $stack_size_with_debugger = $debugger_frames_to_skip;
+	    $stack_size_with_debugger++ while defined caller($stack_size_with_debugger);
+
+	    # Adjust for the fact that caller starts at 0;
+	    $stack_size_with_debugger++;
+
+	    my $computed_stack_depth =
+		$stack_size_with_debugger - $debugger_frames_to_skip;
+
+	    # printf("+++ debugger_frames_to_skip: %d, stack_size_with_debugger %d\n",
+	    # 	   $debugger_frames_to_skip, $stack_size_with_debugger);
+	    # printf("+++ computed_stack_depth: %d DB::stack_depth\n", $computed_stack_depth, $DB::stack_depth);
+	    # use Carp qw(cluck); cluck('testing');
+
+	    if (!defined $DB::stack_depth or $DB::stack_depth < $computed_stack_depth) {
+		$self->errmsg(
+		    "Call stack depth recorded in DB module is short. We've adjusted it.");
+	    }
+	    $stack_size = $computed_stack_depth;
 	    if ($self->{event} eq 'call') {
 		no warnings 'once';  # for DB:: names below
 		$frames[0] =

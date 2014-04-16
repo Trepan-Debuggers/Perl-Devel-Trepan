@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Load::Module;
@@ -37,7 +37,6 @@ effect in both the debugged program and inside the debugger.
 
 Note however that any functions along the call stack will not be
 changed.
-
 =cut
 HELP
 

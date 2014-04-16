@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Return;
@@ -21,19 +21,25 @@ Set the value about to be returned.
 =cut
 HELP
 
+unless (@ISA) {
+    eval <<"EOE";
 use constant MIN_ARGS   => 1;
 use constant MAX_ARGS   => 1;
 use constant NEED_STACK => 1;
+EOE
+}
+
 our $MIN_ABBREV = length('ret');
 
 use Data::Dumper;
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my @args = @$args;
     shift @args;
+    no warnings 'once';
     unless ($DB::event eq 'return') {
         $proc->errmsg("We are not stopped at a return");
         return;

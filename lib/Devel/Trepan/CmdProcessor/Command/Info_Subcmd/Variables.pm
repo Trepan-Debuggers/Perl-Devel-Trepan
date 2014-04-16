@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings;
 use rlib '../../../../..';
 use strict;
 use vars qw(@ISA @SUBCMD_VARS);
@@ -22,7 +22,7 @@ our $SHORT_HELP   = "List 'our' or 'my' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     # FIXME: DRY with other subcommand manager demo code.
     require Devel::Trepan::CmdProcessor;
@@ -36,7 +36,7 @@ unless (caller) {
         printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
     }
 
-    print join(' ', @{$cmd->{prefix}}), "\n"; 
+    print join(' ', @{$cmd->{prefix}}), "\n";
     print '-' x 30, "\n";
     $cmd->run($cmd->{prefix});
 }

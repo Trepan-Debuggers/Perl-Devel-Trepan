@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Files;
@@ -93,6 +93,7 @@ HELP
 our $SHORT_HELP = 'Show information about the current loaded file(s)';
 our $MIN_ABBREV = length('fi');
 
+no warnings 'redefine';
 sub complete($$)
 {
     my ($self, $prefix) = @_;

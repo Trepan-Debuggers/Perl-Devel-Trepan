@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Load::Command;
@@ -31,9 +31,8 @@ our $HELP = <<'HELP';
 B<load commmand> {I<file-or-directory-name-1> [I<file-or-directory-name-2>...]}
 
 Load debugger commands or directories containing debugger
-commands. This is also useful if you want to change or fix a debugger
+commands. This is also useful if you want add, change, or fix a debugger
 command while inside the debugger.
-
 =cut
 HELP
 
@@ -47,7 +46,7 @@ our $MIN_ABBREV = length('co');
 #     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 # }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};

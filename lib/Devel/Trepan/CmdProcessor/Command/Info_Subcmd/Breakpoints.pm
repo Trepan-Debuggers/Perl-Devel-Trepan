@@ -1,6 +1,6 @@
 # -*- Coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Breakpoints;
@@ -37,7 +37,8 @@ The C<Where> column indicates where the breakpoint is located.
 HELP
 
 our $MIN_ABBREV  = length('br');
-  
+
+no warnings 'redefine';
 sub complete($$)
 {
     my ($self, $prefix) = @_;
@@ -45,14 +46,14 @@ sub complete($$)
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
-sub bpprint($$;$) 
+sub bpprint($$;$)
 {
     my ($self, $bp, $verbose) = @_;
     my $proc = $self->{proc};
     my $disp = ($bp->type eq 'tbreak') ? 'del  ' : 'keep ';
     $disp .= $bp->enabled ? 'y  '   : 'n  ';
 
-    my $line_loc = sprintf('%s:%d', $proc->canonic_file($bp->filename), 
+    my $line_loc = sprintf('%s:%d', $proc->canonic_file($bp->filename),
                            $bp->line_num);
 
     my $mess = sprintf('%-4dbreakpoint    %s at %s',
@@ -60,8 +61,8 @@ sub bpprint($$;$)
     $proc->msg($mess);
 
     if ($bp->condition && $bp->condition ne '1') {
-        my $msg = sprintf("\tstop %s %s", 
-                          $bp->negate ? "unless" : "only if", 
+        my $msg = sprintf("\tstop %s %s",
+                          $bp->negate ? "unless" : "only if",
                           $bp->condition);
         $proc->msg($msg);
     }
@@ -73,7 +74,7 @@ sub bpprint($$;$)
     }
 }
 
-sub action_print($$;$) 
+sub action_print($$;$)
 {
     my ($self, $action, $verbose) = @_;
     my $proc = $self->{proc};
@@ -129,7 +130,7 @@ sub run($$) {
         @args = splice(@{$args}, 2);
         my $max = $proc->{brkpts}->max;
         my $opts = {
-            msg_on_error => 
+            msg_on_error =>
                 "An '${CMD}' argument must eval to a breakpoint between 1..${max}.",
                 min_value => 1,
                 max_value => $max
@@ -223,9 +224,9 @@ if (caller) {
   # tf = RubyVM::ThreadFrame.current
   # pc_offset = tf.pc_offset
   # sub foo
-  #   5 
+  #   5
   # end
-  
+
   # brk_cmd = dbgr.core.processor.commands['break']
   # brk_cmd.run(['break', "O${pc_offset}"])
   # cmd.run(%w(info break))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Variable;
@@ -20,7 +20,7 @@ our $CMD = "set variable";
 our $HELP   = <<"HELP";
 ${CMD} VARIABLE_NAME VALUE
 
-Set a 'my' or 'our' variable. VALUE must be a constant. 
+Set a 'my' or 'our' variable. VALUE must be a constant.
 
 Examples:
 
@@ -29,27 +29,32 @@ $CMD \@ARY = (1,2,3)
 HELP
 our $SHORT_HELP   = "Set a 'my' or 'our' variable";
 
+unless (@ISA) {
+    eval <<"EOE";
 use constant MIN_ARGS   => 2;
 use constant MAX_ARGS   => undef;
 use constant NEED_STACK => 1;
+EOE
+}
+
 our $MIN_ABBREV = length('var');
 
-sub set_var($$$) 
+sub set_var($$$)
 {
     my ($var_name, $ref, $value) = @_;
     my $type = substr($var_name, 1, 1);
     if ('$' eq $type) {
         ${$ref->{$var_name}}  = $value;
-    } elsif ('@' eq $type) { 
+    } elsif ('@' eq $type) {
         @{$ref->{$var_name}}  = @{$value};
     } elsif ('%' eq $type) {
-        %{$ref->{$var_name}}  = %{$value}; 
+        %{$ref->{$var_name}}  = %{$value};
     } else {
-        ${$ref->{$var_name}}  = $value; 
+        ${$ref->{$var_name}}  = $value;
     }
 }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -57,7 +62,7 @@ sub run($$)
     shift @args; shift @args;
 
     my $var_name = shift @args;
-    shift @args if $args[0] eq '='; 
+    shift @args if $args[0] eq '=';
     my $value = join(' ', @args);
 
     my $i;

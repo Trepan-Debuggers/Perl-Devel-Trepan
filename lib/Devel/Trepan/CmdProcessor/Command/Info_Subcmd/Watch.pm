@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Watch;
@@ -11,7 +11,12 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
+unless (@ISA) {
+    eval <<"EOE";
 use constant MAX_ARGS => undef;  # Need at most this many - undef -> unlimited.
+EOE
+}
+
 our $CMD = 'info watch';
 our $HELP = <<'HELP';
 =pod
@@ -27,6 +32,7 @@ HELP
 our $MIN_ABBREV = length('wa');
 our $SHORT_HELP = "Show watchpoint information";
 
+no warnings 'redefine';
 # sub complete($$) {
 # {
 #     my ($self, $prefix) = @_;
@@ -46,7 +52,7 @@ our $SHORT_HELP = "Show watchpoint information";
 #     return @res;
 # }
 
-sub wpprint($$;$) 
+sub wpprint($$;$)
 {
     my ($self, $wp, $verbose) = @_;
     my $proc = $self->{proc};
@@ -72,7 +78,7 @@ sub run($$) {
         shift @args; shift @args;
         for my $wp_name (@args) {
             if ($watchmgr->find_by_name({$wp_name})) {
-                $self->wpprint($wp);
+                $self->wpprint($wp_name);
             } else {
                 $proc->msg("$wp_name is not a defined watchpoint");
             }
@@ -84,7 +90,7 @@ sub run($$) {
         } else {
             # There's at least one
             $proc->section("Num Type       Enb Expression");
-            for my $wp (@watchpoints) { 
+            for my $wp (@watchpoints) {
                 $self->wpprint($wp);
             }
         }

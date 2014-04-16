@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
+use warnings;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Frame;
@@ -34,13 +34,14 @@ HELP
 our $SHORT_HELP = 'Show information about the selected frame';
 our $MIN_ABBREV = length('fr');
 
+no warnings 'redefine';
 sub complete($$)
-{ 
+{
     my ($self, $prefix) = @_;
     $self->{proc}->frame_complete($prefix, 1);
 }
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
@@ -49,7 +50,7 @@ sub run($$)
     if (@$args == 3) {
         my ($low, $high) = $proc->frame_low_high(0);
         my $opts = {
-            min_value => $low, 
+            min_value => $low,
             max_value => $high
         };
         $frame_num = $proc->get_an_int($args->[2], $opts);

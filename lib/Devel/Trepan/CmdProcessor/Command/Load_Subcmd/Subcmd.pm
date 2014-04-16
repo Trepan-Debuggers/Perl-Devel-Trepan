@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine';
+use warnings; use utf8;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Load::Subcmd;
@@ -46,6 +46,7 @@ HELP
 our $SHORT_HELP = 'Load debugger sub-command(s)';
 our $MIN_ABBREV = length('sub');
 
+no warnings 'redefine';
 # sub complete($$)
 # {
 #     my ($self, $prefix) = @_;

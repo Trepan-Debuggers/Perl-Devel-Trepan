@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2012-2014 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings;
+use strict; use warnings; use utf8;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
 use Devel::Trepan::Complete;

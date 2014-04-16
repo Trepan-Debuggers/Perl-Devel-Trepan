@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rockb@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -12,7 +12,7 @@ unless (@ISA) {
     use constant CATEGORY   => 'data';
     use constant SHORT_HELP => 'debug into a Perl expression or statement';
     use constant MIN_ARGS   => 1;      # Need at least this many
-    use constant MAX_ARGS   => undef;  # Need at most this many - 
+    use constant MAX_ARGS   => undef;  # Need at most this many -
                                        # undef -> unlimited.
     use constant NEED_STACK => 0;
 EOE
@@ -21,7 +21,7 @@ EOE
 use strict;
 use Devel::Trepan::Util;
 
-use vars qw(@ISA); @ISA = @CMD_ISA; 
+use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
@@ -43,7 +43,7 @@ C<((trepan.pl))> indicates one nested level of debugging.
 HELP
 
 # sub complete($$)
-# { 
+# {
 #     my ($self, $prefix) = @_;
 # }
 
@@ -59,7 +59,7 @@ sub run($$)
     my $opts = {
         return_type => parse_eval_suffix($cmd_name),
         nest => $DB::level,
-        # Don't fix up __FILE__ and __LINE__ in this eval. 
+        # Don't fix up __FILE__ and __LINE__ in this eval.
         # We want to see our debug (eval) with its string.
         fix_file_and_line => 0
     };
@@ -70,16 +70,15 @@ sub run($$)
 
     # Have to use $^D rather than $DEBUGGER below since we are in the
     # user's code and they might not have English set.
-    my $full_expr = 
+    my $full_expr =
         "\$DB::event=undef;\n"   .
-        "\$DB::single = 1;\n"    . 
-        "\$^D |= DB::db_stop;\n" . 
-        "\$DB::in_debugger=0;\n" . 
+        "\$DB::single = 1;\n"    .
+        "\$^D |= DB::db_stop;\n" .
+        "\$DB::in_debugger=0;\n" .
         $expr;
 
-    # FIXME: 4 below is a magic fixup constant.
-    $proc->eval($full_expr, $opts, 4);
-    
+    $proc->eval($full_expr, $opts);
+
 }
 
 unless (caller) {

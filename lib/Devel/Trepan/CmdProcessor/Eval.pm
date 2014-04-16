@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2013 Rocky Bernstein <rocky@cpan.org>
-use warnings;
+# Copyright (C) 2012-2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; use utf8;
 use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
@@ -17,8 +17,8 @@ BEGIN {
 
 my $given_eval_warning = 0;
 
-sub eval($$$$$) {
-    my ($self, $code_to_eval, $opts, $correction) = @_;
+sub eval($$$$) {
+    my ($self, $code_to_eval, $opts) = @_;
     no warnings 'once';
     my $return_type = $opts->{return_type};
     if (0 == $self->{frame_index} || !$HAVE_EVAL_WITH_LEXICALS) {
@@ -41,12 +41,13 @@ sub eval($$$$$) {
         # Have to use Eval::WithLexicals which, unfortunately,
         # loses on 'local' variables.
 
-        my $i = 0;
-        while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
-        my $diff = $i - $DB::stack_depth;
+        my $stack_size_with_debugger = 0;
+        while (my ($pkg, $file, $line, $fn) =
+	       caller($stack_size_with_debugger++)) { ; };
+        my $diff = $stack_size_with_debugger - $self->{stack_size};
 
-        my $my_hash  = peek_my($diff + $self->{frame_index} + $correction);
-        my $our_hash = peek_our($diff + $self->{frame_index} + $correction);
+        my $my_hash  = peek_my($diff + $self->{frame_index} - 1);
+        my $our_hash = peek_our($diff + $self->{frame_index} - 1);
         my $var_hash = hash_merge($my_hash, $our_hash);
 
         unless ($given_eval_warning) {

@@ -1,6 +1,6 @@
-# -*- Coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings;
+use warnings; use utf8;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Breakpoints;

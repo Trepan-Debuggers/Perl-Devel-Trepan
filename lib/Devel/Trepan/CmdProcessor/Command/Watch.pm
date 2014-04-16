@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine';
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; use utf8;
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Watch;
@@ -15,7 +15,7 @@ unless (@ISA) {
 #   eval "use constant ALIASES    => qw(w);";
 use constant CATEGORY   => 'breakpoints';
 use constant NEED_STACK => 0;
-use constant SHORT_HELP => 
+use constant SHORT_HELP =>
     'Set to enter debugger when a watched expression changes';
 use constant MIN_ARGS   => 1;     # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
@@ -30,7 +30,7 @@ our $HELP = <<'HELP';
 =pod
 
 watch I<Perl-expression>
- 
+
 Stop very time I<Perl-expression> changes from its prior value.
 
 =head2 Examples:
@@ -41,6 +41,8 @@ Stop very time I<Perl-expression> changes from its prior value.
 See also C<delete>, C<enable>, and C<disable> and C<info watch>.
 =cut
 HELP
+
+no warnings 'redefine';
 
 # This method runs the command
 sub run($$) {
@@ -60,16 +62,16 @@ sub run($$) {
         # FIXME: handle someday...
         # my $cmd_name = $args->[0];
         # my $opts->{return_type} = parse_eval_suffix($cmd_name);
-        my $opts = {return_type => '$'}; 
+        my $opts = {return_type => '$'};
         my $mess = sprintf("Watch expression %d: %s set", $wp->id, $expr);
         $proc->msg($mess);
-        # FIXME: 4 below is a magic fixup constant.
-        $proc->eval($expr, $opts, 4);
+        $proc->eval($expr, $opts);
         $proc->{set_wp} = $wp;
 
         # Without setting $DB::trace = 1, it is possible
         # that a continue won't trigger calls to $DB::DB
         # and therefore we won't check watch expressions.
+	no warnings 'once';
         $DB::trace = 1;
     }
 }

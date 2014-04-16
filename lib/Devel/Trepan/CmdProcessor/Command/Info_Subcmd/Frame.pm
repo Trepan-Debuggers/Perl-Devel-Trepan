@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings;
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; use utf8;
 use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Frame;
@@ -23,12 +23,15 @@ EOE
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
 our $HELP = <<"HELP";
-${CMD} [FRAME_NUM]
+=pod
 
-Show information about FRAME_NUM.  If no frame number is given, use
+info frame [I<frame-num>]
+
+Show information about I<frame-num>.  If no frame number is given, use
 the selected frame
 
-See also 'info variables my' and 'info variables our'.
+See also C<info variables my> and C<info variables our>.
+=cut
 HELP
 
 our $SHORT_HELP = 'Show information about the selected frame';
@@ -74,7 +77,15 @@ sub run($$)
         $m = "  ${titles[$i]}: " . $frame->{$field};
         $proc->msg($m);
     }
-    return if $is_last;
+    no warnings 'once';
+    if ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
+	my $cop = Devel::Callsite::callsite($frame_num);
+        $proc->msg(sprintf "  OP address: 0x%x.", $cop);
+    }
+    if ($is_last) {
+        $proc->msg("  Bottom-most (least recent) frame");
+	return
+    }
     for my $field (qw(wantarray is_require)) {
         next unless $frame->{$field};
         $m = "  ${field}: " . $frame->{$field};

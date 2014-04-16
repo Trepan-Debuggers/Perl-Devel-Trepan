@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings;
+use warnings; use utf8;
 use rlib '../../../../..';
-
 package Devel::Trepan::CmdProcessor::Command::Info::Line;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
@@ -25,7 +24,11 @@ our $MIN_ABBREV = length('li');
 our $HELP = <<'HELP';
 =pod
 
-Line Information about debugged program.
+info line
+
+Show line information about the selected frame of debugged program.
+
+See also C<info line> and C<info program>.
 =cut
 HELP
 
@@ -75,9 +78,13 @@ sub run($$)
     local(*DB::dbline) = "::_<$filename";
     if (defined($DB::dbline[$line]) && 0 != $DB::dbline[$line]) {
         my $cop = 0;
-        $cop = 0 + $DB::dbline[$line];
-        $m = sprintf "OP address: 0x%x.", $cop;
-        $proc->msg($m);
+	no warnings 'once';
+	if ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
+	    $cop = Devel::Callsite::callsite($proc->{frame_index});
+	} else {
+	    $cop = 0 + $DB::dbline[$line];
+	}
+        $proc->msg(sprintf "OP address: 0x%x.", $cop);
     } else {
         $proc->msg("Line not showing as associated with code\n")
             unless $end_line;

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine';
-
+# Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; use utf8;
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Eval;
@@ -76,6 +75,7 @@ See also C<set auto eval>. The command can help one predict future execution.
 =cut
 HELP
 
+no warnings 'redefine';
 sub complete($$)
 {
     my ($self, $prefix) = @_;
@@ -135,9 +135,7 @@ sub run($$)
                     fix_file_and_line => 1,
         };
         no warnings 'once';
-        # FIXME: 4 below is a magic fixup constant, also found in
-        # DB::finish.  Remove it.
-        $proc->eval($code_to_eval, $opts, 4);
+        $proc->eval($code_to_eval, $opts);
     }
 }
 

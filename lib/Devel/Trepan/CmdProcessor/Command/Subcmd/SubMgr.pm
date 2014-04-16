@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine';
+use warnings; use utf8;
 
 package Devel::Trepan::CmdProcessor::Command::SubcmdMgr;
-
-# Because we use Exporter we want to silence:
-#   Use of inherited AUTOLOAD for non-method ... is deprecated
-sub AUTOLOAD
-{
-    my $name = our $AUTOLOAD;
-    $name =~ s/.*:://;  # lose package name
-    my $target = "DynaLoader::$name";
-    goto &$target;
-}
-
 
 use File::Basename;
 use File::Spec;
@@ -41,6 +30,18 @@ $NAME          = '?'; # FIXME: Need to define this, but should
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command
 #   attr_reader   :last_args # Last arguments seen
+
+no warnings 'redefine';
+
+# Because we use Exporter we want to silence:
+#   Use of inherited AUTOLOAD for non-method ... is deprecated
+sub AUTOLOAD
+{
+    my $name = our $AUTOLOAD;
+    $name =~ s/.*:://;  # lose package name
+    my $target = "DynaLoader::$name";
+    goto &$target;
+}
 
 # Initialize show subcommands. Note: instance variable name
 # has to be setcmds ('set' + 'cmds') for subcommand completion

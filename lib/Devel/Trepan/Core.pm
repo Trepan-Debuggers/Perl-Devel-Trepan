@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
-use warnings;
+use warnings; use utf8;
 # FIXME: Can't use strict;
 
 package Devel::Trepan::Core;
@@ -18,11 +18,10 @@ use Devel::Trepan::Interface::Server;
 use Devel::Trepan::Util;
 # print join(', ', @INC, "\n");
 
-use vars qw(@ISA $dbgr $HAVE_BULLWINKLE);
+use vars qw(@ISA $dbgr);
 
-BEGIN {
-    $HAVE_BULLWINKLE = eval("use Devel::Trepan::BWProcessor; 1") ? 1 : 0;
-}
+use constant HAVE_BULLWINKLE => eval q(use Devel::Trepan::BWProcessors; 1) ? 1 : 0;
+
 
 @ISA = qw(DB);
 
@@ -128,7 +127,7 @@ sub awaken($;$) {
 
     my $proc;
     my $batch_filename = $opts->{testing};
-    if ($opts->{bw} && $HAVE_BULLWINKLE) {
+    if ($opts->{bw} && HAVE_BULLWINKLE) {
 	my $bw_opts = $opts->{bw};
 	$bw_opts = {} unless ref($bw_opts) eq 'HASH';
 	if (defined $batch_filename) {

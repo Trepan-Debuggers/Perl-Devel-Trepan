@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
-use warnings; no warnings 'redefine';
+use warnings; no warnings 'redefine'; use utf8;
 
 # Interface for debugging a program but having user control
 # reside outside of the debugged process, possibly on another
@@ -19,9 +19,10 @@ BEGIN {
     use if !@ISA, Devel::Trepan::IO::Input;
     use Devel::Trepan::Util qw(hash_merge YES NO);
     use if !@ISA, Devel::Trepan::IO::TCPServer;
-    use if !@ISA, Devel::Trepan::IO::TTYServer;
     @INC = @OLD_INC;
 }
+
+use constant HAVE_TTY => eval q(use Devel::Trepan::IO::TTYServer; 1) ? 1 : 0;
 
 use strict;
 
@@ -46,7 +47,11 @@ sub new
     unless (defined($input)) {
 	my $server;
 	if ('tty' eq $server_type) {
-	    $server = Devel::Trepan::IO::TTYServer->new($connection_opts);
+	    if (HAVE_TTY) {
+		$server = Devel::Trepan::IO::TTYServer->new($connection_opts);
+	    } else {
+		die "You don't have Devel::Trepan::TTY installed";
+	    }
 	} else {
 	    $server = Devel::Trepan::IO::TCPServer->new($connection_opts);
 	}

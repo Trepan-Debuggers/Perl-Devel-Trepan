@@ -3,7 +3,7 @@
 # Interface for client (i.e. user to communication-device) interaction.
 # The debugged program is at the other end of the communcation.
 
-use warnings; no warnings 'redefine';
+use warnings; use utf8; no warnings 'redefine';
 use rlib '../../..';
 
 # Interface for a user which is attached to a debugged process via
@@ -18,8 +18,9 @@ use if !@ISA, Devel::Trepan::Interface::User;
 use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 use if !@ISA, Devel::Trepan::IO::TCPClient;
-use if !@ISA, Devel::Trepan::IO::TTYClient;
 use strict;
+
+use constant HAVE_TTY => eval q(use Devel::Trepan::IO::TTYClient; 1) ? 1 : 0;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
@@ -117,6 +118,7 @@ sub write_remote($$$)
 
 # Demo
 unless (caller) {
+    print "HAVE_TTY: ", HAVE_TTY, "\n";
     my $intf = Devel::Trepan::Interface::Client->new(undef, undef, undef, undef,
                                                      {open => 0});
 }

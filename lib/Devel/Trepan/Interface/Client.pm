@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # Interface for client (i.e. user to communication-device) interaction.
 # The debugged program is at the other end of the communcation.
 
@@ -72,6 +72,18 @@ sub confirm($;$$)
 {
     my ($self, $prompt, $default) = @_;
     $self->{user}->confirm($prompt, $default);
+}
+
+sub has_completion($)
+{
+    my ($self) = @_;
+    $self->{user}->has_completion;
+}
+
+sub set_completion($$$)
+{
+    my ($self, $completion_fn, $list_completion_fn) = @_;
+    $self->{user}->set_completion($completion_fn, $list_completion_fn);
 }
 
 sub read_command($$)

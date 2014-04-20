@@ -62,8 +62,14 @@ sub show_version()
 
 sub check_tcp_opts($$) {
     my ($server_client, $opts) = @_;
-    $opts->{port} ||= $DEFAULT_OPTIONS->{port};
-    $opts->{host} ||= $DEFAULT_OPTIONS->{host};
+    my ($protocol, $host, $port) = @$opts;
+    $opts->[1] = $host || $DEFAULT_OPTIONS->{host};
+    $opts->[2] = $port || $DEFAULT_OPTIONS->{port};
+    unless ($opts->[2] =~ /^\d+$/) {
+	print STDERR "port should be a number: got $opts->[2]\n";
+	$opts->[2] = $DEFAULT_OPTIONS->{port};
+    }
+    $opts;
 }
 
 sub bad_tty_opts($$) {
@@ -93,20 +99,22 @@ sub check_protocol($)
     }
 }
 
-sub parse_client_server_opts($$)
+sub parse_client_server_opts($$$)
 {
-    my ($server_client, $opts) = @_;
-    if (scalar @$opts == 1) {
-	if (!$opts->[0]) {
-	    $opts->[0] = 'tcp';
+    my ($server_client, $opts, $server_opts) = @_;
+    if (scalar @$server_opts == 1) {
+	if (!$server_opts->[0]) {
+	    $server_opts->[0] = 'tcp';
 	}
-	check_protocol($opts);
-    } elsif (scalar @$opts == 2) {
-	check_protocol($opts);
-	if ($opts->[0] eq 'tcp'){
-	    check_tcp_opts($server_client, $opts);
+	check_protocol($server_opts);
+    } elsif (scalar @$server_opts <= 3) {
+	check_protocol($server_opts);
+	if ($server_opts->[0] eq 'tcp'){
+	    $server_opts = check_tcp_opts($server_client, $server_opts);
+	    $opts->{host} = $server_opts->[1];
+	    $opts->{port} = $server_opts->[2];
 	} else {
-	    my $mess = bad_tty_opts($server_client, $opts);
+	    my $mess = bad_tty_opts($server_client, $server_opts);
 	    die $mess if $mess;
 	}
     }
@@ -167,9 +175,9 @@ sub process_options($)
 	# use Enbugger 'trepan'; Enbugger->stop;
 	# $opts->{server} = ['tcp'];
 	if ($opts->{server}) {
-	    parse_client_server_opts('server', $opts->{server});
+	    parse_client_server_opts('server', $opts, $opts->{server});
 	} elsif ($opts->{client}) {
-	    parse_client_server_opts('client', $opts->{client})
+	    parse_client_server_opts('client', $opts, $opts->{client})
 	}
     }
 
@@ -202,7 +210,7 @@ unless (caller) {
     printf "whence file for perl: %s\n", whence_file('perl');
     require Data::Dumper;
     import Data::Dumper;
-    # print Dumper($opts), "\n";
+    print Dumper($opts), "\n";
     my $pid = fork();
     # if ($pid == 0) {
     #     my @argv = qw(--version);

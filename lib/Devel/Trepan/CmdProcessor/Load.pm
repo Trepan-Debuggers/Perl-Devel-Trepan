@@ -8,7 +8,7 @@ use rlib '../../..';
 
 package Devel::Trepan::CmdProcessor;
 $Load_seen = 1;
-use warnings; use strict; use utf8;
+use warnings; use strict;
 no warnings 'redefine';
 
 use File::Spec;

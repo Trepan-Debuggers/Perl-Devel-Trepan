@@ -2,7 +2,7 @@
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Client;
-use strict; use utf8;
+use strict;
 use English qw( -no_match_vars );
 
 BEGIN {

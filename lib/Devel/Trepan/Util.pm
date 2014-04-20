@@ -2,7 +2,7 @@
 # Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Util;
-use strict; use warnings; use English qw( -no_match_vars ); use utf8;
+use strict; use warnings; use English qw( -no_match_vars );
 
 use vars qw(@EXPORT @ISA @YN);
 @EXPORT    = qw( hash_merge safe_repr uniq_abbrev extract_expression

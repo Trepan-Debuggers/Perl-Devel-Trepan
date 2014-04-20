@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # Interface when communicating with the user.
 
 use warnings; no warnings 'redefine';
@@ -199,7 +199,7 @@ sub readline($;$) {
     }
 }
 
-sub set_completion($$)
+sub set_completion($$$)
 {
     my ($self, $completion_fn, $list_completion_fn) = @_;
     return unless $self->has_completion;

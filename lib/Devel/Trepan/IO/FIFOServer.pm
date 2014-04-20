@@ -9,7 +9,6 @@ use rlib '../../..';
 package Devel::Trepan::IO::FIFOServer;
 
 use English qw ( -no_match_vars );
-use POSIX;
 use Fcntl;
 use Devel::Trepan::IO::TCPPack;
 use Devel::Trepan::Util qw(hash_merge);
@@ -38,14 +37,14 @@ use constant DEFAULT_INIT_OPTS => {
 sub new($;$)
 {
     my ($class, $opts) = @_;
-    $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
+    $opts = hash_merge($opts, DEFAULT_INIT_OPTS);
     my $self = {
         input       => undef,
 	input_name  => $opts->{input_name},
-	input_mode   => $opts->{input_mode},
+	input_mode  => $opts->{input_mode},
         output      => undef,
 	output_name => $opts->{output_name},
-	output_mode  => $opts->{output_mode},
+	output_mode => $opts->{output_mode},
         state       => 'uninit',
         logger      => $opts->{logger},
         line_edit   => 0
@@ -64,8 +63,7 @@ sub is_connected($)
 }
 
 sub is_interactive($)  {
-    my $self = shift;
-    return -t $self->{input};
+    0;
 }
 
 
@@ -80,18 +78,17 @@ sub close
 {
     my $self = shift;
     $self->{state} = 'closing';
-    foreach my $FIFO ( $self->{input_name}, $self->{output_name} ) {
-        close($FIFO);
+    foreach my $FIFO ( $self->{input}, $self->{output} ) {
+        close($FIFO) if $FIFO;
     }
     $self->{state} = 'uninit';
     $self->{input} = $self->{output} = undef;
-    print {$self->{logger}} "Disconnected\n" if $self->{logger};
+    print {$self->{logger}} "Disconnected FIFO server\n" if $self->{logger};
 }
 
 sub open($;$)
 {
     my ($self, $opts) = @_;
-    $opts = hash_merge($opts, DEFAULT_INIT_OPTS);
     $opts = hash_merge($self, $opts);
 
     foreach my $tuple ( [$opts->{input_name},  $opts->{input_mode}],
@@ -107,10 +104,10 @@ sub open($;$)
     sysopen($self->{output}, $self->{output_name}, O_RDWR) or
 	die "Can't open $self->{output_name} for writing; $!";
 
-    # # Flush output as soon as possbile (autoflush).
-    # my $oldfh = select($self->{output});
-    # $OUTPUT_AUTOFLUSH = 1;
-    # select($oldfh);
+    # Flush output as soon as possbile (autoflush).
+    my $oldfh = select($self->{output});
+    $OUTPUT_AUTOFLUSH = 1;
+    select($oldfh);
 
     $self->{state} = 'listening';
 }
@@ -120,18 +117,23 @@ sub open($;$)
 sub read_msg($)
 {
     my($self) = @_;
-    unless ($self->{input}) {
-	sysopen($self->{input}, $self->{input_name}, O_RDONLY) or
-	    die "Can't open $self->{input_name} for reading";
-    }
     my $fh = $self->{input};
+    unless ($fh) {
+	print {$self->{logger}} "read on disconnected input\n" if $self->{logger};
+	return '';
+    }
     # print "+++ server self input ($self->{input_name}) ", $fh, "\n";
     my $msg;
     unless (eof($fh)) {
 	$msg = <$fh>;
-	return unpack_msg($msg) if $msg;
     }
-    die "Remote has closed connection";
+    if ($msg ne '-1') {
+	return unpack_msg($msg);
+    } else {
+	print {$self->{logger}} "Client disconnected\n" if $self->{logger};
+	return unpack_msg('');
+	die "Remote has closed connection";
+    }
 }
 
 # This method the debugger uses to write. In contrast to
@@ -142,7 +144,7 @@ sub write($$)
 {
     my($self, $msg) = @_;
     # print "+++ server self output ($self->{output_name})\n";
-    syswrite($self->{output}, pack_msg($msg));
+    syswrite($self->{output}, pack_msg($msg) . "\n");
 }
 
 # FIXME dry with FIFOClient by making a common FIFO routine
@@ -154,10 +156,8 @@ sub writeline($$)
 
 # Demo
 unless (caller) {
-  my $server = __PACKAGE__->new(
-      { open => 1,
-      });
-  if (scalar @ARGV) {
+    my $server = __PACKAGE__->new({open => 1, logger=>*STDOUT});
+    if (scalar @ARGV) {
       require Devel::Trepan::IO::FIFOClient;
       my $pid = fork();
       if (scalar @ARGV) {

@@ -18,6 +18,7 @@ use if !@ISA, Devel::Trepan::Interface::User;
 use if !@ISA, Devel::Trepan::IO::Input;
 use Devel::Trepan::Util qw(hash_merge);
 use if !@ISA, Devel::Trepan::IO::TCPClient;
+use if !@ISA, Devel::Trepan::IO::FIFOClient;
 use strict;
 
 use constant HAVE_TTY => eval q(use Devel::Trepan::IO::TTYClient; 1) ? 1 : 0;
@@ -38,7 +39,7 @@ sub new
     my $client;
     unless (defined($inp)) {
         my $client_opts = $connection_opts->{'client'};
-        if ('tty' eq $client_opts->[0]) {
+        if ('tty' eq $client_opts->[0] and HAVE_TTY) {
 	    my $tty_opts = {
 		inpty_name  => $client_opts->[1],
 		outpty_name => $client_opts->[2],
@@ -46,8 +47,10 @@ sub new
 	    $client = Devel::Trepan::IO::TTYClient->new($tty_opts);
         } elsif ('tcp' eq $client_opts->[0]) {
 	    $client = Devel::Trepan::IO::TCPClient->new($connection_opts);
+        } elsif ('fifo' eq $client_opts->[0]) {
+	    $client = Devel::Trepan::IO::FIFOClient->new($connection_opts);
 	} else {
-	    die "Unknown communication protocol";
+	    die "Unknown communication protocol: $client_opts->[0]";
         }
     }
     my $self = {

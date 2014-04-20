@@ -6,7 +6,6 @@ use warnings; use strict;
 
 use rlib '../../..';
 
-# Debugger Client Input/Output Socket.
 package Devel::Trepan::IO::FIFOClient;
 use English qw ( -no_match_vars );
 use POSIX qw(mkfifo);
@@ -27,10 +26,7 @@ use constant DEFAULT_INIT_OPTS => {
     output      => undef,
     output_mode => 0777,
     logger  => undef,  # Complaints should be sent here.
-    # name_pat pattern to go into tmmname
-};
-
-use constant FIFO_OPTS => {
+    # name_pat pattern to go into tmpname
 };
 
 #   attr_reader :state
@@ -40,7 +36,7 @@ sub open($;$);
 sub new($;$)
 {
     my ($class, $opts) = @_;
-    $opts    = hash_merge($opts, FIFO_OPTS);
+    $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
     my $self = {
         addr => undef,
         buf  => '',
@@ -58,18 +54,27 @@ sub new($;$)
     return $self;
 }
 
+sub is_interactive($)  {
+    0
+}
+
+sub have_term_readline($)
+{
+    return 0;
+}
+
 # Closes server connection.
 # FIXME dry with FIFOClient by making a common FIFO routine
 sub close
 {
     my $self = shift;
     $self->{state} = 'closing';
-    foreach my $FIFO ( $self->{input_name}, $self->{output_name} ) {
+    foreach my $FIFO ( $self->{input}, $self->{output} ) {
         close($FIFO);
     }
     $self->{state} = 'uninit';
     $self->{input} = $self->{output} = undef;
-    print {$self->{logger}} "Disconnected\n" if $self->{logger};
+    print {$self->{logger}} "Disconnected FIFO client\n" if $self->{logger};
 }
 
 
@@ -82,7 +87,6 @@ sub is_disconnected($)
 sub open($;$)
 {
     my ($self, $opts) = @_;
-    $opts = hash_merge($opts, DEFAULT_INIT_OPTS);
     $opts = hash_merge($self, $opts);
 
     foreach my $tuple ( [$opts->{input_name},  $opts->{input_mode}],
@@ -98,10 +102,10 @@ sub open($;$)
     sysopen($self->{output}, $self->{output_name}, O_NONBLOCK|O_RDWR) or
 	die "Can't open $self->{output_name} for writing: $!";
 
-    # # Flush output as soon as possbile (autoflush).
-    # my $oldfh = select($self->{output});
-    # $OUTPUT_AUTOFLUSH = 1;
-    # select($oldfh);
+    # Flush output as soon as possbile (autoflush).
+    my $oldfh = select($self->{output});
+    $OUTPUT_AUTOFLUSH = 1;
+    select($oldfh);
 
     $self->{state} = 'listening';
 }
@@ -125,20 +129,15 @@ sub read_msg($)
     die "Remote has closed connection" if eof($fh);
 }
 
-sub have_term_readline($)
-{
-    return 0;
-}
-
 # This method the debugger uses to write. In contrast to
-# writeline, no newline is added to the } to `str'. Also
-# msg doesn't have to be a string.
+# writeline, no newline is added to the end of to `str'. Also
+# $msg doesn't have to be a string.
 # FIXME dry with FIFOServer by making a common FIFO routine
 sub write($$)
 {
     my($self, $msg) = @_;
     # print "+++ client self output ($self->{output_name})\n";
-    syswrite($self->{output}, pack_msg($msg));
+    syswrite($self->{output}, pack_msg($msg) . "\n");
 }
 
 

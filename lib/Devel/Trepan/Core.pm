@@ -177,15 +177,23 @@ sub awaken($;$) {
 		my $server_opts = $opts->{server};
 		if ($server_opts->[0] eq 'tcp') {
 		    $server_opts = {
+			io     => 'tcp',
 			host   => $opts->{host},
 			port   => $opts->{port},
 			logger => *STDOUT
 		    };
-		} else {
+		} elsif ($server_opts->[0] eq 'fifo') {
+		    $server_opts = {
+			io     => 'fifo',
+			logger => *STDOUT
+		    };
+		} elsif ($server_opts->[0] eq 'tty') {
 		    $server_opts = {
 			io     => 'tty',
 			logger => *STDOUT
 		    }
+		} else {
+		    die "Unknown server protocol: $server_opts->[0]";
 		}
 		$intf = [
 		    Devel::Trepan::Interface::Server->new(undef, undef,

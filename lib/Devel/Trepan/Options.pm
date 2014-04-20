@@ -16,6 +16,7 @@ BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
     my @OLD_INC = @INC;
     use rlib '../..';
+    use rlib '.';
     use Devel::Trepan::Version;
     @INC = @OLD_INC;
 }
@@ -92,9 +93,10 @@ sub bad_tty_opts($$) {
 sub check_protocol($)
 {
     my ($opts) = @_;
-    if ($opts->[0] ne 'tcp' && $opts->[0] ne 'tty') {
+    my $server_type = $opts->[0];
+    if ($server_type !~ /^tcp|^tty/) {
 	print STDERR
-	    "Protocol should be either 'tcp' or 'tty': got '$opts->[0]'\n";
+	    "Protocol should be either 'tcp' or 'tty': got '$server_type'\n";
 	$opts->[0] = 'tcp';
     }
 }

@@ -11,16 +11,13 @@ use English qw( -no_match_vars );
 our (@ISA);
 
 # Our local modules
-BEGIN {
-    my @OLD_INC = @INC;
-    use rlib '../../..';
-    use if !@ISA, Devel::Trepan::Interface;
-    use if !@ISA, Devel::Trepan::Interface::ComCodes;
-    use if !@ISA, Devel::Trepan::IO::Input;
-    use Devel::Trepan::Util qw(hash_merge YES NO);
-    use if !@ISA, Devel::Trepan::IO::TCPServer;
-    @INC = @OLD_INC;
-}
+use rlib '../../..';
+use rlib '.';
+use if !@ISA, Devel::Trepan::Interface::ComCodes;
+use if !@ISA, Devel::Trepan::IO::Input;
+use Devel::Trepan::Util qw(hash_merge YES NO);
+use if !@ISA, Devel::Trepan::IO::TCPServer;
+use if !@ISA, Devel::Trepan::IO::FIFOServer;
 
 use constant HAVE_TTY => eval q(use Devel::Trepan::IO::TTYServer; 1) ? 1 : 0;
 
@@ -52,8 +49,12 @@ sub new
 	    } else {
 		die "You don't have Devel::Trepan::TTY installed";
 	    }
-	} else {
+        } elsif ('fifo' eq $server_type) {
+	    $server = Devel::Trepan::IO::FIFOServer->new($connection_opts);
+        } elsif ('tcp' eq $server_type) {
 	    $server = Devel::Trepan::IO::TCPServer->new($connection_opts);
+	} else {
+	    die "Unknown communication protocol: $server_type";
 	}
 	# For Compatability
 	$self->{output} = $self->{input} = $self->{inout} = $server;
@@ -236,7 +237,7 @@ sub write_confirm($$$)
 
 # Demo
 unless (caller) {
-    my $intf = __PACKAGE__->new(undef, undef, {open => 0, io => 'TCP'});
+    my $intf = __PACKAGE__->new(undef, undef, {open => 0, io => 'tcp'});
     # $intf->close();
     $intf = __PACKAGE__->new(undef, undef,
 			     {open => 1, io => 'tty', logger=>\*STDOUT});

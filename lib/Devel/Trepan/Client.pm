@@ -2,7 +2,7 @@
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Client;
-use strict;
+use strict; use utf8;
 use English qw( -no_match_vars );
 
 BEGIN {
@@ -51,9 +51,10 @@ sub list_complete {
 sub complete($$$$$) {
     my ($self, $text, $line, $start, $end) = @_;
     my $intf = $self->{intf};
-    # print "complete called: text: $text, line: $line, start: $start, end: $end\n";
+    # print "complete called: text: $text, line: " .
+    #       $line, start: $start, end: $end\n");
     eval {
-        $intf->write_remote(COMMAND, "complete " . $text);
+        $intf->write_remote(COMMAND, "complete " . $line);
     };
     my ($control_code, $line);
     my @complete;
@@ -167,7 +168,6 @@ sub handle_server_reponse($$$) {
 	$self->errmsg("Unknown control code: '$control_code'");
     }
 }
-
 
 sub start_client($)
 {

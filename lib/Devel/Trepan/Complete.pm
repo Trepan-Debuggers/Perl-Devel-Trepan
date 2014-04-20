@@ -1,11 +1,12 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-use warnings; use strict; 
+# -*- coding: utf-8 -*-
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; use strict; use utf8;
 use Exporter;
 
 package Devel::Trepan::Complete;
 
 use vars qw(@ISA @EXPORT); @ISA = qw(Exporter);
-@EXPORT = qw(complete_token complete_token_with_next 
+@EXPORT = qw(complete_token complete_token_with_next
              next_token signal_complete
              complete_token_filtered_with_next);
 
@@ -15,13 +16,15 @@ sub complete_token($$)
 {
     my ($complete_ary, $prefix) = @_;
     my @result = ();
-    for my $cmd (@$complete_ary) { 
-        push @result, $cmd if 0 == index($cmd, $prefix);
+    for my $cmd (@$complete_ary) {
+	if (0 == index($cmd, $prefix)) {
+	    push @result, $cmd ;
+	}
     }
     sort @result;
 }
-    
-sub complete_token_with_next($$;$) 
+
+sub complete_token_with_next($$;$)
 {
     my ($complete_hash, $prefix, $cmd_prefix) = @_;
     $cmd_prefix ='' if scalar(@_) < 3;
@@ -29,12 +32,12 @@ sub complete_token_with_next($$;$)
     my @result = ();
     while (my ($cmd_name, $cmd_obj) = each %{$complete_hash}) {
         if  (0 == index($cmd_name, $cmd_prefix . $prefix)) {
-            push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj] 
+            push @result, [substr($cmd_name, $cmd_prefix_len), $cmd_obj]
         }
     }
     sort {$a->[0] cmp $b->[0]} @result;
 }
-    
+
 # Find all starting matches in Hash +aliases+ that start with +prefix+,
 # but filter out any matches already in +expanded+.
 sub complete_token_filtered($$$)
@@ -42,8 +45,8 @@ sub complete_token_filtered($$$)
     my ($aliases, $prefix, $expanded) = @_;
     my @complete_ary = keys %{$aliases};
     my @result = ();
-    for my $cmd (@complete_ary) { 
-        push @result, $cmd if 
+    for my $cmd (@complete_ary) {
+        push @result, $cmd if
             0 == index($cmd, $prefix) && !exists $expanded->{$aliases->{$cmd}};
     }
     sort @result;
@@ -67,7 +70,7 @@ sub complete_token_filtered_with_next($$$$)
   }
 
 # Find the next token in str string from start_pos. We return
-# the token and the next blank position after the token or 
+# the token and the next blank position after the token or
 # length($str) if this is the last token. Tokens are delimited by
 # white space.
 sub next_token($$)
@@ -104,7 +107,7 @@ sub next_token($$)
 sub filename_list(;$$)
 {
     my ($pattern, $add_suffix) = @_;
-    $pattern = '' unless defined $pattern; 
+    $pattern = '' unless defined $pattern;
     $add_suffix = 0 unless defined $add_suffix;
     # $pattern = glob($pattern) if substr($pattern, 0, 1) = '~';
     my @files = (<$pattern*>);
@@ -131,7 +134,7 @@ sub signal_complete($) {
     unless(@signal_complete_completions) {
         @signal_complete_completions = keys %SIG;
         my $last_sig = scalar @signal_complete_completions;
-        push(@signal_complete_completions, 
+        push(@signal_complete_completions,
              map({lc $_} @signal_complete_completions));
         my @nums = (-$last_sig .. $last_sig);
         push @signal_complete_completions, @nums;
@@ -159,7 +162,7 @@ unless (caller) {
     print   "0123456789012345678\n";
     my $x = '  now is  the  time';
     print "$x\n";
-    for my $pos (0, 2, 5, 6, 8, 9, 13, 18, 19) { 
+    for my $pos (0, 2, 5, 6, 8, 9, 13, 18, 19) {
         my @ary = next_token($x, $pos);
         printf "next_token($pos) = %d, '%s'\n", $ary[0], $ary[1];
     }

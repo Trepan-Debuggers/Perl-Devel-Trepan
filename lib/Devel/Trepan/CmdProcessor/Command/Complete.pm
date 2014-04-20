@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine';
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine'; use utf8;
 
 use rlib '../../../..';
 

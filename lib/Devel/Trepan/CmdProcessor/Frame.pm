@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org> 
-use strict; use warnings;
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings; use utf8;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
 use Devel::Trepan::Complete;
@@ -30,7 +30,7 @@ sub print_stack_entry()
 
     # Put in a filename header if short is off.
     $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
-    
+
     my $not_last_frame = $i != ($self->{stack_size}-1);
     my $s = '';
     my $args =
@@ -39,19 +39,19 @@ sub print_stack_entry()
         : '';
     if ($not_last_frame) {
         # Grab and stringify the arguments if they are there.
-        
+
         # Shorten them up if $opts->{maxwidth} says they're too long.
         $args = substr($args, 0, $opts->{maxwidth}-3) . '...'
             if length($args) > $opts->{maxwidth};
-        
+
         # Get the actual sub's name, and shorten to $maxwidth's requirement.
         if (exists($frame->{fn})) {
             $s = $frame->{fn};
-            $s = substr($s, 0, $opts->{maxwidth}-3) . '...' 
+            $s = substr($s, 0, $opts->{maxwidth}-3) . '...'
                 if length($s) > $opts->{maxwidth};
         }
     }
-    
+
     # Short report uses trimmed file and sub names.
     my $wa;
     if (exists($frame->{wantarray})) {
@@ -70,7 +70,7 @@ sub print_stack_entry()
         my $call_str = $not_last_frame ? "$wa$s$args in " : '';
         my $prefix_call = "$prefix$call_str";
         my $file_line   = $file . " at line $lineno";
-        
+
         if (length($prefix_call) + length($file_line) <= $opts->{maxwidth}) {
             $self->msg($prefix_call . $file_line);
         } else {
@@ -79,8 +79,8 @@ sub print_stack_entry()
         }
     }
 }
-    
-sub print_stack_trace_from_to($$$$$) 
+
+sub print_stack_trace_from_to($$$$$)
 {
     my ($self, $from, $to, $frames, $opts) = @_;
     for (my $i=$from; $i <= $to; $i++) {
@@ -88,11 +88,11 @@ sub print_stack_trace_from_to($$$$$)
         $prefix .= sprintf ' #%d ', $i;
         $self->print_stack_entry($frames->[$i], $i, $prefix, $opts);
     }
-}    
+}
 
 # Print `count' frame entries
 sub print_stack_trace($$$)
-{ 
+{
     my ($self, $frames, $opts)=@_;
     $opts ||= {maxstack=>1e9, count=>1e9};
     # $opts  = DEFAULT_STACK_TRACE_SETTINGS.merge(opts);

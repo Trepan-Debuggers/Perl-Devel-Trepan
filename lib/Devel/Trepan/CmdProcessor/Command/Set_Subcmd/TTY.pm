@@ -6,8 +6,12 @@ use strict;
 
 package Devel::Trepan::CmdProcessor::Command::Set::TTY;
 
+unless (@ISA) {
+    eval <<"EOE";
 use constant MIN_ARGS   => 0;
 use constant MAX_ARGS   => 0;
+EOE
+}
 
 use vars qw(@ISA @SUBCMD_VARS $slave_tty $master_tty);
 our @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);

@@ -10,7 +10,10 @@ use strict;
 
 # Note DB::Eval uses and sets its own variables.
 
-use constant HAVE_EVAL_WITH_LEXICALS => eval("use Eval::WithLexicals; 1") ? 1 : 0;
+use vars qw($HAVE_EVAL_WITH_LEXICALS);
+BEGIN {
+    $HAVE_EVAL_WITH_LEXICALS = eval("use Eval::WithLexicals; 1") ? 1 : 0;
+}
 
 my $given_eval_warning = 0;
 
@@ -18,7 +21,7 @@ sub eval($$$$) {
     my ($self, $code_to_eval, $opts) = @_;
     no warnings 'once';
     my $return_type = $opts->{return_type};
-    if (0 == $self->{frame_index} || !HAVE_EVAL_WITH_LEXICALS) {
+    if (0 == $self->{frame_index} || !$HAVE_EVAL_WITH_LEXICALS) {
         unless (0 == $self->{frame_index}) {
             $self->msg("Evaluation occurs in top-most frame not this one");
         }

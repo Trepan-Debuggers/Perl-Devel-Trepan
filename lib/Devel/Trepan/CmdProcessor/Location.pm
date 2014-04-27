@@ -186,7 +186,8 @@ sub source_location_info($)
 	} elsif ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
 	    my $skip = DB::caller_levels_skip();
 	    my $addr = Devel::Callsite::callsite($frame_index + $skip);
-	    $op_addr = sprintf(" \@0x%x", $addr) if defined $addr;
+	    $op_addr = sprintf(" \@0x%x", $addr)
+		if defined $addr and $addr > 0;
 	}
     }
     if (filename_is_eval($filename)) {

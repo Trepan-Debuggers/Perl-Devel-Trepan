@@ -171,9 +171,9 @@ sub clear_file_cache(;$)
             delete $file_cache{$filename};
         }
     } else {
-        %file_cache = {};
-        %file2file_remap = {};
-        %file2file_remap_lines = {};
+        %file_cache = ();
+        %file2file_remap = ();
+        %file2file_remap_lines = ();
     }
 }
 

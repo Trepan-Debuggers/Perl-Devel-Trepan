@@ -88,4 +88,13 @@ if ($have_codelines) {
     is($line_nums[0], 7, "trace_line_numbers for $podtest_file");
 }
 
+no warnings "once";
+Devel::Trepan::DB::LineCache::clear_file_cache();
+is(!%Devel::Trepan::DB::file_cache, 1,
+   "File cache should be empty");
+is(!%Devel::Trepan::DB::file2file_remap, 1,
+   "Remapped file cache should be empty");
+is(!%Devel::Trepan::DB::file2file_remap_lines, 1,
+   "Remapped lines should be empty");
+
 done_testing();

@@ -219,6 +219,7 @@ t/10test-cmd-kill.t
 t/10test-cmd-macro.t
 t/10test-complete.t
 t/10test-condition.t
+t/10test-core-bug.t
 t/10test-db-brkpt.t
 t/10test-db-eval.t
 t/10test-intf-script.t

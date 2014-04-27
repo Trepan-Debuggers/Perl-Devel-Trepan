@@ -1,9 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Top-level require that pulls in the rest of the debugger.
+# It's also the thing that gets called from DB:: hooks
+
 use warnings; use utf8;
 # FIXME: Can't use strict;
 
 package Devel::Trepan::Core;
+
+# Something in the require process munges $0 into 'trepan.pl'.
+# To make matters more sensitive, Enbugger processes $0 special
+# to make it debuggable. Thereore...
+#    save and restore $0.
+my $dollar0_save;
+BEGIN {
+    $dollar0_save = $0;
+}
 
 use rlib '.';
 use Devel::Trepan::DB;
@@ -232,6 +244,10 @@ sub display_lists ($)
     my $self = shift;
     return $self->{proc}{displays}{list};
 }
+
+# Restore the value of $0 that we had when we came in here.
+# See above for why we have to save and restore $0.
+$0 = $dollar0_save;
 
 END {
     $DB::ready = 0;

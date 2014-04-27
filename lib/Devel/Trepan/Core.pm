@@ -113,6 +113,10 @@ sub awaken($;$) {
         $opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
 
+    # require Data::Dumper;
+    # import Data::Dumper;
+    # print Dumper($opts), "\n";
+
     my $exec_strs_ary = $opts->{exec_strs};
     if (defined $exec_strs_ary && scalar @{$exec_strs_ary}) {
         $self->{exec_strs} = $opts->{exec_strs};

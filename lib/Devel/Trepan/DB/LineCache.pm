@@ -757,7 +757,7 @@ this set up.
 sub trace_line_numbers($;$)
 {
     my ($filename, $reload_on_change) = @_;
-    my $fullname = cache($filename, $reload_on_change);
+    my $fullname = update_cache($filename, $reload_on_change);
     return undef unless $fullname;
     return sort {$a <=> $b} keys %{$file_cache{$filename}{trace_nums}};
   }
@@ -964,10 +964,12 @@ sub dualvar_lines($$;$$) {
     # Setup for B::CodeLines and for reading file lines
     my ($cmd, @text);
     my $fh;
+    my $filename;
     if ($is_file) {
-        return () unless open($fh, '<', $file_or_string);
+	$filename = $file_or_string;
+        return () unless open($fh, '<', $filename);
         @text = readline $fh;
-        $cmd = "$^X -MO=CodeLines $file_or_string";
+        $cmd = "$^X -MO=CodeLines $filename";
         close $fh;
     } else {
         @text = split("\n", $file_or_string);
@@ -984,11 +986,14 @@ sub dualvar_lines($$;$$) {
             $break_line[$line] = $line;
         }
     }
-    # Create dual variable array.
+    # Create dual variable array and hash.
+    my $trace_nums = {};
     for (my $i = 1; $i < scalar @text; $i++) {
         my $num = exists $break_line[$i] ? $mark_trace : 0;
+	$trace_nums->{$i} = -$i;
         $dualvar_lines->[$i] = Scalar::Util::dualvar($num, $text[$i] . "\n");
     }
+    $file_cache{$filename}{trace_nums} = $trace_nums;
     return $dualvar_lines;
 }
 
@@ -997,7 +1002,7 @@ sub dualvar_lines($$;$$) {
 B<load_file(I<$filename>)> => I<list of strings>
 
 Somewhat simulates what Perl does in reading a file when debugging is
-turned on. We the file contents as a list of strings in
+turned on. We return the file contents as a list of strings in
 I<_E<gt>$filename>. But also entry is a dual variable. In numeric
 context, each entry of the list is I<true> if that line is traceable
 or break-pointable (is the address of a COP instruction). In a
@@ -1017,11 +1022,14 @@ sub load_file($;$) {
     my $symname      = "main::$base_symname";
 
     no strict 'refs';
+
+    # Note: dualvar_lines updates @$synmame;
     if (defined($eval_string)) {
-        dualvar_lines($eval_string, \@$symname, 0, 1);
+	dualvar_lines($eval_string, \@$symname, 0, 1);
     } else {
         dualvar_lines($filename, \@$symname, 1, 1);
     }
+
     $$symname ||= $filename;
 
     return;
@@ -1056,7 +1064,7 @@ sub readlines($)
 B<update_cache($filename, [, $opts]>
 
 Update a cache entry.  If something's wrong, return I<undef>. Return
-I<true> if the cache was updated and I<false> if not.  If
+the expanded file name if the cache was updated and I<false> if not.  If
 $I<$opts-E<gt>{use_perl_d_file}> is I<true>, use that as the source for the
 lines of the file.
 
@@ -1080,7 +1088,7 @@ sub update_cache($;$)
         $path = abs_path($filename) if -f $filename;
     }
     my $lines_href;
-    my $trace_nums;
+    my $trace_nums = {};
     my $stat;
     if ($use_perl_d_file) {
         my @list = ($filename);
@@ -1105,17 +1113,29 @@ sub update_cache($;$)
             if (-r $path) {
                 my @lines_check = readlines($path);
                 my @lines = @$raw_lines;
+		my $totally_empty = 1;
                 for (my $i=1; $i<=$#lines; $i++) {
                     if (defined $raw_lines->[$i]) {
-			no warnings;
-                        $trace_nums->{$i} = ($raw_lines->[$i] + 0) if
-			    (+$raw_lines->[$i]) != 0;
-                        $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
-                    } else {
-                        $raw_lines->[$i] = $lines_check[$i-1]
-                    }
-                }
-            }
+			$totally_empty = 0;
+			last;
+		    }
+		}
+		if ($totally_empty) {
+		    load_file($filename);
+		    $trace_nums =  $file_cache{$filename}{trace_nums};
+		} else {
+		    for (my $i=1; $i<=$#lines; $i++) {
+			if (defined $raw_lines->[$i]) {
+			    no warnings;
+			    $trace_nums->{$i} = (-$raw_lines->[$i]) if
+				(+$raw_lines->[$i]) != 0;
+			    $incomplete = 1 if $raw_lines->[$i] ne $lines[$i];
+			} else {
+			    $raw_lines->[$i] = $lines_check[$i-1]
+			}
+		    }
+		}
+	    }
             use strict;
             $lines_href = {};
             $lines_href->{plain} = $raw_lines;
@@ -1167,7 +1187,7 @@ sub update_cache($;$)
     $file_cache{$filename} = $entry;
     no warnings;
     $file2file_remap{$path} = $filename;
-    return 1;
+    return $path;
 }
 
 # example usage

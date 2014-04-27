@@ -96,9 +96,12 @@ sub frame_setup($$)
 	    # printf("+++ computed_stack_depth: %d DB::stack_depth\n", $computed_stack_depth, $DB::stack_depth);
 	    # use Carp qw(cluck); cluck('testing');
 
-	    if (!defined $DB::stack_depth or $DB::stack_depth < $computed_stack_depth) {
+	    if ((!defined $DB::stack_depth
+		 or $DB::stack_depth < $computed_stack_depth)
+		and !$self->{gave_stack_trunc_warning}) {
 		$self->errmsg(
 		    "Call stack depth recorded in DB module is short. We've adjusted it.");
+		$self->{gave_stack_trunc_warning} = 1;
 	    }
 	    $stack_size = $computed_stack_depth;
 	    if ($self->{event} eq 'call') {

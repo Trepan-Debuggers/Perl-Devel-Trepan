@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org> 
+# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
 
 use rlib '../..';
 
@@ -28,6 +28,7 @@ sub new($$;$) {
         class      => $class,
         interfaces => $interfaces,
         settings   => $settings,
+	gave_stack_trunc_warning => 0,
     };
     bless ($self, $class);
     return $self;

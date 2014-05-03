@@ -26,7 +26,7 @@ use strict;
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
 use constant DEFAULT_INIT_CONNECTION_OPTS => {
-    io => 'TCP',
+    io => 'tcp',
     logger => undef  # An Interface. Complaints go here.
 };
 

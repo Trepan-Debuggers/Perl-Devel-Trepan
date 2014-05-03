@@ -40,8 +40,12 @@ might be C<step>, C<show>, or C<set>, among others.
                   # The above "s" alias is initially set up, by
                   # default. But you can change or remove it.
 
-For more complex definitions, see C<macro>.
-See also C<unalias> and C<show alias>.
+=head2 See also:
+
+L<C<macro>|Devel::Trepan::CmdProcessor::Command::Macro> E<mdash> more complex definitions,
+L<C<unalias>|Devel::Trepan::CmdProcessor::Command::Unalias>
+L<C<show alias>|Devel::Trepan::CmdProcessor::Command::Show::Alias>
+
 =cut
 HELP
 

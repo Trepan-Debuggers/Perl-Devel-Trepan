@@ -1,10 +1,10 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
 # FIXME: Complete doesn't work if in package.
-use Devel::Trepan::Complete; 
+use Devel::Trepan::Complete;
 package Devel::Trepan::CmdProcessor::Command::Kill;
 
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
@@ -20,7 +20,7 @@ use constant MIN_ARGS   => 0; # Need at least this many
 use constant MAX_ARGS   => 1; # Need at most this many - undef -> unlimited.
 EOE
 }
-use strict; 
+use strict;
 
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
@@ -37,12 +37,12 @@ Equivalent of C<kill('KILL', $$)>. This is an unmaskable
 signal. Use this when all else fails, e.g. in thread code, use this.
 
 If you are in interactive mode, you are prompted to confirm killing.
-However when this command is aliased from a command ending in C<!>, no 
+However when this command is aliased from a command ending in C<!>, no
 questions are asked.
 
 =head2 Examples:
 
- kill  
+ kill
  kill KILL # same as above
  kill kill # same as above
  kill -9   # same as above
@@ -51,7 +51,9 @@ questions are asked.
  kill unconditionally # same as above
  kill TERM # Send "TERM" signal
 
-See also C<set confirm> and
+=head2 See also:
+
+See also L<C<set confirm>|Devel::Trepan::CmdProcessor::Command::Quit> and
 L<C<quit>|Devel::Trepan::CmdProcessor::Command::Quit>.
 =cut
 HELP
@@ -62,7 +64,7 @@ sub complete($$) {
     push @matches, 'unconditionally' if 0 == index('unconditionally', $prefix);
     sort @matches;
 }
-    
+
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
@@ -70,7 +72,7 @@ sub run($$) {
     my $sig;
     if (scalar(@$args) > 1) {
         $sig = uc($args->[1]);
-        unless ( ($sig =~ /[+-]?\d+/) || exists $SIG{$sig} ) { 
+        unless ( ($sig =~ /[+-]?\d+/) || exists $SIG{$sig} ) {
             $self->errmsg("Signal name '${sig}' is not a signal I know about.");
             return;
         }
@@ -84,7 +86,7 @@ sub run($$) {
     }
     if (kill(0, $$)) {
         # Force finalization on interface.
-        $self->{proc}{interfaces} = [] if 
+        $self->{proc}{interfaces} = [] if
             'KILL' eq $sig || 9 eq $sig || -9 eq $sig;
         if (kill($sig, $$)) {
             $self->msg("kill ${sig} successfully sent to process $$");

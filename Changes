@@ -3,11 +3,12 @@ Revision history for Devel-Trepan
 0.53
 - Completion for out-of-process control
 - Allow Data::Dumper::Concise to print values
-- Add more recomments
+- Add more Perl module recommendations, such as to our plugins
 - Enbugger - check stack level
 - Redo the way options server protocol options works
 - start using utf8 some places.
 - Improve documentation on "set display"
+- Reduce duplication in trepan.pod/pm by using links (L<>) better.
 - misc bug fixes and doc improvements.
 
 0.52 Mar 10, 2014

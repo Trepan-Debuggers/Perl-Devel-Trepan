@@ -1,4 +1,4 @@
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -31,7 +31,7 @@ Gently exit the debugger and debugged program.
 
 The program being debugged is exited via I<exit()> which runs the
 Kernel I<at_exit()> finalizers. If a return code is given, that is the
-return code passed to I<exit()> - presumably the return code that will
+return code passed to I<exit()> E<mdash> presumably the return code that will
 be passed back to the OS. If no exit code is given, 0 is used.
 
 =head2 Examples:
@@ -42,7 +42,9 @@ be passed back to the OS. If no exit code is given, 0 is used.
  quit 0               # same as "quit"
  quit! 1              # unconditional quit setting exit code 1
 
-See also C<set confirm> and
+=head2 See also:
+
+L<C<set confirm>|Devel::Trepan::CmdProcssor::Command::Set::Confirm> and
 L<C<kill>|Devel::Trepan::CmdProcessor::Command::Kill>.
 
 =cut

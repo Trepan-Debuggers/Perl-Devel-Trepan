@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -16,7 +16,7 @@ unless (@ISA) {
     use constant CATEGORY   => 'running';
     use constant SHORT_HELP => 'Step program without entering called functions';
     use constant MIN_ARGS   => 0; # Need at least this many
-    use constant MAX_ARGS   => 1; # Need at most this many - 
+    use constant MAX_ARGS   => 1; # Need at most this many -
                                   # undef -> unlimited.
     use constant NEED_STACK => 1;
 EOE
@@ -30,7 +30,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-next[+|-] [I<count>]
+B<next>[+|-] [I<count>]
 
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called 'step over'.
@@ -47,9 +47,16 @@ the debugger setting 'different' determines this behavior.
 If no suffix is given, the debugger setting 'different'
 determines this behavior.
 
-=head2 Example: 
+=head2 Example:
 
   next
+
+=head2 See also:
+
+L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
+L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finish>,
+L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>
+
 =cut
 HELP
 
@@ -58,7 +65,7 @@ sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $opts = $proc->parse_next_step_suffix($args->[0]);
-    
+
     # FIXME: parse and adjust step count
     $proc->{skip_count} = 0;
 

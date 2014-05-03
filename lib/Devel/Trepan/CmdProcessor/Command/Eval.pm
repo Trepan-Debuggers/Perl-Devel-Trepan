@@ -71,7 +71,9 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
  use English; # Same as above
  eval$ use English # Error because this is not a valid expression
 
-See also C<set auto eval>.
+=head2 See also:
+
+L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>.
 =cut
 HELP
 

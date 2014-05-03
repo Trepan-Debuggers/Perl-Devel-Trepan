@@ -1,5 +1,4 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
-# Code adapted from Perl 5's perl5db.pl
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -31,7 +30,11 @@ B<run>
 
 Restart debugger and program via an I<exec()> call.
 
-See also C<show args> for the exact invocation that will be used.
+=head2 See also:
+
+L<C<show args>|Devel::Trepan::CmdProcessor::Command:Show::Args> for
+the exact invocation that will be used.
+
 =cut
 HELP
 
@@ -46,10 +49,14 @@ sub run($$) {
 
     my @script = $proc->restart_args();
 
+    my $intf = $proc->{interfaces}[-1];
+    $intf->save_history($proc->{last_command});
+
     # $self->msg( "Running: " . join(' ', @script));
 
     # And run Perl again.  We use exec() to keep the
     # PID stable (and that way $ini_pids is still valid).
+
     exec(@script) || $self->errmsg("exec failed: $!");
 
 }

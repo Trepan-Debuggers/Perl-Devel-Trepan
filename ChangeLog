@@ -1,10 +1,323 @@
+2014-04-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Processor.pm,
+	lib/Devel/Trepan/Processor/Frame.pm: Give truncated warning only
+	once
+
+2014-04-27  Rocky Bernstein <rocky@cpan.org>
+
+	* t/10test-linecache.t: Work around Travis for now
+
+2014-04-27  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/Core.pm, t/10test-core-bug.t: Core.pm:
+	require Devel::Trepan::Core was munging $0. Enbugger needs an intact
+	$0.
+
+2014-04-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/DB/LineCache.pm: 
+	Towards getting more breakpoint values in there.
+
+2014-04-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm: We'll use negative
+	numbers as addresses we don't print out. Hope there aren't andy
+	valid negative addresses.
+
+2014-04-26  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm, t/10test-linecache.t: 
+	Devel::Trapan::DB::Linecache - Fix cleaning file cache
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/IO/FIFOClient.pm,
+	lib/Devel/Trepan/IO/FIFOServer.pm,
+	lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Server.pm, lib/Devel/Trepan/Options.pm: 
+	Small cleanups although FIFO still doesn't work
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Eval.pm: Reinstate use if constant.
+	Found what was breaking travis - "use utf8;"
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm, lib/Devel/Trepan/Util.pm: 
+	Revert use of utf8 - perhaps this is what is making travis fail on
+	5.18 and 5.14?
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: I said we don't require IO::Pty in the minimal
+	configuration
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Eval.pm: See if reverting this
+	change fixes travis
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/CmdProcessor/Eval.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Server.pm, t/10test-io-tty.t,
+	t/20test-my.t: Test for presence of Devel::Trepan::TTY. $HAVE_... ->
+	constant HAVE_ for testing presence of features. 10test-io-tty.t
+	should be in Devel::Treapan::TTY, not here. IO::Pty is not a
+	required dependency any more.
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/TTY.pm,
+	lib/Devel/Trepan/IO/TTYClient.pm, lib/Devel/Trepan/IO/TTYServer.pm: 
+	Move TTY stuff into its own plugin
+
+2014-04-20  Rocky Bernstein <rocky@cpan.org>
+
+	* : Client.pm: correct command completion by giving entire line.
+	Util.pm: Work around Perl feature where 0 like  is interpreterd as
+	false. *: start to use utf8 more.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/Interface/Client.pm: 
+	In support of out-of-process command completion. The debugger
+	"complete" command however is needs work.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/User.pm: Correct prototype on
+	set_completion.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/Client.pm: In support of command
+	completion for out-of-process control. Add set_completion and
+	has_completion routines.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/User.pm: Correct prototype on
+	set_completion.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Options.pm: Handle tcp host and port options like
+	we do tty options.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/TTY.pm: Remove
+	redifined constant warning.
+
+2014-04-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm: Start handling command completion via
+	the "complete" command. The "complete" command is a little broken
+	though.
+
+2014-04-16  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit 'f2af3b3' into IntelliSurvey
+
+2014-04-16  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit '866197a' into IntelliSurvey
+
+2014-04-15  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit '6096c75' into IntelliSurvey
+
+2014-04-13  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Let travis know we need IO::Pty
+
+2014-04-13  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan/IO/TTYServer.pm: TTY protocol uses
+	IO::Pty
+
+2014-04-13  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit '277b570' into IntelliSurvey
+
+2014-04-12  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit '4e72423' into IntelliSurvey
+
+2014-04-12  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit '60acc49' into IntelliSurvey
+
+2014-04-12  Rocky Bernstein <rocky@cpan.org>
+
+	* : Merge commit 'fbe84ea' into IntelliSurvey
+
+2014-04-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm: Wrong
+	concatenation operator on "info files"
+
+2014-04-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/IO/TTYClient.pm,
+	lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Server.pm: Fix Interface/Server close
+	mechanism. Works and checked for both tcp and tty.
+
+2014-04-09  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/Options.pm: Work on
+	tty option - some validation.
+
+2014-04-08  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/.gitignore,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/TTY.pm: Add "set
+	tty" command. Not sure what good it does though.
+
+2014-04-08  Rocky Bernstein <rocky@cpan.org>
+
+	* bin/trepan.pl, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/Core.pm, lib/Devel/Trepan/IO/TTYServer.pm,
+	lib/Devel/Trepan/Interface/Client.pm, lib/Devel/Trepan/Options.pm: 
+	Work on options settings: --{client,server} {tcp,ty}.
+
+2014-04-07  Rocky Bernstein <rocky@cpan.org>
+
+	* example/gcd-dbg.pl, lib/Devel/Trepan/Client.pm,
+	lib/Devel/Trepan/IO/TCPPack.pm, lib/Devel/Trepan/IO/TTYClient.pm,
+	lib/Devel/Trepan/IO/TTYServer.pm,
+	lib/Devel/Trepan/Interface/Server.pm, t/10test-io-tty.t: Disable
+	lf->crlf on TTYServer by setting input to raw. Not sure this is the
+	best way
+
+2014-04-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/IO/TCPClient.pm, lib/Devel/Trepan/IO/TCPPack.pm,
+	lib/Devel/Trepan/IO/TTYClient.pm, lib/Devel/Trepan/IO/TTYServer.pm,
+	lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Server.pm, lib/Devel/Trepan/Options.pm,
+	t/10test-io-fifoserver.t, t/10test-io-tty.t: First out-of-process
+	tty protocol working. Or rather limping. Cleanup, passing options
+	and minor fixups will be done later.
+
+2014-04-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/IO/FIFOClient.pm,
+	lib/Devel/Trepan/IO/FIFOServer.pm, lib/Devel/Trepan/IO/TCPPack.pm,
+	lib/Devel/Trepan/IO/TTYClient.pm, lib/Devel/Trepan/IO/TTYServer.pm,
+	lib/Devel/Trepan/Interface/Server.pm: Attempt to get TTY working
+
+2014-04-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/Client.pm, lib/Devel/Trepan/Core.pm,
+	lib/Devel/Trepan/IO/FIFOServer.pm,
+	lib/Devel/Trepan/IO/TCPServer.pm,
+	lib/Devel/Trepan/Interface/Client.pm,
+	lib/Devel/Trepan/Interface/Server.pm: Don't buffer FIFO output, i.e.
+	'autoflush' output. Make up FIFO available in server and client mode
+	- hacked in by default for now.
+
+2014-04-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Continue.pm,
+	lib/Devel/Trepan/IO/FIFOServer.pm,
+	lib/Devel/Trepan/IO/TCPClient.pm, lib/Devel/Trepan/IO/TCPServer.pm,
+	t/10test-io-fifoserver.t: First glimmer of hope for FIFO I/O
+
+2014-04-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Continue.pm: Docstring typo
+	in Continue command
+
+2014-04-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm: Use explicit package name DB::sub and
+	update comments on what DB::sub and DB::lsub do.
+
+2014-04-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm: Defensive coding to
+	guard against undef returned from canonic_filename().
+
+2014-04-04  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm: 
+	Module name has chnaged from DB::Linecache to
+	Devel::Trepan::DB::LineCache
+
+2014-04-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Fix up doc strings for 'help load
+	module' and 'help load source'. Minor comment format fix in
+	LineCache.pm
+
+2014-04-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/IO/TCPServer.pm: Remove debug output
+
+2014-03-25  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm: Fix "alias" doc
+	grammar typo.
+
+2014-03-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm, lib/Devel/Trepan/Interface/User.pm: 
+	User.pm: set $readline::rl_completion_function for
+	Term::ReadLine::Perl.  Sub.pm: Check version of Devel::Callsite if
+	we want to go back more than one level.
+
+2014-03-24  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm: Guard against signal handlers that
+	are not code, and try to evaluate signal handlers that are strings
+	containing a subroutine. Strip trailing blanks
+
+2014-03-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Default.pm, t/Helper.pm: Set OP
+	address on location on if we have Devel::CallSite installed.
+
+2014-03-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/Sub.pm: Save OP address in subroutine call calls
+	to debugger.
+
+2014-03-14  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Eval.pm, lib/Devel/Trepan/Version.pm: Give op
+	locations for call stack using Devel::Callsite 0.08's call-level
+	parameter.
+
 2014-03-12  Rocky Bernstein <rocky@cpan.org>
 
-	* t/20test-eval.t: Canonical output for eval3
+	* : commit 6e36b43289f44fcce1681d06c266d0cdd9bad543 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Wed Mar 12 22:46:38 2014 -0400
 
 2014-03-12  Rocky Bernstein <rocky@cpan.org>
 
 	* : Get ready for release 0.52
+
+2014-03-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: Attempt to address issue #26 and perl bug
+	RT 115742.
 
 2014-03-10  Rocky Bernstein <rocky@cpan.org>
 

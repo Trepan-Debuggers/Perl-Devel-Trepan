@@ -1,5 +1,15 @@
 Revision history for Devel-Trepan
 
+0.53
+- Completion for out-of-process control
+- Allow Data::Dumper::Concise to print values
+- Add more recomments
+- Enbugger - check stack level
+- Redo the way options server protocol options works
+- start using utf8 some places.
+- Improve documentation on "set display"
+- misc bug fixes and doc improvements.
+
 0.52 Mar 10, 2014
 
 A number of serious bugs addressed:

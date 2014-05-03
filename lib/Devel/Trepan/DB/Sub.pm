@@ -12,9 +12,7 @@ use constant DEEP_RECURSION_EVENT  =>   4;
 use constant RETURN_EVENT          =>  32;
 use constant CALL_EVENT            =>  64;
 
-use vars qw($return_value @return_value @ret $ret @stack %fn_brkpt);
-
-my ($deep);
+use vars qw($return_value @return_value @ret $ret @stack %fn_brkpt $deep);
 
 BEGIN {
     @DB::ret = ();    # return value of last sub executed in list context
@@ -27,7 +25,7 @@ BEGIN {
     # https://rt.perl.org/rt3//Public/Bug/Display.html?id=117407
     # for justification for why this should be 1000 rather than something
     # smaller.
-    $deep = 500;
+    $DB::deep = 500;
 
     # $stack_depth is to track the current stack depth using the
     # auto-stacked-variable trick. It is 'local'ized repeatedly as

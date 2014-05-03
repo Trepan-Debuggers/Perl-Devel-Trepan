@@ -112,6 +112,8 @@ sub handle_eval_result($) {
             colored => $self->{settings}{highlight},
         };
         $fn = \&Data::Printer::p;
+    } elsif ('concise' eq $evdisp) {
+        $fn = \&Data::Dumper::Dumper::Concise;
     } else {
         $fn = \&Data::Dumper::Dumper;
     }

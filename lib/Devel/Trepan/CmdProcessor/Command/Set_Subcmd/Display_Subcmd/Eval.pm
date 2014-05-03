@@ -19,15 +19,37 @@ my $param = join('|', @DISPLAY_TYPES);
 our $HELP   = <<"HELP";
 =pod
 
-B<set display> {B<dumper>|B<dprint>|B<tidy>}
+B<set display eval> {I<concise>|I<dprint>|I<dumper>|I<tidy>}
 
-Set how you want the evaluation results shown.
+Set how you want evaluation results to be shown.
 
-The I<tidy> option sets to use L<Data::Dumper::Perltidy>; I<dumper> uses
-L<Data::Dumper>. When the L<Data::Printer module> is installed,
-I<dprint> specifies using that.
 
-See also C<show display eval>, C<eval>, and C<set autoeval>.
+Devel::Trepan relegates how Perl the contents of expressions variables
+are displayed to one of the many Perl modules designed for this
+purpose. Below is a list of the option name and the corresponding Perl
+module that gets used for that option. I<Note: the order given is the
+order tried by default on startup.>
+
+=over
+
+=item *
+C<dprint> E<mdash> L<Data::Printer>
+
+=item *
+C<tidy> E<mdash> L<Data::Dumper::Perltidy>
+
+=item *
+C<concise> E<mdash> L<Data::Dumper::Concise>
+
+=item *
+C<dumper> E<mdash> L<Data::Dumper>
+
+=back
+
+See the respective display manual pages for how to influence display
+for a given module.
+
+See also: C<show display eval>, C<eval>, and C<set autoeval>.
 =cut
 HELP
 

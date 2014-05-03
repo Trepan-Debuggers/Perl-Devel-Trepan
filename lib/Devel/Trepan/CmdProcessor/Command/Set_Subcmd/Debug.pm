@@ -12,10 +12,13 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('de');
 our $HELP   = <<"HELP";
+=pod
+
 Set debugger debugging controls
 
-See C<help set debug *> for a list of subcommands or C<help set debug I<name>>
+See C<set debug *> for a list of subcommands or C<help set debug> I<name>
 for help on a particular debugging control.
+=cut
 HELP
 our $SHORT_HELP = "Set debugging controls";
 
@@ -28,7 +31,7 @@ our $SHORT_HELP = "Set debugging controls";
 #     $self->SUPER;
 # }
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     require Devel::Trepan;
     # Demo it.
@@ -44,7 +47,7 @@ unless (caller) {
         printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
     }
 
-    print join(' ', @{$cmd->{prefix}}), "\n"; 
+    print join(' ', @{$cmd->{prefix}}), "\n";
     $cmd->run($cmd->{prefix});
     # $cmd->run($cmd->{prefix}, ('except', 'on'));
 }

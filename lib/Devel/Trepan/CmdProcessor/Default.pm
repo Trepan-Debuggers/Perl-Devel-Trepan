@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -7,8 +7,10 @@ use rlib '../../..';
 package Devel::Trepan::CmdProcessor;
 
 use if !@ISA, Devel::Trepan::Options;
-use vars qw(@EXPORT $HAVE_DATA_PRINT $HAVE_PERLTIDY @DISPLAY_TYPES);
-@EXPORT = qw(default_eval_display  $HAVE_DATA_PRINT $HAVE_PERLTIDY
+use vars qw(@EXPORT $HAVE_DATA_DUMPER_CONCISE $HAVE_DATA_PRINT
+            $HAVE_PERLTIDY @DISPLAY_TYPES);
+@EXPORT = qw(default_eval_display $HAVE_DATA_DUMPER_CONCISE
+            $HAVE_DATA_PRINT $HAVE_PERLTIDY
             @DISPLAY_TYPES);
 
 use strict;
@@ -19,12 +21,16 @@ BEGIN {
     $HAVE_DATA_PRINT =
         eval("use Data::Printer { colored => 1, sort_keys => 1}; 1") ?
         1 : 0;
+    $HAVE_DATA_DUMPER_CONCISE =
+        eval("use Data::Dumper::Concise; 1") ?
+        1 : 0;
     $HAVE_PERLTIDY   = eval {
         require Data::Dumper::Perltidy;
     } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
-    push @DISPLAY_TYPES, 'dprint' if $HAVE_DATA_PRINT;
-    push @DISPLAY_TYPES, 'tidy'   if $HAVE_PERLTIDY;
+    push @DISPLAY_TYPES, 'dprint'  if $HAVE_DATA_PRINT;
+    push @DISPLAY_TYPES, 'tidy'    if $HAVE_PERLTIDY;
+    push @DISPLAY_TYPES, 'concise' if $HAVE_DATA_DUMPER_CONCISE;
 }
 
 # Return what to use for evaluation display
@@ -33,6 +39,8 @@ sub default_eval_display() {
         return 'dprint';
     } elsif ($HAVE_PERLTIDY) {
         return 'tidy';
+    } elsif ($HAVE_DATA_DUMPER_CONCISE) {
+        return 'concise';
     } else {
        return 'dumper';
     }

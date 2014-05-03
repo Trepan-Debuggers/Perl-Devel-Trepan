@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -16,12 +16,15 @@ our $HELP = <<'HELP';
 =pod
 
 Set display attributes.
+
+See C<set display *> for a list of subcommands or C<help set display> I<name>
+for help on a particular display option.
 =cut
 HELP
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     # FIXME: DRY with other subcommand manager demo code.
     require Devel::Trepan::CmdProcessor;
@@ -35,7 +38,7 @@ unless (caller) {
         printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
     }
 
-    print join(' ', @{$cmd->{prefix}}), "\n"; 
+    print join(' ', @{$cmd->{prefix}}), "\n";
     $cmd->run($cmd->{prefix});
     # $cmd->run($cmd->{prefix}, ('except', 'on'));
 }

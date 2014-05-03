@@ -63,15 +63,15 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
  eval      # Run current source-code line
  eval?     # but strips off leading 'if', 'while', ..
            # from command
- eval@ @ARGV  # Make sure the result saved is an array rather than
-              # an array converted to a scalar.
+ eval@ @ARGV  # Make sure the result printed and saved as an array rather
+              # than as an array converted to a scalar.
  @ @ARG       # Same as above if @ alias is around
- eval% %ENV   # Make sure the result saved is a hash
+ eval% %ENV   # Make sure the result printed/saved as a hash
  use English  # Note this is a statement, not an expression
  use English; # Same as above
  eval$ use English # Error because this is not a valid expression
 
-See also C<set auto eval>. The command can help one predict future execution.
+See also C<set auto eval>.
 =cut
 HELP
 

@@ -113,7 +113,7 @@ sub handle_eval_result($) {
         };
         $fn = \&Data::Printer::p;
     } elsif ('concise' eq $evdisp) {
-        $fn = \&Data::Dumper::Dumper::Concise;
+        $fn = \&Data::Dumper::Concise::Dumper;
     } else {
         $fn = \&Data::Dumper::Dumper;
     }

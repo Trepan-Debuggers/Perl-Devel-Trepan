@@ -43,7 +43,9 @@ point. An optional condition may be given.
 
 When a breakpoint is hit the event icon is C<xx>.
 
-See also C<help breakpoints> and C<help syntax location>.
+=head2 See also:
+
+See also L<C<help breakpoints>|Devel::Trepan::CmdProcessor::Command/Break> and C<help syntax location>.
 =cut
 HELP
 

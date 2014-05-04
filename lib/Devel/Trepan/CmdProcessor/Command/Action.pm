@@ -16,7 +16,7 @@ use constant CATEGORY   => 'breakpoints';
 use constant NEED_STACK => 0;
 use constant MIN_ARGS  => 2;      # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
-use constant SHORT_HELP => 
+use constant SHORT_HELP =>
     'Set an action to be done before the line is executed.';
 EOE
 }
@@ -36,15 +36,15 @@ of steps taken by the debugger is:
 
 =over
 
-=item 1. check for a breakpoint at this line 
+=item 1. check for a breakpoint at this line
 
-=item 2. print the line if necessary (tracing) 
+=item 2. print the line if necessary (tracing)
 
-=item 3. do any actions associated with that line 
+=item 3. do any actions associated with that line
 
-=item 4. prompt user if at a breakpoint or in single-step 
+=item 4. prompt user if at a breakpoint or in single-step
 
-=item 5. evaluate line 
+=item 5. evaluate line
 
 =back
 
@@ -55,7 +55,10 @@ For example, this will print out the value of C<$foo> every time line
 
    action 53 print "DB FOUND $foo\n"
 
-See also C<help breakpoints>.
+=head2 See also:
+
+<C<help breakpoints>
+
 =cut
 HELP
 
@@ -67,7 +70,7 @@ sub run($$) {
     my @args = @$args;
     shift @args;
 
-    my ($filename, $lineno, $fn, $gobble_count, $rest) = 
+    my ($filename, $lineno, $fn, $gobble_count, $rest) =
         $proc->parse_position(\@args, 0); # should be: , 1);
     shift @args if $gobble_count-- > 0;
     shift @args if $gobble_count-- > 0;
@@ -78,7 +81,7 @@ sub run($$) {
         $proc->errmsg("Invalid action: $action_expression");
         return
     }
-    my $action = $self->{dbgr}->set_action($lineno, $filename, 
+    my $action = $self->{dbgr}->set_action($lineno, $filename,
                                            $action_expression);
     if ($action) {
         my $id = $action->id;

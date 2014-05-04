@@ -14,7 +14,7 @@ unless (@ISA) {
 use constant ALIASES    => qw(cond);
 use constant CATEGORY   => 'breakpoints';
 use constant NEED_STACK => 0;
-use constant SHORT_HELP => 
+use constant SHORT_HELP =>
     'Specify a condition on a breakpoint';
 use constant MIN_ARGS  => 2;   # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
@@ -40,9 +40,11 @@ i.e., the breakpoint is made unconditional.
  condition 5 x > 10  # Breakpoint 5 now has condition x > 10
  condition 5         # Remove above condition
 
-See also L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
-L<C<enable>|Devel::Trepan::CmdProcessor::Command::Enable> and 
-L<C<disable>|Devel::Trepan::CmdProcessor::Command::Disable>>.
+=head2 See also:
+
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+L<C<enable>|Devel::Trepan::CmdProcessor::Command::Enable> and
+L<C<disable>|Devel::Trepan::CmdProcessor::Command::Disable>.
 
 =cut
 HELP
@@ -54,11 +56,11 @@ sub run($$) {
     my $bpnum = $proc->get_an_int($args->[1]);
     return unless defined($bpnum);
     my $bp = $proc->{brkpts}->find($bpnum);
-    unless ($bp) { 
+    unless ($bp) {
         $proc->errmsg("No breakpoint number $bpnum");
         return;
     }
-    
+
     my $condition;
     if (scalar @{$args} > 2) {
         my @args = @{$args};

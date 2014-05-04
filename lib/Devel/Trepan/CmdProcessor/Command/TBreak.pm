@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
-
-# require_relative '../../app/condition'
 
 package Devel::Trepan::CmdProcessor::Command::TBreak;
 
@@ -40,11 +38,13 @@ If no location is given use the current stopping point.
 
 When a breakpoint is hit the event icon is C<x1>.
 
-See also C<break> and C<help breakpoints>.
+=head2 See also:
+
+L<C<break>|Devel::Trepan::CmdProcessor::Break> and
+C<help breakpoints>.
+
 =cut
 HELP
-
-#  include Trepan::Condition
 
 # This method runs the command
 sub run($$) {
@@ -53,7 +53,7 @@ sub run($$) {
     $self->{dbgr}->set_tbreak($DB::filename, $args->[1]);
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
   # p cmd.run([cmd.name])

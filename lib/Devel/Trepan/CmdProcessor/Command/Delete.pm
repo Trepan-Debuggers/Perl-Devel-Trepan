@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -39,6 +39,12 @@ and C<info break> to get a list of breakpoint numbers.
 =head2 Examples:
 
     delete 1  # delete breakpoint number 1
+
+=head2 See also:
+
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+L<C<enable>|Devel::Trepan::CmdProcessor::Command::Enable>, and
+L<C<disable>|Devel::Trepan::CmdProcessor::Command::Disable>.
 
 =cut
 HELP

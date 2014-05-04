@@ -289,163 +289,37 @@ variable's value.
 
 =item *
 
-L</"Set a breakpoint (break)">
+L<Set a breakpoint (break)|Devel::Trepan::CmdProcessor::Command::Break>
 
 =item *
 
-L</"Set a temporary breakpoint (tbreak)">
+L<Set a temporary breakpoint (tbreak)|Devel::Trepan::CmdProcessor::Command::TBreak>
 
 =item *
 
-L</"Add or modify a condition on a breakpoint (condition)">
+L<Add or modify a condition on a breakpoint (condition)|Devel::Trepan::CmdProcessor::Command::Condition>
 
 =item *
 
-L</"Delete some breakpoints (delete)">
+L<Delete some breakpoints (delete)|Devel::Trepan::CmdProcessor::Command::Delete>
 
 =item *
 
-L</"Enable some breakpoints (enable)">
+L<Enable some breakpoints (enable)|Devel::Trepan::CmdProcessor::Command::Enable>
 
 =item *
 
-L</"Disable some breakpoints (disable)">
+L<Disable some breakpoints (disable)|Devel::Trepan::CmdProcessor::Command::Disable>
 
 =item *
 
-L</"Set an action before a line is executed (action)">
+L<Set an action before a line is executed (action)|Devel::Trepan::CmdProcessor::Command::Action>
 
 =item *
 
-L</"Stop when an expression changes value (watch)">
+L<Stop when an expression changes value (watch)|Devel::Trepan::CmdProcessor::Command::Watch>
 
 =back
-
-=head4 Set a breakpont (break)
-
-B<break> [I<location>] [B<if> I<condition>]
-
-Set a breakpoint. If I<location> is given use the current stopping
-point. An optional condition may be given.
-
-I<Examples:>
-
- break                  # set a breakpoint on the current line
- break gcd              # set a breakpoint in function gcd
- break gcd if $a == 1   # set a breakpoint in function gcd with
-                        # condition $a == 1
- break 10               # set breakpoint on line 10
-
-When a breakpoint is hit the event icon is C<xx>.
-
-See also C<help breakpoints>.
-
-=head4 Set a temporary breakpoint (tbreak)
-
-B<tbreak> [I<location>]
-
-Set a one-time breakpoint. The breakpoint is removed after it is hit.
-If no location is given use the current stopping point.
-
-I<Examples:>
-
-   tbreak
-   tbreak 10               # set breakpoint on line 10
-
-When a breakpoint is hit the event icon is C<x1>.
-
-See also C<break> and C<help breakpoints>.
-
-=head4 Add or modify a condition on a breakpoint (condition)
-
-B<condition> I<bp-number> I<Perl-expression>
-
-I<bp-number> is a breakpoint number.  I<perl-expresion> is a Perl
-expression which must evaluate to true before the breakpoint is
-honored.  If I<perl-expression> is absent, any existing condition is removed;
-i.e., the breakpoint is made unconditional.
-
-I<Examples:>
-
-   condition 5 x > 10  # Breakpoint 5 now has condition x > 10
-   condition 5         # Remove above condition
-
-See also "break", "enable" and "disable".
-
-=head4 Delete some breakpoints (delete)
-
-B<delete> [I<bp-number> [I<bp-number>...]]
-
-Delete some breakpoints.
-
-Arguments are breakpoint numbers with spaces in between. To delete
-all breakpoints, give no arguments.
-
-See also the C<clear> command which clears breakpoints by line number
-and C<info break> to get a list of breakpoint numbers.
-
-=head4 Enable some breakpoints (enable)
-
-B<enable> I<num> [I<num> ...]
-
-Enables breakpoints, watch expressions or actions given as a space
-separated list of numbers which may be prefaces with an 'a', 'b', or 'w'.
-The prefaces are interpreted as follows:
-
-=over
-
-=item a -- action number
-
-=item b -- breakpoint number
-
-=item w -- watch expression number
-
-=back
-
-If I<num> is starts with a digit, I<num> is taken to be a breakpoint number.
-
-=head4 Disable some breakpoints (disable)
-
-B<disable> I<bp-number> [I<bp-number> ...]
-
-Disables the breakpoints given as a space separated list of breakpoint
-numbers. See also C<info break> to get a list of breakpoints
-
-=head4 Set an action before a line is executed (action)
-
-B<action> I<position> I<Perl-statement>
-
-Set an action to be done before the line is executed. If line is
-C<.>, set an action on the line about to be executed. The sequence
-of steps taken by the debugger is:
-
-=over
-
-=item 1. check for a breakpoint at this line
-
-=item 2. print the line if necessary (tracing)
-
-=item 3. do any actions associated with that line
-
-=item 4. prompt user if at a breakpoint or in single-step
-
-=item 5. evaluate line
-
-=back
-
-For example, this will print out the value of C<$foo> every time line
-53 is passed:
-
-=head4 Stop when an expression changes value (watch)
-
-B<watch> I<Perl-expression>
-
-Stop very time I<Perl-expression> changes from its prior value.
-
-I<Examples:>
-
- watch $a  # enter debugger when the value of $a changes
- watch scalar(@ARGV))  # enter debugger if size of @ARGV changes.
 
 =head3 Examining the call stack
 

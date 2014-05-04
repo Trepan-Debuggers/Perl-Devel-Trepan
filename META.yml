@@ -3,10 +3,12 @@ abstract: "Modular Perl Debugger (akin to Ruby \"Trepanning\" Debuggers)."
 author:
   - 'Rocky Bernstein <rocky@cpan.org>'
 build_requires:
+  Test::More: 0.81
+  Time::HiRes: 1.9721
   rlib: 0.02
 configure_requires:
   Module::Build: 0.32
-dynamic_config: 1
+dynamic_config: 0
 generated_by: 'Module::Build version 0.4007, CPAN::Meta::Converter version 2.120921'
 license: open_source
 meta-spec:
@@ -14,9 +16,6 @@ meta-spec:
   version: 1.4
 name: Devel-Trepan
 provides:
-  Carp:
-    file: lib/Devel/Trepan/DB/Sig.pm
-    version: 0
   DBBreak:
     file: lib/Devel/Trepan/DB/Breakpoint.pm
     version: 0
@@ -509,10 +508,7 @@ provides:
   Devel::Trepan::WatchMgr:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
-  SelfLoader:
-    file: lib/Devel/Trepan/DB/SelfLoader.pm
-    version: 1.20
-  TrepanPosition:
+  Devel::Trepan::Position:
     file: lib/Devel/Trepan/Position.pm
     version: 0
   WatchPoint:

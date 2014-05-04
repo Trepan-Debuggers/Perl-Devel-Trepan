@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 use rlib '../../..';
 
@@ -127,8 +127,9 @@ sub running_initialize($)
     $self->{stop_condition}  = undef;
     $self->{stop_events}     = undef;
     $self->{to_method}       = undef;
-    $self->{last_pos}        = TrepanPosition->new(pkg => '',  filename => '',
-                                                   line =>'', event=>'');
+    $self->{last_pos}        =
+	Devel::Trepan::Position->new(pkg => '',  filename => '',
+				     line =>'', event=>'');
 }
 
 # Should we not stop here?
@@ -154,10 +155,10 @@ sub is_stepping_skip($)
 
     my $frame = $self->{frame};
 
-    my $new_pos = TrepanPosition->new(pkg       => $frame->{pkg},
-                                      filename  => $frame->{file},
-                                      line      => $frame->{line},
-                                      event     => $self->{event});
+    my $new_pos = Devel::Trepan::Position->new(pkg       => $frame->{pkg},
+					       filename  => $frame->{file},
+					       line      => $frame->{line},
+					       event     => $self->{event});
 
     my $skip_val = 0;
 

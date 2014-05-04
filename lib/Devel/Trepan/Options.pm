@@ -8,9 +8,10 @@ use Pod::Find qw(pod_where);
 use File::Spec;
 use File::HomeDir;
 
-use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME);
+use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME);
 our @ISA;
+$VERSION='0.53'; # To fool CPAN indexer. Is <= real version
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';

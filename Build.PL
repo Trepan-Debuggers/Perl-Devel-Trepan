@@ -44,7 +44,7 @@ my $builder = Module::Build->new(
     meta_merge => {
         resources => {
             bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
-            repository  => 'http://github.com/rocky/Perl-Devel-Trepan'
+            repository  => 'http://github.com/rocky/Perl-Devel-Trepan',
         }
     },
 
@@ -55,11 +55,11 @@ my $builder = Module::Build->new(
     build_requires => {
         'rlib'                    => '0.02',
     },
-    test_requires => {
-        'Test::More'                        => '0.81',
-	'Time::HiRes'                       => '1.9721',
-        'rlib'                              => '0.02',
+
+    no_index   => {
+	'package'                           => ['SelfLoader', 'DB', 'Carp']
     },
+
     recommends => {
         'B::CodeLines'                      => 1.1,
         'Data::Printer'                     => 0,
@@ -86,7 +86,15 @@ my $builder = Module::Build->new(
         'rlib'                              => '0.02',
         'version'                           => 0,
     },
+
     sign                => ($ENV{PERL_MB_NOSIGN} ? 0 : 1),
+
+    test_requires => {
+        'Test::More'                        => '0.81',
+	'Time::HiRes'                       => '1.9721',
+        'rlib'                              => '0.02',
+    },
+
     );
 
 $builder->create_build_script();

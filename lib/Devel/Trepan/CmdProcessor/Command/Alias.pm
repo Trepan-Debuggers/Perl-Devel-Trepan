@@ -43,7 +43,7 @@ might be C<step>, C<show>, or C<set>, among others.
 =head2 See also:
 
 L<C<macro>|Devel::Trepan::CmdProcessor::Command::Macro> E<mdash> more complex definitions,
-L<C<unalias>|Devel::Trepan::CmdProcessor::Command::Unalias>
+L<C<unalias>|Devel::Trepan::CmdProcessor::Command::Unalias>, and
 L<C<show alias>|Devel::Trepan::CmdProcessor::Command::Show::Alias>
 
 =cut

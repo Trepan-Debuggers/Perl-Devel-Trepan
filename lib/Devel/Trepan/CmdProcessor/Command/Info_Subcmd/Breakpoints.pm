@@ -20,7 +20,7 @@ our $CMD = "info breakpoints";
 our $HELP = <<'HELP';
 =pod
 
-info breakpoints [I<num1> ...] [verbose]
+B<info breakpoints> [I<num1> ...] [B<verbose>]
 
 Show status of user-settable breakpoints. If no breakpoint numbers are
 given, the show all breakpoints. Otherwise only those breakpoints
@@ -33,6 +33,11 @@ the breakpoint after it gets hit.
 The C<Enb> column indicates whether the breakpoint is enabled.
 
 The C<Where> column indicates where the breakpoint is located.
+
+=head2 See also:
+
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>
+
 =cut
 HELP
 

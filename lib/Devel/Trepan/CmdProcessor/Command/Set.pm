@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor::Command::Set;
@@ -35,9 +35,10 @@ information about just that subcommand.
 Type C<set> for a list of set subcommands and what they do.
 Type C<help set *> for the list of C<set> subcommands.
 
-C<set auto...> is the
-same as C<set auto ...>. For example C<set autolist> is the same
-as C<set auto list>.
+C<set auto...> is the same as C<set auto ...>. For example, C<set
+autolist> is the same as L<C<set auto
+list>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>.
+
 =cut
 HELP
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -29,11 +29,11 @@ $NAME = set_name();
 $HELP = <<'HELP';
 =pod
 
-step[+|-] [into] [I<count>]
+B<step>[B<+>|B<->] [B<into>] [I<count>]
 
-step over 
+B<step over>
 
-step out
+B<step out>
 
 Execute the current line, stopping at the next event.  Sometimes this
 is called "step into".
@@ -50,7 +50,7 @@ the return for that call.)
 If no suffix is given, the debugger setting C<different> determines
 this behavior.
 
-=head2 Examples: 
+=head2 Examples:
 
  step        # step 1 event, any event obeying 'set different' setting
  step 1      # same as above
@@ -59,9 +59,13 @@ this behavior.
  step over   # same as 'next'
  step out    # same as 'finish'
 
-Related and similar is the C<next> (step over) and C<finish> (step out)
-commands. All of these are slower than running to a breakpoint. See also
-C<set different>.
+=head2 See also:
+
+L<C<next> (step over)|Devel::Trepan::CmdProcessor::Command::Step>,
+L<C<finish> (step out)|Devel::Trepan::CmdProcessor::Command::Finish>,
+L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>
+L<C<set different>|Devel::Trepan::CmdProcessor::Command::Set::Different>.
+
 =cut
 HELP
 
@@ -114,7 +118,7 @@ sub run($$) {
         } else {
             my $count_str = $args->[1];
             my $int_opts = {
-                msg_on_error => 
+                msg_on_error =>
                     "The 'step' command argument must eval to an integer. Got: ${count_str}",
                     min_value => 1
             };

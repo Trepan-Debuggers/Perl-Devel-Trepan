@@ -1,10 +1,10 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
 
 use Exporter;
-# NOTE: The down command  subclasses this, so beware when changing! 
+# NOTE: The down command  subclasses this, so beware when changing!
 package Devel::Trepan::CmdProcessor::Command::Up;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
@@ -20,7 +20,7 @@ EOE
 
 use strict;
 
-use vars qw(@ISA @EXPORT); @ISA = @CMD_ISA; push @ISA, 'Exporter'; 
+use vars qw(@ISA @EXPORT); @ISA = @CMD_ISA; push @ISA, 'Exporter';
 use vars @CMD_VARS;  # Value inherited from parent
 @EXPORT = qw(@CMD_VARS set_name);
 
@@ -30,19 +30,30 @@ our $HELP = <<'HELP';
 
 B<up> [I<count>]
 
-Move the current frame up in the stack trace (to an older frame). 0 is
-the most recent frame. If no count is given, move up 1.
+Move the current frame up to a caller in the stack trace (an
+older frame). 0 is the most recent frame. If no count is given, move
+up 1. This is same as C<down>, but moving in the opposite direction.
 
-See also C<down> and C<frame>.
+=head2 Examples:
+
+   up        # Set current frame to the caller of this current one
+   up 1      # Same as above
+   up -1     # Same as down
+
+=head2 See also:
+
+L<C<down>|Devel::Trepan::CmdProcessor::Command::Down>, and
+L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>.
+
 =cut
 HELP
 
 sub complete($$)
-{ 
+{
     my ($self, $prefix) = @_;
     $self->{proc}->frame_complete($prefix, 1);
 }
-  
+
 # This method runs the command
 sub run($$)
 {
@@ -52,9 +63,9 @@ sub run($$)
     $count_str = 1 unless defined $count_str;
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
-        'msg_on_error' => 
+        'msg_on_error' =>
             "The '${NAME}' command requires a frame number. Got: ${count_str}",
-        min_value => $low, 
+        min_value => $low,
         max_value => $high
     };
     my $count = $proc->get_an_int($count_str, $opts);

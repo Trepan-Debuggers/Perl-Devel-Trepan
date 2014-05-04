@@ -11,13 +11,20 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-## FIXME: do automatically.
-our $CMD = "show aliases";
 our $HELP         = <<"EOH";
-$CMD [NAME1 NAME2 ...] 
+=pod
+
+B<show aliases> [I<alias> [I<alias> ...]]
 
 If aliases names are given, show their definition. If left blank, show
-all alias names
+all alias names.
+
+=head2 See also:
+
+L<C<alias>|Devel::Trepan::CmdProcessor::Command::Alias>, and
+L<C<unalias>|Devel::Trepan::CmdProcessor::Command::Unalias>.
+
+=cut
 EOH
 
 our $MIN_ABBREV = length('al');
@@ -28,10 +35,10 @@ sub complete($$)
     my ($self, $prefix) = @_;
     my $proc = $self->{proc};
     my @candidates = keys %{$proc->{aliases}};
-    my @matches = 
+    my @matches =
         Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     sort @matches;
-}    
+}
 
 sub run($$) {
     my ($self, $args) = @_;

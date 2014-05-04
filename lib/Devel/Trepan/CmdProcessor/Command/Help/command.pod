@@ -1,17 +1,22 @@
-Overall Debugger Command Syntax
-=for command
+# Overall Debugger Command Syntax
+# Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
+
+=begin comment
+
 The intent of this file is to live in both in the github wiki and as
 part of on-line help documentation
 lib/Devel/Trepan/CmdProcess/Command/Help/...
 
+=end comment
+
 =head1 Overall Debugger Command Syntax
 
-If the first non-blank character of a line starts with #, 
-the command is ignored. 
+If the first non-blank character of a line starts with #,
+the command is ignored.
 
 Commands are split at whereever C<;;> appears. This process disregards
 any quotes or other symbols that have meaning in Perl. The strings
-after the leading command string are put back on a command queue. 
+after the leading command string are put back on a command queue.
 
 When reading a command if the string ends in C<\> (backslash), another
 line is read and this is concatenated to the previous result with a
@@ -34,15 +39,15 @@ The leading token is first looked up in the macro table. If it is in
 the table, the expansion is replaces the current command and possibly
 other commands pushed onto a command queue. See the "help macros" for
 help on how to define macros, and "info macro" for current macro
-definitions. 
+definitions.
 
-=item 2. 
+=item 2.
 
 The leading token is next looked up in the debugger alias table and
 the name may be substituted there. See "help alias" for how to define
 aliases, and "show alias" for the current list of aliases.
 
-=item 3. 
+=item 3.
 
 After the above, The leading token is looked up a table of debugger
 commands. If an exact match is found, the command name and arguments
@@ -53,7 +58,7 @@ commands, but "disp" is a unique prefix. You can allow or disallow
 abbreviations for commands using "set abbrev". The default is
 abbreviations are on.
 
-=item 4. 
+=item 4.
 
 If after all of the above, we still don't find a command, the line
 may be evaluated as a Perl statement in the current context of the
@@ -62,20 +67,13 @@ program at the point it is stoppped. However this is done only if
 
 =back
 
-If C<auto eval> is not set on, or if running the Perl statement
-produces an error, we display an error message that the entered string
-is "undefined".
+If L<C<auto
+eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval> is not
+set on, or if running the Perl statement produces an error, we display
+an error message that the entered string is "undefined".
 
-=head1 See also
+=head1 See also:
 
-=over 4
-
-=item  *
-
-help syntax examples
-
-=item *
-
-help syntax suffix
-
-=back
+L<C<help syntax
+examples>|Devel::Trepan::CmdProcessor::Command::Help::examples.pod>, and
+L<C<help syntax suffix>|Devel::Trepan::CmdProcessor::Command::Help::suffix.pod>

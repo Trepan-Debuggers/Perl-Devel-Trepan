@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -28,27 +28,31 @@ B<unalias> I<alias1> [I<alias2> ...]
 
 Remove alias I<alias1> and so on.
 
-B<Example:>
+=head2 Example:
 
  unalias s  # Remove 's' as an alias for 'step'
 
-See also C<alias>.
+=head2 See also:
+
+L<C<alias>|Devel::Trepan::CmdProcessor::Command::Alias>, and
+L<C<show aliases>|Devel::Trepan::CmdProcessor::Command::Show::Aliases>.
+
 =cut
 HELP
 
 our $ARGS  = 1;
-  
+
 sub complete($$)
 {
     my ($self, $prefix) = @_;
     my $proc = $self->{proc};
     my @candidates = keys %{$proc->{aliases}};
-    my @matches = 
+    my @matches =
         Devel::Trepan::Complete::complete_token(\@candidates, $prefix);
     sort @matches;
-}    
+}
 
-# Run command. 
+# Run command.
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};

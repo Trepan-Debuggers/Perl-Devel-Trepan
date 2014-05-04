@@ -22,7 +22,7 @@ our $IN_LIST      = 1;
 our $HELP         = <<'HELP';
 =pod
 
-B<set auto <eval> [B<on>|B<off>]
+B<set auto eval> [B<on>|B<off>]
 
 Evaluate unrecognized debugger commands.
 

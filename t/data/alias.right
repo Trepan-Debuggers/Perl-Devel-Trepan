@@ -14,20 +14,34 @@ Eval result display style is dumper.
 New alias 'upper' for command string 'up' created.
   up [*count*]
 
-  Move the current frame up in the stack trace (to an older frame). 0 is the
-  most recent frame. If no count is given, move up 1.
+  Move the current frame up to a caller in the stack trace (an older frame). 0
+  is the most recent frame. If no count is given, move up 1. This is same as
+  "down", but moving in the opposite direction.
 
-  See also "down" and "frame".
+ Examples:
+     up        # Set current frame to the caller of this current one
+     up 1      # Same as above
+     up -1     # Same as down
+
+ See also:
+  "down", and "frame".
 
   Aliases:
 upper
 Alias for upper removed.
   up [*count*]
 
-  Move the current frame up in the stack trace (to an older frame). 0 is the
-  most recent frame. If no count is given, move up 1.
+  Move the current frame up to a caller in the stack trace (an older frame). 0
+  is the most recent frame. If no count is given, move up 1. This is same as
+  "down", but moving in the opposite direction.
 
-  See also "down" and "frame".
+ Examples:
+     up        # Set current frame to the caller of this current one
+     up 1      # Same as above
+     up -1     # Same as down
+
+ See also:
+  "down", and "frame".
 set auto eval is off.
 *** Undefined command: "upper". Try "help".
 trepan.pl: That's all, folks...

@@ -29,7 +29,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-watch I<Perl-expression>
+B<watch> I<Perl-expression>
 
 Stop very time I<Perl-expression> changes from its prior value.
 
@@ -38,7 +38,13 @@ Stop very time I<Perl-expression> changes from its prior value.
  watch $a  # enter debugger when the value of $a changes
  watch scalar(@ARGV))  # enter debugger if size of @ARGV changes.
 
-See also C<delete>, C<enable>, and C<disable> and C<info watch>.
+=head2 See also
+
+L<C<delete>|Devel::Trepan::CmdProcessor::Command::Delete>,
+L<C<enable>|Devel::Trepan::CmdProcessor::Command::Enable>,
+L<C<disable>|Devel::Trepan::CmdProcessor::Command::Disable>, and
+L<C<info watch>|Devel::Trepan::CmdProcessor::Command::Watch>.
+
 =cut
 HELP
 

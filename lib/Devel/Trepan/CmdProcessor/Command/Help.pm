@@ -1,10 +1,10 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
 use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Help;
-use warnings; no warnings 'redefine';
+use warnings; no warnings 'redefine'; use utf8;
 
 use Devel::Trepan::Pod2Text qw(pod2string help2podstring);
 use Devel::Trepan::Complete qw(complete_token);
@@ -31,7 +31,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-help [I<command> [I<subcommand>]|I<expression>]
+B<help> [I<command> [I<subcommand>]|I<expression>]
 
 Without argument, print the list of available debugger commands.
 
@@ -200,7 +200,9 @@ sub show_command_syntax($$)
             unless($self->{syntax_summary_help}{$name}) {
                 my $filename = File::Spec->catfile($HELP_DIR, "${name}.pod");
                 my @lines = $self->readlines($filename);
-                $self->{syntax_summary_help}{$name} = $lines[0];
+		my $summary_help = $lines[0];
+		$summary_help =~ s/^#\s*//;
+                $self->{syntax_summary_help}{$name} = $summary_help;
             }
             my $msg = sprintf("  %-8s -- %s", $name,
                               $self->{syntax_summary_help}{$name});

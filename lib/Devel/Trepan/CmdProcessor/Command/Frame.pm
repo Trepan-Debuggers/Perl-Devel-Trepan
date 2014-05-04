@@ -18,7 +18,7 @@ EOE
 
 use strict;
 
-use vars qw(@ISA); @ISA = @CMD_ISA; 
+use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
@@ -42,16 +42,21 @@ least-recently-entered end.  So C<frame -1> moves to the oldest frame.
    frame 1   # Move to frame 1. Same as: frame 0; up
    frame -1  # The least-recent frame
 
-See also C<up>, C<down> and C<backtrace>
+=head2 See also:
+
+L<C<up>|Devel::Trepan::CmdProcessor::Command::Up>,
+L<C<down>|Devel::Trepan::CmdProcessor::Command::Down>,
+and L<C<backtrace>|Devel::Trepan::CmdProcessor::Command::Backtrace>
+
 =cut
 HELP
 
 sub complete($$)
-{ 
+{
     my ($self, $prefix) = @_;
     $self->{proc}->frame_complete($prefix);
 }
-  
+
 # This method runs the command
 sub run($$)
 {
@@ -69,9 +74,9 @@ sub run($$)
 
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
-        'msg_on_error' => 
+        'msg_on_error' =>
             "The '${NAME}' command requires a frame number. Got: ${position_str}",
-        min_value => $low, 
+        min_value => $low,
         max_value => $high
     };
     my $frame_num = $proc->get_an_int($position_str, $opts);

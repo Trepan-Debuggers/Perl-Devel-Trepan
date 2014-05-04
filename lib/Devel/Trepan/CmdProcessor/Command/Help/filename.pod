@@ -1,8 +1,13 @@
-syntax for indicating a filename
-=for command
+# syntax for indicating a filename
+# Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
+
+=begin comment
+
 The intent of this file is to live in both in the github wiki and as
 part of on-line help documentation
 lib/Devel/Trepan/CmdProcess/Command/Help/...
+
+=end comment
 
 =head1 Filename Syntax
 

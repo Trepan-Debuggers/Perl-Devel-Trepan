@@ -30,7 +30,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-B<next>[+|-] [I<count>]
+B<next>[B<+>|B<->] [I<count>]
 
 Step one statement ignoring steps into function calls at this level.
 Sometimes this is called 'step over'.
@@ -53,9 +53,9 @@ determines this behavior.
 
 =head2 See also:
 
-L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
-L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finish>,
-L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>
+L<C<step> (step into)|Devel::Trepan::CmdProcessor::Command::Step>,
+L<C<finish> (step out)|Devel::Trepan::CmdProcessor::Command::Finish>,
+L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>
 
 =cut
 HELP

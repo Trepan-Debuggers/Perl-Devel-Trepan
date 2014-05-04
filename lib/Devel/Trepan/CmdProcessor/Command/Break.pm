@@ -45,7 +45,10 @@ When a breakpoint is hit the event icon is C<xx>.
 
 =head2 See also:
 
-See also L<C<help breakpoints>|Devel::Trepan::CmdProcessor::Command/Break> and C<help syntax location>.
+C<help breakpoints>, L<C<info
+breakpoints>|Devel::Trepan::CmdProcessor::Command::Info::BreakPoints>,
+and C<help syntax location>.
+
 =cut
 HELP
 

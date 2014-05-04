@@ -53,8 +53,10 @@ questions are asked.
 
 =head2 See also:
 
-See also L<C<set confirm>|Devel::Trepan::CmdProcessor::Command::Quit> and
+See also L<C<set
+confirm>|Devel::Trepan::CmdProcessor::Command::Set::Confirm> and
 L<C<quit>|Devel::Trepan::CmdProcessor::Command::Quit>.
+
 =cut
 HELP
 

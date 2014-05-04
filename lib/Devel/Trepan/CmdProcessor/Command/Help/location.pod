@@ -1,15 +1,24 @@
-Location syntax
-=for command
+# Location syntax
+# Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
+
+=begin comment
+
 The intent of this file is to live in both in the github wiki and as
 part of on-line help documentation
 lib/Devel/Trepan/CmdProcess/Command/Help/...
+
+=end comment
 
 =head1 Location Syntax
 
 Locations are used to indicates places in the source code or the
 places in bytecode compiled from source code. Locations are used in
-the listing commands like C<list> or C<disassemble>; they are also used
-in I<breakpoint> commands like C<break>, C<tbreak> and C<continue>.
+the listing commands like
+L<C<list>|Devel::Trepan::CmdProcessor::Command::List> or
+C<disassemble>; they are also used in I<breakpoint> commands like
+L<C<break>|Devel::Trepan::CmdProcessor::Command::break>,
+L<C<tbreak>|Devel::Trepan::CmdProcessor::Command::TBreak> and
+L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>.
 
 A location is either some sort of "container" and a position inside
 that container. A container is either a file name or a method
@@ -22,10 +31,11 @@ means.  That its "foo" (without the quotes) could conceivably be
 either a method or a file name. The debugger does a file check to see
 if "foo" is a file.
 
-In gdb, locations are often given using a filename a colon and a line
-number. That is supported here are well. So myfile.rb:5 indicates line 5
-of file "myfile.rb". But since we also allow method names you can also use
-"gcd:5" to indicate line 5 of method "gcd".
+In I<gdb>, locations are often given using a filename a colon and a
+line number. That is supported here are well. So C<myfile.rb:5>
+indicates line 5 of file I<myfile.rb>. But since we also allow method
+names you can also use C<gcd:5> to indicate line 5 of function
+I<gcd()>.
 
 Line numbers in methods are not relative to the beginning of the
 method but relative the beginning of source text that contains the
@@ -34,7 +44,7 @@ are shown for example in a backtrace. So all of this hopefully will
 feel familiar and consistent.
 
 Instead of using a colon to separate the container and the position,
-you can also use spacs. So "gcd 5" is the same as gcd:5.
+you can also use spaces. So C<gcd 5> is the same as C<gcd:5>.
 
 If the filename has an embedded blank in it, you can indicate that by
-using a backslash escape. For example: "file\ with\ blanks.rb"
+using a backslash escape. For example: C<file\ with\ blanks.rb>.

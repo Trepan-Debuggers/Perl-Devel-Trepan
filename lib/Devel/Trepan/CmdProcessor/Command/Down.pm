@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -26,18 +26,23 @@ our $HELP = <<'HELP';
 B<down> [I<count>]
 
 Move the current frame down in the stack trace (to a newer frame). 0
-is the most recent frame. If no count is given, move down 1.
+is the most recent frame. If no count is given, move down 1. This is
+the same as C<up>, but moving in an opposite direction.
 
-See also C<up> and C<frame>.
+=head2 See also:
+
+L<C<up>|Devel::Trepan::CmdProcessor::Command::Up>, and
+L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>.
+
 =cut
 HELP
 
 sub complete($$)
-{ 
+{
     my ($self, $prefix) = @_;
     $self->{proc}->frame_complete($prefix, -1);
 }
-  
+
 # This method runs the command
 sub run($$)
 {
@@ -47,9 +52,9 @@ sub run($$)
     $count_str = 1 unless defined $count_str;
     my ($low, $high) = $proc->frame_low_high(0);
     my $opts= {
-        'msg_on_error' => 
+        'msg_on_error' =>
             "The '${NAME}' command requires a frame number. Got: ${count_str}",
-        min_value => $low, 
+        min_value => $low,
         max_value => $high
     };
     my $count = $proc->get_an_int($count_str, $opts);

@@ -28,9 +28,9 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-list[>] [I<filename>] [I<first> [I<number>]]
+B<list>[E<gt>] [I<filename>] [I<first> [I<number>]]
 
-list[>] I<location> [I<number>]
+B<list>[E<gt>] I<location> [I<number>]
 
 List Perl source code.
 
@@ -109,7 +109,11 @@ currently stopped. On line 253 there is a breakpoint 1 which is
 enabled, while at line 255 there is an breakpoint 2 which is
 disabled.
 
-See also C<set autolist> and C<help syntax location>.
+=head2 See also:
+
+L<C<set
+autolist>|Devel::Trepan::CmdProcessor::Command::Set::Autolist>, and
+C<help syntax location>.
 
 =cut
 HELP

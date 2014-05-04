@@ -79,6 +79,10 @@ Without any action names the current settings are shown.
  handle 2           # Probably the same as above
  handle -2          # the same as above
  handle INT nostop  # Don't stop in the debugger on SIGINT
+
+=head2 See also:
+
+L<C<info signals>|Devel::Trepan::CmdProcessor::Command::Info::Signals>
 =cut
 HELP
 

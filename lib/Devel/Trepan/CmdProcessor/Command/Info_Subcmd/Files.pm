@@ -31,50 +31,47 @@ EOE
 our $HELP = <<'HELP';
 =pod
 
-info files [{I<filename>|*} [all|ctime|brkpts|mtime|sha1|size|stat]]
+B<info files> [{I<filename>|B<*>} [B<all>|B<ctime>|B<brkpts>|B<mtime>|B<sha1>|B<size>|B<stat>]]
 
 Show information about the current file. If no filename is given and
 the program is running, then the current file associated with the
 current stack entry is used. Giving . has the same effect.
 
-C<*> gives a list of all files we know about.
+B<*> gives a list of all files we know about.
 
 Sub-options which can be shown about a file are:
 
 =over 2
 
-=item brkpts
+=item *
 
-Line numbers where there are statement boundaries.  These lines can be
-used in breakpoint commands.
+B<brkpts> E<mdash> Line numbers where there are statement boundaries.
+These lines can be used in breakpoint commands.
 
-=item ctime
+=item *
 
-File creation time
+B<ctime> E<mdash> File creation time
 
-=item iseq
+=item *
 
-Instruction sequences from this file.
+B<time> E<mdash> File modification time
 
-=item time
+=item *
 
-File modification time
+B<sha1> E<mdash> A SHA1 hash of the source text. This may be useful in
+comparing source code.
 
-=item sha1
+=item *
 
-A SHA1 hash of the source text. This may be useful in comparing source code.
+B<size> E<mdash> The number of lines in the file.
 
-=item size
+=item *
 
-The number of lines in the file.
+B<stat> E<mdash> I<stat()> information
 
-=item stat
+=item *
 
-I<stat()> information
-
-=item all --
-
-All of the above information.
+B<all> E<mdash> All of the above information.
 
 =back
 

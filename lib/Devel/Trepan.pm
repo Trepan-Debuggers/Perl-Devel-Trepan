@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.54'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.54_01'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -237,11 +237,11 @@ variable's value.
 
 =item *
 
-L<Set a breakpoint (break)|Devel::Trepan::CmdProcessor::Command::Break>
+L<Set an action to be done before the line is executed (action)|Devel::Trepan::CmdProcessor::Command::Action>
 
 =item *
 
-L<Set a temporary breakpoint (tbreak)|Devel::Trepan::CmdProcessor::Command::TBreak>
+L<Set a breakpoint (break)|Devel::Trepan::CmdProcessor::Command::Break>
 
 =item *
 
@@ -261,7 +261,7 @@ L<Enable some breakpoints (enable)|Devel::Trepan::CmdProcessor::Command::Enable>
 
 =item *
 
-L<Set an action before a line is executed (action)|Devel::Trepan::CmdProcessor::Command::Action>
+L<Set a temporary breakpoint (tbreak)|Devel::Trepan::CmdProcessor::Command::TBreak>
 
 =item *
 
@@ -321,14 +321,6 @@ breakpoints is in L</Making the program stop at certain points>.
 
 =item *
 
-L<Step into (step)|Devel::Trepan::CmdProcessor::Command::Step>
-
-=item *
-
-L<Step over (next)|Devel::Trepan::CmdProcessor::Command::Next>
-
-=item *
-
 L<Continue execution (continue)|Devel::Trepan::CmdProcessor::Command::Continue>
 
 =item *
@@ -337,11 +329,23 @@ L<Step out (finish)|Devel::Trepan::CmdProcessor::Command::Finish>
 
 =item *
 
-L<Gently exit debugged program (quit)|Devel::Trepan::CmdProcessor::Command::Quit>
+L<Specify a how to handle a signal (handle)|Devel::Trepan::CmdProcessor::Command::Handle>
+
+=item *
+
+L<Step over (next)|Devel::Trepan::CmdProcessor::Command::Next>
+
+=item *
+
+L<Step into (step)|Devel::Trepan::CmdProcessor::Command::Step>
 
 =item *
 
 L<Hard termination (kill)|Devel::Trepan::CmdProcessor::Command::Kill>
+
+=item *
+
+L<Gently exit debugged program (quit)|Devel::Trepan::CmdProcessor::Command::Quit>
 
 =item *
 
@@ -379,17 +383,17 @@ L<Print all or parts of the call stack
 
 =item *
 
+L<Move to a less recent frame
+(down)|Devel::Trepan::CmdProcessor::Command::Down>
+
+=item *
+
 L<Select a call frame
 (frame)|Devel::Trepan::CmdProcessor::Command::Frame>
 
 =item *
 
 L<Move to a more recent frame (up)|Devel::Trepan::CmdProcessor::Command::Up>
-
-=item *
-
-L<Move to a less recent frame
-(down)|Devel::Trepan::CmdProcessor::Command::Down>
 
 =back
 
@@ -403,7 +407,7 @@ L<Define an alias (alias)|Devel::Trepan::CmdProcessor::Command::Alias>
 
 =item *
 
-L<Remove an alias (unalias)|Devel::Trepan::CmdProcessor::Command::Unalias>
+L<List the completions for the rest of the line|Devel::Trepan::CmdProcessor::Command::Complete>
 
 =item *
 
@@ -428,6 +432,10 @@ L<Modify parts of the Debugger Environment|Devel::Trepan::CmdProcessor::Command:
 =item *
 
 L<Show parts of the Debugger Environment|Devel::Trepan::CmdProcessor::Command::Show>
+
+=item *
+
+L<Remove an alias (unalias)|Devel::Trepan::CmdProcessor::Command::Unalias>
 
 =back
 

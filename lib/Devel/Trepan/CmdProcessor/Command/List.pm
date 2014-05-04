@@ -45,34 +45,9 @@ If the command has a '>' suffix, then line centering is disabled and
 listing begins at the specificed location.
 
 The number of lines to show is controlled by the debugger "listsize"
-setting. Use C<set max list> or C<show max list> to see or set the
-value.
-
-A I<location> is a either:
-
-=over
-
-=item *
-
-number, e.g. 5,
-
-=item *
-
-a function, e.g. C<File::Basename::dirname>, or C<dirname>
-
-=item *
-
-a filename and a number, e.g. C<foo.pl 5>,
-
-=item *
-
-a '.' for the current line number
-
-=item *
-
- a '-' for the lines before the current line number
-
-=back
+setting. Use L<C<set max
+list>|Devel::Trepan::CmdProcessor::Set::Max::List> or C<show max list>
+to see or set the value.
 
 If the location form is used with a subsequent parameter, the
 parameter is the starting line number.  When there two numbers are
@@ -82,16 +57,16 @@ number of lines to list instead.
 
 =head2 Examples:
 
-list 5            # List centered around line 5
-list 5>           # List starting at line 5
-list foo.rb 5     # Same as above.
-list foo.rb  5 6  # list lines 5 and 6 of foo.rb
-list foo.rb  5 2  # Same as above, since 2 < 5.
-list FileUtils.cp # List lines around the FileUtils.cp function.
-list .            # List lines centered from where we currently are stopped
-list . 3          # List 3 lines starting from where we currently are stopped
+ list 5            # List centered around line 5
+ list 5>           # List starting at line 5
+ list foo.rb 5     # Same as above.
+ list foo.rb  5 6  # list lines 5 and 6 of foo.rb
+ list foo.rb  5 2  # Same as above, since 2 < 5.
+ list FileUtils.cp # List lines around the FileUtils.cp function.
+ list .            # List lines centered from where we currently are stopped
+ list . 3          # List 3 lines starting from where we currently are stopped
                      # if . > 3. Otherwise we list from . to 3.
-list -            # List lines previous to those just shown
+ list -            # List lines previous to those just shown
 
 The output of the list command give a line number, and some status
 information about the line and the text of the line. Here is some
@@ -112,8 +87,8 @@ disabled.
 =head2 See also:
 
 L<C<set
-autolist>|Devel::Trepan::CmdProcessor::Command::Set::Autolist>, and
-C<help syntax location>.
+autolist>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>, and
+L<C<help syntax location>|Devel::Trepan::CmdProcessor::Command::Help::location>.
 
 =cut
 HELP

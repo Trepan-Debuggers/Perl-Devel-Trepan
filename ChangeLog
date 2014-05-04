@@ -1,5 +1,20 @@
 2014-05-04  Rocky Bernstein <rocky@cpan.org>
 
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Finish.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Handle.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for release 0.54
+
+2014-05-04  Rocky Bernstein <rocky@cpan.org>
+
 	* Build.PL, META.json, META.yml, lib/Devel/Trepan/Options.pm,
 	lib/Devel/Trepan/Position.pm,
 	lib/Devel/Trepan/Processor/Running.pm, t/10test-position.t: Attempt

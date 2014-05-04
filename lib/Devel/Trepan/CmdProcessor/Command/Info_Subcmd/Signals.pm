@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rockyb@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings;
 use rlib '../../../../..';
@@ -23,9 +23,9 @@ our $CMD = "info signals";
 our $HELP         = <<'HELP';
 =pod
 
-info signals
+B<info signals>
 
-info signals I<signal1> [I<signal2> ..]
+B<info signals> I<signal1> [I<signal2> ..]
 
 In the first form a list of the existing signals and actions are shown.
 
@@ -38,7 +38,9 @@ not. For a signal number, you can preface the number with C<+> or
 C<->, but both are ignored. A negative number is the same as its
 corresponding positive number.
 
-See C<handle> for descriptions of the settable fields shown.
+=head2 See also:
+
+L<C<handle>|Devel::Trepan::CmdProcessor::Handle> for descriptions of the settable fields shown.
 =cut
 HELP
 

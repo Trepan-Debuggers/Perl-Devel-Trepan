@@ -1,3 +1,55 @@
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get Ready for
+	release 0.53
+
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Condition.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Delete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Enable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/TBreak.pm: More command pod
+	revisions and reduce Trepan.pm for breakpoints section.
+
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Continue.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Kill.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Next.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Run.pm,
+	lib/Devel/Trepan/Interface/Server.pm: Server.pm: default option is
+	tcp not TCP any more.  Command/*.pm: pod fixes: use head2 section
+	and L<> for cross linking Trepan.pm: More use of links rather than
+	duplicationg pod.
+
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Minor change eval
+	help wording
+
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Eval.pm: Correction for
+	Data::Dumper::Concise; dump fn is Data::Dumper::Concise::Dumper
+
+2014-05-03  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, Changes,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm, lib/Devel/Trepan/DB/Sub.pm,
+	lib/Devel/Trepan/Pod2Text.pm, t/10test-proc-default.t: More verbiage
+	around set display
+
 2014-04-27  Rocky Bernstein <rocky@cpan.org>
 
 	* lib/Devel/Trepan/Processor.pm,

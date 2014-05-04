@@ -27,8 +27,10 @@
       "runtime" : {
          "recommends" : {
             "B::CodeLines" : "1.1",
+            "Data::Dumper::Concise" : "0",
             "Data::Printer" : "0",
-            "Devel::Callsite" : "0.06",
+            "Devel::Trepan::Disassemble" : "1.9",
+            "Devel::Trepan::Shell" : "v1.4.1",
             "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
             "Term::ReadLine::Perl5" : "1.21"
@@ -64,7 +66,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.52"
+         "version" : "0.53"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -240,6 +242,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Load::Source" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Load::Subcmd" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Subcmd.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Macro" : {
@@ -598,6 +604,14 @@
          "file" : "lib/Devel/Trepan/DB/Use.pm",
          "version" : 0
       },
+      "Devel::Trepan::IO::FIFOClient" : {
+         "file" : "lib/Devel/Trepan/IO/FIFOClient.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::IO::FIFOServer" : {
+         "file" : "lib/Devel/Trepan/IO/FIFOServer.pm",
+         "version" : 0
+      },
       "Devel::Trepan::IO::Input" : {
          "file" : "lib/Devel/Trepan/IO/Input.pm",
          "version" : 0
@@ -692,7 +706,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.52"
+         "version" : "0.53"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -723,7 +737,7 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.52",
+   "version" : "0.53",
    "x_test_requires" : {
       "Test::More" : "0.81",
       "Time::HiRes" : "1.9721",

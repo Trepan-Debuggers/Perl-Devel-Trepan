@@ -2,7 +2,7 @@
 # Tracks calls and returns and stores some stack frame
 # information.
 package DB;
-use warnings; no warnings 'redefine';
+use warnings; no warnings 'redefine'; use utf8;
 no warnings 'once';
 use English qw( -no_match_vars );
 

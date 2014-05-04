@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -14,7 +14,7 @@ unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'data';
 use constant NEED_STACK => 0;
-use constant SHORT_HELP => 
+use constant SHORT_HELP =>
          'Display expressions when entering debugger';
 use constant MIN_ARGS  => 1;  # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
@@ -26,10 +26,10 @@ use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
 our $HELP = <<'HELP';
-=pod 
+=pod
 
 B<display> I<Perl-expression>
- 
+
 Print value of expression I<Perl-expression> each time the program stops.
 
 =head2 Examples:

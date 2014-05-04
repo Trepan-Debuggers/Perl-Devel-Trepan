@@ -30,7 +30,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-finish [I<levels>]
+B<finish> [I<levels>]
 
 Continue execution until the program is about to leave the current
 function. Sometimes this is called "step out".
@@ -38,9 +38,12 @@ function. Sometimes this is called "step out".
 When integer I<levels> is specified, that many frame levels need to be
 popped. The default is 1.
 
-See the C<break> command if you want to stop at a particular point in a
-program. In general, C<finish>, C<step> and C<next> may slow a program down
-while C<break> will have less overhead.
+=head2 See also:
+
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>,
+L<C<next> (step over)|Devel::Trepan::CmdProcessor::Command::Next>, and
+L<C<step> (step into)|Devel::Trepan::CmdProcessor::Command::Step>.
 
 =cut
 HELP

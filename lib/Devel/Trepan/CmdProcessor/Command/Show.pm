@@ -25,18 +25,21 @@ use vars @CMD_VARS;
 
 $NAME = set_name();
 $HELP = <<'HELP';
-=pod 
+=pod
+
+B<show> [I<show sub-commmand> ...]
 
 Generic command for showing things about the debugger.  You can
 give unique prefix of the name of a subcommand to get information
 about just that subcommand.
 
 Type C<show> for a list of show subcommands and what they do.
+
 Type C<help show *> for a list of C<show> subcommands.
 =cut
 HELP
 
-sub run($$) 
+sub run($$)
 {
     my ($self, $args) = @_;
     my $first;

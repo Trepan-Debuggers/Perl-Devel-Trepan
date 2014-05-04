@@ -23,7 +23,7 @@ unless (@ISA) {
     eval <<"EOE";
 use constant CATEGORY   => 'running';
 use constant NEED_STACK => 0;
-use constant SHORT_HELP => 
+use constant SHORT_HELP =>
     'Specify a how to handle a signal';
 use constant MIN_ARGS  => 1;   # Need at least this many
 use constant MAX_ARGS  => undef;  # Need at most this many - undef -> unlimited.
@@ -37,7 +37,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-handle [SIG [action1 action2 ...]]
+B<handle> [I<sig> [I<action1> I<action2> ...]]
 
 Specify how to handle a signal SIG. SIG can be a signal name like
 SIGINT or a signal number like 2. The absolute value is used for
@@ -56,7 +56,7 @@ recognized actions include "stop", "nostop", "print", "noprint",
 C<stop> means reenter debugger if this signal happens (implies
 C<print> and C<nopass>).
 
-=item * 
+=item *
 C<Print> means print a message if this signal happens.
 
 =item *

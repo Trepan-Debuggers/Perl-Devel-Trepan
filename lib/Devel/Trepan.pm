@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.53'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.54'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -215,7 +215,7 @@ L</Support facilities>
 
 =item *
 
-L</Syntax of debugger commands>
+L</Syntax of Debugger Commands>
 
 =back
 
@@ -253,11 +253,11 @@ L<Delete some breakpoints (delete)|Devel::Trepan::CmdProcessor::Command::Delete>
 
 =item *
 
-L<Enable some breakpoints (enable)|Devel::Trepan::CmdProcessor::Command::Enable>
+L<Disable some breakpoints (disable)|Devel::Trepan::CmdProcessor::Command::Disable>
 
 =item *
 
-L<Disable some breakpoints (disable)|Devel::Trepan::CmdProcessor::Command::Disable>
+L<Enable some breakpoints (enable)|Devel::Trepan::CmdProcessor::Command::Enable>
 
 =item *
 
@@ -431,103 +431,26 @@ L<Show parts of the Debugger Environment|Devel::Trepan::CmdProcessor::Command::S
 
 =back
 
-=head3 Syntax of debugger commands
+=head3 Syntax of Debugger Commands
 
-=head4 Overall Debugger Command Syntax
+=over
 
-If the first non-blank character of a line starts with #, the command
-is ignored.
+=item *
+L<Overall Debugger Command Syntax|Devel::Trepan::CmdProcessor::Command::Help::command>
 
-Commands are split at whereever C<;;> appears. This process disregards
-any quotes or other symbols that have meaning in Perl. The strings
-after the leading command string are put back on a command queue.
+=item *
+L<Location Syntax|Devel::Trepan::CmdProcessor::Command::Help::location>
 
-Within a single command, tokens are then white-space split. Again,
-this process disregards quotes or symbols that have meaning in Perl.
-Some commands like C<eval>, C<macro>, and C<break> have access to the
-untokenized string entered and make use of that rather than the
-tokenized list.
+=item *
+L<Filename syntax|Devel::Trepan::CmdProcessor::Command::Help::filename>
 
-Resolving a command name involves possibly 4 steps. Some steps may be
-omitted depending on early success or some debugger settings:
+=item *
+L<Command suffixes which have special meaning|Devel::Trepan::CmdProcessor::Command::Help::suffixes>
 
-1. The leading token is first looked up in the macro table. If it is in
-the table, the expansion is replaces the current command and possibly
-other commands pushed onto a command queue. See the "help macros" for
-help on how to define macros, and "info macro" for current macro
-definitions.
+=item *
+L<Debugger Command Examples|Devel::Trepan::CmdProcessor::Command::Help::examples>
 
-2. The leading token is next looked up in the debugger alias table and
-the name may be substituted there. See "help alias" for how to define
-aliases, and "show alias" for the current list of aliases.
-
-3. After the above, The leading token is looked up a table of debugger
-commands. If an exact match is found, the command name and arguments
-are dispatched to that command. Otherwise, we may check to see the the
-token is a unique prefix of a valid command. For example, "dis" is not
-a unique prefix because there are both "display" and "disable"
-commands, but "disp" is a unique prefix. You can allow or disallow
-abbreviations for commands using "set abbrev". The default is
-abbreviations are on.
-
-4. If after all of the above, we still don't find a command, the line
-may be evaluated as a Perl statement in the current context of the
-program at the point it is stoppped. However this is done only if
-"auto eval" is on.  (It is on by default.)
-
-If "auto eval" is not set on, or if running the Perl statement
-produces an error, we display an error message that the entered string
-is "undefined".
-
-=head2 Debugger Command Examples
-
-=head3 Commenting
-
- # This line does nothing. It is a comment and is useful
- # in debugger command files.
-      # any amount of leading space is also ok
-
-=head4 Splitting Commands
-
-The following runs two commands: C<info program> and C<list>
-
- info program;; list
-
-The following gives a syntax error since C<;;> splits the line and the
-simple debugger parse then thinks that the quote (") is not closed.
-
- print "hi ;;-)\n"
-
-If you have the Devel::Trepan::Shell plugin, you can go into a real
-shell and run the above.
-
-=head4 Command Continuation
-
-If you want to continue a command on the next line use C<\> at the end
-of the line. For example:
-
- eval $x = "This is \
- a multi-line string"
-
-The string in variable C<$x> will have a C<\n> before the article "a".
-
-=head4 Command suffixes which have special meaning
-
-Some commands like C<step>, or C<list> do different things when an
-alias to the command ends in a particular suffix like ">".
-
-Here are a list of commands and the special suffixes:
-
-    command   suffix
-    -------   ------
-    list       >
-    step       +,-,<,>
-    next       +,-,<,>
-    quit       !
-    kill       !
-    eval       ?
-
-See help on the commands listed above for the specific meaning of the suffix.
+=back
 
 =head1 BUGS/CAVEATS
 

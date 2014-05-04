@@ -63,7 +63,7 @@ this behavior.
 
 L<C<next> (step over)|Devel::Trepan::CmdProcessor::Command::Step>,
 L<C<finish> (step out)|Devel::Trepan::CmdProcessor::Command::Finish>,
-L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>
+L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>, and
 L<C<set different>|Devel::Trepan::CmdProcessor::Command::Set::Different>.
 
 =cut

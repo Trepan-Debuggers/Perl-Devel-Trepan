@@ -27,12 +27,15 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
+B<set> [I<set sub-commmand> ...]
+
 Modifies parts of the debugger environment.
 
 You can give unique prefix of the name of a subcommand to get
 information about just that subcommand.
 
 Type C<set> for a list of set subcommands and what they do.
+
 Type C<help set *> for the list of C<set> subcommands.
 
 C<set auto...> is the same as C<set auto ...>. For example, C<set

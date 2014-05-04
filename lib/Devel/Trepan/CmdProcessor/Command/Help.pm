@@ -33,19 +33,20 @@ our $HELP = <<'HELP';
 
 B<help> [I<command> [I<subcommand>]|I<expression>]
 
-Without argument, print the list of available debugger commands.
-
+Without argument, print the list of available debugger commands.  a
 When an argument is given, it is first checked to see if it is command
-name. C<help backtrace> gives help on the C<backtrace> debugger command.
+name. For example, C<help backtrace> gives help on the
+L<C<backtrace>|Devel::Trepan::CmdProcessor::Command::Backtrace>
+debugger command.
 
-If the environment variable I<$PAGER> is defined, the file is
-piped through that command.  You will notice this only for long help
-output.
-
-Some commands like C<info>, C<set>, and C<show> can accept an
+Some commands like
+L<C<info>|Devel::Trepan::CmdProcessor::Command::Info>,
+L<C<set>|Devel::Trepan::CmdProcessor::Command::Set>, and
+L<C<show>|Devel::Trepan::CmdProcessor::Command::Show> can accept an
 additional subcommand to give help just about that particular
-subcommand. For example C<help info line> gives help about the
-C<info line> command.
+subcommand. For example C<help info line> gives help about the C<info
+line> command.
+
 =cut
 HELP
 

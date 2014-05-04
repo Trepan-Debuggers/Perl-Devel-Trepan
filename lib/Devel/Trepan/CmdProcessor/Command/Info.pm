@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor::Command::Info;
@@ -25,6 +25,8 @@ use vars @CMD_VARS;
 our $NAME       = set_name();
 our $HELP = <<'HELP';
 =pod
+
+B<info> [I<info sub-commmand> ...]
 
 Generic command for showing things about the program being debugged.
 

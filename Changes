@@ -1,6 +1,13 @@
 Revision history for Devel-Trepan
 
-0.53
+0.54 May 4, 2014
+- Expand previous effort started in 0.53 to cross index POD text,
+  use more POD tagging and regularize its use, e.g. fixed text is bold.
+  Change "see also" Go over help PODs and reduce redundancy of POD text in
+  trepan.pm with that in the individual commands.
+- Try to fix CPAN indexing problems
+
+0.53 May 3, 2014
 - Completion for out-of-process control
 - Allow Data::Dumper::Concise to print values
 - Add more Perl module recommendations, such as to our plugins

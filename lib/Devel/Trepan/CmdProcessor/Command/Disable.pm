@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -7,7 +7,7 @@ use rlib '../../../..';
 # parameter to @proc.en_disable_breakpoint_by_number is different (set
 # as ENABLE_PARM below).
 #
-# NOTE: The enable command  subclasses this, so beware when changing! 
+# NOTE: The enable command  subclasses this, so beware when changing!
 package Devel::Trepan::CmdProcessor::Command::Disable;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 use strict;
@@ -35,12 +35,27 @@ our $HELP = <<'HELP';
 =pod
 
 B<disable> I<bp-number> [I<bp-number> ...]
-    
+
 Disables the breakpoints given as a space separated list of breakpoint
-numbers. See also C<info break> to get a list of breakpoints
+numbers.
+
+=head2 Examples:
+
+ disable 1 2    # Enable breakpoint 1 and 2
+ disable b1 b2  # Same as above
+ disable a4     # Enable action 4
+ disable w1 2   # Enable watch expression 1 and breakpoint 2
+
+=head2 See also:
+
+L<C<info break>|Devel::Trepan::CmdProcessor::Command::Info::Break> to
+get a list of breakpoints, and
+L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Enable> to
+enable breakpoints.
+
 =cut
 HELP
-    
+
 ### FIXME: parameterize and combine these. Also combine with enable.
 sub disable_breakpoint($$) {
     my ($proc, $i) = @_;
@@ -79,7 +94,7 @@ sub disable_watchpoint($$) {
         $proc->errmsg($msg);
     }
 }
-    
+
 sub disable_action($$) {
     my ($proc, $i) = @_;
     my $act = $proc->{actions}->find($i);
@@ -98,7 +113,7 @@ sub disable_action($$) {
         $proc->errmsg($msg);
     }
 }
-    
+
 sub run($$)
 {
     my ($self, $args) = @_;
@@ -123,16 +138,16 @@ sub run($$)
         my $i = $proc->get_an_int($num_str);
         if (defined $i) {
             if ('a' eq $type) {
-                disable_action($proc, $i); 
+                disable_action($proc, $i);
             } elsif ('b' eq $type) {
-                disable_breakpoint($proc, $i); 
+                disable_breakpoint($proc, $i);
             } elsif ('w' eq $type) {
                 disable_watchpoint($proc, $i);
             }
         }
     }
 }
-        
+
 unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup

@@ -36,7 +36,10 @@ The C<Where> column indicates where the breakpoint is located.
 
 =head2 See also:
 
-L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Disable>, and
+L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Enable>.
+
 
 =cut
 HELP

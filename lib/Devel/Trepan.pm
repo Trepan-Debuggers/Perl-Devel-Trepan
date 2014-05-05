@@ -152,7 +152,11 @@ effect. See L</Plugins> and L</Recommended Modules> below.
 
 From a shell:
 
-    $ trepan.pl [trepan-opts] -- perl-program [perl-program-opts]
+    $ trepan.pl [trepan-opts] [--] perl-program [perl-program-opts]
+
+Or for those who prefer the traditional Perlish way:
+
+    $ perl -d:Trepan perl-program [perl-program-opts]
 
 For out-of-process (and possibly out-of server) debugging:
 
@@ -524,18 +528,28 @@ support via L<B::Concise>
 
 =head2 Recommended Modules
 
+I<Devel::Trepan> will detect automatically whether any of these
+modules are present. If so, additional capabilies are available.
+
 =over 4
 
 =item *
 
-L<Devel::Callsite> allows you to see the exact location of where you are stopped.
+L<Devel::Callsite> allows you to see the exact location of where you
+are stopped. Location reporting changes by default to show the current
+OP address, when this module is present.
 
 =item *
-L<Enbugger> allows you to enter the debugger via a direct call in source code
+L<Enbugger> allows you to enter the debugger without previously having your program compiled for debugging.
 
 =item *
 
-L<Eval::WithLexicals> allows you to inspect I<my> and I<our> variables up the call stack
+L<Eval::WithLexicals> allows you to inspect I<my> and I<our> variables
+up the call stack. Commands L<C<info variables
+my>|Devel::Trepan::CmdProcessor::Command::Info::Variables::My> and
+L<C<info variables
+our>|Devel::Trepan::CmdProcessor::Command::Info::Variables::Our> become
+available when this module is detected.
 
 =item *
 
@@ -547,11 +561,11 @@ L<Data::Dumper::Perltidy> allows one to Use I<Data::Dumper::Perltidy> to format 
 
 =item *
 
-L<Term::ReadLine::Perl5> allows editing on the command line, command completion, and saving command history. This Module is preferred over L<Term::ReadLine::Perl> or L<Term::ReadLine::Gnu>.
+L<Term::ReadLine::Perl5> allows editing on the command line, command completion, and saving command history. This Module is preferred over I<Term::ReadLine::Perl> or I<Term::ReadLine::Gnu>.
 
 =item *
 
-L<Term::ReadLine::Gnu> allows editing of the command line and command completion
+L<Term::ReadLine::Gnu> allows editing of the command line and command completion. Command completion isn't as good here as with I<Term::ReadLine::Perl5>.
 
 =back
 
@@ -570,14 +584,21 @@ L<Devel::ebug>
 
 =item *
 
-L<DB> is a somewhat abandoned debugger API interface. I've tried to use some
-parts of this along with C<perl5db>.
+L<DB> is a somewhat abandoned debugger API interface. I've tried to
+use some parts of this along with C<perl5db>.
+
+=item *
+
+L<Devel::Hdb>
+
+A Perl debugger that uses HTML and javascript to implement the
+GUI. The front end talks via a REST service.
 
 =back
 
 =head1 COPYRIGHT
 
-Copyright (C) 2011, 2012 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

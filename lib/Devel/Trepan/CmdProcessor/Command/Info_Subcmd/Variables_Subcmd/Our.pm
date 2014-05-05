@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Info::Variables::Our;
@@ -17,36 +17,44 @@ our $MIN_ABBREV = length('o');
 our $HELP   = <<'HELP';
 =pod
 
-info variables our
+B<info variables our>
+
+B<info variables our -v>
+
+B<info variables our> I<var1> [I<var2>...]
 
 List C<our> variables at the current stack level.
+
+=head2 See also:
+
+frame changing commands
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'our' variables.";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Info::Variables::My);
 
-sub get_var_hash($;$) 
+sub get_var_hash($;$)
 {
     my ($self, $fixup_num) = @_;
     # FIXME: combine with My.pm
     my $i = 0;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
     my $diff = $i - $DB::stack_depth;
-    
+
     # FIXME: 5 is a magic fixup constant, also found in DB::finish.
     # Remove it.
     $fixup_num = 5 unless defined($fixup_num);
     peek_our($diff + $self->{proc}{frame_index} + $fixup_num);
 }
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
     require Devel::Trepan;
     my $proc = Devel::Trepan::CmdProcessor->new;
-    my $grandparent = 
+    my $grandparent =
 	Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
-    my $parent = 
+    my $parent =
 	Devel::Trepan::CmdProcessor::Command::Info::Variables->new($grandparent,
 								   'variables');
     my $cmd = __PACKAGE__->new($parent, 'our');

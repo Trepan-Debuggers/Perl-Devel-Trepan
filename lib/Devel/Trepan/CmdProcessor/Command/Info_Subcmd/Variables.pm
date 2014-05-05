@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings;
 use rlib '../../../../..';
 use strict;
@@ -15,7 +15,9 @@ our $MIN_ABBREV = length('va');
 our $HELP   = <<'HELP';
 =pod
 
-Information on C<our> or C<my> variables.
+B<info variables> [B<lexicals>|B<my>|B<our> ...]
+
+Information on I<our>, I<my>, or I<lexical> variables.
 =cut
 HELP
 our $SHORT_HELP   = "List 'our' or 'my' variables.";

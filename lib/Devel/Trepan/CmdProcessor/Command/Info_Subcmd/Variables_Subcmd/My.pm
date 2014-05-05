@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 use Data::Dumper;
@@ -25,11 +25,11 @@ our $MIN_ABBREV = length('m');
 our $HELP   = <<'HELP';
 =pod
 
-info variables my
+B<info variables my>
 
-info variables my -v
+B<info variables my -v>
 
-info variables my I<var1> [I<var2>...]
+B<info variables my> I<var1> [I<var2>...]
 
 Lists C<my> variables at the current frame. Use the frame changing
 commands like C<up>, C<down> or C<frame> set the current frame.
@@ -38,7 +38,9 @@ In the first form, give a list of C<my> variable names only.  In the
 second form, list variable names and values In the third form, list
 variable names and values of VAR1, etc.
 
-See also C<set variable>, and frame changing commands.
+=head2 See also:
+
+frame changing commands
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";
@@ -80,7 +82,8 @@ sub complete($$;$)
 
     my $var_hash = $self->get_var_hash($fixup_num);
     my @vars = sort keys %$var_hash;
-    Devel::Trepan::Complete::complete_token(\@vars, $prefix) ;
+    my @results = Devel::Trepan::Complete::complete_token(\@vars, $prefix);
+    return @results;
 }
 
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -19,11 +19,11 @@ our $MIN_ABBREV = length('l');
 our $HELP = <<'HELP';
 =pod
 
-info variables lexicals
+B<info variables lexicals>
 
-info variables lexicals -v
+B<info variables lexicals -v>
 
-info variables lexicals I<var1> [I<var2>...]
+B<info variables lexicals> I<var1> [I<var2>...]
 
 Lists C<my> or C<lexical> variables at the current frame. Use the
 frame changing commands like C<up>, C<down> or C<frame> set the
@@ -33,7 +33,9 @@ In the first form, give a list of C<my> or C<our> variable names only.
 In the second form, list variable names and values In the third form,
 list variable names and values of I<var1>, etc.
 
-See also C<set variable>, and frame changing commands
+=head2 See also:
+
+frame changing commands
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'my' or 'our' variables.";
@@ -77,7 +79,7 @@ sub run($$)
     }
 }
 
-unless (caller) { 
+unless (caller) {
     # Demo it.
 
 }

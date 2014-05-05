@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -21,7 +21,7 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<"HELP";
+our $HELP = <<'HELP';
 =pod
 
 B<backtrace> [I<count>]
@@ -29,9 +29,11 @@ B<backtrace> [I<count>]
 Print a stack trace, with the most recent frame at the top. With a
 positive number, print at most many entries.
 
-In the listing produced, an arrow indicates the 'current frame'. The
-current frame determines the context used for many debugger commands
-such as source-line listing or the C<edit> command.
+In the listing produced, an arrow, C<--E<gt>>, indicates the 'current
+frame'. The current frame determines the context used for many
+debugger commands such as source-line listing
+(L<C<list>|Devel::Trepan::CmdProcessor::Command::List> or the
+L<C<edit>|Devel::Trepan::CmdProcessor::Command::Edit> command.
 
 =head2 Examples:
 

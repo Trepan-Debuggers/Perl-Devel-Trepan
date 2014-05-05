@@ -45,14 +45,17 @@ $DEFAULT_OPTIONS = {
     highlight    => default_term(),
                            # Default values used only when 'server' or 'client'                            # (out-of-process debugging)
     host         => 'localhost',
+    includes     => [],      # includes to add to @INC.
     initfile     => $initfile,
-    initial_dir  => undef, # If --cd option was given, we save it here.
-    nx           => 0,     # Don't run user startup file (e.g. .treplrc)
+    initial_dir  => undef,   # If --cd option was given, we save it here.
+    modules      => [],      # modules ot add to perl -M
+    nx           => 0,       # Don't run user startup file (e.g. .treplrc)
     port         => 1954,
     post_mortem  => 0,       # Go into debugger on die?
     readline     => 1,       # Try to use GNU Readline?
     testing      => undef,
     traceprint   => 0,       # set -x tracing?
+    verbose      => 0,       # show what we are doing?
 
 };
 
@@ -131,10 +134,10 @@ sub process_options($)
     my $opts = $DEFAULT_OPTIONS;
 
     my $result = &GetOptionsFromArray($argv,
-         'basename'      => \$opts->{basename},
-         'batch:s'       => \$opts->{batchfile},
-         'bw'            => \$opts->{bw},
-         'cd:s'          => \$opts->{initial_dir},
+         'basename'       => \$opts->{basename},
+         'batch:s'        => \$opts->{batchfile},
+         'bw'             => \$opts->{bw},
+         'cd:s'           => \$opts->{initial_dir},
          'client=s@{0,3}' => \$opts->{client},
          'cmddir=s@'      => \$opts->{cmddir},
          'command=s@'     => \$opts->{cmdfiles},
@@ -142,7 +145,9 @@ sub process_options($)
          'fall-off-end'   => \$opts->{fall_off_end},
          'help'           => \$help,
          'highlight'      => \$opts->{highlight},
+         'I|includes=s@'  => \$opts->{includes},
          'man'            => \$man,
+         'M|modules=s@'   => \$opts->{modules},
          'no-highlight'   => sub { $opts->{highlight} = 0},
          'no-readline'    => sub { $opts->{readline} = 0},
          'nx'             => \$opts->{nx},
@@ -150,6 +155,7 @@ sub process_options($)
          'readline'       => \$opts->{readline},
          'server=s@{0,3}' => \$opts->{server},
          'testing:s'      => \$opts->{testing},
+         'verbose'        => \$opts->{verbose},
          'version'        => \$show_version,
          'x|trace'        => \$opts->{traceprint},
         );
@@ -308,8 +314,9 @@ trepan.pl - Perl "Trepanning" Debugger
 
       --fall-off-end       Don't stay in debugger when program terminates
 
-      --host NAME          Set DNS name or IP address to communicate on.
-                           The default is 127.0.0.1
+      --include | -I DIR   Add DIR to @INC in invoking program
+
+      --module  | -M MOD   Add module MOD in invoking program
 
       --post-mortem        Enter debugger on die
       --readline  | --no-readline
@@ -318,6 +325,8 @@ trepan.pl - Perl "Trepanning" Debugger
       --highlight | --no-highlight
                            Use or don't use ANSI terminal sequences for syntax
                            highlight
+      --verbose            Show what trepan.pl is invoking under the
+                           covers
 
 =head1 DESCRIPTION
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 # Standalone routine to invoke a Perl program under the debugger.
 
 # The usual boilerplate...
@@ -52,8 +52,8 @@ if ($syntax_errmsg) {
 }
 
 $opts->{dollar_0} = $ARGV[0];
+unshift @{$opts->{includes}}, $TREPAN_DIR;
 $ENV{'TREPANPL_OPTS'} = Data::Dumper::Dumper($opts);
-# print Dumper($opts), "\n";
 
 # And just when you thought we'd never get around to actually
 # doing something...
@@ -65,9 +65,24 @@ foreach my $arg (@exec_strs_with_e) {
     }
 }
 
-my @ARGS = ($EXECUTABLE_NAME, '-I', $TREPAN_DIR, '-d:Trepan',
+my @INCLUDES = ();
+foreach my $inc (@{$opts->{includes}}) {
+    push @INCLUDES, ('-I', $inc);
+};
+
+my @MODULES = ();
+
+foreach my $mod (@{$opts->{modules}}) {
+    push @MODULES, '-M' . $mod;
+}
+
+my @ARGS = ($EXECUTABLE_NAME, @INCLUDES, '-d:Trepan', @MODULES,
             @exec_strs_with_e, @ARGV);
-#print Dumper(\@ARGS), "\n";
+
+print Data::Dumper->Dump([$opts, \@ARGS],
+			  [qw($ENV{TREPANPL_OPTS} ARGS)])
+    if $opts->{verbose};
+
 if ($OSNAME eq 'MSWin32') {
     # I don't understand why but Strawberry Perl has trouble with exec.
     system @ARGS;

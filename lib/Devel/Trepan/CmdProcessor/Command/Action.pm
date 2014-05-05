@@ -57,7 +57,7 @@ For example, this will print out the value of C<$foo> every time line
 
 =head2 See also:
 
-<C<help breakpoints>
+C<help breakpoints>
 
 =cut
 HELP

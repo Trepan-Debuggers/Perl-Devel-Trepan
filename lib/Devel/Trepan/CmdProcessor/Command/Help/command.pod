@@ -24,8 +24,10 @@ newline inserted between the prior string and the continuation string.
 
 Within a single command, tokens are then white-space split. Again,
 this process disregards quotes or symbols that have meaning in Perl.
-Some commands like C<eval>, C<macro>, and C<break> have access to the
-untokenized string entered and make use of that rather than the
+Some commands like
+L<C<eval>|Devel::Trepan::Command::CmdProcessor::Eval>, C<macro>, and
+L<C<break>|Devel::Trepan::Command::CmdProcessor::Break> have access to
+the untokenized string entered and make use of that rather than the
 tokenized list.
 
 Resolving a command name involves possibly 4 steps. Some steps may be
@@ -37,9 +39,11 @@ omitted depending on early success or some debugger settings:
 
 The leading token is first looked up in the macro table. If it is in
 the table, the expansion is replaces the current command and possibly
-other commands pushed onto a command queue. See the "help macros" for
-help on how to define macros, and "info macro" for current macro
-definitions.
+other commands pushed onto a command queue. See L<C<help
+macros>|Devel::Trepan::CmdProcessor::Command::Macros> for help on how
+to define macros, and L<C<info
+macro>|Devel::Trepan::CmdProcessor::Command::Info::Macros> for current
+macro definitions.
 
 =item 2.
 

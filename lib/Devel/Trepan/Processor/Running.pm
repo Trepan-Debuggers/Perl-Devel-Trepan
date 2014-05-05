@@ -4,6 +4,7 @@ use strict; use warnings;
 use rlib '../../..';
 
 use Devel::Trepan::Position;
+
 package Devel::Trepan::Processor;
 use English qw( -no_match_vars );
 
@@ -11,21 +12,6 @@ use constant SINGLE_STEPPING_EVENT =>  1;
 use constant NEXT_STEPPING_EVENT   =>  2;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
-
-
-# attr_accessor :stop_condition  # String or nil. When not nil
-#                                # this has to eval non-nil
-#                                # in order to stop.
-# attr_accessor :stop_events     # Set or nil. If not nil, only
-#                                # events in this set will be
-#                                # considered for stopping. This is
-#                                # like core.step_events (which
-#                                # could be used instead), but it is
-#                                # a set of event names rather than
-#                                # a bitmask and it is intended to
-#                                # be more temporarily changed via
-#                                # "step>" or "step!" commands.
-# attr_accessor :to_method
 
 sub continue($$) {
     my ($self, $args) = @_;
@@ -214,11 +200,22 @@ sub restart_args($$) {
     no warnings 'once';
     push @flags, '-w' if $DB::ini_warn;
 
-    # Rebuild the -I flags that were on the initial
-    # command line.
-    for (@DB::ini_INC) {
-        push @flags, '-I', $_;
+    if ($ENV{'TREPANPL_OPTS'}) {
+	my $opts = $Devel::Trepan::Core::invoke_opts;
+	foreach my $inc (@{$opts->{includes}}) {
+	    push @flags, ('-I' . $inc);
+	}
+	foreach my $mod (@{$opts->{modules}}) {
+	    push @flags, '-M' . $mod;
+	}
+    } else {
+	# Rebuild the -I flags that were on the initial
+	# command line.
+	for (@DB::ini_INC) {
+	    push @flags, '-I', $_;
+	}
     }
+
 
     # Turn on taint if it was on before.
     push @flags, '-T' if ${^TAINT};

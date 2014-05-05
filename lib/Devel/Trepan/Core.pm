@@ -30,7 +30,7 @@ use Devel::Trepan::Interface::Server;
 use Devel::Trepan::Util;
 # print join(', ', @INC, "\n");
 
-use vars qw(@ISA $dbgr);
+use vars qw(@ISA $dbgr $invoke_opts);
 
 use constant HAVE_BULLWINKLE => eval q(use Devel::Trepan::BWProcessors; 1) ? 1 : 0;
 
@@ -124,6 +124,7 @@ sub awaken($;$) {
     if (!defined($opts) && $ENV{'TREPANPL_OPTS'}) {
         $opts = eval "$ENV{'TREPANPL_OPTS'}";
     }
+    $invoke_opts = $opts;
 
     # require Data::Dumper;
     # import Data::Dumper;

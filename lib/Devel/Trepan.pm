@@ -158,6 +158,12 @@ Or for those who prefer the traditional Perlish way:
 
     $ perl -d:Trepan perl-program [perl-program-opts]
 
+The problem with the above "perlish" approach is that there are a
+number of default options won't get set intelligently. If that matters,
+you'll have to set them either with a debugger command or via
+environment variable I<TREPANPL_OPTS>. To see the environement
+variables, run I<trepan.pl> with the C<--verbose> option.
+
 For out-of-process (and possibly out-of server) debugging:
 
     $ trepan.pl --server [trepan-opts] -- perl-program [perl-program-opts]

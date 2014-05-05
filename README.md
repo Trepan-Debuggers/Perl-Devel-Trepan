@@ -32,6 +32,12 @@ Or for those who prefer the traditional Perlish way:
 
     $ perl -d:Trepan perl-program [perl-program-opts]
 
+The problem with the above "perlish" approach is that there are a
+number of default options won't get set intelligently. If that matters,
+you'll have to set them either with a debugger command or via
+environment variable *TREPANPL_OPTS*. To see the environement
+variables, run *trepan.pl* with the `--verbose` option.
+
 Calling the debugger from inside your Perl program using Joshua ben
 Jore's [Enbugger](http://search.cpan.org/~jjore/Enbugger/):
 

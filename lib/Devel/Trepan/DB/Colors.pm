@@ -67,10 +67,21 @@ sub setup()
         'Symbol'           => [$ANSI_colors{'gray'},     $ANSI_colors{'none'}],
         'CodeTerm'         => [$ANSI_colors{'gray'},     $ANSI_colors{'none'}],
         'DATA'             => [$ANSI_colors{'gray'},     $ANSI_colors{'none'}],
-        
+
         'Line'             => [$ANSI_colors{'byellow'},  $ANSI_colors{'none'}],
-        'File_Name'        => [$ANSI_colors{'red'} . $ANSI_colors{'bgwhite'}, 
+        'File_Name'        => [$ANSI_colors{'red'} . $ANSI_colors{'bgwhite'},
                                $ANSI_colors{'none'}],
         );
     $perl_formatter;
+}
+
+unless (caller) {
+    my $perl_formatter = Devel::Trepan::DB::Colors::setup();
+    my $colors_file = __FILE__;
+    open my $fh, "<", __FILE__ or die "Why can't I read myself?: $!";
+    local $/; # enable localized slurp mode
+    my $content = <$fh>;
+    close $fh;
+    print $perl_formatter->format_string($content);
+
 }

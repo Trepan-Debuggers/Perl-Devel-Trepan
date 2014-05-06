@@ -22,6 +22,11 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
@@ -77,7 +82,8 @@ L<C<set auto
 eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>, and
 L<C<set display eval>
 eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>.
-=cut HELP
+=cut
+HELP
 
 no warnings 'redefine';
 sub complete($$)

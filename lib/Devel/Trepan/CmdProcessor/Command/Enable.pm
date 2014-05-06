@@ -29,6 +29,11 @@ use vars @CMD_VARS;  # Value inherited from parent
 # require_relative '../../app/util'
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<"HELP";
 =pod
 

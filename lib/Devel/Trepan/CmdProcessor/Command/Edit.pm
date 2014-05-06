@@ -23,7 +23,12 @@ our @ISA = @CMD_ISA;  # value inherited from parent
 use vars @CMD_VARS;   # value inherited from parent
 
 our $NAME = set_name();
-our $HELP = <<'HELP';
+=pod
+
+=head2 Synopsis:
+
+=cut
+our $HELP = <<"HELP";
 =pod
 
 B<edit> [[I<file>] [I<line>]]
@@ -46,7 +51,7 @@ is used. The editor should support line and file positioning via
 =cut
 HELP
 
-# FIXME: include line numbers. Should we include all files? 
+# FIXME: include line numbers. Should we include all files?
 # Combine with BREAK completion.
 sub complete($$)
 {

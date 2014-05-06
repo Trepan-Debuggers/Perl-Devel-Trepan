@@ -23,6 +23,11 @@ use vars qw(@ISA);
 use vars @CMD_VARS;
 
 our $NAME       = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 

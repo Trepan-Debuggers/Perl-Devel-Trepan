@@ -27,6 +27,11 @@ use strict;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 

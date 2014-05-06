@@ -19,6 +19,11 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP         = <<'HELP';
 =pod
 

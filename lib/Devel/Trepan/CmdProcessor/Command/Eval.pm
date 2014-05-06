@@ -73,9 +73,11 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
 
 =head2 See also:
 
-L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>.
-=cut
-HELP
+L<C<set auto
+eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>, and
+L<C<set display eval>
+eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>.
+=cut HELP
 
 no warnings 'redefine';
 sub complete($$)

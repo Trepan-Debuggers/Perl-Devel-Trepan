@@ -26,6 +26,7 @@ use rlib '../..';
 
 # Showing eval results can be done using either data dump package.
 unless (@ISA) {
+    require Devel::Trepan::CmdProcessor::Complete;
     require Devel::Trepan::CmdProcessor::Load;
     require Devel::Trepan::BrkptMgr;
     eval {require Devel::Trepan::DB::Display};

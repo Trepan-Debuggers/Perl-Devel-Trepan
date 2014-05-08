@@ -157,6 +157,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Unalias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm
 lib/Devel/Trepan/CmdProcessor/Command/Up.pm
 lib/Devel/Trepan/CmdProcessor/Command/Watch.pm
+lib/Devel/Trepan/CmdProcessor/Complete.pm
 lib/Devel/Trepan/CmdProcessor/Default.pm
 lib/Devel/Trepan/CmdProcessor/Eval.pm
 lib/Devel/Trepan/CmdProcessor/Frame.pm

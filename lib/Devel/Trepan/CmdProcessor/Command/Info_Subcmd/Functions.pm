@@ -42,31 +42,7 @@ our $MIN_ABBREV = length('fu');
 sub complete($$)
 {
     my ($self, $prefix) = @_;
-    # FIXME break out into subroutine and combine with Eval's complete.
-    my @all_fns = sort keys %DB::sub;
-    my $have_fn_sigl = 0;
-    if (substr($prefix, 0, 1) eq '&') {
-	@all_fns = map { '&' . $_ } @all_fns;
-        $have_fn_sigl = 1;
-    }
-    my @functions =
-	Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-    if (scalar @functions ==  0 && !($prefix =~ /::/)) {
-	my $pkg_prefix = $DB::package . '::';
-	if ($have_fn_sigl) {
-	    $prefix = '&' . $pkg_prefix . substr($prefix, 1);
-	    @functions =
-		map { substr($_, length($pkg_prefix)+1) }
-	        Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-	} else {
-	    $prefix = $pkg_prefix . $prefix;
-	    @functions =
-		map { substr($_, length($pkg_prefix)) }
-	        Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-	}
-    }
-    return @functions;
-
+    Devel::Trepan::Complete::complete_function($prefix);
 }
 
 sub run($$)
@@ -102,7 +78,14 @@ sub run($$)
             }
         }
     } else {
-        $proc->msg("No matching functions");
+	my @fns = Devel::Trepan::Complete::complete_builtin($regexp);
+	if (@fns) {
+            for my $entry (@fns) {
+                $proc->msg($entry . ' is a built-in function');
+            }
+	} else {
+	    $proc->msg("No matching functions");
+	}
     }
 }
 

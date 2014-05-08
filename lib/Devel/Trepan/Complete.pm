@@ -10,8 +10,50 @@ use vars qw(@ISA @EXPORT); @ISA = qw(Exporter);
              next_token signal_complete
              complete_token_filtered_with_next);
 
-# Return an Array of String found from Array of String
-# +complete_ary+ which start out with String +prefix+.
+use constant BUILTIN_CONST => qw(__FILE__ __LINE__);
+use constant BUILTIN_FNS => qw(
+    abs accept alarm
+    and atan2 bind binmode bless caller
+    chdir chmod chown chr chroot close
+    closedir cmp connect continue cos crypt
+    dbmclose dbmopen die dump endgrent
+    endhostent endnetent endprotoent endpwent
+    endservent eof eq exec exit exp fcntl
+    fileno flock fork formline ge getc
+    getgrent getgrgid getgrnam gethostbyaddr
+    gethostbyname gethostent getlogin
+    getnetbyaddr getnetbyname getnetent
+    getpeername getpgrp getppid getpriority
+    getprotobyname getprotobynumber getprotoent
+    getpwent getpwnam getpwuid getservbyname
+    getservbyport getservent getsockname
+    getsockopt glob gmtime gt hex index int
+    ioctl join kill lc lcfirst le length
+    link listen localtime lock log lstat lt
+    mkdir msgctl msgget msgrcv msgsnd ne
+    not oct open opendir or ord pack pipe
+    quotemeta rand read readdir readline
+    readlink readpipe recv ref rename require
+    reset reverse rewinddir rindex rmdir seek
+    seekdir select semctl semget semop send
+    setgrent sethostent setnetent setpgrp
+    setpriority setprotoent setpwent setservent
+    setsockopt shmctl shmget shmread shmwrite
+    shutdown sin sleep socket socketpair
+    sprintf sqrt srand stat substr symlink
+    syscall sysopen sysread system syswrite tell
+    telldir time times truncate uc ucfirst
+    umask unlink unpack utime values vec
+    wait waitpid wantarray warn write x xor
+);
+
+
+# =pod
+#
+# Return an list of string,  I<$complete_ary>, which start out with
+# String I<$prefix>.
+#
+# =cut
 sub complete_token($$)
 {
     my ($complete_ary, $prefix) = @_;
@@ -38,8 +80,12 @@ sub complete_token_with_next($$;$)
     sort {$a->[0] cmp $b->[0]} @result;
 }
 
-# Find all starting matches in Hash +aliases+ that start with +prefix+,
-# but filter out any matches already in +expanded+.
+# =pod
+#
+# Find all starting matches in Hash I<$aliases+>that start with
+# I<$prefix>, but filter out any matches already in I<$expanded>.
+#
+# =cut
 sub complete_token_filtered($$$)
 {
     my ($aliases, $prefix, $expanded) = @_;
@@ -52,8 +98,12 @@ sub complete_token_filtered($$$)
     sort @result;
 }
 
-# Find all starting matches in Hash +aliases+ that start with +prefix+,
-# but filter out any matches already in +expanded+.
+# =pod
+#
+# Find all starting matches in hash I<$aliases> that start with I<$prefix>,
+# but filter out any matches already in I<$expanded>.
+#
+# =cut
 sub complete_token_filtered_with_next($$$$)
 {
     my ($aliases, $prefix, $expanded, $commands) = @_;
@@ -69,10 +119,13 @@ sub complete_token_filtered_with_next($$$$)
     @result;
   }
 
+# =pod
 # Find the next token in str string from start_pos. We return
 # the token and the next blank position after the token or
 # length($str) if this is the last token. Tokens are delimited by
 # white space.
+#
+# =cut
 sub next_token($$)
 {
     my ($str, $start_pos) = @_;
@@ -95,15 +148,16 @@ sub next_token($$)
     return ($next_blank_pos, substr($str, $next_nonblank_pos, $token_size));
 }
 
-# From Term::ReadLine::readline.pm
-
-##
-## For use in passing to completion_matches(), returns a list of
-## filenames that begin with the given pattern.  The user of this package
-## can set $rl_completion_function to 'rl_filename_list' to restore the
-## default of filename matching if they'd changed it earlier, either
-## directly or via &rl_basic_commands.
-##
+# =pod
+# I<filename_list> isf from I<Term::ReadLine::readline.pm>:
+#
+# For use in passing to completion_matches(), returns a list of
+# filenames that begin with the given pattern.  The user of this
+# package can set I<$rl_completion_function> to 'rl_filename_list' to
+# restore the default of filename matching if they'd changed it
+# earlier, either directly or via I<&rl_basic_commands>.
+#
+# =cut
 sub filename_list(;$$)
 {
     my ($pattern, $add_suffix) = @_;
@@ -142,6 +196,43 @@ sub signal_complete($) {
     complete_token(\@signal_complete_completions, $prefix);
 }
 
+sub complete_builtin($)
+{
+    my ($prefix) = @_;
+    my @builtin_fns = BUILTIN_FNS;
+    if (0 == index($prefix ,'CORE::'))    {
+	map { 'CORE::' . $_ }
+	   complete_token(\@builtin_fns, substr($prefix, length('CORE::')));
+    } else {
+	complete_token(\@builtin_fns, $prefix);
+    }
+}
+
+sub complete_function($)
+{
+    my ($prefix) = @_;
+    no warnings 'once';
+    my @all_fns = sort keys %DB::sub;
+    my $have_fn_sigl = 0;
+    if (substr($prefix, 0, 1) eq '&') {
+	@all_fns = map { '&' . $_ } @all_fns;
+        $have_fn_sigl = 1;
+    }
+    my @functions = complete_token(\@all_fns, $prefix);
+    if (scalar @functions ==  0 && !($prefix =~ /::/)) {
+	my $pkg_prefix = $DB::package . '::';
+	if ($have_fn_sigl) {
+	    my $new_prefix = '&' . $pkg_prefix . substr($prefix, 1);
+	    @functions = map { substr($_, length($pkg_prefix)+1) }
+	    complete_token(\@all_fns, $new_prefix);
+	} else {
+	    my $new_prefix = $pkg_prefix . $prefix;
+	    @functions = map { substr($_, length($pkg_prefix)) }
+	    complete_token(\@all_fns, $new_prefix);
+	}
+    }
+    return sort (@functions, complete_builtin($prefix));
+}
 
 unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
@@ -172,6 +263,19 @@ unless (caller) {
     print join(', ', filename_list('C')), "\n";
 
     print join(', ', signal_complete('C')), "\n";
+
+    foreach my $prefix (qw(CORE::len len db foo CORE::foo)) {
+	printf("complete_builtin($prefix) => %s\n",
+           join(', ', complete_builtin($prefix)));
+    }
+
+    $DB::package = 'main';
+    %DB::sub = qw(main::gcd 1);
+    foreach my $prefix (qw(end CORE::end gcd main::gcd foo)) {
+	printf("complete_function($prefix) => %s\n",
+           join(', ', complete_function($prefix)));
+    }
+
     # FIXME: We don't handle ~ expansion right now.
     #  print "List of filenames expanded from ~\n";
 }

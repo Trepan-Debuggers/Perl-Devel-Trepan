@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use strict; use warnings; 
+use strict; use warnings;
 no warnings 'redefine'; no warnings 'once';
 use rlib '../lib';
 
@@ -26,7 +26,7 @@ sub monkey_patch_instance
 
 my @msgs = ();
 my $cmdproc = Devel::Trepan::CmdProcessor->new;
-monkey_patch_instance($cmdproc, 
+monkey_patch_instance($cmdproc,
 		      msg => sub { my($self, $message, $opts) = @_;
 				   push @msgs, $message;
 				   });
@@ -52,11 +52,11 @@ $prefix = 'info';
 $cmd->{proc}{cmd_argstr} = $prefix;
 @msgs = ();
 $cmd->run([$cmd->name, $prefix]);
-is(scalar(@msgs), 1, 
+is(scalar(@msgs), 1,
    "Should have only gotten one completion back for '$prefix'");
 is($msgs[0], $prefix, "Completion of '$prefix' should be $prefix'");
 
-# Completion of 'info ' should contain subcommands of 
+# Completion of 'info ' should contain subcommands of
 # 'info'
 $prefix = 'info ';
 $cmd->{proc}{cmd_argstr} = $prefix;
@@ -72,7 +72,7 @@ $cmd->run([$cmd->name, $prefix]);
 my @expect = qw(files frame functions);
 is(scalar(@msgs), scalar @expect);
 for (my $i=0; $i < scalar @expect; $i++) {
-    is($msgs[$i], $expect[$i], 
+    is($msgs[$i], $expect[$i],
        "Expecting completion $i of '$prefix' to be '${expect[$i]}'");
 }
 
@@ -84,8 +84,38 @@ $cmd->run([$cmd->name, $prefix]);
 @expect = qw(command);
 is(scalar(@msgs), scalar @expect);
 for (my $i=0; $i < scalar @expect; $i++) {
-    is($msgs[$i], $expect[$i], 
+    is($msgs[$i], $expect[$i],
        "Expecting completion $i of '$prefix' to be '${expect[$i]}'");
 }
+
+
+foreach my $tuple (
+    ['CORE::len', ['CORE::length']],
+    ['len', ['length']],
+    ['db', ['dbmclose', 'dbmopen']],
+    ['foo', []],
+    ['CORE::foo', []]
+    ) {
+    my ($prefix, $array) = @{$tuple};
+    my @got = Devel::Trepan::Complete::complete_builtin($prefix);
+    is_deeply(\@got, $array);
+}
+
+$DB::package = 'main';
+%DB::sub = qw(main::gcd 1);
+foreach my $tuple (
+    ['end',
+     ['endgrent', 'endhostent', 'endnetent', 'endprotoent',
+      'endpwent', 'endservent']],
+    ['CORE::endp',
+     ['CORE::endprotoent', 'CORE::endpwent']],
+    ['gcd', ['gcd']],
+    ['main::gcd', ['main::gcd']],
+    ['foo', []]) {
+    my ($prefix, $array) = @{$tuple};
+    my @got = Devel::Trepan::Complete::complete_function($prefix);
+    is_deeply(\@got, $array);
+}
+
 
 done_testing();

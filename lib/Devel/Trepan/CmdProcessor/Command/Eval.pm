@@ -97,32 +97,7 @@ sub complete($$)
             $self->{proc}->current_source_text();
         }
     } elsif (substr($prefix, 0, 1) =~/[&A-Za-z_]/) {
-	no warnings 'once';
-	# FIXME break out into subroutine and combine with
-	# info functions's complete.
-	my @all_fns = sort keys %DB::sub;
-	my $have_fn_sigl = 0;
-	if (substr($prefix, 0, 1) eq '&') {
-	    @all_fns = map { '&' . $_ } @all_fns;
-	    $have_fn_sigl = 1;
-	}
-	my @functions =
-	    Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-	if (scalar @functions ==  0 && !($prefix =~ /::/)) {
-	    my $pkg_prefix = $DB::package . '::';
-	    if ($have_fn_sigl) {
-		$prefix = '&' . $pkg_prefix . substr($prefix, 1);
-		@functions =
-		    map { substr($_, length($pkg_prefix)+1) }
-	        Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-	    } else {
-		$prefix = $pkg_prefix . $prefix;
-		@functions =
-		    map { substr($_, length($pkg_prefix)) }
-	        Devel::Trepan::Complete::complete_token(\@all_fns, $prefix);
-	    }
-	}
-	return @functions;
+	Devel::Trepan::Complete::complete_function($prefix);
     } else {
         ($prefix);
     }

@@ -80,8 +80,7 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
 
 L<C<set auto
 eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>, and
-L<C<set display eval>
-eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>.
+L<C<set display eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>.
 =cut
 HELP
 

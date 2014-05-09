@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,7 +11,21 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show whether debugger input is a terminal";
+=pod
+
+=head2 Synopsis:
+
+=cut
+
+our $HELP = <<"EOH";
+=pod
+
+B<show interactive>
+
+Show whether debugger input is a terminal.
+=cut
+EOH
+our $SHORT_HELP = "Show whether debugger input is a terminal";
 our $MIN_ABBREV = length('inter');
 
 sub run($$)
@@ -20,13 +34,13 @@ sub run($$)
     my $proc = $self->{proc};
     my $intf = $proc->{interfaces}->[-1];
     my $bool =  $intf->is_interactive();
-    my $msg = sprintf("Debugger's interactive mode is %s.",  
+    my $msg = sprintf("Debugger's interactive mode is %s.",
                       $self->show_onoff($bool));
     $proc->msg($msg);
     if ($bool) {
-        $bool = $intf->{input}->can("have_term_readline") && 
+        $bool = $intf->{input}->can("have_term_readline") &&
             $intf->{input}->have_term_readline();
-        $msg = sprintf("Terminal Readline capability is %s.",  
+        $msg = sprintf("Terminal Readline capability is %s.",
                        $self->show_onoff(!!$bool));
         $proc->msg($msg);
     }

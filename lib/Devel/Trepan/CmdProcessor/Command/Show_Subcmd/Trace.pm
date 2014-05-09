@@ -11,18 +11,29 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('au');
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP   = <<"HELP";
-Set tracing of various sorts.
+=pod
+
+Show tracing of various sorts.
 
 The types of tracing include events from the trace buffer, or printing
 those events.
 
-See "help set trace *" for a list of subcommands or "help set trace <name>"
-for help on a particular trace subcommand.
+=head2
+
+C<help set trace *> for a list of subcommands or C<help set trace>
+I<name> for help on a particular trace subcommand.
+
+=cut
 HELP
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
-our $SHORT_HELP = 'Show tracing-event related controls';
+our $SHORT_HELP = 'Show tracing event-related controls';
 
 # sub run($$)
 # {

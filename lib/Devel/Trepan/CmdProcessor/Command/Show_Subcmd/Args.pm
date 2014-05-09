@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
@@ -11,7 +11,25 @@ package Devel::Trepan::CmdProcessor::Command::Show::Args;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Arguments to restart program";
+=pod
+
+=head2 Synopsis:
+
+=cut
+our $HELP = <<"EOH";
+=pod
+
+B<show args>
+
+Show Arguments to restart program.
+
+=head2 See also:
+
+L<C<run>|Devel::Trepan::CmdProcessor::Run>
+
+=cut
+EOH
+our $SHORT_HELP = "Arguments to restart program";
 our $MIN_ABBREV = length('ar');
 
 sub run($$)

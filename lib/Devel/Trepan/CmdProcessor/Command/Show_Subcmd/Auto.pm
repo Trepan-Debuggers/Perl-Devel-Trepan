@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011,2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -11,8 +11,24 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('au');
-our $HELP   = 'Show controls for things with some sort of "automatic" default behavior';
-our $SHORT_HELP = $HELP;
+=pod
+
+=head2 Synopsis:
+
+=cut
+our $HELP   = <<"EOH";
+=pod
+
+B<show auto> [I<show-auto sub-commmand> ...]
+
+Show controls for things with some sort of "automatic" default behavior.
+
+=cut
+EOH
+
+our $SHORT_HELP =
+    'Show "automatic" default behavior controls';
+
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 

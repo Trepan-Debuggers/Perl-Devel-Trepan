@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rockbcpan.org>
+# Copyright (C) 2011-2012, 2013 Rocky Bernstein <rockbcpan.org>
 
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
@@ -11,6 +11,11 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP         = <<"EOH";
 =pod
 

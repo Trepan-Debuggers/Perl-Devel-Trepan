@@ -28,6 +28,9 @@ Show maximum length setting on things which may have unbounded size.
 C<help show max *> for a list of subcommands or C<help show debug
 I<name>> for help on a particular max subcommand.
 
+=head2 See also:
+
+L<C<set mac>|Devel::Trepan::CmdProcessor::Command::Set::Max>
 =cut
 HELP
 

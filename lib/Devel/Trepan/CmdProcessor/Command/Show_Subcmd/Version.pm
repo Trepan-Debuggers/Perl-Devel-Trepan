@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockb@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rockb@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -13,14 +13,28 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show debugger name and version";
+# =pod
+#
+# =head2 Synopsis:
+#
+# =cut
+our $HELP = <<"EOH";
+=pod
+
+B<show version>
+
+Show debugger name and version
+=cut
+EOH
+
+our $SHORT_HELP = "Show debugger name and version";
 
 sub run($$) {
     my ($self, $args) = @_;
     $self->{proc}->msg(Devel::Trepan::show_version());
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     require Devel::Trepan;
     # Demo it.
     # require_relative '../../mock'

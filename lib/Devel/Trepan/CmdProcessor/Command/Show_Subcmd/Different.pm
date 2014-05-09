@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,10 +11,22 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show status of 'set different'";
+our $SHOW_HELP = <<EOH;
+=pod
+
+B<show different>
+
+Show status of 'set different'
+=head2 See also:
+
+L<C<set different>|Devel::Trepan::CmdProcessor::Command::Set::Different>
+=cut
+EOH
+
+our $SHORT_HELP = "Show status of 'set different'";
 our $MIN_ABBREV = length('dif');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 

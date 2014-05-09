@@ -23,6 +23,9 @@ B<show display> [I<show-display sub-commmand> ...]
 
 Show display-related controls
 
+=head2 See also:
+
+L<C<set display>|Devel::Trepan::CmdProcessor::Command::Set::Display>
 =cut
 EOH
 our $SHORT_HELP  = 'Show display-related controls';

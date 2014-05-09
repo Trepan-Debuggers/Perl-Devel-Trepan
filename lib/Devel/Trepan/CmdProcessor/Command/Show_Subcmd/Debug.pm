@@ -28,6 +28,9 @@ Show debugger debugging controls.
 C<help show debug *> for a list of subcommands or C<help show debug>
 I<name> for help on a particular trace subcommand.
 
+=head2 See also:
+
+L<C<set debug>|Devel::Trepan::CmdProcessor::Command::Set::Debug>
 =cut
 HELP
 our $SHORT_HELP = "Show debugging controls";

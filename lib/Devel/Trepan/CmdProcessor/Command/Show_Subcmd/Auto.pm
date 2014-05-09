@@ -23,6 +23,9 @@ B<show auto> [I<show-auto sub-commmand> ...]
 
 Show controls for things with some sort of "automatic" default behavior.
 
+=head2 See also:
+
+L<C<set auto>|Devel::Trepan::CmdProcessor::Command::Set::auto>
 =cut
 EOH
 

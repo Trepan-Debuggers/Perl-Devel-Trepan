@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -10,10 +10,25 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show only file basename in showing file names";
+=pod
+
+=head2 Synopsis:
+
+=cut
+our $HELP = <<"EOH";
+=pod
+
+Show whether file basename are used showing file names
+
+=head2 See also:
+
+L<C<set basename>|Devel::Trepan::CmdProcessor::Command::Set::Basename>
+=cut
+EOH
+our $SHORT_HELP = "Show whether file basename are used showing file names";
 our $MIN_ABBREV = length('ba');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 

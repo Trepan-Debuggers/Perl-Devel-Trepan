@@ -25,7 +25,7 @@ foreach my $cmd (@cmds) {
 	my $subcmd = $cmd->{subcmds}{$subcmd_name};
 	for my $field (qw(name prefix min_abbrev short_help)) {
 	    ok($subcmd->{$field},
-	       "Field $field of subcommand $subcmd_name of $cmd->{name}");
+	       "Field '$field' of subcommand '$subcmd_name' of $cmd->{name}");
 	}
     }
 }

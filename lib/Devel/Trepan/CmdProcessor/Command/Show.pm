@@ -23,13 +23,14 @@ use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-$NAME = set_name();
+our $NAME = set_name();
 =pod
 
 =head2 Synopsis:
 
 =cut
-$HELP = <<'HELP';
+
+our $HELP = <<'HELP';
 =pod
 
 B<show> [I<show sub-commmand> ...]

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -11,7 +11,23 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $HELP = "Show whether we use terminal highlighting";
+# =pod
+#
+# =head2 Synopsis:
+#
+# =cut
+our $HELP = <<"EOH";
+=pod
+
+B<show highlight>
+Show whether we use terminal highlighting
+
+=head2 See also:
+
+L<C<set highlight>|Devel::Trepan::CmdProcessor::Command::Set::Highlight>
+=cut
+EOH
+our $SHORT_HELP = "Show whether we use terminal highlighting";
 our $MIN_ABBREV = length('high');
 
 sub run($$)

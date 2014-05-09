@@ -25,7 +25,8 @@ Show Arguments to restart program.
 
 =head2 See also:
 
-L<C<run>|Devel::Trepan::CmdProcessor::Run>
+L<C<set args>|Devel::Trepan::CmdProcessor::Command::Set::Args> and
+L<C<run>|Devel::Trepan::CmdProcessor::Run>.
 
 =cut
 EOH

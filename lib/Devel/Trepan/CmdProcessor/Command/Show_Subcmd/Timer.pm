@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -10,8 +10,24 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::ShowBoolSubcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
+# =pod
+#
+# =head2 Synopsis:
+#
+# =cut
+our $HELP = <<"EOH";
+=pod
 
-our $HELP = "Show status of the timing hook";
+B<show timer>
+
+Show status of the timing hook.
+
+=head2 See also:
+
+L<C<set timer>|Devel::Trepan::CmdProcessor::Command::Set::Timer>
+=cut
+EOH
+our $SHORT_HELP = "Show status of the timing hook";
 our $MIN_ABBREV = length('ti');
 
 unless (caller) {

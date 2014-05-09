@@ -111,6 +111,9 @@ foreach my $tuple (
      ['CORE::endprotoent', 'CORE::endpwent']],
     ['gcd', ['gcd']],
     ['main::gcd', ['main::gcd']],
+    ['__FI', ['__FILE__']],
+    ['__LI', ['__LINE__']],
+    ['__P',  ['__PACKAGE__']],
     ['foo', []]) {
     my ($prefix, $array) = @{$tuple};
     my @got = Devel::Trepan::Complete::complete_function($prefix);

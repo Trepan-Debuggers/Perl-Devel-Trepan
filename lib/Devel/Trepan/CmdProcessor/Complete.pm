@@ -83,12 +83,15 @@ sub complete($$$$$)
             $_last_line = $line . $_last_token;
             $_last_end += length($_last_token);
         }
+	if (scalar @_last_return == 0 && $self->{settings}{autoeval}) {
+	    return Devel::Trepan::Complete::complete_function($stripped_line);
+	}
         $self->{completions} = \@_last_return;
         return @_last_return;
     } else {
-      for my $pair (@alias_pairs) {
-          $match_hash->{$pair->[0]} = $pair->[1];
-      }
+	for my $pair (@alias_pairs) {
+	    $match_hash->{$pair->[0]} = $pair->[1];
+	}
     }
     if (scalar(@match_pairs) > 1) {
         # FIXME: figure out what to do here.
@@ -105,6 +108,10 @@ sub complete($$$$$)
                                         $token);
 
     $self->{completions} = \@_last_return;
+    if (scalar @_last_return == 0 && $self->{settings}{autoeval}) {
+	return Devel::Trepan::Complete::complete_function($stripped_line);
+    }
+
     return @_last_return;
 }
 

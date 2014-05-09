@@ -10,7 +10,7 @@ use vars qw(@ISA @EXPORT); @ISA = qw(Exporter);
              next_token signal_complete
              complete_token_filtered_with_next);
 
-use constant BUILTIN_CONST => qw(__FILE__ __LINE__);
+use constant BUILTIN_CONST => qw(__FILE__ __LINE__ __PACKAGE__);
 use constant BUILTIN_FNS => qw(
     abs accept alarm
     and atan2 bind binmode bless caller
@@ -47,6 +47,7 @@ use constant BUILTIN_FNS => qw(
     wait waitpid wantarray warn write x xor
 );
 
+use constant BUILTIN_CORE_FNS => map { 'CORE::' . $_ } BUILTIN_FNS;
 
 # =pod
 #
@@ -212,7 +213,8 @@ sub complete_function($)
 {
     my ($prefix) = @_;
     no warnings 'once';
-    my @all_fns = sort keys %DB::sub;
+    my @all_fns = sort((keys(%DB::sub),
+			BUILTIN_FNS, BUILTIN_CORE_FNS, BUILTIN_CONST));
     my $have_fn_sigl = 0;
     if (substr($prefix, 0, 1) eq '&') {
 	@all_fns = map { '&' . $_ } @all_fns;
@@ -231,7 +233,7 @@ sub complete_function($)
 	    complete_token(\@all_fns, $new_prefix);
 	}
     }
-    return sort (@functions, complete_builtin($prefix));
+    return sort @functions;
 }
 
 unless (caller) {
@@ -271,7 +273,7 @@ unless (caller) {
 
     $DB::package = 'main';
     %DB::sub = qw(main::gcd 1);
-    foreach my $prefix (qw(end CORE::end gcd main::gcd foo)) {
+    foreach my $prefix (qw(end CORE::end gcd main::gcd foo CO __FI)) {
 	printf("complete_function($prefix) => %s\n",
            join(', ', complete_function($prefix)));
     }

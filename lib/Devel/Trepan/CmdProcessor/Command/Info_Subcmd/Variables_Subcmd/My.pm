@@ -21,6 +21,11 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
 our $CMD = "info variables my";
 my  @CMD = split(/ /, $CMD);
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $MIN_ABBREV = length('m');
 our $HELP   = <<'HELP';
 =pod
@@ -40,7 +45,7 @@ variable names and values of VAR1, etc.
 
 =head2 See also:
 
-frame changing commands
+Frame-changing commands.
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";

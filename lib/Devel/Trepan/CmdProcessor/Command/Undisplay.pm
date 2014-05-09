@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -22,10 +22,15 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
-undisplay I<display-number> ...
+B<undisplay> I<display-number> ...
 
 Cancel some expressions to be displayed when program stops.  Arguments
 are the code numbers of the expressions to stop displaying.  No
@@ -40,7 +45,7 @@ HELP
 sub run($$) {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my @args = @$args; 
+    my @args = @$args;
 
     if (scalar @args == 1) {
         if ($proc->confirm('Delete all displays?', 0)) {
@@ -60,7 +65,7 @@ sub run($$) {
         }
     }
 }
-        
+
 unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();

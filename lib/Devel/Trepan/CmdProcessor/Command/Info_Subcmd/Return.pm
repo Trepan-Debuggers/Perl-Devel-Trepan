@@ -14,8 +14,15 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $SHORT_HELP = "Show the value about to be returned";
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
+
+B<info return>
 
 Show the value about to be returned.
 =cut

@@ -21,14 +21,18 @@ EOE
 }
 
 our $CMD  = "info macros";
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
 info macros
 
-info macros *
-
-info macros I<macro1> [I<macro2> ..]
+B<info macros *>
+B<info macros> I<macro1> [I<macro2> ..]
 
 In the first form a list of the existing macro names are shown
 in column format.

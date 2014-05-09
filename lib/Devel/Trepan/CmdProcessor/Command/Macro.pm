@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -20,6 +20,11 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
@@ -58,7 +63,7 @@ you could do it this way:
                   ['finish', 'step ' . (shift)] \
                 }
 
-Invoking with: 
+Invoking with:
 
   fin+ 3
 
@@ -71,10 +76,14 @@ you use for other debugger commands, no commas or parenthesis. That is:
 
 rather than C<fin+(3,2)> or C<fin+ 3, 2>.
 
-See also C<alias> and C<info macro>.
+=head2 See also:
+
+L<C<alias>|Devel::Trepan::CmdProcessor::Command::Alias>, and
+L<C<info macro>|Devel::Trepan::CmdProcessor::Command::Info::Macro>.
+
 =cut
 HELP
-  
+
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
@@ -85,7 +94,7 @@ sub run($$) {
     $cmd_argstr = substr($cmd_argstr, length($cmd_name));
     $cmd_argstr =~ s/^\s+//;
     my $fn = eval($cmd_argstr);
-    if ($EVAL_ERROR) { 
+    if ($EVAL_ERROR) {
         $proc->errmsg($EVAL_ERROR)
     } elsif ($fn && ref($fn) eq 'CODE') {
         $proc->{macros}{$cmd_name} = [$fn, $cmd_argstr];
@@ -94,14 +103,14 @@ sub run($$) {
         $proc->errmsg("Expecting an anonymous subroutine");
     }
 }
-        
+
 unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc);
     $proc->{cmd_argstr} = "fin+ sub{ ['finish', 'step']}";
     my @args = ($NAME, split(/\s+/, $proc->{cmd_argstr}));
-    $cmd->run(\@args);    
+    $cmd->run(\@args);
     print join(' ', @{$proc->{macros}{'fin+'}}), "\n";
 }
 

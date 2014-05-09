@@ -21,14 +21,21 @@ EOE
 our $SHORT_HELP = 'Line Information about debugged program';
 our $MIN_ABBREV = length('li');
 
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
-info line
+B<info line>
 
 Show line information about the selected frame of debugged program.
 
-See also C<info line> and C<info program>.
+=head2 See also:
+
+L<C<info line>|Devel::Trepan::CmdProcessor::Command::Info::Line> and C<info program|Devel::Trepan::CmdProcessor::Command::Info::Program>.
 =cut
 HELP
 

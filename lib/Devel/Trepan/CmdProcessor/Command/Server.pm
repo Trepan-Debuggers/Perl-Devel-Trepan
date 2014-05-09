@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -28,18 +28,23 @@ use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
 $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 $HELP = <<'HELP';
 =pod
 
 B<server> [I<options>]
 
-options: 
+options:
 
     -p | --port NUMBER
     -a | --address
 
 Suspends interactive debugger session and puts debugger in server mode
-which opens a socket for debugger connections
+which opens a socket for debugger connections.
 
 =cut
 HELP
@@ -60,7 +65,7 @@ my $DEFAULT_OPTIONS = {
 #               --verbose --no-verbose), $files);
 #     Devel::Trepan::Complete::complete_token($opts, $prefix) ;
 # }
-    
+
 sub parse_options($$)
 {
     my ($self, $args) = @_;
@@ -87,21 +92,21 @@ sub run($$)
     push @{$intf}, $script_intf;
 }
 
-  
+
 # Demo it
 unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
-  # %w(--quiet -q --no-quiet --continue --no-continue -c -v --verbose 
+  # %w(--quiet -q --no-quiet --continue --no-continue -c -v --verbose
   #    --no-verbose).each do |opt|
   #   puts "parsing ${opt}"
-  #   options = 
+  #   options =
   #     cmd.parse_options(Trepan::Command::SourceCommand::DEFAULT_OPTIONS.dup,
   #                       opt)
   #   p options
   # }
 
-  # if ARGV.size >= 1 
+  # if ARGV.size >= 1
   #   puts "running... ${cmd.name} ${ARGV}"
   #   cmd.run([cmd.name, *ARGV])
   # }

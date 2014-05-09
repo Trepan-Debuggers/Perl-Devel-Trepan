@@ -22,15 +22,24 @@ EOE
 }
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<"HELP";
 =pod
 
-info frame [I<frame-num>]
+B<info frame> [I<frame-num>]
 
 Show information about I<frame-num>.  If no frame number is given, use
 the selected frame
 
-See also C<info variables my> and C<info variables our>.
+=head2 See also:
+
+L<C<info variables my>|Devel::Trepan::CmdProcessor::Command::Info::Variables::My>> and L<C<info variables our>|Devel::Trepan::CmdProcessor::Command::Info::::Variables::Our>.
+
 =cut
 HELP
 

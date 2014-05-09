@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -9,7 +9,7 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-use constant SHORT_HELP => 'Load or reload something Perlish'; 
+use constant SHORT_HELP => 'Load or reload something Perlish';
 use constant CATEGORY => 'support';
 use constant MIN_ARGS   => 0;  # Need at least this many
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
@@ -23,8 +23,15 @@ use vars qw(@ISA);
 use vars @CMD_VARS;
 
 our $NAME       = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
+
+B<load> [I<load sub-commmand> ...]
 
 Generic command for loading or reloading.
 

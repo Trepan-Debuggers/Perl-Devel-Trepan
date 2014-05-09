@@ -13,6 +13,11 @@ our $CMD = "info variables our";
 our  @CMD = split(/ /, $CMD);
 use constant MAX_ARGS => undef;
 use constant NEED_STACK => 1;
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $MIN_ABBREV = length('o');
 our $HELP   = <<'HELP';
 =pod

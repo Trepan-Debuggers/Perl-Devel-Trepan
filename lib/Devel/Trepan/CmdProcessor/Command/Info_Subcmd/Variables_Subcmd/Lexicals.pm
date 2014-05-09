@@ -16,6 +16,11 @@ use constant MAX_ARGS => undef;
 use constant NEED_STACK => 1;
 
 our $MIN_ABBREV = length('l');
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 

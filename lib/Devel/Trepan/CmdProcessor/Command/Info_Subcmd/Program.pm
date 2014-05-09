@@ -16,10 +16,17 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 our $SHORT_HELP = 'Information about debugged program and its environment';
 our $MIN_ABBREV = length('pr');
 
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
-Information about debugged program and its environment
+B<info program>
+
+Information about debugged program and its environment.
 =cut
 HELP
 

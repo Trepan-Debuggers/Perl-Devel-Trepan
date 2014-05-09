@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -33,12 +33,17 @@ use vars qw(@ISA); @ISA = qw(Devel::Trepan::CmdProcessor::Command);
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
-=pod 
+=pod
 
 B<source> [I<options>] I<file>
 
-options: 
+options:
 
     -q | --quiet | --no-quiet
     -c | --continue | --no-continue
@@ -76,7 +81,7 @@ sub complete($$) {
               --verbose --no-verbose), @files);
     Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;
 }
-    
+
 sub parse_options($$)
 {
     my ($self, $args) = @_;
@@ -98,11 +103,11 @@ sub run($$)
     @args = splice @args, 1, scalar(@args) - 2;
     my $options = parse_options($self, \@args);
     my $intf = $self->{proc}{interfaces};
-    my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new : 
+    my $output  = $options->{quiet} ? Devel::Trepan::IO::OutputNull->new :
         $intf->[-1]{output};
 
     my $filename = $args->[-1];
-    
+
     my $expanded_filename = abs_path(glob($filename));
     unless (defined $expanded_filename && -f $expanded_filename) {
         my $mess = sprintf("Debugger command file '%s' is not found", $filename);
@@ -114,28 +119,28 @@ sub run($$)
         $self->errmsg($mess);
         return 0;
     }
-    
+
     # Push a new debugger interface.
-    my $script_intf = Devel::Trepan::Interface::Script->new($expanded_filename, 
+    my $script_intf = Devel::Trepan::Interface::Script->new($expanded_filename,
                                                             $output, $options);
     push @{$intf}, $script_intf;
 }
 
-  
+
 # Demo it
 unless (caller) {
   # require_relative '../mock'
   # dbgr, cmd = MockDebugger::setup
-  # %w(--quiet -q --no-quiet --continue --no-continue -c -v --verbose 
+  # %w(--quiet -q --no-quiet --continue --no-continue -c -v --verbose
   #    --no-verbose).each do |opt|
   #   puts "parsing ${opt}"
-  #   options = 
+  #   options =
   #     cmd.parse_options(Trepan::Command::SourceCommand::DEFAULT_OPTIONS.dup,
   #                       opt)
   #   p options
   # }
 
-  # if ARGV.size >= 1 
+  # if ARGV.size >= 1
   #   puts "running... ${cmd.name} ${ARGV}"
   #   cmd.run([cmd.name, *ARGV])
   # }

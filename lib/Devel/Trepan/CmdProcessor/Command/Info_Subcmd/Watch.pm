@@ -18,10 +18,16 @@ EOE
 }
 
 our $CMD = 'info watch';
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<'HELP';
 =pod
 
-info watch [I<watchpoint1> I<watchpoint2> ...]
+B<info watch> [I<watchpoint1> I<watchpoint2> ...]
 
 List watch information. If watchpoints are specified, only information
 about them is shown. If no watchpoints are specified, show information

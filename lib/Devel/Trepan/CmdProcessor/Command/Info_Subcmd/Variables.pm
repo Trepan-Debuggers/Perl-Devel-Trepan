@@ -12,6 +12,11 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('va');
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP   = <<'HELP';
 =pod
 

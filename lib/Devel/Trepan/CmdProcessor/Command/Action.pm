@@ -41,15 +41,20 @@ of steps taken by the debugger is:
 
 =over
 
-=item 1. check for a breakpoint at this line
+=item 1.
+check for a breakpoint at this line
 
-=item 2. print the line if necessary (tracing)
+=item 2.
+print the line if necessary (tracing)
 
-=item 3. do any actions associated with that line
+=item 3.
+do any actions associated with that line
 
-=item 4. prompt user if at a breakpoint or in single-step
+=item 4.
+prompt user if at a breakpoint or in single-step
 
-=item 5. evaluate line
+=item 5.
+evaluate line
 
 =back
 

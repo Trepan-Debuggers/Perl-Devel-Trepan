@@ -30,14 +30,15 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-B<undisplay> I<display-number> ...
+B<undisplay> [I<display-number> ...]
 
-Cancel some expressions to be displayed when program stops.  Arguments
-are the code numbers of the expressions to stop displaying.  No
-argument means cancel all automatic-display expressions.  C<delete
-display> has the same effect as this command.  Use C<info display> to
-see current list of display numbers.
+Cancel some expressions to be displayed when program stops. Arguments
+are the code numbers of the expressions to stop displaying. No
+argument means cancel all automatic-display expressions.
 
+=head2 See also:
+
+L<C<info display>|Devel::Trepan::CmdProcessor::Command::Info::Display>
 =cut
 HELP
 

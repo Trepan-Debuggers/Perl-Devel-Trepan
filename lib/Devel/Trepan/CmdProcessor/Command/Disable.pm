@@ -53,7 +53,7 @@ numbers.
 
 =head2 See also:
 
-L<C<info break>|Devel::Trepan::CmdProcessor::Command::Info::Break> to
+L<C<info break>|Devel::Trepan::CmdProcessor::Command::Info::Breakpoints> to
 get a list of breakpoints, and
 L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Enable> to
 enable breakpoints.

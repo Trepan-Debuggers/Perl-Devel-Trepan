@@ -1,5 +1,11 @@
 Revision history for Devel-Trepan
 
+0.55 May 9, 2014
+
+- Add -I (include) ad -M (module) and -v (verbose) options on trepan.pl
+- Add function completion on eval and autoeval.
+- Go over subcommand pod documentation.
+
 0.54 May 4, 2014
 - Expand previous effort started in 0.53 to cross index POD text,
   use more POD tagging and regularize its use, e.g. fixed text is bold.

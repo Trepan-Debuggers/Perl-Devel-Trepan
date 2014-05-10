@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
-no warnings 'redefine';
 
 use Carp ();
 use File::Basename;
@@ -11,6 +10,7 @@ use rlib '../../..';
 use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
 use strict;
 package Devel::Trepan::CmdProcessor::Command;
+no warnings 'redefine';
 
 # Because we use Exporter we want to silence:
 #   Use of inherited AUTOLOAD for non-method ... is deprecated
@@ -49,6 +49,7 @@ use vars @CMD_VARS;
 use constant NEED_STACK => 0; # We'll say that commands which need a stack
                               # to run have to declare that and those that
                               # don't don't have to mention it.
+
 # use constant NEED_RUNNING = 0; # We'll say that commands which need a a currently
 #                    # running program. It's possible we have a stack even though
 #                    # the program isn't running, e.g. there was an exception.
@@ -98,7 +99,7 @@ sub new($$) {
 # List command names aligned in columns
 sub columnize_commands($$) {
     my ($self, $commands) = @_;
-    my $width = $self->settings->{maxwidth};
+    my $width = $self->{settings}{maxwidth};
     my $r = Array::Columnize::columnize($commands,
                                        {displaywidth => $width,
                                         colsep => '    ',

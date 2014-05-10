@@ -77,8 +77,8 @@ my $DEFAULT_OPTIONS = {
 sub complete($$) {
     my ($self, $prefix) = @_;
     my @files = Devel::Trepan::Complete::filename_list($prefix);
-    my @opts = (qw(-c --continue --no --yes
-              --verbose --no-verbose), @files);
+    my @opts = (qw(-c --continue -n --no -y --yes
+              -v --verbose --no-verbose), @files);
     Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;
 }
 
@@ -89,8 +89,11 @@ sub parse_options($$)
     my %opts = %$DEFAULT_OPTIONS;
     my $result = &GetOptionsFromArray($args,
           '--continue' => \$opts{cont},
+          '--v'        => \$opts{verbose},
           '--verbose'  => \$opts{verbose},
+          '-n'         => \$opts{no},
           '--no'       => \$opts{no},
+          '-y'         => sub { $opts{no} = 0; },
           '--yes'      => sub { $opts{no} = 0; }
         );
     \%opts;

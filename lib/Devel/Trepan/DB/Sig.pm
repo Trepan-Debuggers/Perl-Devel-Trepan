@@ -152,7 +152,8 @@ sub dbdie {
     my $mess = "@_";
     {
 
-        package Carp;    # Do not include us in the list
+        package # hide me from PAUSE
+	    Carp;    # Do not include us in the list
         eval { $mess = Carp::longmess(@_); };
     }
     ( $single, $trace ) = ( $mysingle, $mytrace );

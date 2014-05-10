@@ -70,6 +70,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Return.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm

@@ -1,4 +1,5 @@
-package SelfLoader;
+package # hide me from PAUSE
+    SelfLoader;
 use 5.008;
 use strict;
 use IO::Handle;

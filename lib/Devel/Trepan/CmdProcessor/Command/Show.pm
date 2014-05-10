@@ -42,6 +42,7 @@ about just that subcommand.
 Type C<show> for a list of show subcommands and what they do.
 
 Type C<help show *> for a list of C<show> subcommands.
+
 =head2 See also:
 
 L<C<show abbrev>|Devel::Trepan::CmdProcessor::Command::Show::Abbrev>,

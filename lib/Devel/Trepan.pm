@@ -225,6 +225,10 @@ L</Examining the call stack>
 
 =item *
 
+L</Status inquiries>
+
+=item *
+
 L</Support facilities>
 
 =item *
@@ -408,6 +412,21 @@ L<Select a call frame
 =item *
 
 L<Move to a more recent frame (up)|Devel::Trepan::CmdProcessor::Command::Up>
+
+=back
+
+=head3 Status inquiries
+
+=over
+
+=item *
+
+L<Information for showing things about the program being debugged
+(info)|Devel::Trepan::CmdProcessor::Command::Info>
+
+=item *
+
+L<Showing things about the debugger (show)|Devel::Trepan::CmdProcessor::Command::Show>
 
 =back
 

@@ -440,7 +440,11 @@ L<Define an alias (alias)|Devel::Trepan::CmdProcessor::Command::Alias>
 
 =item *
 
-L<List the completions for the rest of the line|Devel::Trepan::CmdProcessor::Command::Complete>
+L<List the completions for the rest of the line (complete)|Devel::Trepan::CmdProcessor::Command::Complete>
+
+=item *
+
+L<Loading or reloading Debugger or Perlish things (load)|Devel::Trepan::CmdProcessor::Command::Load>
 
 =item *
 
@@ -456,15 +460,7 @@ L<Run debugger commands from a file (source)|Devel::Trepan::CmdProcessor::Comman
 
 =item *
 
-L<Load or Reload something Perlish|Devel::Trepan::CmdProcessor::Command::Load>
-
-=item *
-
-L<Modify parts of the Debugger Environment|Devel::Trepan::CmdProcessor::Command::Set>
-
-=item *
-
-L<Show parts of the Debugger Environment|Devel::Trepan::CmdProcessor::Command::Show>
+L<Modify parts of the Debugger Environment (set)|Devel::Trepan::CmdProcessor::Command::Set>
 
 =item *
 

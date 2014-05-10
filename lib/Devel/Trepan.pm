@@ -160,11 +160,13 @@ Or for those who prefer the traditional Perlish way:
 
 The problem with the above "perlish" approach is that you get the
 default trepan options. If you want to set any of these, you'll have
-to set them either with a debugger command (possibly via startup
-script, e.g. *~/.treplrc` or via environment variable
-I<TREPANPL_OPTS>. To see the environement variables, run I<trepan.pl>
-with the C<--verbose> option or run `eval $ENV{TREPANPL_OPTS} inside
-of the debugger.
+to set them either with a debugger command, possibly via startup
+script, e.g. I<~/.treplrc> or via environment variable
+I<TREPANPL_OPTS>.
+
+To see the environement variables, run I<trepan.pl> with the
+C<--verbose> option or run C<eval $ENV{TREPANPL_OPTS}> inside of the
+debugger.
 
 For out-of-process (and possibly out-of server) debugging:
 
@@ -192,8 +194,8 @@ Or if you just want POSIX-shell-like C<set -x> line tracing:
 
     $ trepan.pl -x -- perl-program [perl-program-opts]
 
-Inside the debugger tracing is turned on using the command C<set trace print>.
-There is extensive help from the C<help> command.
+Inside the debugger tracing is turned on using the command C<set trace
+print>.  There is extensive help from the C<help> command.
 
 =head2 Command Categories
 

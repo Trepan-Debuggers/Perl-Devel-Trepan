@@ -1,5 +1,10 @@
 2014-05-09  Rocky Bernstein <rocky@cpan.org>
 
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for 0.55 release
+
+2014-05-09  Rocky Bernstein <rocky@cpan.org>
+
 	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm,

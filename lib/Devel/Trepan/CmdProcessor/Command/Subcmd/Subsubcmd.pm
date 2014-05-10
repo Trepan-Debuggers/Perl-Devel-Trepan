@@ -241,6 +241,15 @@ sub save_command($) {
 package Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd;
 use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
+
+
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    Devel::Trepan::Complete::complete_token(['on', 'off'],
+					    $prefix);
+}
+
 sub run($)
 {
     my ($self, $args) = @_;

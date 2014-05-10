@@ -28,11 +28,22 @@ B<info variables our -v>
 
 B<info variables our> I<var1> [I<var2>...]
 
-List C<our> variables at the current stack level.
+List C<our> variables at the current stack level. Use the
+frame changing commands like C<up>, C<down> or C<frame> set the
+current frame.
+
+In the first form, give a list of C<our> variable names only.
+In the second form, list variable names and values In the third form,
+list variable names and values of I<var1>, etc.
 
 =head2 See also:
 
-frame changing commands
+L<C<info variables
+lexicals>|Devel::Trepan::CmdProcessor::Command::Info::Variables::Lexicals>,
+L<C<info variables
+my>|Devel::Trepan::CmdProcessor::Command::Info::Variables::My>, and
+frame-changing commands
+
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'our' variables.";

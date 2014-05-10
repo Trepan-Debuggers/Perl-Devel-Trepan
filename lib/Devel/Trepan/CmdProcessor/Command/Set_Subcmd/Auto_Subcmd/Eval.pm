@@ -59,7 +59,12 @@ is on because by default, C<s> is an alias for the debugger C<step>
 command. It is possible to remove that alias if this causes constant
 problem. Another possibility is to go into a real shell via the
 C<shell> command.
+
+=head2 See also:
+
+L<C<show auto eval>|Devel::Trepan::CmdProcessor::Command::Show::Auto::Eval>
 =cut
+
 HELP
 
 our $MIN_ABBREV   = length('ev');

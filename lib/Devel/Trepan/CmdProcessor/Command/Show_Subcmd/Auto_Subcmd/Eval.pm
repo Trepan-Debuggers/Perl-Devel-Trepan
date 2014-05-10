@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -15,42 +15,27 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 use constant MAX_ARGS => 0;
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP         = <<"HELP";
+=pod
 
-Evaluate unrecognized debugger commands.
+B<show auto eval>
 
-Often inside the debugger, one would like to be able to run arbitrary
-Perl commands without having to preface expressions with \"print\" or
-\"eval\". Showing \"auto eval\" on will cause unrecognized debugger
-commands to be evaluated as a Perl expression. 
+Show whether unrecognized debugger commands are evaluated.
 
-Note that if this is set, on error the message shown on type a bad
-debugger command changes from:
+=head2 See also:
 
-  Undefined command: \"fdafds\". Try \"help\".
-
-to something more Perl-specific such as:
-
-  NameError: name 'fdafds' is not defined
-
-One other thing that trips people up is when setting auto eval is that
-there are some short debugger commands that sometimes one wants to use
-as a variable, such as in an assignment statement. For example:
-
-  \$s = 5
-
-which produce when 'auto eval' is on:
-  *** Command 'step' can take at most 1 argument(s); got 2.
-
-because by default, 's' is an alias for the debugger 'step'
-command. It is possible to remove that alias if this causes constant
-problem. Another possibility is to go into a real Ruby shell via the
-'irb' command.
+L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto Eval>
+=cut
 HELP
 
 our $MIN_ABBREV   = length('ev');
 our $SHORT_HELP   = "Show evaluation of unrecognized debugger commands";
- 
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

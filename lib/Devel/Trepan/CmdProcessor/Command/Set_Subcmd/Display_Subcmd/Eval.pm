@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../..';
 
@@ -16,13 +16,18 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 our $CMD = 'set display eval';
 my @DISPLAY_TYPES = @Devel::Trepan::CmdProcessor::DISPLAY_TYPES;
 my $param = join('|', @DISPLAY_TYPES);
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP   = <<"HELP";
 =pod
 
-B<set display eval> {I<concise>|I<dprint>|I<dumper>|I<tidy>}
+B<set display eval> {B<concise>|B<dprint>|B<dumper>|B<tidy>}
 
 Set how you want evaluation results to be shown.
-
 
 Devel::Trepan relegates how Perl the contents of expressions variables
 are displayed to one of the many Perl modules designed for this
@@ -49,8 +54,14 @@ C<dumper> E<mdash> L<Data::Dumper>
 See the respective display manual pages for how to influence display
 for a given module.
 
-See also: C<show display eval>, C<eval>, and C<set autoeval>.
+=head2 See also:
+
+L<C<set display eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>,
+L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>, and
+L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>,
+
 =cut
+
 HELP
 
 our $MIN_ABBREV = length('ev');

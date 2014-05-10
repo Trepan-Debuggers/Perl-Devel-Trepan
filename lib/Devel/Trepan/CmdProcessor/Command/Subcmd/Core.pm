@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 # A base class for debugger subcommands.
 #
 use Exporter;
@@ -275,7 +275,7 @@ sub run($) {
     $self->run_show_int($doc);
 }
 
-if (__FILE__ eq $0) {
+unless (caller) {
     # Demo it.
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();

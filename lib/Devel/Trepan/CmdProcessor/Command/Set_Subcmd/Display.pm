@@ -30,7 +30,11 @@ I<name> for help on a particular display option.
 
 =head2 See also:
 
-L<C<show display>|Devel::Trepan::CmdProcessor::Command::Show::Display>
+L<C<show display>|Devel::Trepan::CmdProcessor::Command::Show::Display>,
+L<C<set debug
+eval>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Eval>, and
+L<C<set debug
+op>|Devel::Trepan::CmdProcessor::Command::Set::Debug::OP>
 
 =cut
 HELP

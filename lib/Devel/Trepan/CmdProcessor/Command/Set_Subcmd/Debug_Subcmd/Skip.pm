@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -18,13 +18,22 @@ our $SHORT_HELP   = 'Debug statement skipping';
 our $HELP         = <<'HELP';
 =pod
 
-Debug statement skipping.
+B<set debug skip> [B<on>|B<off>]
+
+Debug statement skipping. If "on" or "off" is not given, "on" is
+assumed.
+
+=head2 See also:
+
+L<C<show debug
+skip>|Devel::Trepan::CmdProcessor::Command::Show::Debug::Skip>
+
 =cut
 HELP
 
 our $MIN_ABBREV   = length('sk');
 use constant MAX_ARGS => 1;
- 
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

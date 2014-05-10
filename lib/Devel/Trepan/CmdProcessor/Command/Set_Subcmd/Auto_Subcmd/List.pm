@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 
 package Devel::Trepan::CmdProcessor::Command::Set::Auto::List;
@@ -25,7 +25,12 @@ our $HELP         = <<'HELP';
 B<set auto list> [B<on>|B<off>]
 
 Set to run a C<list> command each time we enter the debugger.
+
+=head2 See also:
+
+L<C<show auto list>|Devel::Trepan::CmdProcessor::Command::Show::Auto::List>
 =cut
+
 HELP
 
 our $MIN_ABBREV   = length('li');

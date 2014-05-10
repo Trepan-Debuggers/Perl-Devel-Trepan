@@ -10,6 +10,7 @@ META.yml
 Makefile.PL
 README				README in perlpod format for CPAN
 README.md			README in Markdown format for github
+THANKS				Who has helped
 bin/trepan.pl
 example/TCPPack.pm
 example/action-bug.pl

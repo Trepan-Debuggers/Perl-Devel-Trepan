@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -15,16 +15,28 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 our $SHORT_HELP   = 'Debug macro expansion';
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP         = <<'HELP';
 =pod
 
-Debug macro expansion.
+B<set debug macro> [B<on>|B<off>]
+
+Debug macro expansion. If "on" or "off" is not given, "on" is assumed.
+
+=head2 See also:
+
+L<C<show debug macro>|Devel::Trepan::CmdProcessor::Command::Show::Debug::Macro>
 =cut
 HELP
 
 our $MIN_ABBREV   = length('ma');
 use constant MAX_ARGS => 1;
- 
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

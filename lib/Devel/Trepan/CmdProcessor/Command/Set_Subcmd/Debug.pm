@@ -29,7 +29,14 @@ for help on a particular debugging control.
 
 =head2 See also:
 
-L<C<show debug>|Devel::Trepan::CmdProcessor::Command::Show::Debug>
+L<C<show debug>|Devel::Trepan::CmdProcessor::Command::Show::Debug>,
+L<C<set debug
+except>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Except>,
+L<C<set debug
+macro>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Macro>, and
+L<C<set debug
+skip>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Skip>,
+
 =cut
 
 HELP

@@ -41,11 +41,16 @@ commands like C<up>, C<down> or C<frame> set the current frame.
 
 In the first form, give a list of C<my> variable names only.  In the
 second form, list variable names and values In the third form, list
-variable names and values of VAR1, etc.
+variable names and values of I<var1>, etc.
 
 =head2 See also:
 
-Frame-changing commands.
+L<C<info variables
+lexicals>|Devel::Trepan::CmdProcessor::Command::Info::Variables::Lexicals>,
+L<C<info variables
+our>|Devel::Trepan::CmdProcessor::Command::Info::Variables::Our>, and
+frame-changing commands
+
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'my' variables.";

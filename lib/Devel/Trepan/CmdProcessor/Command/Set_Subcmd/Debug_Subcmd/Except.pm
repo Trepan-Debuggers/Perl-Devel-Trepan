@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -17,13 +17,27 @@ our $IN_LIST      = 1;
 our $SHORT_HELP   = "Debug exceptions handled by debugger";
 our $MIN_ABBREV   = length('ex');
 use constant MAX_ARGS => 1;
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP         = <<'HELP';
 =pod
 
-Debug exceptions handled by debugger.
+B<set debug except> [B<on>|B<off>]
+
+Debug exceptions handled by debugger. If "on"
+or "off" is not given, "on" is assumed.
+
+=head2 See also:
+
+L<C<show debug except>|Devel::Trepan::CmdProcessor::Command::Show::Debug::Except>
 =cut
+
 HELP
- 
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

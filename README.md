@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel-Trepan)
 
-Devel::Trepan -- A new Perl debugger
+Devel::Trepan &mdash; A new Perl debugger
 ====================================
 
 A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki). The command set is modeled off of _gdb_, but other command sets are possible.

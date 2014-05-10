@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -16,6 +16,12 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP         = <<'HELP';
 =pod
 
@@ -28,12 +34,15 @@ statements in a line you are at.
 
 In the future we may also allow a breakpoint at a COP address.
 
-See also L<C<show display
-op>|Devel::Trepan::CmdProcessor::Command::Show::Display::OP>, C<show
-line>, L<C<show
-program>|Devel::Trepan::CmdProcessor::Command::Show::Program> and
-C<disassemble> (via plugin L<Devel::Trepan::Disassemble>).
+=head2 See also:
+
+L<C<show display op>|Devel::Trepan::CmdProcessor::Command::Show::Display::OP>,
+L<C<show line>|Devel::Trepan::CmdProcessor::Command::Show::Line>,
+L<C<show program>|Devel::Trepan::CmdProcessor::Command::Show::Program>, and
+L<C<disassemble>|Devel::Trepan::CmdProcessor::Command::Disassemble>
+(via plugin L<Devel::Trepan::Disassemble>).
 =cut
+
 HELP
 
 our $MIN_ABBREV   = length('co');

@@ -40,7 +40,11 @@ list variable names and values of I<var1>, etc.
 
 =head2 See also:
 
-frame changing commands
+L<C<info variables
+my>|Devel::Trepan::CmdProcessor::Command::Info::Variables::My>,
+L<C<info variables
+our>|Devel::Trepan::CmdProcessor::Command::Info::Variables::Our>, and
+frame-changing commands
 =cut
 HELP
 our $SHORT_HELP   = "Information about 'my' or 'our' variables.";

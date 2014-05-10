@@ -133,4 +133,9 @@ for my $expr ('\$x=2', '-e "{a => 1}"', '-e "(1,2)"') {
 	"valid perl expression '$expr'");
 }
 
+$ENV{PAGER} = 'do-first';
+is(Devel::Trepan::Util::pager(), 'do-first');
+delete $ENV{PAGER};
+ok(Devel::Trepan::Util::pager());
+
 done_testing();

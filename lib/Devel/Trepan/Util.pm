@@ -147,6 +147,22 @@ sub parse_eval_sigil($)
     return ($cmd =~ /^\s*([%\$\@>;])/) ? $1 : ';';
 }
 
+# This routine makes sure $pager is set up so that '|' can use it.
+sub pager()
+{
+    # If PAGER is defined in the environment, use it.
+    if (defined $ENV{PAGER}) {
+	$ENV{PAGER};
+    } elsif (eval { require Config } && defined $Config::Config{pager} ) {
+	# if Config.pm defines it.
+	$Config::Config{pager};
+    } else {
+      # fall back to 'more'.
+	'more'
+    }
+}
+
+
 # Demo code
 unless (caller) {
     my $default_config = {a => 1, b => 'c'};
@@ -220,6 +236,10 @@ unless (caller) {
         print invalid_perl_syntax($expr, 1), "\n";
     }
 
+    $ENV{PAGER} = 'do-first';
+    print pager(), "\n";
+    delete $ENV{PAGER};
+    print pager(), "\n";
 }
 
 1;

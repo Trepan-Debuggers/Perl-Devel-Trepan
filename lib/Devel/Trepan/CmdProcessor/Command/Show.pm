@@ -42,7 +42,26 @@ about just that subcommand.
 Type C<show> for a list of show subcommands and what they do.
 
 Type C<help show *> for a list of C<show> subcommands.
+=head2 See also:
+
+L<C<show abbrev>|Devel::Trepan::CmdProcessor::Command::Show::Abbrev>,
+L<C<show aliases>|Devel::Trepan::CmdProcessor::Command::Show::Aliases>,
+L<C<show args>|Devel::Trepan::CmdProcessor::Command::Show::args>,
+L<C<show auto>|Devel::Trepan::CmdProcessor::Command::Show::Auto>,
+L<C<show basename>|Devel::Trepan::CmdProcessor::Command::Show::Basename>,
+L<C<show confirm>|Devel::Trepan::CmdProcessor::Command::Show::Confirm>,
+L<C<show debug>|Devel::Trepan::CmdProcessor::Command::Show::Debug>,
+L<C<show different>|Devel::Trepan::CmdProcessor::Command::Show::Different>,
+L<C<show display>|Devel::Trepan::CmdProcessor::Command::Show::Display>,
+L<C<show highlight>|Devel::Trepan::CmdProcessor::Command::Show::Highlight>,
+L<C<show interactive>|Devel::Trepan::CmdProcessor::Command::Show::Interactive>,
+L<C<show max>|Devel::Trepan::CmdProcessor::Command::Show::Max>,
+L<C<show timer>|Devel::Trepan::CmdProcessor::Command::Show::Timer>,
+L<C<show trace>|Devel::Trepan::CmdProcessor::Command::Show::Trace>, and
+L<C<show version>|Devel::Trepan::CmdProcessor::Command::Show::Version>
+
 =cut
+
 HELP
 
 sub run($$)

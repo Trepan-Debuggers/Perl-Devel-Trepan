@@ -41,7 +41,24 @@ information about just that subcommand.
 Type C<info> for a list of subcommands and what they do.
 
 Type C<help info *> for a list of C<info> subcommands.
+
+=head2 See also:
+
+L<C<info
+breakpoints>|Devel::Trepan::CmdProcessor::Command::Info::Breakpoints>,
+L<C<info files>|Devel::Trepan::CmdProcessor::Command::Info::Files>,
+L<C<info frame>|Devel::Trepan::CmdProcessor::Command::Info::Frame>,
+L<C<info functions>|Devel::Trepan::CmdProcessor::Command::Info::Functions>,
+L<C<info line>|Devel::Trepan::CmdProcessor::Command::Info::Line>,
+L<C<info macros>|Devel::Trepan::CmdProcessor::Command::Info::Macros>,
+L<C<info program>|Devel::Trepan::CmdProcessor::Command::Info::Program>,
+L<C<info return>|Devel::Trepan::CmdProcessor::Command::Info::Return>,
+L<C<info signals>|Devel::Trepan::CmdProcessor::Command::Info::Signals>,
+L<C<info variables>|Devel::Trepan::CmdProcessor::Command::Info::Variables>,
+and
+L<C<info watch>|Devel::Trepan::CmdProcessor::Command::Info::Watch>
 =cut
+
 HELP
 
 unless (caller) {

@@ -48,6 +48,22 @@ C<set auto...> is the same as C<set auto ...>. For example, C<set
 autolist> is the same as L<C<set auto
 list>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>.
 
+=head2 See also:
+
+L<C<set abbrev>|Devel::Trepan::CmdProcessor::Command::Set::Abbrev>,
+L<C<set auto>|Devel::Trepan::CmdProcessor::Command::Set::Auto>,
+L<C<set basename>|Devel::Trepan::CmdProcessor::Command::Set::Basename>,
+L<C<set confirm>|Devel::Trepan::CmdProcessor::Command::Set::Confirm>,
+L<C<set debug>|Devel::Trepan::CmdProcessor::Command::Set::Debug>,
+L<C<set different>|Devel::Trepan::CmdProcessor::Command::Set::Different>,
+L<C<set display>|Devel::Trepan::CmdProcessor::Command::Set::Display>,
+L<C<set highlight>|Devel::Trepan::CmdProcessor::Command::Set::Highlight>,
+L<C<set max>|Devel::Trepan::CmdProcessor::Command::Set::Max>,
+L<C<set return>|Devel::Trepan::CmdProcessor::Command::Set::Return>,
+L<C<set substitute>|Devel::Trepan::CmdProcessor::Command::Set::Substitute>,
+L<C<set timer>|Devel::Trepan::CmdProcessor::Command::Set::Timer>,
+L<C<set trace>|Devel::Trepan::CmdProcessor::Command::Set::Trace>, and
+L<C<set variable>|Devel::Trepan::CmdProcessor::Command::Set::Variable>
 =cut
 HELP
 
@@ -69,7 +85,6 @@ unless (caller) {
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
     my $cmd = __PACKAGE__->new($proc, $NAME);
     # require_relative '../mock'
-    # dbgr, cmd = MockDebugger::setup
     $cmd->run([$NAME]);
     # $cmd->run([$NAME, 'autolist']);
     # $cmd->run([$NAME, 'autoeval', 'off']);

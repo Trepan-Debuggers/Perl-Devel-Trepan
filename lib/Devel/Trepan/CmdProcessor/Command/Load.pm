@@ -42,7 +42,15 @@ Type C<help load *> for a just list of C<load> subcommands.
 
 Type C<load> for a list of subcommands and what they do.
 
+=head2 See also:
+
+L<C<load subcmd>|Devel::Trepan::CmdProcessor::Command::Load::Subcmd>,
+L<C<load command>|Devel::Trepan::CmdProcessor::Command::Load::Command>,
+L<C<load module>|Devel::Trepan::CmdProcessor::Command::Load::module>, and
+L<C<load source>|Devel::Trepan::CmdProcessor::Command::Load::Source>
+
 =cut
+
 HELP
 
 unless (caller) {

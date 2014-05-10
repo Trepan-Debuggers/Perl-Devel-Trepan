@@ -11,15 +11,17 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-# =pod
-#
-# =head2 Synopsis:
-#
-# =cut
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP=<<"EOH";
 =pod
 
 B<show confirm>
+
 Show whether to confirm potentially dangerous operations.
 
 =head2 See also:
@@ -30,7 +32,7 @@ EOH
 our $SHORT_HELP = "Show whether to confirm potentially dangerous operations";
 our $MIN_ABBREV = length('co');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 

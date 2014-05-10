@@ -17,16 +17,30 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 ## FIXME: do automatically.
 our $CMD = "set variable";
 
-our $HELP   = <<"HELP";
-${CMD} VARIABLE_NAME VALUE
+=pod
 
-Set a 'my' or 'our' variable. VALUE must be a constant.
+=head2 Synopsis:
 
-Examples:
+=cut
+our $HELP   = <<'HELP';
+=pod
 
-$CMD \$foo 20
-$CMD \@ARY = (1,2,3)
+B<set variable> I<variable-name> I<value>
+
+Set a I<my> or I<our> variable; I<value> must be a constant.
+
+=head2 Examples:
+
+  set variable $foo 20
+  set variable @ARY = (1,2,3)
+
+=head2 See also:
+
+L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>
+
+=cut
 HELP
+
 our $SHORT_HELP   = "Set a 'my' or 'our' variable";
 
 unless (@ISA) {
@@ -67,6 +81,7 @@ sub run($$)
 
     my $i;
     while (my ($pkg, $file, $line, $fn) = caller($i++)) { ; };
+    no warnings 'once';
     my $diff = $i - $DB::stack_depth;
     # FIXME: 4 is a magic fixup constant, also found in DB::finish.
     # Remove it.

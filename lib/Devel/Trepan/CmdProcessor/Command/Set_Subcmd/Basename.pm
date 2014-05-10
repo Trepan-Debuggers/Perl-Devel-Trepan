@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -12,21 +12,35 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $SHORT_HELP = 'Set to show only file basename in showing file names';
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP   = <<'HELP';
 =pod
 
-Set to show only file basename in showing file names
+B<set basename> [B<on>|B<off>]
+
+Set to show only file basename in showing file names. If "on"
+or "off" is not given, "on" is assumed.
+
+=head2 See also:
+
+L<C<show basename>|Devel::Trepan::CmdProcessor::Command::Show::Basename>
+
 =cut
 HELP
 
 our $MIN_ABBREV = length('ba');
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 
   # # FIXME: DRY the below code
-  # my $cmd = 
+  # my $cmd =
   #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
   # $cmd->run(@$cmd->prefix + ('off'));
   # $cmd->run(@$cmd->prefix + ('ofn'));

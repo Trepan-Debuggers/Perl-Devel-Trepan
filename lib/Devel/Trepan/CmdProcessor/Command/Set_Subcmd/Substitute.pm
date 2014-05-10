@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -14,12 +14,13 @@ our $MIN_ABBREV = length('sub');
 our $HELP   = <<"HELP";
 =pod
 
-Set filename remapping.
+B<set substitute> [I<set substitute subcommand>]
 
 Sometimes the filename or line ranges reported inside the debugger
 might not match the filenames or line ranges where you can find the
 source in the OS filesystem. This may happen because of pathnames do
 not match or program text comes from evaluated lines in code.
+
 =cut
 HELP
 

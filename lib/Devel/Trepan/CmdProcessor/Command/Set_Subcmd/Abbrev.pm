@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -15,7 +15,15 @@ our $SHORT_HELP = 'Set to allow unique abbreviations of commands';
 our $HELP = <<'HELP';
 =pod
 
-Set to allow unique abbreviations of commands.
+B<set abbrev> [B<on>|B<off>]
+
+Set to allow unique abbreviations of commands. If "on" or "off" is not
+given, "on" is assumed.
+
+=head2 See also:
+
+L<C<show abbrev>|Devel::Trepan::CmdProcessor::Command::Show::Abbrev>
+
 =cut
 HELP
 our $MIN_ABBREV = length('ab');
@@ -25,7 +33,7 @@ if (__FILE__ eq $0) {
   # require_relative '../../mock'
 
   # # FIXME: DRY the below code
-  # my $cmd = 
+  # my $cmd =
   #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
   # $cmd->run(@$cmd->prefix + ('off'));
   # $cmd->run(@$cmd->prefix + ('ofn'));

@@ -11,12 +11,18 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
-set different [on|off|nostack]
+B<set different> [B<on>|B<off>|B<nostack>]
 
-Set to make sure C<next> or C<step> moves to a new position.
+Set to make sure C<next> or C<step> moves to a new position.  If "on"
+or "off" is not given, "on" is assumed.
 
 Each line often may contain many possible stopping points. In a
 debugger it is sometimes desirable to continue but stop only when the
@@ -26,22 +32,34 @@ Setting C<different> to on will cause each C<step> or C<next> command to
 stop at a different position.
 
 Note though that the notion of different does take into account stack
-nesting. 
+nesting.
 
-See also C<step>, C<next> which have suffixes C<+> and C<-> which
-override this setting.
+=head2 See also:
+
+L<C<step>|Devel::Trepan::CmdProcessor::Command::step>, and
+L<C<next>|Devel::Trepan::CmdProcessor::Command::Next> which have
+suffixes C<+> and C<->; the suffixes override this setting.
+
 =cut
 HELP
+
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    Devel::Trepan::Complete::complete_token(['on', 'off', 'nostack'],
+					    $prefix);
+}
+
 
 our $MIN_ABBREV = length('dif');
 our $SHORT_HELP = "Set to make sure 'next/step' move to a new position.";
 
-if (__FILE__ eq $0) {
+unless (caller) {
   # Demo it.
   # require_relative '../../mock'
 
   # # FIXME: DRY the below code
-  # my $cmd = 
+  # my $cmd =
   #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
   # $cmd->run(@$cmd->prefix + ('off'));
   # $cmd->run(@$cmd->prefix + ('ofn'));

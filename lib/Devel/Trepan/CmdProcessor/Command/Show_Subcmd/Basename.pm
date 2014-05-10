@@ -18,7 +18,9 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 our $HELP = <<"EOH";
 =pod
 
-Show whether file basename are used showing file names
+B<show baseame>
+
+Show whether file basename are used showing file names.
 
 =head2 See also:
 

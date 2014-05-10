@@ -10,15 +10,28 @@ package Devel::Trepan::CmdProcessor::Command::Set::Display;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
-our $MIN_ABBREV = length('ma');
+our $MIN_ABBREV = length('di');
 our $SHORT_HELP = 'Set display attributes';
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<'HELP';
 =pod
 
+B<set display> [I<set display subcommands>]
+
 Set display attributes.
 
-See C<set display *> for a list of subcommands or C<help set display> I<name>
-for help on a particular display option.
+Run C<set display *> for a list of subcommands or C<help set display>
+I<name> for help on a particular display option.
+
+=head2 See also:
+
+L<C<show display>|Devel::Trepan::CmdProcessor::Command::Show::Display>
+
 =cut
 HELP
 

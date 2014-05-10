@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -14,18 +14,36 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $SHORT_HELP = 'Set whether we use terminal highlighting';
 our $MIN_ABBREV = length('hi');
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 
-Set whether we use terminal highlighting.
+B<set highlight> [B<on>|B<off>|B<reset>]
+
+Set whether we use terminal highlighting; "on" and "off" are
+self-explanitory. Use "reset" to set highlighting on and force a redo
+of syntax highlighting of already cached files. This may be needed if
+the debugger was started without syntax higlighting initially.
+
+If "on", "off" or "reset" is not given, "on" is assumed.
+
+=head2 See also:
+
+L<C<show highlight>|Devel::Trepan::CmdProcessor::Command::Show::Highlight>
+
 =cut
 HELP
 
-# sub complete($$)
-# {
-#     my ($self, $prefix) = @_;
-#     Devel::Trepan::Complete::complete_token(qw(on off reset), $prefix);
-# }
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    Devel::Trepan::Complete::complete_token(['on', 'off', 'reset'],
+					    $prefix);
+}
 
 sub run($$)
 {

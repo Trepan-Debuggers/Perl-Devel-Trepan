@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -11,14 +11,27 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('de');
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP   = <<"HELP";
 =pod
 
-Set debugger debugging controls
+B<set debug> [I<set debug commands>]
 
-See C<set debug *> for a list of subcommands or C<help set debug> I<name>
+Set debugger debugging controls.
+
+Run C<set debug *> for a list of subcommands or C<help set debug> I<name>
 for help on a particular debugging control.
+
+=head2 See also:
+
+L<C<show debug>|Devel::Trepan::CmdProcessor::Command::Show::Debug>
 =cut
+
 HELP
 our $SHORT_HELP = "Set debugging controls";
 

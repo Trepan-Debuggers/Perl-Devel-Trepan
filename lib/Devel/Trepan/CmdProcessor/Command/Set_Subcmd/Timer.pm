@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -12,10 +12,19 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = <<"HELP";
-set timer [on|off]
+=pod
 
-Tracks and shows elapsed time between debugger events.
+=head2 Synopsis:
+
+=cut
+
+our $HELP         = <<"HELP";
+=pod
+
+B<set timer> [B<on>|B<off>]
+
+Tracks and shows elapsed time between debugger events. If "on" or
+"off" is not given, "on" is assumed.
 
 Since debugger overhead can be large depending on what you are doing,
 there are many ways to customize the debugger to take less time (and
@@ -23,7 +32,7 @@ do less).
 
 Stepping is slow, running to a breakpoint without stepping is
 relatively fast compared to previous versions of the debugger and
-compared to stepping. 
+compared to stepping.
 
 Stopping at fewer events can also speed things up. Trace event
 buffering slows things down.
@@ -31,7 +40,14 @@ buffering slows things down.
 Buy turning this setting on, you may be able to get a feel for what
 how expensive the various settings.
 
-See also: 'set events', 'set trace buffer', 'step', and 'break'.
+=head2 See also:
+
+L<C<set events>|Devel::Trepan::CmdProcessor::Command::Set::Events>,
+L<C<set trace buffer>|Devel::Trepan::CmdProcessor::Command::Set::Trace::Buffer>,
+L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>, and
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
+
+=cut
 HELP
 
 our $SHORT_HELP = "Set to show elapsed time between debugger events";
@@ -58,7 +74,7 @@ unless (caller) {
   # require_relative '../../mock'
 
   # # FIXME: DRY the below code
-  # my $cmd = 
+  # my $cmd =
   #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
   # $cmd->run(@$cmd->prefix + ('off'));
   # $cmd->run(@$cmd->prefix + ('ofn'));

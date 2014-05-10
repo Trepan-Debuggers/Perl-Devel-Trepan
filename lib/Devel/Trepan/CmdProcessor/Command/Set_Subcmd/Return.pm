@@ -14,11 +14,25 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
 our $SHORT_HELP = "Set the value about to be returned";
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<'HELP';
 =pod
 
-Set the value about to be returned.
+B<set return> I<return value>
+
+Set the value about to be returned. This only works if you are stopped
+at a return event.
+
+=head2 See also:
+
+L<C<show return>|Devel::Trepan::CmdProcessor::Command::Show::Return>
 =cut
+
 HELP
 
 unless (@ISA) {

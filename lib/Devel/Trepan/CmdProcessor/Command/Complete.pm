@@ -6,6 +6,10 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Complete;
 
+use Getopt::Long qw(GetOptionsFromArray);
+use Devel::Trepan::Complete
+    qw(complete_packages complete_subs complete_builtins);
+
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
 unless (@ISA) {
@@ -27,28 +31,82 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-B<complete> I<comamand-prefix>
+B<complete> [I<options>] I<comamand-prefix>
+
+options:
+
+    -b | --builtins
+    -p | --packages
+    -s | --subs
+
 
 List the command completions of I<command-prefix>.
 
 =head2 Examples:
 
-    complete se   # => set server
+    complete se        # => set server
+    complete -p Tie::H # => Tie::Hash (probably)
+    complete -s Tie::Hash::n
+                       # => Tie::Hash::new
 
 =cut
 HELP
+
+my $DEFAULT_OPTIONS = {
+    lexicals   => 0,
+    'my'       => 0,
+    'our'      => 0,
+    packages   => 0,
+    subs       => 0,
+};
+
+sub parse_options($$)
+{
+    my ($self, $args) = @_;
+    my %opts = %$DEFAULT_OPTIONS;
+    my $result = &GetOptionsFromArray
+	($args,
+	 '-b'         => \$opts{builtins},
+	 '--builtins' => \$opts{builtins},
+	 '-p'         => \$opts{packages},
+	 '--packages' => \$opts{packages},
+	 '-s'         => \$opts{subs},
+	 '--subs'     => \$opts{subs}
+        );
+
+    \%opts;
+
+}
 
 # This method runs the command
 sub run($$) {
     my ($self, $args) = @_;
     my @args = @{$args}; shift @args; # remove "complete".
+    my $opts = parse_options($self, \@args);
+
     my $proc = $self->{proc};
-    my $cmd_argstr = $proc->{cmd_argstr};
-    my $last_arg = (' ' eq substr($cmd_argstr, -1)) ? '' : $args[-1];
-    $last_arg = '' unless defined $last_arg;
-    for my $match ($proc->complete($cmd_argstr, $cmd_argstr,
-                   0, length($cmd_argstr))) {
-        $proc->msg($match);
+
+    if ($opts->{builtins}||$opts->{packages}||$opts->{subs}) {
+	if (scalar @args != 1) {
+	    $proc->errmsg('Expecting only a single argument after options');
+	    return;
+	}
+	my $prefix = $args[0];
+	my @matches = ();
+	push @matches, complete_builtins($prefix) if ($opts->{builtins});
+	push @matches, complete_packages($prefix) if ($opts->{packages});
+	push @matches, complete_subs($prefix)     if ($opts->{subs});
+	for my $match (@matches) {
+	    $proc->msg($match);
+	}
+    } else {
+	my $cmd_argstr = $proc->{cmd_argstr};
+	my $last_arg = (' ' eq substr($cmd_argstr, -1)) ? '' : $args[-1];
+	$last_arg = '' unless defined $last_arg;
+	for my $match ($proc->complete($cmd_argstr, $cmd_argstr,
+				       0, length($cmd_argstr))) {
+	    $proc->msg($match);
+	}
     }
 }
 
@@ -69,6 +127,15 @@ unless (caller) {
     for my $prefix ('help syntax c') {
         $cmd->{proc}{cmd_argstr} = $prefix;
         $cmd->run([$cmd->name, $prefix]);
+        print '=' x 40, "\n";
+    }
+
+    %DB::sub = (__PACKAGE__ . '::run', 1);
+    for my $tuple (['-b', 'call'], ['-p', __PACKAGE__],
+		   ['-s', __PACKAGE__ . '::r']) {
+	my ($opt, $prefix) = @$tuple;
+        $cmd->{proc}{cmd_argstr} = $prefix;
+        $cmd->run([$cmd->name, $opt, $prefix]);
         print '=' x 40, "\n";
     }
     # $cmd->run([$cmd->name, 'fdafsasfda']);

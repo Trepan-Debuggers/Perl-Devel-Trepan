@@ -42,7 +42,7 @@ our $MIN_ABBREV = length('fu');
 sub complete($$)
 {
     my ($self, $prefix) = @_;
-    Devel::Trepan::Complete::complete_function($prefix);
+    Devel::Trepan::Complete::complete_subs($prefix);
 }
 
 sub run($$)
@@ -78,7 +78,7 @@ sub run($$)
             }
         }
     } else {
-	my @fns = Devel::Trepan::Complete::complete_builtin($regexp);
+	my @fns = Devel::Trepan::Complete::complete_builtins($regexp);
 	if (@fns) {
             for my $entry (@fns) {
                 $proc->msg($entry . ' is a built-in function');

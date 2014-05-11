@@ -84,7 +84,7 @@ sub complete($$$$$)
             $_last_end += length($_last_token);
         }
 	if (scalar @_last_return == 0 && $self->{settings}{autoeval}) {
-	    return Devel::Trepan::Complete::complete_function($stripped_line);
+	    return Devel::Trepan::Complete::complete_subs($stripped_line);
 	}
         $self->{completions} = \@_last_return;
         return @_last_return;
@@ -109,7 +109,7 @@ sub complete($$$$$)
 
     $self->{completions} = \@_last_return;
     if (scalar @_last_return == 0 && $self->{settings}{autoeval}) {
-	return Devel::Trepan::Complete::complete_function($stripped_line);
+	return Devel::Trepan::Complete::complete_subs($stripped_line);
     }
 
     return @_last_return;

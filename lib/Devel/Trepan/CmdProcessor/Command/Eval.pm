@@ -96,7 +96,7 @@ sub complete($$)
             $self->{proc}->current_source_text();
         }
     } elsif (substr($prefix, 0, 1) =~/[&A-Za-z_]/) {
-	Devel::Trepan::Complete::complete_function($prefix);
+	Devel::Trepan::Complete::complete_subs($prefix);
     } else {
         ($prefix);
     }

@@ -97,12 +97,13 @@ foreach my $tuple (
     ['CORE::foo', []]
     ) {
     my ($prefix, $array) = @{$tuple};
-    my @got = Devel::Trepan::Complete::complete_builtin($prefix);
-    is_deeply(\@got, $array);
+    my @got = Devel::Trepan::Complete::complete_builtins($prefix);
+    is_deeply(\@got, $array, "complete_builtins ${prefix}");
 }
 
 $DB::package = 'main';
 %DB::sub = qw(main::gcd 1);
+my @got;
 foreach my $tuple (
     ['end',
      ['endgrent', 'endhostent', 'endnetent', 'endprotoent',
@@ -116,9 +117,11 @@ foreach my $tuple (
     ['__P',  ['__PACKAGE__']],
     ['foo', []]) {
     my ($prefix, $array) = @{$tuple};
-    my @got = Devel::Trepan::Complete::complete_function($prefix);
-    is_deeply(\@got, $array);
+    @got = Devel::Trepan::Complete::complete_subs($prefix);
+    is_deeply(\@got, $array, "complete_subs $prefix");
 }
 
+@got = Devel::Trepan::Complete::complete_packages('mai');
+is_deeply(\@got, ['main'], "complete_packages mai");
 
 done_testing();

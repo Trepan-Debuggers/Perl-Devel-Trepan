@@ -46,18 +46,26 @@ Give package names and optionally the file(s) that package is in for
 packages matching I<match>. Options control how to interpret the the
 match pattern.
 
-=head2 Examples
+=head2 Examples:
 
     info packages Tie::            # match all packages that start with Tie::
                                    # e.g. Tie::ExtraHash and Tie::Hash
     info packages -p Tie::         # same as above
     info packages -r ^Tie::        # same as above
+    info packages -s Tie::         # same as above, but list the subs
+                                   # of each package along with the package
     info packages -e Tie::Hash     # match exactly Tie::Hash
     info packages -e -f Tie::Hash  # same as above but show the file(s) where
                                    # the package is defined
     info packages -r ::Tie$        # match Tie only at the end,
                                    # e.g. ReadLine::Tie
     info packages                  # List all packages
+
+=head2 See also:
+
+L<C<info functions>|Devel::Trepan::CmdProcessor::Command::Info::Functions>, and
+L<C<complete>|Devel::Trepan::CmdProcessor::Command::Complete>.
+
 =cut
 HELP
 

@@ -43,13 +43,11 @@ B<step out>
 Execute the current line, stopping at the next event.  Sometimes this
 is called "step into".
 
-With an integer argument, step that many times.  With an 'until'
-expression that expression is evaluated and we stop the first time it
-is true.
+With an integer argument, step that many times.
 
 A suffix of C<+> in a command or an alias forces a move to another
 position, while a suffix of C<-> disables this requirement.  A suffix
-of C<E<gt>> will continue until the next call. (C<finish> will run run until
+of C<E<gt>> will continue until the next call. (C<finish> will run  until
 the return for that call.)
 
 If no suffix is given, the debugger setting C<different> determines

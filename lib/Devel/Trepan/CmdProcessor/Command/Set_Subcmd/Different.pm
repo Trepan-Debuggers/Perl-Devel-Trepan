@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -21,12 +21,12 @@ our $HELP = <<'HELP';
 
 B<set different> [B<on>|B<off>|B<nostack>]
 
-Set to make sure C<next> or C<step> moves to a new position.  If "on"
-or "off" is not given, "on" is assumed.
+Set to make sure C<next> or C<step> moves to a new position.  If "on",
+"off", or "nostack" is not given, "on" is assumed.
 
-Each line often may contain many possible stopping points. In a
-debugger it is sometimes desirable to continue but stop only when the
-position next changes.
+A line can contain many possible stopping points. Inside a debugger,
+it is sometimes desirable to continue but stop only when the position
+next changes.
 
 Setting C<different> to on will cause each C<step> or C<next> command to
 stop at a different position.

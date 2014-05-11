@@ -236,6 +236,22 @@ sub complete_function($)
     return sort @functions;
 }
 
+sub complete_packages($)
+{
+    my ($prefix) = @_;
+    my %pkgs;
+    no warnings 'once';
+    foreach my $function (keys %DB::sub) {
+	my @parts = split('::', $function);
+	if (scalar @parts > 1) {
+	    pop(@parts);
+	    my $pkg = join('::', @parts);
+	    $pkgs{$pkg} = 1 if $pkg =~ /^$prefix/;
+	}
+    }
+    return sort keys %pkgs;
+}
+
 unless (caller) {
     my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'b' => 4};
     my @cmds = keys %{$hash_ref};
@@ -277,6 +293,9 @@ unless (caller) {
 	printf("complete_function($prefix) => %s\n",
            join(', ', complete_function($prefix)));
     }
+    my $prefix = 'mai';
+    printf("complete_packages($prefix) => %s\n",
+           join(', ', complete_packages($prefix)));
 
     # FIXME: We don't handle ~ expansion right now.
     #  print "List of filenames expanded from ~\n";

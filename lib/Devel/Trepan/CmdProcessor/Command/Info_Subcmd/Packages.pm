@@ -66,9 +66,9 @@ our $MIN_ABBREV = length('pa');
 
 sub complete($$) {
     my ($self, $prefix) = @_;
-    my @files = (); # Devel::Trepan::Complete::package_list($prefix);
+    my @pkgs = Devel::Trepan::Complete::complete_packages($prefix);
     my @opts = (qw(-r --regexp -p --prefix -s --subs -f --files),
-		@files);
+		@pkgs);
     Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;
 }
 

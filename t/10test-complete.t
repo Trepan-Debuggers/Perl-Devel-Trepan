@@ -14,15 +14,15 @@ import Devel::Trepan::Complete;
 
 note 'test next_token';
 my $x = '  now is  the  time';
-for my $pair ([ 0, ( 5, 'now')], 
-	      [ 2, ( 5, 'now')], 
-	      [ 5, ( 8, 'is')], 
+for my $pair ([ 0, ( 5, 'now')],
+	      [ 2, ( 5, 'now')],
+	      [ 5, ( 8, 'is')],
 	      [ 6, ( 8, 'is')],
 	      [ 8, (13, 'the')],
 	      [ 9, (13, 'the')],
 	      [13, (19, 'time')],
 	      [18, (19, 'e')],
-	      [19, (1, '')]) { 
+	      [19, (1, '')]) {
     my $pos = shift @$pair;
     my @expect = @$pair;
     my @ary = next_token($x, $pos);
@@ -34,11 +34,11 @@ note 'Test complete';
 my $hash_ref = {'ab' => 1, 'aac' => 2, 'aa' => 3, 'a' => 4};
 my @ary = keys %{$hash_ref};
 my @data = (
-    [[], 'b'], 
-    [\@ary, 'a'], 
-    [['aa', 'aac'], 'aa'], 
-    [\@ary, ''], 
-    [['ab'], 'ab'], 
+    [[], 'b'],
+    [\@ary, 'a'],
+    [['aa', 'aac'], 'aa'],
+    [\@ary, ''],
+    [['ab'], 'ab'],
     [[], 'abc']
     );
 for my $tuple (@data) {
@@ -49,9 +49,9 @@ for my $tuple (@data) {
 }
 
 for my $tuple (
-    [\@ary, 'a'], 
-    [['aa', 'aac'], 'aa'], 
-    [['ab'], 'ab'], 
+    [\@ary, 'a'],
+    [['aa', 'aac'], 'aa'],
+    [['ab'], 'ab'],
     [[], 'abc']
     ) {
     my ($result_keys, $prefix) = @$tuple;
@@ -61,4 +61,12 @@ for my $tuple (
     my @c = signal_complete('');
     cmp_ok(scalar @c, '>', '1', 'complete on empty string');
 }
+
+note 'Test complete package';
+$DB::package = 'main';
+%DB::sub = qw(main::gcd 1);
+my $prefix = 'mai';
+my  @completions = Devel::Trepan::Complete::complete_packages($prefix);
+is_deeply(\@completions, ['main'], "complete_package on $prefix");
+
 done_testing();

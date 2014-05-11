@@ -31,7 +31,7 @@ our $NAME = set_name();
 our $HELP = <<"HELP";
 =pod
 
-B<complete> [I<options>] I<comamand-prefix>
+B<complete> [I<options>] I<prefix>
 
 options:
 
@@ -41,7 +41,7 @@ options:
     -s | --subs
 
 
-List the command completions of I<command-prefix>.
+List the command completions of I<prefix>.
 
 =head2 Examples:
 

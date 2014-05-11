@@ -14,9 +14,6 @@ our (@ISA, @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-## FIXME: do automatically.
-our $CMD = "load subcmd";
-
 unless (@ISA) {
     eval <<"EOE";
     use constant MIN_ARGS => 1;

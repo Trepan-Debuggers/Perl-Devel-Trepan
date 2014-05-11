@@ -32,6 +32,11 @@ B<info watch> [I<watchpoint1> I<watchpoint2> ...]
 List watch information. If watchpoints are specified, only information
 about them is shown. If no watchpoints are specified, show information
 about all watchpoints.
+
+=head2 See also:
+
+L<C<watch>|<Devel::Trepan::CmdProcessor::Command::Watch>
+
 =cut
 HELP
 

@@ -6,16 +6,15 @@ use rlib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Load::Module;
 use Cwd 'abs_path';
 
+# FIXME: allow specifiying just the Perl module name,
+# e.g. File::Basename.
+
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
-use Devel::Trepan::DB::LineCache;
 
 use strict;
 our (@ISA, @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
-
-## FIXME: do automatically.
-our $CMD = "load module";
 
 unless (@ISA) {
     eval <<"EOE";

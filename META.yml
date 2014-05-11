@@ -19,9 +19,6 @@ no_index:
     - DB
     - Carp
 provides:
-  Carp:
-    file: lib/Devel/Trepan/DB/Sig.pm
-    version: 0
   DBBreak:
     file: lib/Devel/Trepan/DB/Breakpoint.pm
     version: 0
@@ -30,7 +27,7 @@ provides:
     version: 0
   Devel::Trepan:
     file: lib/Devel/Trepan.pm
-    version: 0.55
+    version: 0.56
   Devel::Trepan::BrkptMgr:
     file: lib/Devel/Trepan/BrkptMgr.pm
     version: 0
@@ -120,6 +117,9 @@ provides:
     version: 0
   Devel::Trepan::CmdProcessor::Command::Info::Macros:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm
+    version: 0
+  Devel::Trepan::CmdProcessor::Command::Info::Packages:
+    file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm
     version: 0
   Devel::Trepan::CmdProcessor::Command::Info::Program:
     file: lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Program.pm
@@ -513,13 +513,10 @@ provides:
     version: 0
   Devel::Trepan::Version:
     file: lib/Devel/Trepan/Version.pm
-    version: 0.55
+    version: 0.56
   Devel::Trepan::WatchMgr:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
-  SelfLoader:
-    file: lib/Devel/Trepan/DB/SelfLoader.pm
-    version: 1.20
   WatchPoint:
     file: lib/Devel/Trepan/WatchMgr.pm
     version: 0
@@ -549,7 +546,7 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: 0.55
+version: 0.56
 x_test_requires:
   Test::More: 0.81
   Time::HiRes: 1.9721

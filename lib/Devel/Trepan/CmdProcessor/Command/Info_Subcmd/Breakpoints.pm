@@ -24,21 +24,33 @@ B<info breakpoints> [I<num1> ...] [B<verbose>]
 
 Show status of user-settable breakpoints. If no breakpoint numbers are
 given, the show all breakpoints. Otherwise only those breakpoints
-listed are shown and the order given. If VERBOSE is given, more
+listed are shown and the order given. If B<verbose> is given, more
 information provided about each breakpoint.
 
-The C<Disp> column contains one of C<keep>, C<del>, the disposition of
+=head2 Examples:
+
+  trepanpl: info breakpoints
+  Num Type          Disp Enb Where
+  1   breakpoint    keep y   at gcd.pl:8
+ 	breakpoint already hit 1 time
+  No actions.
+  No watch expressions defined.
+
+The I<Disp> column contains one of I<keep>, I<del>, the disposition of
 the breakpoint after it gets hit.
 
-The C<Enb> column indicates whether the breakpoint is enabled.
+The I<Enb> column indicates whether the breakpoint is enabled.
 
-The C<Where> column indicates where the breakpoint is located.
+The I<Where> column indicates where the breakpoint is located.
 
 =head2 See also:
 
+L<C<break>|Devel::Trepan::CmdProcessor::Command::Action>,
 L<C<break>|Devel::Trepan::CmdProcessor::Command::Break>,
-L<C<disable>|<Devel::Trepan::CmdProcessor::Command::Disable>, and
-L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Enable>.
+L<C<disable>|<Devel::Trepan::CmdProcessor::Command::Disable>,
+L<C<enable>|<Devel::Trepan::CmdProcessor::Command::Enable>,
+L<C<watch>|<Devel::Trepan::CmdProcessor::Command::Watch>, and
+L<C<help syntax location>|Devel::Trepan::CmdProcessor::Command::Help::location>.
 
 
 =cut

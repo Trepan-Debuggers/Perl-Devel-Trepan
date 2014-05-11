@@ -1,7 +1,179 @@
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/Version.pm: Add fileame completion option to
+	"complete" command. Get ready for release 0.56.
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Source.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Subcmd.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/List.pm
+	,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Stack.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/String.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/
+	Path.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute_Subcmd/
+	String.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/.giti
+	gnore,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace_Subcmd/Print
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/List.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Stack.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/String
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Width.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace_Subcmd/.git
+	ignore,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace_Subcmd/Prin
+	t.pm, lib/Devel/Trepan/CmdProcessor/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Load.pm,
+	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/Interface/User.pm: 
+	Add filename completion and use that in the Load subcommands. The
+	last of the sub sub command pod revision is done. Loading commands
+	now gives error status. Show if commands loaded okay.
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Step.pm: Small doc fixes
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm,
+	lib/Devel/Trepan/CmdProcessor/Complete.pm,
+	lib/Devel/Trepan/Complete.pm, t/10test-cmd-complete.t: Add options
+	on debugger command "complete" to complete on package, subs, or
+	builtins.  Document -s in "info packages" pod.
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm,
+	lib/Devel/Trepan/Complete.pm, t/10test-complete.t: Add routine for
+	package completion. Add package completion on "info packages"
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm: Add
+	ability to list subroutines of a package via "info packages"
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Util.pm, t/10test-util.t: Add pager support
+	routine. Now need to figure out what to do with it.
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Follow gdb better - show moved to "status
+	inquires".
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Add pod links to "info" and "show"
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Functions.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/DB/SelfLoader.pm, lib/Devel/Trepan/DB/Sig.pm: Add
+	info packages to show information about Perl Packages
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod: Another
+	typo
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Action.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Disable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Undisplay.pm: more
+	documentation work
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, README.md, THANKS,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	.gitignore,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Lexicals.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	My.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
+	Our.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/.gitig
+	nore,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
+	m, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Excep
+	t.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Skip.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm: More
+	links in subcommad managers. Add THANKS - why did it take me so
+	long?
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Some markdown tagging converted to pod
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Show.pm: fix up pod head2 in
+	"show"
+
+2014-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/.gitignore,
+	lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Confirm.pm: Add
+	links to "info", "set", "show", and "load" commands
+
+2014-05-09  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Basename.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm,
+	lib/Devel/Trepan/Version.pm: Add on/off completion to show bool
+	subcommands
+
 2014-05-09  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, Changes, lib/Devel/Trepan.pm,
-	lib/Devel/Trepan/Version.pm: Get ready for 0.55 release
+	lib/Devel/Trepan/Version.pm: Get ready for 0.55 release.
 
 2014-05-09  Rocky Bernstein <rocky@cpan.org>
 

@@ -1,5 +1,11 @@
 Revision history for Devel-Trepan
 
+0.56 May 11, 2014 - Happy Mothers' Day
+
+- Lots more Pod reworking
+- Add command "info packages".
+- Add filename and package name completion.
+
 0.55 May 9, 2014
 
 - Add -I (include) ad -M (module) and -v (verbose) options on trepan.pl

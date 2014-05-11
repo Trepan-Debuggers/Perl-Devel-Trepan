@@ -36,6 +36,7 @@ B<complete> [I<options>] I<comamand-prefix>
 options:
 
     -b | --builtins
+    -f | --files
     -p | --packages
     -s | --subs
 
@@ -54,6 +55,7 @@ HELP
 
 my $DEFAULT_OPTIONS = {
     lexicals   => 0,
+    files      => 0,
     'my'       => 0,
     'our'      => 0,
     packages   => 0,
@@ -68,6 +70,8 @@ sub parse_options($$)
 	($args,
 	 '-b'         => \$opts{builtins},
 	 '--builtins' => \$opts{builtins},
+	 '-f'         => \$opts{files},
+	 '--files'    => \$opts{files},
 	 '-p'         => \$opts{packages},
 	 '--packages' => \$opts{packages},
 	 '-s'         => \$opts{subs},
@@ -86,7 +90,15 @@ sub run($$) {
 
     my $proc = $self->{proc};
 
-    if ($opts->{builtins}||$opts->{packages}||$opts->{subs}) {
+    if ($opts->{files}) {
+	if (scalar @args != 1) {
+	    $proc->errmsg('Expecting only a single argument after options');
+	    return;
+	}
+	foreach my $file ($proc->filename_complete($args[0])) {
+	    $proc->msg($file);
+	}
+    } elsif ($opts->{builtins}||$opts->{packages}||$opts->{subs}) {
 	if (scalar @args != 1) {
 	    $proc->errmsg('Expecting only a single argument after options');
 	    return;

@@ -41,7 +41,7 @@ be passed back to the OS. If no exit code is given, 0 is used.
 
 =head2 Examples:
 
- quit                 # quit prompting if we are interactive
+ quit                 # quit; prompt if we are interactive
  quit unconditionally # quit without prompting
  quit!                # same as above
  quit 0               # same as "quit"

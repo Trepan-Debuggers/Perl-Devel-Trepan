@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -17,6 +17,26 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('wid');
+=pod
+
+=head2 Synopsis:
+
+=cut
+
+our $HELP   = <<"HELP";
+=pod
+
+B<show max width>
+
+Show the number of characters the debugger thinks are in a line.
+
+=head2 See also:
+
+L<C<set max width>|Devel::Trepan::CmdProcessor::Set::Max::Width>
+
+=cut
+HELP
+
 our $SHORT_HELP   = 'Show the number of characters the debugger thinks are in a line';
 
 unless (caller) {
@@ -25,7 +45,7 @@ unless (caller) {
   # name = File.basename(__FILE__, '.rb')
 
   # dbgr, show_cmd = MockDebugger::showup('show')
-  # max_cmd       = Trepan::SubSubcommand::ShowMax.new(dbgr.core.processor, 
+  # max_cmd       = Trepan::SubSubcommand::ShowMax.new(dbgr.core.processor,
   #                                                     show_cmd)
   # cmd_ary       = Trepan::SubSubcommand::ShowMaxWidth::PREFIX
   # cmd_name      = cmd_ary.join(' ')

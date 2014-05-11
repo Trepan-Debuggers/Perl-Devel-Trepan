@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -14,17 +14,30 @@ use vars qw(@ISA @SUBCMD_VARS);
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
-our $HELP         = <<"HELP";
-set trace [on|off]
+=pod
 
-Set printing trace events. This is similar to "set -x" tracing in 
+=head2 Synopsis:
+
+=cut
+
+our $HELP         = <<"HELP";
+=pod
+
+B<set trace print> [B<on>|B<off>]
+
+Set printing trace events. This is similar to "set -x" tracing in
 POSIX shells.
+
+=head2 See also:
+
+L<C<show trace print>|Devel::Trepan::CmdProcessor::Show::Trace::Print>
+=cut
 HELP
 
 our $MIN_ABBREV   = length('p');
 use constant MAX_ARGS  => 1;
 our $SHORT_HELP   = 'Set print trace events, like "set -x" of POSIX shell';
- 
+
 sub run($$)
 {
     my ($self, $args) = @_;
@@ -32,7 +45,7 @@ sub run($$)
     my $proc = $self->{proc};
     if ( $proc->{settings}{traceprint} ) {
         $proc->{skip_count} = -1;  # -1 is like infinite skipping.
-        $proc->{unconditional_prehooks}->insert_if_new(10, 
+        $proc->{unconditional_prehooks}->insert_if_new(10,
                                                        $proc->{trace_hook}[0],
                                                        $proc->{trace_hook}[1]
             );
@@ -47,7 +60,7 @@ unless (caller) {
   # name = File.basename(__FILE__, '.rb')
 
   # dbgr, set_cmd = MockDebugger::setup('set')
-  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
+  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor,
   #                                                     set_cmd)
   # cmd_ary       = Trepan::SubSubcommand::SetMaxList::PREFIX
   # cmd_name      = cmd_ary.join(' ')

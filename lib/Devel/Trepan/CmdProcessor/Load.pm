@@ -15,8 +15,15 @@ use File::Spec;
 use File::Basename;
 use Cwd 'abs_path';
 
-# "initialize" for multi-file class. Called from
-# Devel::Trepan::CmdProcessor->new in CmdProcessor.pm
+=head2 load_cmds_initialize
+
+  load_debugger_commands($self) -> undef
+
+Loads in our built-in commands.
+
+Called from Devel::Trepan::CmdProcessor->new in CmdProcessor.pm
+=cut
+
 sub load_cmds_initialize($)
 {
     my $self = shift;
@@ -33,29 +40,42 @@ sub load_cmds_initialize($)
     }
 }
 
-# Loads in debugger commands by require'ing each ruby file in the
-# 'command' directory. Then a new instance of each class of the
-# form Trepan::xxCommand is added to @commands and that array
-# is returned.
+=head2 load_debugger_commands
+
+  load_debugger_commands($self, $file_or_dir) -> @errors
+
+Loads in debugger commands by require'ing each Perl file in the
+'command' directory. Then a new instance of each class of the
+form Trepan::xxCommand is added to @commands and that array
+is returned.
+=cut
 sub load_debugger_commands($$)
 {
     my ($self, $file_or_dir) = @_;
+    my @errors = ();
     if ( -d $file_or_dir ) {
         my $dir = abs_path($file_or_dir);
         # change $0 so it doesn't get in the way of __FILE__ eq $0
         # old_dollar0 = $0
         # $0 = ''
         for my $pm (glob(File::Spec->catfile($dir, '*.pm'))) {
-            $self->load_debugger_command($pm);
+            my $err = $self->load_debugger_command($pm);
+	    push @errors, $err if $err;
         }
         # $0 = old_dollar0
     } elsif (-r $file_or_dir) {
-        $self->load_debugger_command($file_or_dir);
-    } else {
-      return;
+        my $err = $self->load_debugger_command($file_or_dir);
+	push @errors, $err if $err;
     }
-    return 1;
+    return @errors;
   }
+
+=head2 load_debugger_command
+
+  load_debugger_command($self, $command_file, [$force])
+
+Loads a debugger command. Returns a string containing the error or '' if no error.
+=cut
 
 sub load_debugger_command($$;$)
 {
@@ -64,18 +84,26 @@ sub load_debugger_command($$;$)
     my $rc = '';
     eval { $rc = do $command_file; };
     if (!$rc or $rc eq 'Skip me!') {
-        ;
+        return 'skipped';
     } elsif ($rc) {
         # Instantiate each Command class found by the above require(s).
         my $name = basename($command_file, '.pm');
-        $self->setup_command($name);
+        return $self->setup_command($name);
     } else {
-        $self->errmsg("Trouble reading ${command_file}: $@");
+	my $errmsg = "Trouble reading ${command_file}: $@";
+        $self->errmsg($errmsg);
+	return $errmsg;
     }
 }
 
-# Looks up cmd_array[0] in @commands and runs that. We do lots of
-# validity testing on cmd_array.
+=head2 run_cmd
+
+  run_cmd($self, $cmd_arry)
+
+Looks up cmd_array[0] in @commands and runs that. We do lots of
+validity testing on cmd_array.
+
+=cut
 sub run_cmd($$)
 {
     my ($self, $cmd_array) = @_;
@@ -131,8 +159,13 @@ sub run_cmd($$)
 #     return save_filename
 #   }
 
-# Instantiate a Trepan::Command and extract info: the NAME, ALIASES
-# and store the command in @commands.
+=head2 setup_command
+
+  setup_command($self, $name)
+
+Instantiate a Devel::Trepan::Command and extract info: the NAME, ALIASES
+and store the command in @commands.
+=cut
 sub setup_command($$)
 {
     my ($self, $name) = @_;
@@ -148,9 +181,11 @@ sub setup_command($$)
             }
         }
         $self->{commands}{$cmd_name} = $cmd_obj;
+	return '';
     } else {
         $self->errmsg("Error instantiating $name");
         $self->errmsg($@);
+	return $@;
     }
   }
 

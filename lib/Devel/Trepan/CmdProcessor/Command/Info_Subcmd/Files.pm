@@ -27,7 +27,11 @@ EOE
 }
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+=pod
 
+=head2 Synopsis:
+
+=cut
 our $HELP = <<'HELP';
 =pod
 

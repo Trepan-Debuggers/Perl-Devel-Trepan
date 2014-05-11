@@ -25,6 +25,12 @@ EOE
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<'HELP';
 =pod
 
@@ -43,12 +49,11 @@ HELP
 our $SHORT_HELP = '(re)load Perl module file(s)';
 our $MIN_ABBREV = length('mo');
 
-# sub complete($$)
-# {
-#     my ($self, $prefix) = @_;
-#     my @completions = ('.', DB::LineCache::file_list());
-#     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
-# }
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    $self->{proc}->filename_complete($prefix);
+}
 
 sub run($$)
 {
@@ -59,15 +64,17 @@ sub run($$)
         $module .= '.pm' unless -r $module || substr($module,-3,3) eq '.pm';
         if (-r $module) {
             my $rc = do $module;
-            unless ($rc) {
+            if ($rc) {
+		$proc->msg("Perl module file $module loaded");
+	    } else {
                 if ($@) {
-                    $self->errmsg("Trouble reading ${module}: $@");
+                    $proc->errmsg("Trouble reading ${module}: $@");
                 } else {
-                    $self->errmsg("Perl module ${module} gave invalid return");
+                    $proc->errmsg("Perl module ${module} gave invalid return");
                 }
             }
         } else {
-            $self->errmsg("Can't find Perl module file $module");
+            $proc->errmsg("Can't find Perl module file $module");
         }
     }
 }

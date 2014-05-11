@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 # Debugger user/command-oriented input possibly attached to IO-style
 # input or GNU Readline.
@@ -88,6 +88,17 @@ sub is_interactive($)  {
     return -t $self->{input};
 }
 
+sub rl_filename_list($$)  {
+    my ($self, $prefix) = @_;
+    if ($HAVE_TERM_READLINE eq 'Perl5') {
+	Term::ReadLine::Perl5::readline::rl_filename_list($prefix);
+    } elsif ($HAVE_TERM_READLINE eq 'Gnu') {
+	Term::ReadLine::Gnu::XS::rl_filename_list($prefix);
+    # } elsif ($HAVE_TERM_READLINE eq 'Perl') {
+	# FIXME: how does one do this for Perl?
+    }
+}
+
 # Read a line of input. EOFError will be raised on EOF.
 # Prompt is ignored if we don't have GNU readline. In that
 # case, it should have been handled prior to this call.
@@ -126,5 +137,14 @@ unless (caller) {
     printf "Input open has Term::ReadLine: %s\n", ($inp->want_term_readline ? "yes" : "no");
     $inp = __PACKAGE__->new(undef, {readline => 1});
     printf "Input open now has Term::ReadLine: %s\n", ($inp->want_term_readline ? "yes" : "no");
+    foreach my $term (qw(Gnu Perl5)) {
+	$HAVE_TERM_READLINE = $term;
+	my $path='./';
+	my @files = $inp->rl_filename_list($path);
+	printf "term: %s, path: %s\n", $term, $path;
+	foreach my $file (@files) {
+    	    print "\t$file\n";
+	}
+    }
 }
 1;

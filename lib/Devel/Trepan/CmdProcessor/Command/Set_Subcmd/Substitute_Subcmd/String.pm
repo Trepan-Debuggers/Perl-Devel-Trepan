@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -17,6 +17,11 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 our $CMD = 'set display eval';
 my @DISPLAY_TYPES = @Devel::Trepan::CmdProcessor::DISPLAY_TYPES;
 my $param = join('|', @DISPLAY_TYPES);
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP   = <<"HELP";
 =pod
 

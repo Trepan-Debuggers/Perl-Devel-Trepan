@@ -160,6 +160,12 @@ sub is_interactive($)
     $self->{input}->is_interactive;
 }
 
+sub rl_filename_list($$)
+{
+    my ($self,$prefix) = @_;
+    $self->{input}->rl_filename_list($prefix);
+}
+
 sub has_completion($)
 {
     my $self = shift;
@@ -206,6 +212,7 @@ sub set_completion($$$)
     my $attribs = $self->{input}{readline}->Attribs;
 
     # Silence "used only once warnings" inside ReadLine::Term::Perl.
+    no warnings 'once';
     $readline::rl_completion_entry_function = undef;
     $readline::rl_attempted_completion_function = undef;
 
@@ -227,6 +234,19 @@ unless (caller) {
    $intf->errmsg(['Two', 'lines']);
    printf "Is interactive: %s\n", ($intf->is_interactive ? "yes" : "no");
    printf "Has completion: %s\n", ($intf->has_completion ? "yes" : "no");
+
+   my $save_term_readline = $HAVE_TERM_READLINE;
+   foreach my $term (qw(Gnu Perl5)) {
+       $HAVE_TERM_READLINE = $term;
+       my $path='./';
+       my @files = $intf->rl_filename_list($path);
+       printf "term: %s, path: %s\n", $term, $path;
+       foreach my $file (@files) {
+	   print "\t$file\n";
+       }
+   }
+   $HAVE_TERM_READLINE = $save_term_readline;
+
    if (scalar(@ARGV) > 0 && $intf->is_interactive) {
        my $line = $intf->readline("Type something: ");
        if ($intf->is_input_eof) {
@@ -258,6 +278,7 @@ unless (caller) {
    $intf->close;
    # Note STDOUT is closed
    printf STDERR "User interface closed?: %d\n", $intf->is_closed;
+
 }
 
 1;

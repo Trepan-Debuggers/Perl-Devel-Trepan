@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013-2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -17,6 +17,11 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 our $CMD = 'set display eval';
 my @DISPLAY_TYPES = @Devel::Trepan::CmdProcessor::DISPLAY_TYPES;
 my $param = join('|', @DISPLAY_TYPES);
+=pod
+
+=head2 Synopsis:
+
+=cut
 our $HELP   = <<"HELP";
 =pod
 
@@ -26,6 +31,7 @@ Add a substitution rule replacing I<from-path> into I<to-path> in
 source file names.  If a substitution rule was previously set for
 I<from-path>, the old rule is replaced by the new one. If I<from_path>
 is not given use the current filename.
+
 =cut
 HELP
 

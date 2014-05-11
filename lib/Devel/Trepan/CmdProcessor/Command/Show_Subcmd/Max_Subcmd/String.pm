@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -15,16 +15,28 @@ use vars qw(@ISA @SUBCMD_VARS);
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
-our $HELP = 'Show the number of characters in a string before truncating.
+=pod
 
-Sometimes the string representation of an object is very long. This
-setting limits how much of the string representation you want to
-see. However if the string has an embedded newline then we will assume
-the output is intended to be formated as.';
+=head2 Synopsis:
+
+=cut
+
+our $HELP = <<"EOH";
+=pod
+
+B<show max string>
+
+Show the number of characters in a string before truncating.
+
+=head2 See also:
+
+L<C<set max string>|Devel::Trepan::CmdProcessor::Command::Set::Max::String>
+=cut
+EOH
 
 our $IN_LIST      = 1;
-our $MIN_ABBREV   = length('wid');
-our $SHORT_HELP   = 'Show the number of source file lines to list';
+our $MIN_ABBREV   = length('str');
+our $SHORT_HELP   = 'maximum characters shown in a string';
 
 unless (caller) {
   # Demo it.
@@ -32,7 +44,7 @@ unless (caller) {
   # name = File.basename(__FILE__, '.rb')
 
   # dbgr, show_cmd = MockDebugger::showup('show')
-  # max_cmd       = Trepan::SubSubcommand::ShowMax.new(dbgr.core.processor, 
+  # max_cmd       = Trepan::SubSubcommand::ShowMax.new(dbgr.core.processor,
   #                                                     show_cmd)
   # cmd_ary       = Trepan::SubSubcommand::ShowMaxString::PREFIX
   # cmd_name      = cmd_ary.join(' ')

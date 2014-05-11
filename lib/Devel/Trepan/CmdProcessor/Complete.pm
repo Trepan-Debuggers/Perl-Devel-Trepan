@@ -172,6 +172,11 @@ sub next_complete($$$$$)
     }
 }
 
+sub filename_complete($$) {
+    my ($self, $prefix) = @_;
+    $self->{interfaces}[-1]->rl_filename_list($prefix);
+}
+
 unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $cmdproc = Devel::Trepan::CmdProcessor->new;
@@ -192,6 +197,9 @@ unless (caller) {
     my @c = complete_it($cmdproc, "set ");
     @c = complete_it($cmdproc, "help set base");
     @c = complete_it($cmdproc, "set basename on ");
+    my $str = './';
+    @c = $cmdproc->filename_complete($str);
+    printf "complete('$str') => %s\n", join(', ', @c);
 }
 
 1;

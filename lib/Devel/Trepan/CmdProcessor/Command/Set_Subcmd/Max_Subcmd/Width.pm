@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -13,9 +13,27 @@ use vars qw(@ISA @SUBCMD_VARS);
 
 use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
-our $HELP = 'Set max width NUMBER
+=pod
 
-Set number of characters the debugger thinks are in a line.';
+=head2 Synopsis:
+
+=cut
+
+
+our $HELP = <<"HELP";
+=pod
+
+B<set max width> I<count>
+
+Set number of characters the debugger thinks are in a line.
+
+=head2 See also:
+
+L<C<set max width>|Devel::Trepan::CmdProcessor::Set::Max::Width>
+
+=cut
+HELP
+
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('wid');
 
@@ -25,8 +43,8 @@ sub run($$)
     my @args = @$args;
     shift @args; shift @args; shift @args;
     my $num_str = join(' ', @args);
-    $self->run_set_int($num_str, 
-                       "The '$self->{cmd_str}' command requires a line width", 
+    $self->run_set_int($num_str,
+                       "The '$self->{cmd_str}' command requires a line width",
                        10, undef);
 }
 
@@ -36,7 +54,7 @@ unless (caller) {
   # name = File.basename(__FILE__, '.rb')
 
   # dbgr, set_cmd = MockDebugger::setup('set')
-  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor, 
+  # max_cmd       = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor,
   #                                                     set_cmd)
   # cmd_ary       = Trepan::SubSubcommand::SetMaxWidth::PREFIX
   # cmd_name      = cmd_ary.join(' ')

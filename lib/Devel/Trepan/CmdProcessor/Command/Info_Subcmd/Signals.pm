@@ -20,6 +20,12 @@ EOE
 }
 
 our $CMD = "info signals";
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP         = <<'HELP';
 =pod
 

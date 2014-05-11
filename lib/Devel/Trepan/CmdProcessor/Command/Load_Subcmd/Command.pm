@@ -7,7 +7,6 @@ package Devel::Trepan::CmdProcessor::Command::Load::Command;
 use Cwd 'abs_path';
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
-use Devel::Trepan::DB::LineCache;
 
 use strict;
 our (@ISA, @SUBCMD_VARS);
@@ -25,6 +24,12 @@ EOE
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
+=pod
+
+=head2 Synopsis:
+
+=cut
+
 our $HELP = <<'HELP';
 =pod
 
@@ -39,12 +44,11 @@ HELP
 our $SHORT_HELP = 'Load debugger command(s)';
 our $MIN_ABBREV = length('co');
 
-# sub complete($$)
-# {
-#     my ($self, $prefix) = @_;
-#     my @completions = ('.', DB::LineCache::file_list());
-#     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
-# }
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    $self->{proc}->filename_complete($prefix);
+}
 
 sub run($$)
 {
@@ -52,7 +56,10 @@ sub run($$)
     my $proc = $self->{proc};
     my @args = @$args; shift @args; shift @args;
     foreach my $file_or_dir (@args) {
-        $proc->load_debugger_commands($file_or_dir);
+        my @errs = $proc->load_debugger_commands($file_or_dir);
+	unless(@errs) {
+	    $proc->msg("Devel::Trepan command $file_or_dir loaded ok")
+	}
     }
 }
 

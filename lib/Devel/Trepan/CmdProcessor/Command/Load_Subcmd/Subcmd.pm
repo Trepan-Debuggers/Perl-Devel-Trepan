@@ -47,12 +47,12 @@ our $SHORT_HELP = 'Load debugger sub-command(s)';
 our $MIN_ABBREV = length('sub');
 
 no warnings 'redefine';
-# sub complete($$)
-# {
-#     my ($self, $prefix) = @_;
-#     my @completions = ('.', DB::LineCache::file_list());
-#     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
-# }
+
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    $self->{proc}->filename_complete($prefix);
+}
 
 sub run($$)
 {

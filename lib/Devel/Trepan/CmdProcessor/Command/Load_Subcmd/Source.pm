@@ -8,7 +8,7 @@ use English qw( -no_match_vars );
 use Cwd 'abs_path';
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
-use Devel::Trepan::DB::LineCache;
+# use Devel::Trepan::DB::LineCache qw(file_list);
 
 use strict;
 our (@ISA, @SUBCMD_VARS);
@@ -26,6 +26,12 @@ EOE
 }
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+
+=pod
+
+=head2 Synopsis:
+
+=cut
 
 our $HELP = <<'HELP';
 =pod
@@ -52,12 +58,11 @@ HELP
 our $SHORT_HELP = 'Read Perl source file(s)';
 our $MIN_ABBREV = length('so');
 
-# sub complete($$)
-# {
-#     my ($self, $prefix) = @_;
-#     my @completions = ('.', DB::LineCache::file_list());
-#     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
-# }
+sub complete($$)
+{
+    my ($self, $prefix) = @_;
+    $self->{proc}->filename_complete($prefix);
+}
 
 sub run($$)
 {

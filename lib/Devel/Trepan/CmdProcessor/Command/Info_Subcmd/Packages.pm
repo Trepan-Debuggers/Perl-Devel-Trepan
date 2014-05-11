@@ -37,7 +37,8 @@ options:
     -e | --exact
     -p | --prefix
     -r | --regexp
-    -v | --verbose | --no-verbose
+    -f | --files
+    -s | --subs
 
 The default is C<--prefix>
 
@@ -52,7 +53,7 @@ match pattern.
     info packages -p Tie::         # same as above
     info packages -r ^Tie::        # same as above
     info packages -e Tie::Hash     # match exactly Tie::Hash
-    info packages -e -v Tie::Hash  # same as above but show the file(s) where
+    info packages -e -f Tie::Hash  # same as above but show the file(s) where
                                    # the package is defined
     info packages -r ::Tie$        # match Tie only at the end,
                                    # e.g. ReadLine::Tie
@@ -66,15 +67,17 @@ our $MIN_ABBREV = length('pa');
 sub complete($$) {
     my ($self, $prefix) = @_;
     my @files = (); # Devel::Trepan::Complete::package_list($prefix);
-    my @opts = (qw(-r --regexp -p --prefix -v --verbose), @files);
+    my @opts = (qw(-r --regexp -p --prefix -s --subs -f --files),
+		@files);
     Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;
 }
 
 my $DEFAULT_OPTIONS = {
     exact   => 0,
-    prefix  => 1,
+    prefix  => 0,
     regexp  => 0,
-    verbose => 0
+    files   => 0,
+    funcs   => 0,
 };
 
 sub parse_options($$)
@@ -82,15 +85,31 @@ sub parse_options($$)
     my ($self, $args) = @_;
     my %opts = %$DEFAULT_OPTIONS;
     my $result = &GetOptionsFromArray($args,
+          '-e'        => \$opts{exact},
+          '--exact'   => \$opts{exact},
           '-r'        => \$opts{regexp},
           '--regexp'  => \$opts{regexp},
-          '-v'        => \$opts{verbose},
-          '-verbose'  => \$opts{verbose},
+          '-f'        => \$opts{files},
+          '--files'   => \$opts{files},
           '-p'        => \$opts{prefix},
           '--prefix'  => \$opts{prefix},
-          '-e'        => \$opts{exact},
-          '--exact'   => \$opts{exact}
+          '-s'        => \$opts{subs},
+          '--subs'    => \$opts{subs}
         );
+    # Option consistency checking
+    my $count = $opts{exact} + $opts{regexp} + $opts{prefix};
+    if ($count == 0) {
+	$opts{prefix} = 1;
+    } elsif ($count > 1) {
+	if ($opts{regexp}) {
+	    $self->{proc}->errmsg("regexp option used with prefix and/or exact; regexp used");
+	    $opts{prefix} = $opts{exact} = 0;
+	} elsif ($opts{prefix}) {
+	    $self->{proc}->errmsg("prefix used with exact; prefix used");
+	    $opts{exact} = 0;
+	}
+    }
+
     \%opts;
 
 }
@@ -126,17 +145,24 @@ sub run($$)
     foreach my $function (keys %DB::sub) {
 	my @parts = split('::', $function);
 	if (scalar @parts > 1) {
-	    pop(@parts);
+	    my $func  = pop(@parts);
 	    my $pkg = join('::', @parts);
-            my $file_range = $DB::sub{$function};
-            if ($file_range =~ /^(.+):(\d+-\d+)/) {
-                my ($filename, $range) = ($1, $2);
-		my $files = $pkgs{$pkg} ||= {};
-		$files->{$filename} = 1;
-		$pkgs{$pkg} = $files;
-            } else {
-		$pkgs{$pkg} = {};
-            }
+	    $pkgs{$pkg} ||= [{}, {}];
+	    if ($options->{files}) {
+		my $file_range = $DB::sub{$function};
+		if ($file_range =~ /^(.+):(\d+-\d+)/) {
+		    my ($filename, $range) = ($1, $2);
+		    my $files = $pkgs{$pkg}->[0];
+		    $files->{$filename} = 1;
+		    $pkgs{$pkg}->[0] = $files;
+		}
+	    }
+	    if ($options->{subs}) {
+		my $funcs = $pkgs{$pkg}->[1];
+		$funcs->{$func} = 1;
+		$pkgs{$pkg}->[1] = $funcs;
+	    }
+
 	}
     }
     my @pkgs = keys %pkgs;
@@ -148,17 +174,30 @@ sub run($$)
 	@pkgs = grep /^$match$/, @pkgs if defined $match;
     }
     if (scalar @pkgs) {
-	if ($options->{verbose}) {
+	if ($options->{files} || $options->{subs}) {
 	    for my $pkg (sort @pkgs) {
-		my $filename = $pkgs{$pkg};
-		my @files = sort keys $filename;
-		if (scalar @files && $options->{verbose}) {
-		    my $file_str = @files == 1 ? 'file' : 'files';
-		    my $msg = sprintf("%s is in %s %s", $pkg, $file_str,
-				      join(', ', @files));
-		    $proc->msg($msg);
-		} else {
-		    $proc->msg($pkg);
+		if ($options->{subs}) {
+		    my $subs = $pkgs{$pkg}->[1];
+		    my @subs = sort keys $subs;
+		    $proc->section($pkg);
+		    if (scalar @subs) {
+			my $msg = columnize_pkgs($proc, \@subs);
+			$proc->msg($msg);
+		    } else {
+			$proc->msg($pkg);
+		    }
+		}
+		if ($options->{files}) {
+		    my $filename = $pkgs{$pkg}->[0];
+		    my @files = sort keys $filename;
+		    if (scalar @files) {
+			my $file_str = @files == 1 ? 'file' : 'files';
+			my $msg = sprintf("%s is in %s %s", $pkg, $file_str,
+					  join(', ', @files));
+			$proc->msg($msg);
+		    } else {
+			$proc->msg($pkg);
+		    }
 		}
 	    }
         } else {

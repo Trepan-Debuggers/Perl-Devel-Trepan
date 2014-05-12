@@ -49,7 +49,7 @@ might be C<step>, C<show>, or C<set>, among others.
 
 L<C<macro>|Devel::Trepan::CmdProcessor::Command::Macro> E<mdash> more complex definitions,
 L<C<unalias>|Devel::Trepan::CmdProcessor::Command::Unalias>, and
-L<C<show alias>|Devel::Trepan::CmdProcessor::Command::Show::Alias>
+L<C<show aliases>|Devel::Trepan::CmdProcessor::Command::Show::Aliases>
 
 =cut
 HELP

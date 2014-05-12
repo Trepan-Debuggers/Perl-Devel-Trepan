@@ -106,6 +106,7 @@ sub new($$) {
 sub columnize_commands($$$) {
     my ($self, $commands, $opts) = @_;
     my $width = $self->{settings}{maxwidth};
+    $opts = {} unless $opts;
     $opts = hash_merge($opts,  {displaywidth => $width,
 				colsep => '    ',
 				ljust => 1,

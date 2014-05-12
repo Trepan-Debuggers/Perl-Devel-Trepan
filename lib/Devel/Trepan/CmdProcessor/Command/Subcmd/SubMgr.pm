@@ -74,8 +74,9 @@ sub new($$)
             $self->{$lc_field} = "\$${base_prefix}${new_field}";
         }
     }
-    # my @ary = eval "${class}::ALIASES()";
-    # $self->{aliases} = @ary ? [@ary] : [];
+    no warnings;
+    my @ary = eval "${class}::ALIASES()";
+    $self->{aliases} = @ary ? [@ary] : [];
     no strict 'refs';
     *{"${class}::Category"} = eval "sub { ${class}::CATEGORY() }";
     my $short_help = eval "${class}::SHORT_HELP()";

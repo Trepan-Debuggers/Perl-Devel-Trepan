@@ -282,7 +282,7 @@ sub run($$)
                 $self->msg($help_text) ;
 		my $aliases_ref = $cmd_obj->{aliases};
                 if ($aliases_ref && scalar @{$aliases_ref} && $args && scalar @$args == 2) {
-                    $self->section("\n  Aliases:");
+                    $self->section("\n Aliases:");
 		    $self->msg($self->columnize_commands($cmd_obj->{aliases}));
                 }
              }

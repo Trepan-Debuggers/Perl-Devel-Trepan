@@ -9,8 +9,10 @@ use File::Basename;
 use rlib '../../..';
 use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
 use strict;
+
 package Devel::Trepan::CmdProcessor::Command;
 no warnings 'redefine';
+use Devel::Trepan::Util qw(hash_merge);
 
 # Because we use Exporter we want to silence:
 #   Use of inherited AUTOLOAD for non-method ... is deprecated
@@ -49,6 +51,11 @@ use vars @CMD_VARS;
 use constant NEED_STACK => 0; # We'll say that commands which need a stack
                               # to run have to declare that and those that
                               # don't don't have to mention it.
+unless (@ISA) {
+    eval <<'EOE';
+use constant CATEGORY => 'Each command should set a category';
+EOE
+}
 
 # use constant NEED_RUNNING = 0; # We'll say that commands which need a a currently
 #                    # running program. It's possible we have a stack even though
@@ -57,7 +64,6 @@ use constant NEED_STACK => 0; # We'll say that commands which need a stack
 #                    # don't need this and can simple use $NEED_STACK.
 
 $HELP       = 'Each command should set help text text';
-use constant CATEGORY => 'Each command should set a category';
 
 sub set_name() {
     my ($pkg, $file, $line) = caller;
@@ -97,14 +103,14 @@ sub new($$) {
 }
 
 # List command names aligned in columns
-sub columnize_commands($$) {
-    my ($self, $commands) = @_;
+sub columnize_commands($$$) {
+    my ($self, $commands, $opts) = @_;
     my $width = $self->{settings}{maxwidth};
-    my $r = Array::Columnize::columnize($commands,
-                                       {displaywidth => $width,
-                                        colsep => '    ',
-                                        ljust => 1,
-                                        lineprefix => '  '});
+    $opts = hash_merge($opts,  {displaywidth => $width,
+				colsep => '    ',
+				ljust => 1,
+				lineprefix => '  '});
+    my $r = Array::Columnize::columnize($commands, $opts);
     chomp $r;
     return $r;
 }

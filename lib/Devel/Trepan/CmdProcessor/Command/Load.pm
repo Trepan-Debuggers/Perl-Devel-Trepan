@@ -9,11 +9,12 @@ use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubMgr;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-use constant SHORT_HELP => 'Load or reload something Perlish';
-use constant CATEGORY => 'support';
-use constant MIN_ARGS   => 0;  # Need at least this many
+use constant ALIASES    => qw(reload);
+use constant CATEGORY   => 'support';
 use constant MAX_ARGS   => undef; # Need at most this many - undef -> unlimited.
+use constant MIN_ARGS   => 0;     # Need at least this many
 use constant NEED_STACK => 0;
+use constant SHORT_HELP => 'Load or reload something Perlish';
 EOE
 }
 
@@ -22,13 +23,13 @@ use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;
 
-our $NAME       = set_name();
+$NAME = set_name();
 =pod
 
 =head2 Synopsis:
 
 =cut
-our $HELP = <<'HELP';
+our $HELP = <<"HELP";
 =pod
 
 B<load> [I<load sub-commmand> ...]
@@ -47,10 +48,9 @@ Type C<load> for a list of subcommands and what they do.
 L<C<load subcmd>|Devel::Trepan::CmdProcessor::Command::Load::Subcmd>,
 L<C<load command>|Devel::Trepan::CmdProcessor::Command::Load::Command>,
 L<C<load module>|Devel::Trepan::CmdProcessor::Command::Load::module>, and
-L<C<load source>|Devel::Trepan::CmdProcessor::Command::Load::Source>
+L<C<load source>|Devel::Trepan::CmdProcessor::Command::Load::Source>.
 
 =cut
-
 HELP
 
 unless (caller) {

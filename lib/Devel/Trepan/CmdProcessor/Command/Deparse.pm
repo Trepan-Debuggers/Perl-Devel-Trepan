@@ -13,7 +13,6 @@ use Devel::Trepan::CmdProcessor::Validate;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 unless (@ISA) {
     eval <<'EOE';
-    use constant ALIASES    => qw(l list> l>);
     use constant CATEGORY   => 'files';
     use constant SHORT_HELP => 'Deparse source code';
     use constant MIN_ARGS   => 0; # Need at least this many

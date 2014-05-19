@@ -32,8 +32,6 @@ sub eval_ok ($)
 
 use rlib '../../..';
 
-=pod
-
 =head1 NAME Devel::Trepan::DB::LineCache
 
 Devel::Trepan::DB::LineCache - package to read and cache lines of a Perl program.
@@ -122,8 +120,6 @@ my %file2file_remap_lines;
 my %script2file;
 my @tempfiles;
 
-=pod
-
 =head1 SUBROUTINES
 
 I<Note:> in what follows we use I<$file_or_script> to refer to either
@@ -148,8 +144,6 @@ END {
     $DB::ready = 0;
     remove_temps
 };
-
-=pod
 
 =head2 clear_file_cache
 
@@ -176,8 +170,6 @@ sub clear_file_cache(;$)
         %file2file_remap_lines = ();
     }
 }
-
-=pod
 
 =head2 clear_file_format_cache
 
@@ -514,8 +506,6 @@ sub getlines($;$)
     }
 }
 
-=pod
-
 =head2 highlight_string
 
 B<highlight_string($string)> => I<marked-up-string>
@@ -533,8 +523,6 @@ sub highlight_string($)
     chomp $string;
     $string;
   }
-
-=pod
 
 =head2 path
 

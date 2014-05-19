@@ -47,6 +47,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
 lib/Devel/Trepan/CmdProcessor/Command/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
+lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm

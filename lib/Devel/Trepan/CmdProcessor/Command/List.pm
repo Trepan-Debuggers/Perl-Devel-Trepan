@@ -25,8 +25,6 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-=pod
-
 =head2 Synopsis:
 
 =cut
@@ -64,10 +62,9 @@ number of lines to list instead.
 
  list 5            # List centered around line 5
  list 5>           # List starting at line 5
- list foo.rb 5     # Same as above.
- list foo.rb  5 6  # list lines 5 and 6 of foo.rb
- list foo.rb  5 2  # Same as above, since 2 < 5.
- list FileUtils.cp # List lines around the FileUtils.cp function.
+ list foo.pl 5     # Same as above.
+ list foo.pl  5 6  # list lines 5 and 6 of foo.pl
+ list foo.pl  5 2  # Same as above, since 2 < 5.
  list .            # List lines centered from where we currently are stopped
  list . 3          # List 3 lines starting from where we currently are stopped
                      # if . > 3. Otherwise we list from . to 3.
@@ -92,8 +89,10 @@ disabled.
 =head2 See also:
 
 L<C<set
-autolist>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>, and
-L<C<help syntax location>|Devel::Trepan::CmdProcessor::Command::Help::location>.
+autolist>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>,
+L<C<help syntax
+location>|Devel::Trepan::CmdProcessor::Command::Help::location>, and
+C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>.
 
 =cut
 HELP

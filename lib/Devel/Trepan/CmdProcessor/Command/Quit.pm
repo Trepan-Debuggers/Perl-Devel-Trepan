@@ -22,8 +22,6 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-=pod
-
 =head2 Synopsis:
 
 =cut

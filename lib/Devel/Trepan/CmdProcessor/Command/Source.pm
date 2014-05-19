@@ -76,7 +76,7 @@ my $DEFAULT_OPTIONS = {
 
 sub complete($$) {
     my ($self, $prefix) = @_;
-    my @files = Devel::Trepan::Complete::filename_list($prefix);
+    my @files = $self->{proc}{interfaces}[-1]->rl_filename_list($prefix);
     my @opts = (qw(-c --continue -n --no -y --yes
               -v --verbose --no-verbose), @files);
     Devel::Trepan::Complete::complete_token(\@opts, $prefix) ;

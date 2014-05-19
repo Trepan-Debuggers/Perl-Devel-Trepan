@@ -186,7 +186,7 @@ sub run($$)
 	    for my $pkg (sort @pkgs) {
 		if ($options->{subs}) {
 		    my $subs = $pkgs{$pkg}->[1];
-		    my @subs = sort keys $subs;
+		    my @subs = sort keys %$subs;
 		    $proc->section($pkg);
 		    if (scalar @subs) {
 			my $msg = columnize_pkgs($proc, \@subs);
@@ -197,7 +197,7 @@ sub run($$)
 		}
 		if ($options->{files}) {
 		    my $filename = $pkgs{$pkg}->[0];
-		    my @files = sort keys $filename;
+		    my @files = sort keys %$filename;
 		    if (scalar @files) {
 			my $file_str = @files == 1 ? 'file' : 'files';
 			my $msg = sprintf("%s is in %s %s", $pkg, $file_str,

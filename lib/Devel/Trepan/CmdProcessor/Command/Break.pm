@@ -25,8 +25,6 @@ use strict; use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-=pod
-
 =head2 Synopsis:
 
 =cut
@@ -104,6 +102,7 @@ sub run($$) {
             if ($line_or_fn =~ /^\d+/) {
                 $filename = $DB::filename;
             } else {
+		# FIXME: create a subroutine and combine with Deparse.
                 my @matches = $self->{dbgr}->subs($args[0]);
                 if (scalar(@matches) == 1) {
                     $filename = $matches[0][0];

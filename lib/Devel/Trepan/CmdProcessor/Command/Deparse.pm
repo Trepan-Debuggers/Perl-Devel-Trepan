@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
+use English qw( -no_match_vars );
 use rlib '../../../..';
 use B::Deparse;
 
@@ -69,15 +70,31 @@ sub run($$)
 {
     my ($self, $args) = @_;
 
-
-    my $proc = $self->{proc};
+    my @args     = @$args;
+    my $proc     = $self->{proc};
     my $filename = $proc->{list_filename};
     my $frame    = $proc->{frame};
     my $funcname = $proc->{frame}{fn};
+    my $have_func;
+    if (scalar @args == 1) {
+	$have_func = 1;
+    } elsif (scalar @args == 2) {
+	print "2\n";
+	$filename = $args[1];
+	my @matches = $self->{dbgr}->subs($filename);
+	if (scalar(@matches) >= 1) {
+	    $funcname = $matches[0][0];
+	} else {
+	    my $canonic_name = map_file($filename);
+	    if (is_cached($canonic_name)) {
+		$filename = $canonic_name;
+	    }
+	}
+    }
 
     # FIXME: we assume func below, add parse options like filename, and
-    my $have_func = 1;
     if ($have_func) {
+	print "5\n";
 	# if ($self->{terminated}) {
 	#     $self->errmsg("Command '$name' requires a running program.");
 	#     return;
@@ -93,6 +110,15 @@ sub run($$)
 	$body = Devel::Trepan::DB::LineCache::highlight_string($body) if
 	    $proc->{settings}{highlight};
 	$proc->msg($body);
+    } else  {
+	my $cmd="$EXECUTABLE_NAME  -MO=Deparse,-sC $filename";
+	print $cmd, "\n";
+	my $text = `$cmd 2>&1`;
+	if ($? >> 8 == 0) {
+	    $text = Devel::Trepan::DB::LineCache::highlight_string($text) if
+		$proc->{settings}{highlight};
+	    $proc->msg($text);
+	}
     }
 }
 

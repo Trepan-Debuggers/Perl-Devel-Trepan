@@ -4,6 +4,7 @@ Revision history for Devel-Trepan
 
 - add "deparse" command
 - fix botched "info packages"
+- Add deparse and the optional commands in the overal POD documentation
 
 0.56 May 11, 2014 - Happy Mothers' Day
 

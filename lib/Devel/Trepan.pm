@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.57'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.58'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -213,7 +213,7 @@ L</Examining data>
 
 =item *
 
-L</Specifying and examining file>
+L</Specifying and examining files>
 
 =item *
 
@@ -297,6 +297,10 @@ L<Debug into a Perl expression or statement (debug)|Devel::Trepan::CmdProcessor:
 
 =item *
 
+L<Disassemble subroutine(s) (disassemble)|Devel::Trepan::CmdProcessor::Command::Disassemble>
+
+=item *
+
 L<Display expressions when entering the debugger (display)|Devel::Trepan::CmdProcessor::Command::Display>
 
 =item *
@@ -317,6 +321,10 @@ L<Cancel some expressions to be displayed when program stops
 =head3 Specifying and examining files
 
 =over
+
+=item *
+
+L<Deparse source code vis B::Deparse (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
 
 =item *
 
@@ -453,6 +461,10 @@ L<Define a macro (macro)|Devel::Trepan::CmdProcessor::Command::Macro>
 =item *
 
 L<Allow remote connections (server)|Devel::Trepan::CmdProcessor::Command::Server>
+
+=item *
+
+L<Run  shell via re.pl (shell)|Devel::Trepan::CmdProcessor::Command::Shell>
 
 =item *
 

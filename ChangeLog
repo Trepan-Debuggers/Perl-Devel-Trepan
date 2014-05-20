@@ -1,3 +1,82 @@
+2014-05-20  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes, lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get
+	ready for release 0.57
+
+2014-05-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Handle
+	B::Deparse options
+
+2014-05-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Break.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Fill out Deparse
+	so it handles filenames
+
+2014-05-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm: Add
+	demo code to "info packages"
+
+2014-05-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Packages.pm: Had
+	messed up in the release of "info packages"
+
+2014-05-19  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Ooops - remove
+	list aliases on deparse
+
+2014-05-19  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, MANIFEST,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Quit.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Source.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Start deparse command.
+
+2014-05-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Alias.pm: show alias -> show
+	aliases
+
+2014-05-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	t/data/alias.right: Add reload as an alias for load. Fix up spacing
+	in front of Alias: section. Allow aliases for command managers.
+	Allow overriding options on columnize_commans. Whew.
+
+2014-05-12  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL: Suggest version 1.30 of Term::Readline::Perl5. It has
+	limited tilde completion, and removes unhelpful # filename suffix
+	classifiers, @, =, and *
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Complete.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Watch.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Module.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Subcmd.pm,
+	lib/Devel/Trepan/Version.pm: Mostly small changes and improvements
+
+2014-05-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Quit.pm: Yet another small
+	pod fix.
+
 2014-05-11  Rocky Bernstein <rocky@cpan.org>
 
 	* Changes, lib/Devel/Trepan.pm,

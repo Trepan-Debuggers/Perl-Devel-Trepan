@@ -40,7 +40,7 @@
             "Devel::Trepan::Shell" : "v1.4.1",
             "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
-            "Term::ReadLine::Perl5" : "1.21"
+            "Term::ReadLine::Perl5" : "1.33"
          },
          "requires" : {
             "Array::Columnize" : "1.04",
@@ -69,7 +69,7 @@
       },
       "Devel::Trepan" : {
          "file" : "lib/Devel/Trepan.pm",
-         "version" : "0.56"
+         "version" : "0.57"
       },
       "Devel::Trepan::BrkptMgr" : {
          "file" : "lib/Devel/Trepan/BrkptMgr.pm",
@@ -121,6 +121,10 @@
       },
       "Devel::Trepan::CmdProcessor::Command::Delete" : {
          "file" : "lib/Devel/Trepan/CmdProcessor/Command/Delete.pm",
+         "version" : 0
+      },
+      "Devel::Trepan::CmdProcessor::Command::Deparse" : {
+         "file" : "lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm",
          "version" : 0
       },
       "Devel::Trepan::CmdProcessor::Command::Disable" : {
@@ -717,7 +721,7 @@
       },
       "Devel::Trepan::Version" : {
          "file" : "lib/Devel/Trepan/Version.pm",
-         "version" : "0.56"
+         "version" : "0.57"
       },
       "Devel::Trepan::WatchMgr" : {
          "file" : "lib/Devel/Trepan/WatchMgr.pm",
@@ -740,7 +744,7 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.56",
+   "version" : "0.57",
    "x_test_requires" : {
       "Test::More" : "0.81",
       "Time::HiRes" : "1.9721",

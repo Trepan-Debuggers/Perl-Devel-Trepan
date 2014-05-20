@@ -129,7 +129,7 @@ sub run($$)
 	my $deparse = B::Deparse->new('-p', @options);
 	my @package_parts = split(/::/, $funcname);
 	my $prefix = '';
-	$prefix = join('::', @package_parts[0..length(@package_parts) - 1])
+	$prefix = join('::', @package_parts[0..scalar(@package_parts) - 1])
 	    if @package_parts;
 	my $short_func = $package_parts[-1];
 

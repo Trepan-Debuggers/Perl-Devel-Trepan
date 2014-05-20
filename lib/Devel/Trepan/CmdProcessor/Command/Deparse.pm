@@ -12,6 +12,8 @@ use English qw( -no_match_vars );
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+use Getopt::Long qw(GetOptionsFromArray);
+
 unless (@ISA) {
     eval <<'EOE';
     use constant CATEGORY   => 'files';
@@ -32,21 +34,29 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-B<deparse> [I<filename> | I<subroutine>]
+B<deparse> [I<B::Deparse-options>] [I<filename> | I<subroutine>]
 
-Deparse Perl source code.
+B::Deparse options:
 
-Without arguments, prints lines centered around the current
-subroutine.
+    -d  Output data values using Data::Dumper
+    -l  Add '#line' declaration
+    -P  Disable prototype checking
+    -q  Expand double-quoted strings
+
+Deparse Perl source code using L<B::Deparse>.
+
+Without arguments, prints the current subroutine if there is one.
 
 =head2 Examples:
 
- deparse            # deparse current subroutine
- deparse file.pm
+  deparse            # deparse current subroutine or main file
+  deparse file.pm
+  deparse -l file.pm
 
 =head2 See also:
 
-L<C<list>|Devel::Trepan::CmdProcessor::Command::List>
+L<C<list>|Devel::Trepan::CmdProcessor::Command::List>, and
+L<B::Deparse> for more information detail about
 
 =cut
 HELP
@@ -63,7 +73,19 @@ sub complete($$)
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
-## FIXME: add options parsing
+sub parse_options($$)
+{
+    my ($self, $args) = @_;
+    my @opts = ();
+    my $result =
+	&GetOptionsFromArray($args,
+			     '-d'  => sub {push(@opts, '-d') },
+			     '-l'  => sub {push(@opts, '-l') },
+			     '-P'  => sub {push(@opts, '-P') },
+			     '-q'  => sub {push(@opts, '-q') }
+        );
+    @opts;
+}
 
 # This method runs the command
 sub run($$)
@@ -71,15 +93,18 @@ sub run($$)
     my ($self, $args) = @_;
 
     my @args     = @$args;
+    @args = splice(@args, 1, scalar(@args), -2);
+    my @options = parse_options($self, \@args);
     my $proc     = $self->{proc};
     my $filename = $proc->{list_filename};
     my $frame    = $proc->{frame};
     my $funcname = $proc->{frame}{fn};
     my $have_func;
-    if (scalar @args == 1) {
-	$have_func = 1;
-    } elsif (scalar @args == 2) {
-	print "2\n";
+    if (scalar @args == 0) {
+	# Use function if there is one. Otherwise use
+	# the current file.
+	$have_func = 1 if $proc->{stack_size} > 0 && $proc->{frame}{pkg} ne 'main';
+    } elsif (scalar @args == 1) {
 	$filename = $args[1];
 	my @matches = $self->{dbgr}->subs($filename);
 	if (scalar(@matches) >= 1) {
@@ -90,16 +115,18 @@ sub run($$)
 		$filename = $canonic_name;
 	    }
 	}
+    } else {
+	$proc->errmsg('Expecting exactly one file or function name');
+	return;
     }
 
     # FIXME: we assume func below, add parse options like filename, and
     if ($have_func) {
-	print "5\n";
 	# if ($self->{terminated}) {
 	#     $self->errmsg("Command '$name' requires a running program.");
 	#     return;
 	# }
-	my $deparse = B::Deparse->new('-p', '-sC');
+	my $deparse = B::Deparse->new('-p', @options);
 	my @package_parts = split(/::/, $funcname);
 	my $prefix = '';
 	$prefix = join('::', @package_parts[0..length(@package_parts) - 1])
@@ -111,8 +138,8 @@ sub run($$)
 	    $proc->{settings}{highlight};
 	$proc->msg($body);
     } else  {
-	my $cmd="$EXECUTABLE_NAME  -MO=Deparse,-sC $filename";
-	print $cmd, "\n";
+	my $options = join(',', @options);
+	my $cmd="$EXECUTABLE_NAME  -MO=Deparse,$options $filename";
 	my $text = `$cmd 2>&1`;
 	if ($? >> 8 == 0) {
 	    $text = Devel::Trepan::DB::LineCache::highlight_string($text) if
@@ -133,6 +160,9 @@ unless (caller) {
     $proc->frame_setup($frame_ary);
     $proc->{settings}{highlight} = 0;
     $cmd->run([$NAME]);
+    print '-' x 30, "\n";
+    $cmd->run([$NAME, '-l']);
+    print '-' x 30, "\n";
     $proc->{frame}{fn} = 'run';
     $proc->{settings}{highlight} = 1;
     $cmd->run([$NAME]);

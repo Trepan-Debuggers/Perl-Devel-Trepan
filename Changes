@@ -1,6 +1,11 @@
 Revision history for Devel-Trepan
 
-0.57 May 20, 2014 - Henry Frankel
+0.58 May 20, 2014 - Henry Frankel
+
+- Earlier version of "deparse" got in 0.57 dist
+- Add optional commands: "disassemble" and "shell" to top-level pod.
+
+0.57 May 20, 2014
 
 - add "deparse" command
 - fix botched "info packages"

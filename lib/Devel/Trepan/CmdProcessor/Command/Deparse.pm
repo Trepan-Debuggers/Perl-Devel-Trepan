@@ -56,7 +56,7 @@ Without arguments, prints the current subroutine if there is one.
 =head2 See also:
 
 L<C<list>|Devel::Trepan::CmdProcessor::Command::List>, and
-L<B::Deparse> for more information detail about
+L<B::Deparse> for more information on deparse options.
 
 =cut
 HELP

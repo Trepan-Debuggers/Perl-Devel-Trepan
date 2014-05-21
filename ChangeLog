@@ -1,5 +1,15 @@
 2014-05-20  Rocky Bernstein <rocky@cpan.org>
 
+	* Changes: Earlier version of "deparse" got in 0.57 dist Add
+	optional commands: "disassemble" and "shell" to top-level pod.
+
+2014-05-20  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for release 0.58
+
+2014-05-20  Rocky Bernstein <rocky@cpan.org>
+
 	* ChangeLog, META.json, META.yml,
 	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: length(@ary) ->
 	scalar(@ary). Still get ready for release 0.57.

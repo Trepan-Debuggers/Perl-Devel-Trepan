@@ -92,7 +92,7 @@ L<C<set
 autolist>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>,
 L<C<help syntax
 location>|Devel::Trepan::CmdProcessor::Command::Help::location>, and
-C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>.
+L<C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>.
 
 =cut
 HELP

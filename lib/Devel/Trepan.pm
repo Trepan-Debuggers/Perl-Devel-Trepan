@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.58'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.58_01'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -324,7 +324,7 @@ L<Cancel some expressions to be displayed when program stops
 
 =item *
 
-L<Deparse source code vis B::Deparse (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
+L<Deparse source code via B::Deparse (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
 
 =item *
 

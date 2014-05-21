@@ -22,8 +22,6 @@ use vars qw(@ISA); @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
 our $NAME = set_name();
-=pod
-
 =head2 Synopsis:
 
 =cut
@@ -79,8 +77,9 @@ by adding the appropriate sigil C<@>, C<%>, or C<$>.
 =head2 See also:
 
 L<C<set auto
-eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>, and
-L<C<set display eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>.
+eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>,
+L<C<set display eval>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>, and
+L<C<shell>|Devel::Trepan::CmdProcessor::Command::Shell>.
 =cut
 HELP
 

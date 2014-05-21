@@ -309,10 +309,6 @@ L<Evaluate Perl code (eval)|Devel::Trepan::CmdProcessor::Command::Eval>
 
 =item *
 
-L<Recursively Debug into Perl code (debug)|Devel::Trepan::CmdProcessor::Command::Debug>
-
-=item *
-
 L<Cancel some expressions to be displayed when program stops
 (undisplay)|Devel::Trepan::CmdProcessor::Command::Undisplay>
 

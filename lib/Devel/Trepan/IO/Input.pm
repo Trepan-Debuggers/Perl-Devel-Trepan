@@ -10,6 +10,10 @@ use Exporter;
 
 package Devel::Trepan::IO::Input;
 
+use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
+@ISA = qw(Devel::Trepan::IO::InputBase Exporter);
+@EXPORT = qw($HAVE_TERM_READLINE term_readline_capability);
+
 BEGIN {
     my @OLD_INC = @INC;
     use rlib '../../..';
@@ -18,9 +22,12 @@ BEGIN {
     @INC = @OLD_INC;
 }
 
-use vars qw(@EXPORT @ISA $HAVE_TERM_READLINE);
-@ISA = qw(Devel::Trepan::IO::InputBase Exporter);
-@EXPORT = qw($HAVE_TERM_READLINE term_readline_capability);
+END {
+    if ($HAVE_TERM_READLINE eq 'Perl5') {
+	no strict 'subs';
+	Term::ReadLine::Perl5::readline::ResetTTY;
+    }
+}
 
 sub term_readline_capability() {
     # Prefer Term::ReadLine::Perl5 if we have it

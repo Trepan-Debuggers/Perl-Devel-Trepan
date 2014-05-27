@@ -15,8 +15,10 @@ my $_list_complete_i = -1;
 sub list_complete($$$)
 {
     my($self, $text, $state) = @_;
-    state $_list_complete_i = -1; # clear counter at the first call
-    $_list_complete_i++;;
+    # clear counter at the first call
+    eval { state $_list_complete_i = -1;
+	   $_list_complete_i++;;
+    };
     my $cw = $self->{completions};
     for (; $_list_complete_i <= $#{$cw}; $_list_complete_i++) {
         return $cw->[$_list_complete_i]
@@ -27,6 +29,7 @@ sub list_complete($$$)
 
 
 my ($_last_line, $_last_start, $_last_end, @_last_return, $_last_token);
+
 # Handle initial completion. We draw from the commands, aliases,
 # and macros for completion. However we won't include aliases which
 # are prefixes of other commands.

@@ -87,7 +87,7 @@ sub new($$) {
         } elsif ($sigil eq '@') {
             $self->{lc $new_field} = eval "[\@${class}::${new_field}]";
         } else {
-            die "Woah - bad sigil: $sigil";
+            die "Woah - bad sigil in variable $field: $sigil ";
         }
     }
     no warnings;

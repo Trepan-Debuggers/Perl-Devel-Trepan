@@ -1,26 +1,14 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
 
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
 package Devel::Trepan::CmdProcessor;
 
-# Because we use Exporter we want to silence:
-#   Use of inherited AUTOLOAD for non-method ... is deprecated
-no warnings 'redefine';
-sub AUTOLOAD
-{
-    my $name = our $AUTOLOAD;
-    $name =~ s/.*:://;  # lose package name
-    my $target = "DynaLoader::$name";
-    goto &$target;
-}
-
 use English qw( -no_match_vars );
-use Exporter;
 use warnings; no warnings 'redefine';
 
-use vars qw(@EXPORT @ISA $eval_result);
+use vars qw(@ISA $eval_result);
 
 use rlib '../..';
 
@@ -46,7 +34,7 @@ use strict;
 
 use Devel::Trepan::Util qw(hash_merge uniq_abbrev parse_eval_sigil);
 
-@ISA = qw(Exporter Devel::Trepan::Processor);
+@ISA = qw(Devel::Trepan::Processor);
 
 BEGIN {
     no warnings;
@@ -426,8 +414,8 @@ sub run_command($$)
         $run_cmd_name = uniq_abbrev([keys %commands], $run_cmd_name) if
             !$commands{$run_cmd_name} && $self->{settings}{abbrev};
 
-        if ($commands{$run_cmd_name}) {
-            my $cmd = $commands{$run_cmd_name};
+        my $cmd = $commands{$run_cmd_name};
+        if ($cmd) {
             if ($self->ok_for_running($cmd, $run_cmd_name, scalar(@args)-1)) {
                 # Get part of string after command name
                 my $cmd_argstr = substr($current_command, length($cmd_name));

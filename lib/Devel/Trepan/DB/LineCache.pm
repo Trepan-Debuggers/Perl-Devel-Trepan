@@ -32,7 +32,7 @@ sub eval_ok ($)
 
 use rlib '../../..';
 
-=head1 NAME Devel::Trepan::DB::LineCache
+=head1 NAME
 
 Devel::Trepan::DB::LineCache - package to read and cache lines of a Perl program.
 

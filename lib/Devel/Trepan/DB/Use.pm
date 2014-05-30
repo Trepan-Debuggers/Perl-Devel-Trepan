@@ -1,4 +1,10 @@
 package Devel::Trepan::DB::Use;
+=head1 SUMMARY
+
+A callback hook for L<Devel::Trepan>'s when I<use> gets called.
+
+=cut
+
 use File::Basename; use File::Spec;
 
 BEGIN {

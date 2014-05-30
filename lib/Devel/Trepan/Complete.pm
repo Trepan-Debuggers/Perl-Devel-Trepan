@@ -4,7 +4,11 @@ use warnings; use strict; use utf8;
 use Exporter;
 
 package Devel::Trepan::Complete;
+=head1 SUMMARY
 
+Completion routines for L<Devel::Trepan>
+
+=cut
 use vars qw(@ISA @EXPORT); @ISA = qw(Exporter);
 @EXPORT = qw(
     complete_builtins complete_subs complete_packages
@@ -51,12 +55,14 @@ use constant BUILTIN_FNS => qw(
 
 use constant BUILTIN_CORE_FNS => map { 'CORE::' . $_ } BUILTIN_FNS;
 
-# =pod
-#
-# Return an list of string,  I<$complete_ary>, which start out with
-# String I<$prefix>.
-#
-# =cut
+=head2 Subroutines
+
+=head3 complete_token
+
+Return an list of string,  I<$complete_ary>, which start out with
+String I<$prefix>.
+
+=cut
 sub complete_token($$)
 {
     my ($complete_ary, $prefix) = @_;
@@ -83,12 +89,12 @@ sub complete_token_with_next($$;$)
     sort {$a->[0] cmp $b->[0]} @result;
 }
 
-# =pod
-#
-# Find all starting matches in Hash I<$aliases+>that start with
-# I<$prefix>, but filter out any matches already in I<$expanded>.
-#
-# =cut
+=head3 complete_token_filtered
+
+Find all starting matches in Hash I<$aliases+>that start with
+I<$prefix>, but filter out any matches already in I<$expanded>.
+
+=cut
 sub complete_token_filtered($$$)
 {
     my ($aliases, $prefix, $expanded) = @_;
@@ -101,12 +107,12 @@ sub complete_token_filtered($$$)
     sort @result;
 }
 
-# =pod
-#
-# Find all starting matches in hash I<$aliases> that start with I<$prefix>,
-# but filter out any matches already in I<$expanded>.
-#
-# =cut
+=head3 complete_token_filtered_with_next
+
+Find all starting matches in hash I<$aliases> that start with I<$prefix>,
+but filter out any matches already in I<$expanded>.
+
+=cut
 sub complete_token_filtered_with_next($$$$)
 {
     my ($aliases, $prefix, $expanded, $commands) = @_;
@@ -122,13 +128,14 @@ sub complete_token_filtered_with_next($$$$)
     @result;
   }
 
-# =pod
-# Find the next token in str string from start_pos. We return
-# the token and the next blank position after the token or
-# length($str) if this is the last token. Tokens are delimited by
-# white space.
-#
-# =cut
+=head3 next_token
+
+Find the next token in str string from start_pos. We return
+the token and the next blank position after the token or
+length($str) if this is the last token. Tokens are delimited by
+white space.
+
+=cut
 sub next_token($$)
 {
     my ($str, $start_pos) = @_;
@@ -151,16 +158,17 @@ sub next_token($$)
     return ($next_blank_pos, substr($str, $next_nonblank_pos, $token_size));
 }
 
-# =pod
-# I<filename_list> isf from I<Term::ReadLine::readline.pm>:
-#
-# For use in passing to completion_matches(), returns a list of
-# filenames that begin with the given pattern.  The user of this
-# package can set I<$rl_completion_function> to 'rl_filename_list' to
-# restore the default of filename matching if they'd changed it
-# earlier, either directly or via I<&rl_basic_commands>.
-#
-# =cut
+=head3 filename_list
+
+I<filename_list> is from I<Term::ReadLine::readline.pm>:
+
+For use in passing to completion_matches(), returns a list of
+filenames that begin with the given pattern.  The user of this
+package can set I<$rl_completion_function> to 'rl_filename_list' to
+restore the default of filename matching if they'd changed it
+earlier, either directly or via I<&rl_basic_commands>.
+
+=cut
 sub filename_list(;$$)
 {
     my ($pattern, $add_suffix) = @_;

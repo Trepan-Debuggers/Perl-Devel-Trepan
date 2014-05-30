@@ -20,6 +20,7 @@ our $HELP = <<"EOH";
 =pod
 
 B<show highlight>
+
 Show whether we use terminal highlighting
 
 =head2 See also:

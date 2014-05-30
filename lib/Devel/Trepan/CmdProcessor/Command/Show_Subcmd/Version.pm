@@ -13,11 +13,9 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-# =pod
-#
-# =head2 Synopsis:
-#
-# =cut
+=head2 Synopsis:
+
+=cut
 our $HELP = <<"EOH";
 =pod
 

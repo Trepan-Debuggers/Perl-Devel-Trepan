@@ -1,13 +1,17 @@
 # Pretty much cut and paste from Syntax::Highlight::Perl's viewperl
 package Devel::Trepan::DB::Colors;
+=head1 NAME
+
+Devel::Trepan::DB::Colors - Set up L<Devel::Trepan>'s formatter to do ANSI colors.
+
+=cut
+
+use warnings; use strict;
 use Syntax::Highlight::Perl::Improved;
 
-#
-# Set up formatter to do ANSI colors.
-#
-#
-# Could use Term::ANSIColor but it wasn't installed on my machine, and I "know" the
-# colors anyway.  If this causes problems, replace with Term::ANSIColor data.
+use vars qw(%ANSI_colors);
+
+# See also Term::ANSIColor.
 #
 %ANSI_colors = (
     none      => "\e[0m",

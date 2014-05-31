@@ -246,6 +246,7 @@ sub DB::sub {
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
         &$DB::sub;
+	no warnings 'uninitialized';
         $DB::single |= pop(@stack);
         $DB::ret = undef;
     }

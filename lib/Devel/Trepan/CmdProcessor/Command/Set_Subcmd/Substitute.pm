@@ -11,20 +11,23 @@ use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
 use vars qw(@ISA @SUBCMD_VARS);
 our $MIN_ABBREV = length('sub');
-=pod
-
 =head2 Synopsis:
 
 =cut
 our $HELP   = <<"HELP";
 =pod
 
-B<set substitute> [I<set substitute subcommand>]
+B<set substitute> [I<subcommand>]
 
 Sometimes the filename or line ranges reported inside the debugger
 might not match the filenames or line ranges where you can find the
 source in the OS filesystem. This may happen because of pathnames do
 not match or program text comes from evaluated lines in code.
+
+=head2 See Also
+
+L<C<set substitute path>|Devel::Trepan::CmdProcessor::Command::Set::Substutute::Path>, and
+L<C<set substitute string>|Devel::Trepan::CmdProcessor::Command::Set::Substutute::String>.
 
 =cut
 HELP

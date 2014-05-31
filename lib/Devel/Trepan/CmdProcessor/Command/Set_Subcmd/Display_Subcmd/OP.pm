@@ -25,7 +25,9 @@ our $IN_LIST      = 1;
 our $HELP         = <<'HELP';
 =pod
 
-Set to show the OP address in location status.
+B<set display op>
+
+Set to show the I<OP> address in location status.
 
 The OP address is the address of the Perl Tree Opcode that is about
 to be run. It gives the most precise indication of where you are.

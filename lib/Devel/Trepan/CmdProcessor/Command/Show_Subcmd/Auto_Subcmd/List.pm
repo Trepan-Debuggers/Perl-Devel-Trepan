@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -16,8 +16,26 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('li');
 our $SHORT_HELP   = "Show whether to run a 'list' command when we enter the debugger";
-our $HELP         = $SHORT_HELP;
- 
+
+=pod
+
+=head2 Synopsis:
+
+=cut
+our $HELP         = <<"HELP";
+=pod
+
+B<show auto list>
+
+Show whether listing on debugger stop is in effect.
+
+=head2 See also:
+
+L<C<set auto list>|Devel::Trepan::CmdProcessor::Command::Set::Auto List>
+=cut
+HELP
+
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

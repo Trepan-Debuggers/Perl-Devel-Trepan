@@ -5,6 +5,7 @@ package DB;
 use warnings; no warnings 'redefine'; use utf8;
 no warnings 'once';
 use English qw( -no_match_vars );
+use version;
 
 use constant SINGLE_STEPPING_EVENT =>   1;
 use constant NEXT_STEPPING_EVENT   =>   2;
@@ -54,7 +55,8 @@ sub subcall_debugger {
 
 	local $OP_addr =
 	    ($HAVE_MODULE{'Devel::Callsite'} &&
-	     $Devel::Callsite::VERSION >= 0.08)
+	     version->parse("$Devel::Callsite::VERSION") >= 
+	     version->parse('0.08'))
 	    ? Devel::Callsite::callsite(1) : undef;
 
 	$DB::subroutine =  $sub;
@@ -173,7 +175,8 @@ sub check_for_stop() {
 		$DB::wantarray = wantarray;
 		local $OP_addr =
 		    ($HAVE_MODULE{'Devel::Callsite'} &&
-		     $Devel::Callsite::VERSION >= 0.08)
+		     version->parse("$Devel::Callsite::VERSION") >= 
+		     version->parse("0.08"))
 		    ? Devel::Callsite::callsite(1) : undef;
 		&subcall_debugger() ;
                 last;

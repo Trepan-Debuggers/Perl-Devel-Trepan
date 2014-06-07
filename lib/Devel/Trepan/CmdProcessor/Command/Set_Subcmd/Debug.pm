@@ -35,10 +35,9 @@ except>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Except>,
 L<C<set debug
 macro>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Macro>, and
 L<C<set debug
-skip>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Skip>,
+skip>|Devel::Trepan::CmdProcessor::Command::Set::Debug::Skip>.
 
 =cut
-
 HELP
 our $SHORT_HELP = "Set debugging controls";
 

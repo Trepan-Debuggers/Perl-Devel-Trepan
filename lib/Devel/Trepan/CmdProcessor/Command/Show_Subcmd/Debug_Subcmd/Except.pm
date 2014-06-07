@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -15,10 +15,10 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subsubcmd::SUBCMD_VARS;
 
 our $IN_LIST      = 1;
 use constant MAX_ARGS => 0;
-our $HELP         = "Show debugging debuger-handled exceptions";
+our $HELP         = "Show debugging debugger-handled exceptions";
 
 our $MIN_ABBREV   = length('ex');
- 
+
 unless (caller) {
   # Demo it.
   # require_relative '../../../mock'

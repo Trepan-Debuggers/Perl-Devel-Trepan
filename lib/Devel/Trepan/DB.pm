@@ -20,6 +20,7 @@ and merged with DB that perl5db.pl and other uses similar ilk.
 package DB;
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
+use version;
 
 use Devel::Trepan::DB::Vars;
 use Devel::Trepan::DB::Backtrace;
@@ -78,7 +79,8 @@ BEGIN {
     $frame = 0;
 
     if (eval("use Devel::Callsite; 1")) {
-	if ($Devel::Callsite::VERSION >= 0.08) {
+	if (version->parse("$Devel::Callsite::VERSION") >= 
+	    version->parse('0.08')) {
 	    $HAVE_MODULE{'Devel::Callsite'} =  'call_level_param';
 	} else {
 	    $HAVE_MODULE{'Devel::Callsite'} =  'single_level';

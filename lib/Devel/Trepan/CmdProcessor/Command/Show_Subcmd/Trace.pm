@@ -31,9 +31,9 @@ I<name> for help on a particular trace subcommand.
 
 =cut
 HELP
+our $SHORT_HELP = 'Show tracing event-related controls';
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
-our $SHORT_HELP = 'Show tracing event-related controls';
 
 # sub run($$)
 # {

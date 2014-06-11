@@ -29,6 +29,7 @@ L<C<set display>|Devel::Trepan::CmdProcessor::Command::Set::Display>
 =cut
 EOH
 our $SHORT_HELP  = 'Show display-related controls';
+
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 

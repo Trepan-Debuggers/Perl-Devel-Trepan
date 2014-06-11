@@ -500,7 +500,7 @@ L<Debugger Command Examples|Devel::Trepan::CmdProcessor::Command::Help::examples
 =head1 BUGS/CAVEATS
 
 Because this should be useful in all sorts of environments such as
-back to perl 5.008, we often can make use of newer Perlisms nor can we
+back to perl 5.008, we often can not make use of newer Perlisms nor can we
 I<require> by default all of the modules, say for data printing, stack
 inspection, or interactive terminal handling. That said, if you have a
 newer Perl or the recommended modules or install plugins, you'll get

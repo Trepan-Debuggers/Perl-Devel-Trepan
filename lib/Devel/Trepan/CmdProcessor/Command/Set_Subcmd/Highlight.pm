@@ -27,7 +27,7 @@ B<set highlight> [B<on>|B<off>|B<reset>]
 Set whether we use terminal highlighting; "on" and "off" are
 self-explanitory. Use "reset" to set highlighting on and force a redo
 of syntax highlighting of already cached files. This may be needed if
-the debugger was started without syntax higlighting initially.
+the debugger was started without syntax highlighting initially.
 
 If "on", "off" or "reset" is not given, "on" is assumed.
 

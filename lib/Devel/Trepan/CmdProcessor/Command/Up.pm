@@ -47,8 +47,9 @@ up 1. This is same as C<down>, but moving in the opposite direction.
 
 =head2 See also:
 
-L<C<down>|Devel::Trepan::CmdProcessor::Command::Down>, and
-L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>.
+L<C<down>|Devel::Trepan::CmdProcessor::Command::Down>,
+L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>,
+and L<C<backtrace>|Devel::Trepan::CmdProcessor::Command::Backtrace>
 
 =cut
 HELP

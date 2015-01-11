@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
@@ -36,7 +36,7 @@ B<run>
 
 Restart debugger and program via an I<exec()> call.
 
-Hash reference variable $Devel::Trepan::Core::invoke_opts contains a
+Hash reference variable I<$Devel::Trepan::Core::invoke_opts> contains a
 hash of options that were used to start the debugger. These are
 consulted in figuring out how to restart.
 

@@ -1,5 +1,7 @@
 language: perl
 
+sudo: false
+
 env:
   - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker"
 

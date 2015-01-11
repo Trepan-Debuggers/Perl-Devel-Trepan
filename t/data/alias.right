@@ -24,7 +24,7 @@ New alias 'upper' for command string 'up' created.
      up -1     # Same as down
 
  See also:
-  "down", and "frame".
+  "down", "frame", and "backtrace"
 
  Aliases:
 upper
@@ -41,7 +41,7 @@ Alias for upper removed.
      up -1     # Same as down
 
  See also:
-  "down", and "frame".
+  "down", "frame", and "backtrace"
 set auto eval is off.
 *** Undefined command: "upper". Try "help".
 trepan.pl: That's all, folks...

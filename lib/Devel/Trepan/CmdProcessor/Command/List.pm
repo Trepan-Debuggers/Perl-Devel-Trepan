@@ -49,8 +49,9 @@ listing begins at the specificed location.
 
 The number of lines to show is controlled by the debugger "listsize"
 setting. Use L<C<set max
-list>|Devel::Trepan::CmdProcessor::Set::Max::List> or C<show max list>
-to see or set the value.
+list>|Devel::Trepan::CmdProcessor::Set::Max::List> or L<C<show max
+list>|Devel::Trepan::CmdProcessor::Show::Max::List> to see or set the
+value.
 
 If the location form is used with a subsequent parameter, the
 parameter is the starting line number.  When there two numbers are

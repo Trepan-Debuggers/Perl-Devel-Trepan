@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -36,8 +36,9 @@ the same as C<up>, but moving in an opposite direction.
 
 =head2 See also:
 
-L<C<up>|Devel::Trepan::CmdProcessor::Command::Up>, and
-L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>.
+L<C<up>|Devel::Trepan::CmdProcessor::Command::Up>,
+L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>,
+and L<C<backtrace>|Devel::Trepan::CmdProcessor::Command::Backtrace>
 
 =cut
 HELP

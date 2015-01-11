@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -56,7 +56,7 @@ before continuing.
 L<C<step>|Devel::Trepan::CmdProcessor::Command::Step>,
 L<C<next>|Devel::Trepan::CmdProcessor::Command::Next>,
 L<C<finish>|Devel::Trepan::CmdProcessor::Command::Finish>, and
-C<help location>.
+L<C<help syntax location>|Devel::Trepan::CmdProcessor::Command::Help::location>
 
 =cut
 HELP

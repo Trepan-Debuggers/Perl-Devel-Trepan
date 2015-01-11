@@ -1,7 +1,85 @@
+2015-01-10  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan/IO/Input.pm: Fix bad bug where
+	trepan.pl will be use 100% of CPU in its prompt read loop: make sure
+	we note eof in interactive read!
+
+2014-12-03  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Changes,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm: 
+	Change date format to appease http://changes.cpanhq.org/validate -
+	Oh those standards guys! Try running travis with Perl 5.20
+
+2014-06-11  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit f303415b2e47fa5c07f3d9c1a0f13cc6b97b48ba Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Wed Jun 11 04:32:32 2014 -0400
+
+2014-06-07  rocky <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Trace.pm,
+	lib/Devel/Trepan/DB.pm, lib/Devel/Trepan/DB/Sub.pm: Handle version
+	comparisons more properly
+
+2014-06-06  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Exce
+	pt.pm: Some small doc typos
+
+2014-05-31  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm, lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/List.
+	pm: Go over POD yet again. More work, though, is needed.
+
+2014-05-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm: Allow |= not give a warning.
+
+2014-05-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Version.pm,
+	lib/Devel/Trepan/Complete.pm, lib/Devel/Trepan/DB/Colors.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/DB/Use.pm: More
+	doc work
+
+2014-05-28  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm: Homonym typo right->write. Use
+	the right "write"
+
+2014-05-27  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Complete.pm,
+	lib/Devel/Trepan/IO/Input.pm: Need to look this "state" code over
+	better
+
+2014-05-21  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Remove Duplicate
+	reference to "debug" command.
+
 2014-05-20  Rocky Bernstein <rocky@cpan.org>
 
-	* Changes: Earlier version of "deparse" got in 0.57 dist Add
-	optional commands: "disassemble" and "shell" to top-level pod.
+	* ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/Version.pm: Some pod typos.
+
+2014-05-20  Rocky Bernstein <rocky@cpan.org>
+
+	* Changes: Earlier version of "deparse" got in 0.57 dist.  Add
+	optional commands: "disassemble" and "shell" to top-level pod.  Get
+	ready for release 0.58.
 
 2014-05-20  Rocky Bernstein <rocky@cpan.org>
 

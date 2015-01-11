@@ -115,6 +115,7 @@ sub readline($;$) {
     my $line;
     if (defined $self->{readline}) {
         $line = $self->{readline}->readline($prompt);
+	$self->{eof} = !defined($line);
     } else {
         $self->{eof} = eof($self->{input});
         return '' if $self->{eof};

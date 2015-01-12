@@ -65,7 +65,7 @@ HELP
 unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
-    my $cmd = Devel::Trepan::CmdProcessor::Command::Show->new($proc, $NAME);
+    my $cmd = Devel::Trepan::CmdProcessor::Command::Info->new($proc, $NAME);
     # require_relative '../mock'
     # dbgr, cmd = MockDebugger::setup
     $cmd->run([$NAME])

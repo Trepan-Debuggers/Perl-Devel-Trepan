@@ -74,8 +74,8 @@ sub run($$) {
 unless (caller) {
     require Devel::Trepan::CmdProcessor::Mock;
     my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    # my $cmd = __PACKAGE__->new($proc);
-    # $cmd->run([$NAME]);
+    my $cmd = __PACKAGE__->new($proc);
+    $cmd->run([$NAME]);
 }
 
 1;

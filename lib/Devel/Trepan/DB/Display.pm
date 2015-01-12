@@ -133,6 +133,15 @@ sub is_empty($)
     return scalar(0 == @{$self->{list}});
 }
 
+sub find($$)
+{
+    my ($self, $num) = @_;
+    for my $display (@{$self->{list}}) {
+        return $display if $display->number == $num;
+    }
+    return undef;
+}
+
 sub max($)
 {
     my $self = shift;

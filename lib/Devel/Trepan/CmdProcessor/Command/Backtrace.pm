@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -37,13 +37,19 @@ positive number, print at most many entries.
 In the listing produced, an arrow, C<--E<gt>>, indicates the 'current
 frame'. The current frame determines the context used for many
 debugger commands such as source-line listing
-(L<C<list>|Devel::Trepan::CmdProcessor::Command::List> or the
+(L<C<list>|Devel::Trepan::CmdProcessor::Command::List>) or the
 L<C<edit>|Devel::Trepan::CmdProcessor::Command::Edit> command.
 
 =head2 Examples:
 
  backtrace    # Print a full stack trace
  backtrace 2  # Print only the top two entries
+
+=head2 See also:
+
+L<C<up>|Devel::Trepan::CmdProcessor::Command::Up>,
+L<C<down>|Devel::Trepan::CmdProcessor::Command::Down>, and
+L<C<frame>|Devel::Trepan::CmdProcessor::Command::Frame>,
 
 =cut
 HELP

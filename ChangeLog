@@ -1,3 +1,15 @@
+2015-01-11  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Changes, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Continue.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Down.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Run.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Up.pm,
+	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/Version.pm,
+	t/data/alias.right: Go over doc links. Get ready for release 0.60
+
 2015-01-10  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, lib/Devel/Trepan/IO/Input.pm: Fix bad bug where

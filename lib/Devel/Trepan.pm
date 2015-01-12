@@ -18,7 +18,7 @@ use Exporter;
 
 use constant PROGRAM => 'trepan.pl';
 use version;
-$VERSION='0.60'; # To fool CPAN indexer. Is <= real version
+$VERSION='0.60_01'; # To fool CPAN indexer. Is <= real version
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 
@@ -631,7 +631,7 @@ GUI. The front end talks via a REST service.
 
 =head1 COPYRIGHT
 
-Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011, 2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

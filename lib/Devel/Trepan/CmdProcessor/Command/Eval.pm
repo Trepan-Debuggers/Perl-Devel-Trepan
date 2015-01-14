@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; use utf8;
 use rlib '../../../..';
 
@@ -53,7 +53,7 @@ might have multiple variables on the left-hand side.
 The value of the expression is stored into global array I<@DB:D> so it
 may be used again easily.
 
-Normally eval assumes you are typing a statement, not an expression;
+Normally I<eval> assumes you are typing a statement, not an expression;
 the result is a scalar value. However you can force the type of the result
 by adding the appropriate sigil C<@>, C<%>, or C<$>.
 

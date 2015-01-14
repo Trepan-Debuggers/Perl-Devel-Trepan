@@ -29,7 +29,7 @@ Show whether unrecognized debugger commands are evaluated.
 
 =head2 See also:
 
-L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto Eval>
+L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto Eval>, and L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>
 =cut
 HELP
 

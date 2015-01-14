@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -34,8 +34,8 @@ or "off" is not given, "on" is assumed.
 =head2 See also:
 
 L<C<show debug except>|Devel::Trepan::CmdProcessor::Command::Show::Debug::Except>
-=cut
 
+=cut
 HELP
 
 unless (caller) {

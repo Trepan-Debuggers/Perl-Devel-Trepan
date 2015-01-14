@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../..';
 
@@ -61,7 +61,6 @@ L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>, and
 L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>,
 
 =cut
-
 HELP
 
 our $MIN_ABBREV = length('ev');

@@ -58,7 +58,7 @@ sub complete($$)
 {
     my ($self, $prefix) = @_;
     my @displays = @{$self->{proc}{displays}{list}};
-    my @completions = map @displays, $_->number;
+    my @completions = map $_->number,  @displays;
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 

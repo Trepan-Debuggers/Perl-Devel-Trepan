@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -31,6 +31,7 @@ Debug macro expansion. If "on" or "off" is not given, "on" is assumed.
 =head2 See also:
 
 L<C<show debug macro>|Devel::Trepan::CmdProcessor::Command::Show::Debug::Macro>
+
 =cut
 HELP
 

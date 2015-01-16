@@ -4,6 +4,7 @@ my $leave_loop = 0;
 x1 main::(signal.pl:10)
 my $tempfile;
 Signal        Stop	Print	Stack	Pass	Description
+-----------------------------------------------
 HUP           No  	Yes 	No   	Yes 	Hangup
 
 Program received signal HUP.

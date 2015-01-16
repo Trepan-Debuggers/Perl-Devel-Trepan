@@ -11,6 +11,7 @@ set max width is 300.
 set auto eval is on.
 set max string is 0.
 eval.pl [1-10]
+--------------
   1  ->	$var = '
   2    	# This line is not a comment of the above $var assignment
   3    	$x = 2;
@@ -25,6 +26,7 @@ eval.pl [1-10]
 eval $var;
 $DB::D[0] = 1
 eval.pl [2-11]
+--------------
   2    	# This line is not a comment of the above $var assignment
   3    	$x = 2;
   4    	$y = 3;

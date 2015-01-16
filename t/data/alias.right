@@ -27,6 +27,7 @@ New alias 'upper' for command string 'up' created.
   "down", "frame", and "backtrace"
 
  Aliases:
+----------
 upper
 Alias for upper removed.
   up [*count*]

@@ -5,6 +5,7 @@ set auto eval is on.
 x1 main::(signal.pl:10)
 my $tempfile;
 Signal        Stop	Print	Stack	Pass	Description
+-----------------------------------------------
 HUP           Yes 	Yes 	No   	No  	Hangup
 
 Program received signal HUP.

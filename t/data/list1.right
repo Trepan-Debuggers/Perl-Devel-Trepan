@@ -3,6 +3,7 @@ my $DIR = dirname(__FILE__);
 basename is on.
 highlight is off.
 test-require.pl [1-9]
+---------------------
   1    	use File::Basename;
   2    	use File::Spec;
   3  ->	my $DIR = dirname(__FILE__);
@@ -25,6 +26,7 @@ my $x = Test::Module::five();
 -- Test::Module::(test-module.pm:3)
     return 5;
 test-module.pm [1-6]
+--------------------
   1    	package Test::Module;
   2    	sub five { 
   3  ->	    return 5;
@@ -36,6 +38,7 @@ test-module.pm [1-6]
    main::(test-require.pl:6)
 my $x = Test::Module::five();
 test-require.pl [2-9]
+---------------------
   2    	use File::Spec;
   3    	my $DIR = dirname(__FILE__);
   4    	my $require_file = File::Spec->catfile($DIR, "test-module.pm");

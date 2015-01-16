@@ -7,6 +7,7 @@ No macros defined.
 *** Command 'macro' needs at least 3 argument(s); got 1.
 Macro "foo" defined.
 gcd.pl [14-21]
+--------------
  14    	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}
@@ -16,9 +17,11 @@ gcd.pl [14-21]
  20    	my ($a, $b) = @ARGV[0,1];
  21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 List of macro names currently defined:
+--------------------------------------
 foo
 Macro "bar" defined.
 gcd.pl [14-21]
+--------------
  14    	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}
@@ -28,6 +31,7 @@ gcd.pl [14-21]
  20    	my ($a, $b) = @ARGV[0,1];
  21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 List of macro names currently defined:
+--------------------------------------
   bar    foo
 bar: sub($) { my $count=shift; ['list ' . $count] }
 foo: sub { 'list' }

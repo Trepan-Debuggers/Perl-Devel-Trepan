@@ -7,6 +7,7 @@ set auto list is on.
 -- main::(gcd.pl:20)
 my ($a, $b) = @ARGV[0,1];
 gcd.pl [16-21]
+--------------
  16    	}
  17    	
  18    	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
@@ -16,6 +17,7 @@ gcd.pl [16-21]
 -- main::(gcd.pl:21)
 printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 gcd.pl [17-21]
+--------------
  17    	
  18    	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
  19    	    @ARGV == 2;
@@ -24,6 +26,7 @@ gcd.pl [17-21]
 -- main::(gcd.pl:9)
     my ($a, $b) = @_;
 gcd.pl [5-14]
+-------------
   5    	# GCD. We assume positive numbers
   6    	sub gcd($$);
   7    	sub gcd($$) 

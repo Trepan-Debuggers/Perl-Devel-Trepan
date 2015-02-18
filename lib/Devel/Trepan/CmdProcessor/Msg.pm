@@ -104,12 +104,22 @@ sub safe_rep($$) {
     Devel::Trepan::Util::safe_repr($str, $self->{settings}{maxstring});
 }
 
+sub bolden($$) {
+    my($self, $message) = @_;
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
+        return $message = color('bold') . $message . color('reset');
+    } else {
+	return $message
+    }
+    return color('bold') . $message . color('reset');
+}
+
 sub section($$;$) {
     my($self, $message, $opts) = @_;
     $opts ||= {};
     $message = $self->safe_rep($message) unless $self->{opts}{unlimited};
     if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
-        $message = color('bold') . $message . color('reset');
+        $message = $self->bolden($message);
     } else {
 	$message .= "\n" . '-' x length($message);
     }

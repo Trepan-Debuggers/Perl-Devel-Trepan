@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -262,7 +262,8 @@ sub run($$)
     my $bp;
     local(*DB::dbline) = "::_<$filename";
     my $lineno;
-    my $msg = sprintf("%s [%d-%d]", $proc->canonic_file($filename), $start, $end);
+    my $msg = sprintf("%s [%d-%d]",
+		      $proc->canonic_file($filename), $start, $end);
 
     # FIXME: put in frame?
     my $frame_filename = $proc->filename();
@@ -302,11 +303,17 @@ sub run($$)
             $s .= ' ';
         }
 	## FIXME move above code
-
-        $s .= ($proc->{frame} && $lineno == $proc->line &&
-               $frame_filename eq $filename) ? '->' : $a_pad;
         my $opts = {unlimited => 1};
-        $proc->msg("$s\t$line", $opts);
+	my $mess;
+	if ($proc->{frame} && $lineno == $proc->line &&
+	    $frame_filename eq $filename) {
+	    $s .=  '->';
+	    $s = $proc->bolden($s);
+	} else {
+	    $s .=  $a_pad;
+	}
+	$mess = "$s\t$line";
+	$proc->msg($mess, $opts);
     }
     $proc->{list_line} = $lineno + $center_correction;
     $proc->{list_filename} = $filename;

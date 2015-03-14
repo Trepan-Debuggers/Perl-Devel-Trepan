@@ -295,7 +295,7 @@ sub run($$)
             if (!scalar @matches) {
                 $self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".");
             } elsif (scalar @matches == 1) {
-                $self->msg("Command ${matches[0]} matches ${cmd_name}...");
+                $self->msg("Pattern '${cmd_name}' matches command ${matches[0]}...");
 		$args->[1] = $matches[0];
 		$self->run($args);
             } else {

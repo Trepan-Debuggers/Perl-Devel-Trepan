@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
 use rlib '../../../..';
@@ -293,7 +293,11 @@ sub run($$)
             my @command_names = $self->command_names();
             my @matches = sort grep(/^${cmd_name}/, @command_names );
             if (!scalar @matches) {
-                $self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".")
+                $self->errmsg("No commands found matching /^${cmd_name}/. Try \"help\".");
+            } elsif (scalar @matches == 1) {
+                $self->msg("Command ${matches[0]} matches ${cmd_name}...");
+		$args->[1] = $matches[0];
+		$self->run($args);
             } else {
                 $self->section("Command names matching /^${cmd_name}/:");
                 $self->msg($self->columnize_commands(sort \@matches));

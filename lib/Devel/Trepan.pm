@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 # Copyright (C) 2013-2015 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
+eval "use feature ':5.10';";
 use strict; use warnings;
 
 use rlib '..';

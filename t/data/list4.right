@@ -2,7 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 -> main::(gcd.pl:8)
 { 
     my ($a, $b) = @_;

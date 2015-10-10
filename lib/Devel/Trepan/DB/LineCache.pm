@@ -92,10 +92,6 @@ use File::Basename;
 use File::Spec;
 use File::stat;
 
-## FIXME:: Make conditional
-use Devel::Trepan::DB::Colors;
-my $perl_formatter = Devel::Trepan::DB::Colors::setup();
-
 ## struct(stat => '$', lines => '%', path => '$', sha1 => '$');
 
 # The file cache. The key is a name as would be given by Perl for
@@ -129,6 +125,15 @@ not have to be fully qualified. In some cases I<@INC> will be used to
 find the file.
 
 =cut
+
+## FIXME:: Make conditional
+use Devel::Trepan::DB::Colors;
+my $perl_formatter;
+
+sub color_setup {
+    $perl_formatter = Devel::Trepan::DB::Colors::setup(@_);
+}
+color_setup('light');
 
 sub remove_temps()
 {

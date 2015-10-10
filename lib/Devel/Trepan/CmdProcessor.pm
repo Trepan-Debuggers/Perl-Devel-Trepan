@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
@@ -104,7 +104,7 @@ sub new($;$$$) {
     return $self;
 }
 
-sub compute_prompt($)
+sub set_prompt($)
 {
     my $self = shift;
     my $thread_str = '';
@@ -115,8 +115,9 @@ sub compute_prompt($)
     # } else {
     #   $thread_str = "@#{Thread.current.object_id}";
     # }
-    sprintf("%s$self->{settings}{prompt}%s%s: ",
-            '(' x $DB::level, $thread_str, ')' x $DB::level);
+    my $prompt = sprintf("%s$self->{settings}{prompt}%s%s: ",
+			 '(' x $DB::level, $thread_str, ')' x $DB::level);
+    return $prompt;
 }
 
 sub terminated($)
@@ -250,7 +251,7 @@ sub process_commands($$$;$)
         $self->handle_eval_result();
         if ($event eq 'after_nest') {
             $self->msg("Leaving nested debug level $DB::level");
-            $self->{prompt} = compute_prompt($self);
+            $self->{prompt} = set_prompt($self);
             $self->frame_setup();
             $self->print_location;
         }
@@ -303,7 +304,7 @@ sub process_commands($$$;$)
                 }
             }
 
-            $self->{prompt} = compute_prompt($self);
+            $self->{prompt} = set_prompt($self);
             $self->print_location unless $self->{settings}{traceprint} ||
                 $self->{terminated};
 
@@ -483,7 +484,7 @@ unless (caller) {
         $proc->$fn('testing');
     }
     $DB::level = 1;
-    my $prompt = $proc->{prompt} = compute_prompt($proc);
+    my $prompt = $proc->{prompt} = set_prompt($proc);
     eval <<'EOE';
     sub foo() {
         my @call_values = caller(0);
@@ -492,7 +493,7 @@ unless (caller) {
 EOE
     print "prompt setting: $prompt\n";
     $DB::level = 2;
-    $prompt = $proc->{prompt} = compute_prompt($proc);
+    $prompt = $proc->{prompt} = set_prompt($proc);
     print "prompt setting 2: $prompt\n";
     my @call_values = foo();
     ## $proc->frame_setup(\@call_values, 0);

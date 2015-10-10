@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014, 2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -331,7 +331,7 @@ unless (caller) {
     cache_file(__FILE__);
     my $frame_ary = Devel::Trepan::CmdProcessor::Mock::create_frame();
     $proc->frame_setup($frame_ary);
-    $proc->{settings}{highlight} = 0;
+    $proc->{settings}{highlight} = undef;
     $cmd->run([$NAME]);
     print '-' x 20, "\n";
     $cmd->run([$NAME]);

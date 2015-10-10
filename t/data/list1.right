@@ -1,7 +1,7 @@
 -- main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 test-require.pl [1-9]
 ---------------------
   1    	use File::Basename;

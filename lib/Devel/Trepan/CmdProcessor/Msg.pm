@@ -111,7 +111,15 @@ sub bolden($$) {
     } else {
 	return $message
     }
-    return color('bold') . $message . color('reset');
+}
+
+sub underline($$) {
+    my($self, $message) = @_;
+    if ($self->{settings}{highlight} && $HAVE_TERM_ANSIColor) {
+        return $message = color('underscore') . $message . color('reset');
+    } else {
+	return $message
+    }
 }
 
 sub section($$;$) {

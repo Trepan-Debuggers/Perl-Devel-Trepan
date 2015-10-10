@@ -30,7 +30,7 @@ use constant PROGRAM_NAME => $PROGRAM_NAME;
 sub default_term() {
     ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' ||
                      (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
-        ?  'term' : 0
+        ?  'light' : undef
 }
 
 my $HOME = File::HomeDir->my_home;

@@ -158,13 +158,13 @@ unless (caller) {
     cache_file(__FILE__);
     my $frame_ary = Devel::Trepan::CmdProcessor::Mock::create_frame();
     $proc->frame_setup($frame_ary);
-    $proc->{settings}{highlight} = 0;
+    $proc->{settings}{highlight} = undef;
     $cmd->run([$NAME]);
     print '-' x 30, "\n";
     $cmd->run([$NAME, '-l']);
     print '-' x 30, "\n";
     $proc->{frame}{fn} = 'run';
-    $proc->{settings}{highlight} = 1;
+    $proc->{settings}{highlight} = 'dark';
     $cmd->run([$NAME]);
 }
 

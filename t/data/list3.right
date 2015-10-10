@@ -1,7 +1,7 @@
 -- main::(test-require.pl:3)
 my $DIR = dirname(__FILE__);
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 set max list is 3.
 x1 main::(test-require.pl:6)
 my $x = Test::Module::five();

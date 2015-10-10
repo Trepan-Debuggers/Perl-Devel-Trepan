@@ -76,7 +76,7 @@ sub run($$) {
 	for my $macro_name (@macro_names) {
             if (exists $proc->{macros}{$macro_name}) {
 		my $line = $proc->{macros}{$macro_name}->[1];
-		if ($proc->{settings}{highlight} eq 'term') {
+		if ($proc->{settings}{highlight}) {
 		    $line = Devel::Trepan::DB::LineCache::highlight_string($line);
 		}
                 my $msg = sprintf("%s: %s", $macro_name, $line);

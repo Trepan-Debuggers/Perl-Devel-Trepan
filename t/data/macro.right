@@ -2,7 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 set max width is 80.
-highlight is off.
+output set to not use terminal escape sequences
 No macros defined.
 *** Command 'macro' needs at least 3 argument(s); got 1.
 Macro "foo" defined.

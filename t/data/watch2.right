@@ -2,7 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 Watch expression 1: $a set
 $DB::D[0] = <undef>
 Watchpoint 1: $a changed

@@ -2,7 +2,7 @@
 while (my $l = <DATA>) {
     chomp $l;
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 As I was saying
 123456789012 This is a test
 As I was saying

@@ -35,23 +35,31 @@ sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
-    my $val = 'term' eq $proc->{settings}{highlight};
-    my $onoff = $self->show_onoff($val);
-    my $msg = sprintf "%s is %s.", $self->{name}, $onoff;
-    $proc->msg($msg);
+    my $val = $proc->{settings}{highlight} || 'plain';
+    my $mess;
+    if ('plain' eq $val) {
+	$mess = 'output set to not use terminal escape sequences';
+    } elsif ('light' eq $val) {
+	$mess = 'output set for terminal with escape sequences ' .
+	    'for a light background';
+    } elsif ('dark' eq $val) {
+	$mess = ('output set for terminal with escape sequences ' .
+		 'for a dark background')
+    } else {
+	$proc->errmsg(sprintf('Internal error: incorrect highlight setting %s', $val));
+    }
+    $proc->msg($mess);
 }
 
 unless (caller) {
   # Demo it.
-  # require_relative '../../mock'
-
-  # # FIXME: DRY the below code
-  # my ($dbgr, $cmd) = MockDebugger::setup('show');
-  # $subcommand = __PACKAGE__->new(cmd);
-  # $testcmdMgr = Trepan::Subcmd->new(subcommand);
-
-  # $subcommand->run_show_bool();
-  # $subcommand->summary_help($NAME);
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'show');
+    my $cmd = __PACKAGE__->new($parent, 'highlight');
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, "\n";
+    print $cmd->run();
 }
 
 1;

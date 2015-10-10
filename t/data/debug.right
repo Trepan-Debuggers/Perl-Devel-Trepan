@@ -2,7 +2,7 @@
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
     @ARGV == 2;
 basename is on.
-highlight is off.
+output set to not use terminal escape sequences
 set auto eval is on.
 set max string is 0.
 Eval result display style is dumper.

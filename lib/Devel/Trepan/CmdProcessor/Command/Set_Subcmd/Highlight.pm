@@ -80,12 +80,12 @@ sub get_highlight_type($$)
 {
     my ($self, $arg) = @_;
     return 'light' unless $arg;
-    if (map $arg eq $_, @choices) {
+    if (grep {$arg eq $_} @choices) {
 	return $arg;
     } else {
 	my $proc = $self->{proc};
-	my $msg = sprintf('Expecting one of %s"; got %s',
-			  join(', ', @choices, $arg));
+	my $msg = sprintf('Expecting one of: %s; got "%s"',
+			  join(', ', @choices), $arg);
 	$proc->errmsg($msg);
 	return undef;
     }

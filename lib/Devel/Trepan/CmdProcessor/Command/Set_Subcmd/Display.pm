@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -44,11 +44,10 @@ HELP
 unless (caller) {
     # Demo it.
     # FIXME: DRY with other subcommand manager demo code.
-    require Devel::Trepan::CmdProcessor;
-    my $proc = Devel::Trepan::CmdProcessor->new;
-    my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'set');
-    my $cmd = __PACKAGE__->new($parent, 'display');
-    print $cmd->{help}, "\n";
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $parent, $cmd, $help_text) =
+	Devel::Trepan::CmdProcessor::Mock::mock_subcmd_setup();
+    print $help_text, "\n";
     print "min args: ", $cmd->MIN_ARGS, "\n";
     for my $arg ('ev', 'op', 'foo') {
         my @aref = $cmd->complete_token_with_next($arg);

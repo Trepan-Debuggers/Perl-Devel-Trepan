@@ -22,42 +22,40 @@ our $MIN_ABBREV = length('hi');
 our $HELP = <<'HELP';
 =pod
 
-B<set highlight> [B<reset> | B<plain> | B<light> | B<dark> | B<off>]
+B<set highlight> [reset | plain | light | dark | off]
 
 Set whether we use terminal highlighting; Permissable values are:
 
 =over
 
-=item plain
+=item B<plain>
 
 no terminal highlighting
 
-=item off
+=item B<off>
 
-same as plain
+same as B<plain>
 
-=item light
+=item B<light>
 
-light
+terminal background is light; this is the default
 
-terminal background is light (the default)
+=item B<dark>
 
-=item dark
-
-terminal background is darkon" and "off" are
+terminal background is dark or light forgeground text
 
 =back
 
-If the first argument is *reset*, we clear any existing color formatting
+If the first argument is B<reset>, we clear any existing color formatting
 and recolor all source code output.
 
 =head2 Examples:
 
     set highlight off   # no highlight
     set highlight plain # same as above
-    set highlight       # same as above
     set highlight dark  # terminal has dark background
     set highlight light # terminal has light background
+    set highlight       # same as above
     set highlight reset light # clear source-code cache and
                               # set for light background
     set highlight reset # clear source-code cache
@@ -123,15 +121,13 @@ sub run($$)
 }
 
 unless (caller) {
-  # Demo it.
-    require Devel::Trepan::CmdProcessor;
-    my $proc = Devel::Trepan::CmdProcessor->new;
-    my $parent = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'set');
-    my $cmd = __PACKAGE__->new($parent, 'highlight');
-    print $cmd->{help}, "\n";
+    # Demo it.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $parent, $cmd, $help_text) =
+	Devel::Trepan::CmdProcessor::Mock::mock_subcmd_setup();
+    print $help_text, "\n";
     print "min args: ", $cmd->MIN_ARGS, "\n";
-    print $cmd->run(['set', 'highlight', 'off']);
-
+    $cmd->run(['set', 'highlight', 'off']);
     for my $arg ('', 're', 'foo') {
 	# use Enbugger('trepan'); Enbugger->stop();
         my @aref = $cmd->complete($arg);

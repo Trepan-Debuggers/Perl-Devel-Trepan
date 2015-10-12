@@ -28,18 +28,12 @@ L<C<show abbrev>|Devel::Trepan::CmdProcessor::Command::Show::Abbrev>
 HELP
 our $MIN_ABBREV = length('ab');
 
-if (__FILE__ eq $0) {
-  # Demo it.
-  # require_relative '../../mock'
-
-  # # FIXME: DRY the below code
-  # my $cmd =
-  #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
-  # $cmd->run(@$cmd->prefix + ('off'));
-  # $cmd->run(@$cmd->prefix + ('ofn'));
-  # $cmd->run(@$cmd->prefix);
-  # print $cmd->save_command(), "\n";
-
+unless(caller) {
+    # Demo it.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_bool($proc, $cmd);
 }
 
 1;

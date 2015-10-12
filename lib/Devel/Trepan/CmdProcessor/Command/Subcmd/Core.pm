@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 # A base class for debugger subcommands.
 #
 use Exporter;
@@ -14,6 +14,7 @@ use Devel::Trepan::CmdProcessor::Validate;
 
 BEGIN {
     @SUBCMD_VARS = qw($HELP $IN_LIST $RUN_CMD $MIN_ABBREV
+                      $MIN_ARGS $MAX_ARGS
                       $NAME $SHORT_HELP @SUBCMD_VARS @SUBCMD_ISA);
 }
 use strict;
@@ -27,8 +28,6 @@ use vars @SUBCMD_VARS;
 
 @SUBCMD_ISA  = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 @EXPORT = @SUBCMD_VARS;
-
-# attr_reader :name
 
 $IN_LIST    = 1;  # Show item in help list of commands
 $RUN_CMD    = 1;  # Run subcommand for those subcommands like "show"
@@ -80,7 +79,7 @@ sub new($$$)
     $self;
 }
 
-# Convenience short-hand for @proc.confirm
+# Convenience short-hand for $proc->confirm
 sub confirm($$;$) {
     my ($self, $msg, $default) = @_;
     return($self->{proc}->confirm($msg, $default));

@@ -8,7 +8,7 @@ package Devel::Trepan::CmdProcessor::Command::Set::Highlight;
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Devel::Trepan::DB::LineCache;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::SetBoolSubcmd);
+@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -123,11 +123,11 @@ sub run($$)
 unless (caller) {
     # Demo it.
     require Devel::Trepan::CmdProcessor::Mock;
-    my ($proc, $parent, $cmd, $help_text) =
-	Devel::Trepan::CmdProcessor::Mock::mock_subcmd_setup();
-    print $help_text, "\n";
-    print "min args: ", $cmd->MIN_ARGS, "\n";
-    $cmd->run(['set', 'highlight', 'off']);
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_info($proc, $cmd);
+
+    $cmd->run($cmd->{prefix}, 'off');
     for my $arg ('', 're', 'foo') {
 	# use Enbugger('trepan'); Enbugger->stop();
         my @aref = $cmd->complete($arg);

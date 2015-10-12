@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2013, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 use strict;
@@ -38,16 +38,18 @@ our $SHORT_HELP = "Set filename remapping";
 
 unless (caller) {
     # Demo it.
-    require Devel::Trepan;
-    # require_relative '../../mock'
-    # dbgr, parent_cmd = MockDebugger::setup('set', false)
-    # cmd              = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor,
-    #                                                      parent_cmd)
-    # cmd.run(cmd.prefix + ['string', '30'])
-
-    # %w(s lis foo).each do |prefix|
-    #   p [prefix, cmd.complete(prefix)]
-    # end
+    # FIXME: DRY with other subcommand manager demo code.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_info($proc, $cmd);
+    $cmd->run($cmd->{prefix});
+    my @args = (@{$cmd->{prefix}}, 'path', 'a', __FILE__);
+    $cmd->run(\@args);
+    for my $arg ('pa', 's') {
+        my @aref = $cmd->complete_token_with_next($arg);
+        printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
+    }
 }
 
 1;

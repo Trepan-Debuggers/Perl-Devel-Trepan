@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; use utf8;
 
@@ -14,18 +14,12 @@ use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
 
-#  include Trepan::Help
-
-unless (@ISA) {
-    eval <<"EOE";
-    use constant MIN_ARGS => 0;
-    use constant MAX_ARGS => undef;
-    use constant NEED_STACK => 0;
-EOE
-}
-
 $NAME          = '?'; # FIXME: Need to define this, but should
                       # pick this up from class/file name.
+
+our $MIN_ARGS = 0;
+our $MAX_ARGS = undef;
+our $NEED_STACK = 0;
 
 #   attr_accessor :subcmds   # Trepan::Subcmd
 #   attr_reader   :name      # Name of command

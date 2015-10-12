@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
@@ -13,13 +13,14 @@ use vars qw(@ISA @SUBCMD_VARS);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
-our $SHORT_HELP = "Set the value about to be returned";
+## FIXME: do automatically.
+our $CMD = "set return";
+
 =pod
 
 =head2 Synopsis:
 
 =cut
-
 our $HELP = <<'HELP';
 =pod
 
@@ -31,19 +32,17 @@ at a return event.
 =head2 See also:
 
 L<C<show return>|Devel::Trepan::CmdProcessor::Command::Show::Return>
+
 =cut
 
 HELP
 
-unless (@ISA) {
-    eval <<"EOE";
-use constant MIN_ARGS   => 1;
-use constant MAX_ARGS   => 1;
-use constant NEED_STACK => 1;
-EOE
-}
+our $SHORT_HELP = "Set the value about to be returned";
 
 our $MIN_ABBREV = length('ret');
+our $MIN_ARGS = 1;
+our $MAX_ARGS = 1;
+our $NEED_STACK = 1;
 
 use Data::Dumper;
 
@@ -75,12 +74,12 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan;
     # Demo it.
-    # require_relative '../../mock'
-    # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
-    # $cmd = __PACKAGE__->new(parent_cmd);
-    # $cmd->run(@$cmd->prefix);
+    # FIXME: DRY with other subcommand manager demo code.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_info($proc, $cmd);
 }
 
 # Suppress a "used-once" warning;

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-215 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
@@ -25,13 +25,13 @@ our $CMD = "set variable";
 our $HELP   = <<'HELP';
 =pod
 
-B<set variable> I<variable-name> I<value>
+B<set variable> I<variable-name> = I<value>
 
 Set a I<my> or I<our> variable; I<value> must be a constant.
 
 =head2 Examples:
 
-  set variable $foo 20
+  set variable $foo = 20
   set variable @ARY = (1,2,3)
 
 =head2 See also:
@@ -43,15 +43,10 @@ HELP
 
 our $SHORT_HELP   = "Set a 'my' or 'our' variable";
 
-unless (@ISA) {
-    eval <<"EOE";
-use constant MIN_ARGS   => 2;
-use constant MAX_ARGS   => undef;
-use constant NEED_STACK => 1;
-EOE
-}
-
 our $MIN_ABBREV = length('var');
+our $MIN_ARGS   = 2;
+our $MAX_ARGS   = undef;
+our $NEED_STACK = 1;
 
 sub set_var($$$)
 {
@@ -100,10 +95,13 @@ sub run($$)
 unless (caller) {
     require Devel::Trepan;
     # Demo it.
-    # require_relative '../../mock'
-    # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
-    # $cmd = __PACKAGE__->new(parent_cmd);
-    # $cmd->run(@$cmd->prefix);
+    # FIXME: DRY with other subcommand manager demo code.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_info($proc, $cmd);
+    #my @args = (@{$cmd->{prefix}}, '$foo', '=', '20');
+    # $cmd->run(\@args);
 }
 
 # Suppress a "used-once" warning;

@@ -224,8 +224,9 @@ sub summary_help($$)
 package Devel::Trepan::CmdProcessor::Command::SetBoolSubsubcmd;
 use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
-#   completion %w(on off)
 
+our $MIN_ARGS = 0;
+our $MAX_ARGS = 1;
 
 sub complete($$)
 {

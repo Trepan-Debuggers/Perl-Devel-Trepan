@@ -45,18 +45,16 @@ unless (caller) {
     # Demo it.
     # FIXME: DRY with other subcommand manager demo code.
     require Devel::Trepan::CmdProcessor::Mock;
-    my ($proc, $parent, $cmd, $help_text) =
-	Devel::Trepan::CmdProcessor::Mock::mock_subcmd_setup();
-    print $help_text, "\n";
-    print "min args: ", $cmd->MIN_ARGS, "\n";
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_info($proc, $cmd);
     for my $arg ('ev', 'op', 'foo') {
         my @aref = $cmd->complete_token_with_next($arg);
         printf "%s\n", @aref ? $aref[0]->[0]: 'undef';
     }
-
-    print join(' ', @{$cmd->{prefix}}), "\n";
     $cmd->run($cmd->{prefix});
-    # $cmd->run($cmd->{prefix}, ('except', 'on'));
+    my @args = (@{$cmd->{prefix}}, 'op', 'on');
+    $cmd->run(\@args);
 }
 
 1;

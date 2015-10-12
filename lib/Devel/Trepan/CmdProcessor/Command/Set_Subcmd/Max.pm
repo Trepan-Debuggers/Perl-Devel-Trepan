@@ -33,22 +33,18 @@ L<C<show max>|Devel::Trepan::CmdProcessor::Command::Show::Max>
 
 =cut
 HELP
+
 our $SHORT_HELP = "Set maximum length sizes of various things";
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubsubcmdMgr);
 
 unless (caller) {
     # Demo it.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_bool($proc, $cmd);
     require Devel::Trepan;
-    # require_relative '../../mock'
-    # dbgr, parent_cmd = MockDebugger::setup('set', false)
-    # cmd              = Trepan::SubSubcommand::SetMax.new(dbgr.core.processor,
-    #                                                      parent_cmd)
-    # cmd.run(cmd.prefix + ['string', '30'])
-
-    # %w(s lis foo).each do |prefix|
-    #   p [prefix, cmd.complete(prefix)]
-    # end
 }
 
 1;

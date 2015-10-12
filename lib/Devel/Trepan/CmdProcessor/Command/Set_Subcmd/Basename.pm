@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -36,17 +36,11 @@ HELP
 our $MIN_ABBREV = length('ba');
 
 unless (caller) {
-  # Demo it.
-  # require_relative '../../mock'
-
-  # # FIXME: DRY the below code
-  # my $cmd =
-  #   Devel::Trepan::MockDebugger::sub_setup(__PACKAGE__, 0);
-  # $cmd->run(@$cmd->prefix + ('off'));
-  # $cmd->run(@$cmd->prefix + ('ofn'));
-  # $cmd->run(@$cmd->prefix);
-  # print $cmd->save_command(), "\n";
-
+    # Demo it.
+    require Devel::Trepan::CmdProcessor::Mock;
+    my ($proc, $cmd) =
+	Devel::Trepan::CmdProcessor::Mock::subcmd_setup();
+    Devel::Trepan::CmdProcessor::Mock::subcmd_demo_bool($proc, $cmd);
 }
 
 1;

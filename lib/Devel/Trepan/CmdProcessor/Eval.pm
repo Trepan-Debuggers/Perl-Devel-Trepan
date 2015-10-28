@@ -107,7 +107,7 @@ sub handle_eval_result($) {
     # (anonymous subroutines) to combine this and the if code below
     if ('tidy' eq $evdisp) {
         $fn = \&Data::Dumper::Perltidy::Dumper;
-    } elsif ('dprint' eq $evdisp) {
+    } elsif ('ddp' eq $evdisp) {
         $print_properties = {
             colored => $self->{settings}{highlight},
         };
@@ -122,7 +122,7 @@ sub handle_eval_result($) {
     if ('$' eq $return_type) {
             if (defined $DB::eval_result) {
                 $DB::D[$last_eval_value++] = $DB::eval_result;
-                if ('dprint' eq $evdisp) {
+                if ('ddp' eq $evdisp) {
                     $val_str =
                         $fn->(\$DB::eval_result, %$print_properties);
                 } else {
@@ -148,7 +148,7 @@ sub handle_eval_result($) {
                     my $d = Data::Dumper->new([\%DB::eval_result]);
                     $d->Terse(1)->Sortkeys(1);
                     $val_str = $d->Dump()
-                } elsif ('dprint' eq $evdisp) {
+                } elsif ('ddp' eq $evdisp) {
                     $val_str = $fn->(\%DB::eval_result, %$print_properties);
                 } else {
                     $val_str = $fn->(\%DB::eval_result);
@@ -163,7 +163,7 @@ sub handle_eval_result($) {
         $self->msg($DB::eval_result);
     }  else {
             if (defined $DB::eval_result) {
-                if ('dprint' eq $evdisp) {
+                if ('ddp' eq $evdisp) {
                     $val_str = $DB::D[$last_eval_value++] =
                         $fn->(\$DB::eval_result, %$print_properties);
                 } else {

@@ -28,7 +28,7 @@ BEGIN {
         require Data::Dumper::Perltidy;
     } ? 1 : 0;
     @DISPLAY_TYPES = ('dumper');
-    push @DISPLAY_TYPES, 'dprint'  if $HAVE_DATA_PRINT;
+    push @DISPLAY_TYPES, 'ddp'  if $HAVE_DATA_PRINT;
     push @DISPLAY_TYPES, 'tidy'    if $HAVE_PERLTIDY;
     push @DISPLAY_TYPES, 'concise' if $HAVE_DATA_DUMPER_CONCISE;
 }
@@ -36,7 +36,7 @@ BEGIN {
 # Return what to use for evaluation display
 sub default_eval_display() {
     if ($HAVE_DATA_PRINT) {
-        return 'dprint';
+        return 'ddp';
     } elsif ($HAVE_PERLTIDY) {
         return 'tidy';
     } elsif ($HAVE_DATA_DUMPER_CONCISE) {

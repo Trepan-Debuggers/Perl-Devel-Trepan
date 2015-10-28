@@ -3,6 +3,8 @@
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../..';
 
+# eval "use Data::Dumper::Perltidy";
+
 package Devel::Trepan::CmdProcessor::Command::Set::Display::Eval;
 
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Subsubcmd;
@@ -25,7 +27,7 @@ my $param = join('|', @DISPLAY_TYPES);
 our $HELP   = <<"HELP";
 =pod
 
-B<set display eval> {B<concise>|B<dprint>|B<dumper>|B<tidy> [printer options]}
+B<set display eval> {B<concise>|B<ddp>|B<dumper>|B<tidy> [printer options]}
 
 Set how you want evaluation results to be shown.
 
@@ -38,7 +40,7 @@ order tried by default on startup.>
 =over
 
 =item *
-C<dprint> E<mdash> L<Data::Printer>
+C<ddp> E<mdash> L<Data::Printer>
 
 =item *
 C<tidy> E<mdash> L<Data::Dumper::Perltidy>
@@ -57,14 +59,18 @@ for a given module.
 =head2 Examples:
 
     set display eval dumper
-    set display eval dprint  # works only if Data::Printer is around
-    set display eval dprint { colored => 0 }
+    set display eval ddp  # works only if Data::Printer is around
+    set display eval ddp { colored => 0 }
+    set display eval tidy    # works if Data::Dumper::Perltidy is around
+    set display eval tidy -nst -mbl=2 -pt=0 -nola
 
 =head2 See also:
 
 L<C<show display eval>|Devel::Trepan::CmdProcessor::Command::Show::Display::Eval>,
-L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>, and
+L<C<eval>|Devel::Trepan::CmdProcessor::Command::Eval>,
 L<C<set auto eval>|Devel::Trepan::CmdProcessor::Command::Set::Auto::Eval>,
+L<Data::Dumper::Perltidy>, and
+L<Data::Printer>.
 
 =cut
 HELP
@@ -92,9 +98,11 @@ sub run($$)
         $proc->{settings}{$key} = $evaltype;
 	my $argc = scalar @args;
 	if ($argc > 4) {
-	    if ($evaltype eq 'dprint') {
-		my $dp_args = join(' ', @{$args[4..$argc-1]});
+	    my $dp_args = join(' ', @{$args[4..$argc-1]});
+	    if ($evaltype eq 'ddp') {
 		eval("use Data::Printer $dp_args");
+	    } elsif ($evaltype eq 'tidy') {
+		eval "$Data::Dumper::Perltidy::ARGV = '$dp_args'";
 	    }
 	}
     } else {
@@ -115,9 +123,9 @@ unless (caller) {
     # foreach my $field (qw(min_abbrev name)) {
     # 	printf "Field %s is: %s\n", $field, $evalcmd->{$field};
     # }
-    # my @args = qw(set display eval dprint);
+    # my @args = qw(set display eval ddp);
     # $evalcmd->run(\@args);
-    # @args = qw(set display eval dprint colored => 0);
+    # @args = qw(set display eval ddp colored => 0);
     # $evalcmd->run(\@args);
 }
 

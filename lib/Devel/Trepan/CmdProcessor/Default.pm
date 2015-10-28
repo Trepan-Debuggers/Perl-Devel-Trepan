@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -19,7 +19,7 @@ our @ISA;
 
 BEGIN {
     $HAVE_DATA_PRINT =
-        eval("use Data::Printer { colored => 1, sort_keys => 1}; 1") ?
+        eval("use Data::Printer { colored => 1, deparse => 1, sort_keys => 1 }; 1") ?
         1 : 0;
     $HAVE_DATA_DUMPER_CONCISE =
         eval("use Data::Dumper::Concise; 1") ?

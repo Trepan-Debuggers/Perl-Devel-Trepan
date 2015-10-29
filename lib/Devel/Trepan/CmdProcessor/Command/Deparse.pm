@@ -149,7 +149,7 @@ sub run($$)
     } else  {
 	my $options = join(',', @options);
 	my $cmd="$EXECUTABLE_NAME  -MO=Deparse,$options $filename";
-	my $text = `$cmd 2>&1`;
+	$text = `$cmd 2>&1`;
 	if ($? >> 8 != 0) {
 	    $proc->msg($text);
 	    return;

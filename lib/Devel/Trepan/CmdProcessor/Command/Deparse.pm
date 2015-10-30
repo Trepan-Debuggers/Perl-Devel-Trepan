@@ -127,11 +127,22 @@ sub run($$)
     if ($have_func) {
 	if (scalar @args == 0 && $proc->{op_addr}) {
 	    my $deparse = B::Deparse->new("-p", "-l", "-sC");
-	    my @exprs = $deparse->coderef2list(\&$funcname);
-	    foreach my $tuple_ref (@exprs) {
+	    my $coderef = \&$funcname;
+	    my $cv = B::svref_2object($coderef);
+	    my $cop_addr = find_op_addr($cv, $proc->{op_addr});
+	    if (!$cop_addr) {
+		$proc->errmsg("Can't find COP for address 0x%x", $proc->{op_addr});
+		return;
+	    }
+	    my @exprs = $deparse->coderef2list($coderef);
+	    for (my $i = 0; $i < scalar @exprs; $i++) {
+		my $tuple_ref = $exprs[$i];
 		my $addr = hex($tuple_ref->[0]);
-		if ($addr == $proc->{op_addr}) {
+		if ($addr == $cop_addr) {
 		    $text = $tuple_ref->[1];
+		    if ($i+1 < scalar @exprs) {
+			$text .= ("\n" . $exprs[$i+1][1]);
+		    }
 		    goto DONE;
 		}
 	    }
@@ -182,11 +193,42 @@ unless (caller) {
 
 1;
 
+sub B::OP::check_op($) {
+    my $op = shift;
+    no strict;
+    if ($op->name eq 'dbstate') {
+	# printf "setting cop 0x%s\n", $$op;
+	$last_cop = $op;
+    }
+    if ($$op == $find_addr) {
+	$found_op = $op;
+	$found_cop = $last_cop;
+	# printf "WOOT 0x%x 0x%x\n", $$found_op, $$found_cop;
+    }
+}
+
+sub find_op($$) {
+    my ($cv, $addr) = @_;
+    no strict;
+    local ($find_addr, $found_op, $found_cop, $last_cop);
+    $find_addr = $addr;
+    # require B::Debug;
+    # B::walkoptree($cv->ROOT, "debug");
+    B::walkoptree($cv->ROOT, 'check_op');
+    return $found_cop;
+}
+
+sub find_op_addr($$) {
+    my ($cv, $addr) = @_;
+    my $cop = find_op($cv, $addr);
+    return $cop ? $$cop : undef;
+}
+
 package B::Deparse;
 
 sub coderef2list {
     my ($self, $coderef) = @_;
-    croak "Usage: ->coderef2text(CODEREF)" unless UNIVERSAL::isa($coderef, "CODE");
+    croak "Usage: ->coderef2list(CODEREF)" unless UNIVERSAL::isa($coderef, "CODE");
     $self->init();
     return $self->deparse_sub_list(svref_2object($coderef));
 }
@@ -230,9 +272,10 @@ sub walk_lineseq_list {
 	    }
 	}
 	if (is_for_loop($kids[$i])) {
-	    push @exprs, $self->for_loop($kids[$i], 0);
-	    $callback->(\@exprs, 0,
-			$i += $kids[$i]->sibling->name eq "unstack" ? 2 : 1);
+	    my $loop_expr = $self->for_loop($kids[$i], 0);
+	    $callback->(\@exprs,
+			$i += $kids[$i]->sibling->name eq "unstack" ? 2 : 1,
+			$loop_expr);
 	    next;
 	}
 	$expr = $self->deparse($kids[$i], (@kids != 1)/2);

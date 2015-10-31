@@ -53,21 +53,25 @@ sub print_stack_entry()
     }
 
     # Short report uses trimmed file and sub names.
-    my $wa;
+    my $want_array;
     if (exists($frame->{wantarray})) {
-        $wa = "$frame->{wantarray} = ";
+        $want_array = "$frame->{wantarray} = ";
     } else {
         $not_last_frame = 0;
-        $wa = '' ;
+        $want_array = '' ;
     }
+
     my $lineno = $frame->{line} || '??';
+    my $addr = $opts->{displayop} ? sprintf("0x%x ", $frame->{addr}) : '';
     if ($opts->{short}) {
         my $fn = $s; # @_ >= 4 ? $_[3] : $s;
-        $self->msg("$wa$fn$args from $file:$lineno");
+	my $msg = sprintf("%s%s%s%s from %s:%d",
+			  $want_array, $addr, $fn, $args, $file, $lineno);
+        $self->msg($msg);
     } else {
         # Non-short report includes full names.
         # Lose the DB::DB hook call if frame is 0.
-        my $call_str = $not_last_frame ? "$wa$s$args in " : '';
+        my $call_str = $not_last_frame ? "$addr$want_array$s$args in " : $addr;
         my $prefix_call = "$prefix$call_str";
         my $file_line   = $file . " at line $lineno";
 

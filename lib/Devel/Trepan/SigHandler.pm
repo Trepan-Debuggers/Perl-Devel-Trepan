@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#   Copyright (C) 2011, 2014 Rocky Bernstein <rocky@gnu.org>
+#   Copyright (C) 2011, 2014-2015 Rocky Bernstein <rocky@gnu.org>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -202,6 +202,10 @@ sub new($$$$$$)
         $self->check_and_adjust_sighandler($signame);
     }
     $self->action('INT stop print nostack nopass');
+
+    # printing WINCH is annoying, especially in Emacs
+    $self->action('WINCH nostop noprint nostack pass');
+
     # for my $sig ('CHLD', 'CLD') {
     #   $self->action("$sig nostop noprint nostack pass") if exists $SIG{$sig};
     # }
@@ -472,7 +476,7 @@ sub handle
     my ($self) = @_;
     my $signame = $self->{signame};
     if (exists($self->{print_fn}) && $self->{print_fn}) {
-        my $msg = sprintf("\nProgram received signal $signame.");
+        my $msg = sprintf("\ntrepan.pl: Program received signal $signame.");
         $self->{print_fn}->($msg);
     }
 

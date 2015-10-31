@@ -63,6 +63,7 @@ sub backtrace($;$$$) {
 
     my $i=0;
     if ($scan_for_DB_sub) {
+	no warnings qw(once uninitialized);  # For $DB::event
         my $db_fn = ($DB::event eq 'post-mortem') ? 'catch' : 'DB';
 	# Warning: There is a bug caller that lists DB:DB as the function
 	# name rather than the name the debugged program may have been in
@@ -94,6 +95,8 @@ sub backtrace($;$$$) {
            ($pkg, $file, $line, $fn, $hasargs, $wantarray, $evaltext,
 	    $is_require) = caller($i))
     {
+	my $addr = Devel::Callsite::callsite($i);
+
         ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
         $i++;
         next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' ||
@@ -170,6 +173,7 @@ sub backtrace($;$$$) {
         # Stick the collected information into @callstack a hash reference.
         push(@callstack,
              {
+                 addr      => $addr,
                  args      => $args_ary,
                  evaltext  => $evaltext,
                  file      => $file,

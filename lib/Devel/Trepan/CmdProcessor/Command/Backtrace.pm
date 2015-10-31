@@ -70,6 +70,7 @@ sub run($$)
         current_pos => $proc->{frame_index},
         maxstack    => $proc->{settings}{maxstack},
         maxwidth    => $proc->{settings}{maxwidth},
+        displayop    => $proc->{settings}{displayop},
     };
     my $stack_size = $proc->{stack_size};
     my $count = $stack_size;

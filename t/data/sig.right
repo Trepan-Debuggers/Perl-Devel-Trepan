@@ -7,4 +7,4 @@ Signal        Stop	Print	Stack	Pass	Description
 -----------------------------------------------
 HUP           No  	Yes 	No   	Yes 	Hangup
 
-Program received signal HUP.
+trepan.pl: Program received signal HUP.

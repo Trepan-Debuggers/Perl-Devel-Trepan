@@ -1,4 +1,18 @@
 Revision history for Devel-Trepan
+0.70 2015-10-31 - Jedi
+
+- "deparse" in a function will show which line of a multi-line statement you are at;
+  fix deparse bugs, docstrings and links to that
+- Add OP address in backtrace
+- SIGWINCH no longer prints a message by default
+- Prefix signal-handler messages with trepan.pl
+- Devel::Callsite is no longer optional
+- set display print for Data::Printer is no longer "dprint" but "ddp" to match Data::Printer
+  docs
+- Allow setting Data::Printer and Data::Dumper options in "set display". Improve display docs
+- Fix invalid highlight warning message
+- Add "info display" as gdb has that.
+
 0.60 2015-01-11 - Sam Woodwardish
 
 - Fix bad bug where trepan.pl would be use 100% of CPU

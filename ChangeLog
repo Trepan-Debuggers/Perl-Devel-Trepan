@@ -1,3 +1,209 @@
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Build.PL, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm, lib/Devel/Trepan/Version.pm: 
+	Get ready for release 0.70 and fix travis requirements.
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/SigHandler.pm,
+	t/data/sig.right, t/data/sig2.right: Add address in backtrace.
+	SIGWINCH no longer prints a message.  Prefix signal print messages
+	with debugger name.
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP
+	.pm, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm, lib/Devel/Trepan/DB.pm,
+	lib/Devel/Trepan/DB/Sub.pm: Devel::Callsite is no longer optional.
+	Note deparse in set/show display op and fix docs too.
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* example/fib.pl, example/multiline.pl: A couple of tough location
+	examples
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Cant deparse
+	deparsing main::main yet
+
+2015-10-30  Rocky Bernstein <rocky@cpan.org>
+
+	* example/multiline.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Towards getting
+	opcode addr right.
+
+2015-10-29  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Yet another
+	Deparse bug
+
+2015-10-29  Rocky Bernstein <rocky@cpan.org>
+
+	* example/multiline.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm: Towards getting deparse
+	to list op addresses. Some bugs fixed.
+
+2015-10-28  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Ev
+	al.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP
+	.pm, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Eval.pm: Use ddp for Data::Printer (as
+	Data::Printer uses).  Show configuration for Data::Printer on
+	demand.  Fix up Show::Display::Eval doc
+
+2015-10-28  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm, lib/Devel/Trepan/CmdProcessor/Default.pm: Data::Dumper default
+	to deparse sub references. Allow user to set Data::Dumper options
+	via "set display eval". Improve "set display eval" doc
+
+2015-10-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Abbrev.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Basename.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Confirm.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Different.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Return.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Substitute.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Timer.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Trace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Variable.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Core.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubMgr.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/Subsubcmd.pm,
+	lib/Devel/Trepan/CmdProcessor/Mock.pm: Work on Mock for subcmds. Use
+	it in demo for "set" commands.
+
+2015-10-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Mock.pm: DRY demo code; improve
+	highlight help
+
+2015-10-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm: Fix
+	invalid highlight warning message
+
+2015-10-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Macros.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Msg.pm,
+	lib/Devel/Trepan/DB/Colors.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/Options.pm, lib/Devel/Trepan/Util.pm,
+	t/data/action.right, t/data/autoeval.right, t/data/autolist.right,
+	t/data/debug.right, t/data/list1.right, t/data/list2.right,
+	t/data/list3.right, t/data/list4.right, t/data/macro.right,
+	t/data/watch1.right, t/data/watch2.right: Allow dark light plain as
+	we do in python
+
+2015-05-31  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md, lib/Devel/Trepan.pm: Move gitter badge location
+
+2015-05-31  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #38 from gitter-badger/gitter-badge Add a Gitter chat badge to README.md
+
+2015-03-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help.pm: Reorder wording in
+	help match text
+
+2015-03-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help.pm: If help regexp
+	matches a single command, give help for that.
+
+2015-02-18  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Msg.pm: Bolden current line in list
+	command
+
+2015-01-23  Rocky Bernstein <rocky@cpan.org>
+
+	* README.md: Remove endorses count
+
+2015-01-15  Rocky Bernstein <rocky@cpan.org>
+
+	* t/data/alias.right, t/data/autolist.right, t/data/break2.right,
+	t/data/eval2.right, t/data/list1.right, t/data/list2.right,
+	t/data/list3.right, t/data/list4.right, t/data/macro.right,
+	t/data/opt-e.right, t/data/sig.right, t/data/sig2.right,
+	t/data/watch1.right, t/data/watch2.right: Non-syntax highlight
+	Sectioning changes integration output.
+
+2015-01-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Msg.pm: Sections get an underline
+	when we don't have syntax highlight in effect.
+
+2015-01-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/Eval.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto_Subcmd/List.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Excep
+	t.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug_Subcmd/Macro
+	.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Auto_Subcmd/Eval.
+	pm: In help POD text, after a L<> we can't have \n=cut. \n\n=cut is
+	okay or L<>.\n=cut is okay
+
+2015-01-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Eval.pm: Slight POD change
+	in help text.
+
+2015-01-11  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Display.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Display.pm,
+	lib/Devel/Trepan/DB/Display.pm: Add "info display" command.
+
+2015-01-11  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/Version.pm: Some small doc changes. In dev version
+	now.
+
 2015-01-11  Rocky Bernstein <rocky@cpan.org>
 
 	* .travis.yml, Changes, lib/Devel/Trepan.pm,

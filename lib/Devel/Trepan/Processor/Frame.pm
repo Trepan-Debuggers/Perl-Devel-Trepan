@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012-2015 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings; use utf8;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
@@ -26,6 +26,7 @@ sub adjust_frame($$$)
                 basename    => $self->{settings}{basename},
                 current_pos => $frame_num,
                 maxwidth    => $self->{settings}{maxwidth},
+                displayop   => $self->{settings}{displayop},
             };
             $self->print_stack_trace_from_to($frame_num, $frame_num, $self->{frames}, $opts);
             $self->print_location ;

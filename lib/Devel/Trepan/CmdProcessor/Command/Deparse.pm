@@ -102,7 +102,9 @@ sub run($$)
     if (scalar @args == 0) {
 	# Use function if there is one. Otherwise use
 	# the current file.
-	$have_func = 1 if $proc->{stack_size} > 0 && $funcname;
+	if ($proc->{stack_size} > 0 && $funcname) {
+	    $have_func = 1;
+	}
     } elsif (scalar @args == 1) {
 	$filename = $args[0];
 	my $subname = $filename;
@@ -127,14 +129,21 @@ sub run($$)
     if ($have_func) {
 	if (scalar @args == 0 && $proc->{op_addr}) {
 	    my $deparse = B::Deparse->new("-p", "-l", "-sC");
-	    my $coderef = \&$funcname;
-	    my $cv = B::svref_2object($coderef);
-	    my $cop_addr = find_op_addr($cv, $proc->{op_addr});
-	    if (!$cop_addr) {
-		$proc->errmsg("Can't find COP for address 0x%x", $proc->{op_addr});
+	    my (@exprs, $cop_addr);
+	    if ($funcname eq "DB::DB") {
+		$proc->errmsg("Can't handle outside of a function yet");
 		return;
+	    } else {
+		my $coderef = \&$funcname;
+		my $cv = B::svref_2object($coderef);
+		$cop_addr = find_op_addr($cv->ROOT, $proc->{op_addr});
+		if (!$cop_addr) {
+		    my $msg = sprintf "Can't find COP for address 0x%x", $proc->{op_addr};
+		    $proc->errmsg($msg);
+		    return;
+		}
+		@exprs = $deparse->coderef2list($coderef);
 	    }
-	    my @exprs = $deparse->coderef2list($coderef);
 	    for (my $i = 0; $i < scalar @exprs; $i++) {
 		my $tuple_ref = $exprs[$i];
 		my $addr = hex($tuple_ref->[0]);
@@ -212,9 +221,9 @@ sub find_op($$) {
     no strict;
     local ($find_addr, $found_op, $found_cop, $last_cop);
     $find_addr = $addr;
-    # require B::Debug;
-    # B::walkoptree($cv->ROOT, "debug");
-    B::walkoptree($cv->ROOT, 'check_op');
+    require B::Debug;
+    # B::walkoptree($cv, "debug");
+    B::walkoptree($cv, 'check_op');
     return $found_cop;
 }
 

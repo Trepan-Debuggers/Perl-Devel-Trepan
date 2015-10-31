@@ -24,9 +24,15 @@ Showing the OP address allows you to disambiguate
 I<exactly> where you are in a line that may have many statements or
 stopping points.
 
+In a mult-statement line, the C<deparse> command will print just the
+current command.
+
 =head2 See also:
 
-L<C<set display op>|Devel::Trepan::CmdProcessor::Command::Set::Display::Eval>,, C<show line>, C<show program> and
+L<C<set display op>|Devel::Trepan::CmdProcessor::Command::Set::Display::OP>,
+L<C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>,
+L<C<info line>|Devel::Trepan::CmdProcessor::Command::Info::Line>,
+L<C<info program>|Devel::Trepan::CmdProcessor::Command::Info::Line> and
 C<disassemble> via plugin L<Devel::Trepan::Disassemble>
 =cut
 HELP

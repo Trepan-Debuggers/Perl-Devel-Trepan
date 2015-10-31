@@ -6,7 +6,7 @@
 
 use rlib '../..';
 
-# use Devel::Trepan::SelfLoader;
+use Devel::Callsite;
 
 =pod
 
@@ -77,17 +77,7 @@ BEGIN {
 
     # No extry/exit tracing.
     $frame = 0;
-
-    if (eval("use Devel::Callsite; 1")) {
-	if (version->parse("$Devel::Callsite::VERSION") >= 
-	    version->parse('0.08')) {
-	    $HAVE_MODULE{'Devel::Callsite'} =  'call_level_param';
-	} else {
-	    $HAVE_MODULE{'Devel::Callsite'} =  'single_level';
-	}
-    } else {
-	$HAVE_MODULE{'Devel::Callsite'} =  '';
-    }
+    $HAVE_MODULE{'Devel::Callsite'} =  'call_level_param';
 }
 
 END {
@@ -135,8 +125,7 @@ sub DB {
     # print "++++ $DB::package $DB::filename, $DB::lineno\n";
     local $filename_ini = $filename;
 
-    local $OP_addr = ($HAVE_MODULE{'Devel::Callsite'})
-        ? Devel::Callsite::callsite() : undef;
+    local $OP_addr = Devel::Callsite::callsite();
 
     return if @skippkg and grep { $_ eq $DB::package } @skippkg;
 

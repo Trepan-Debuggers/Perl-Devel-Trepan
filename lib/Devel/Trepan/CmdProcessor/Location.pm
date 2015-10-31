@@ -184,7 +184,7 @@ sub source_location_info($)
 	my $frame_index = $self->{frame_index};
 	if ($DB::OP_addr && $frame_index == 0) {
 	    $self->{op_addr} = $DB::OP_addr;
-	} elsif ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
+	} else {
 	    my $skip = DB::caller_levels_skip();
 	    my $addr = Devel::Callsite::callsite($frame_index + $skip);
 	    $self->{op_addr} = $addr if defined $addr and $addr > 0;

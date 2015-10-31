@@ -86,11 +86,8 @@ sub run($$)
         $m = "  ${titles[$i]}: " . $frame->{$field};
         $proc->msg($m);
     }
-    no warnings 'once';
-    if ($DB::HAVE_MODULE{'Devel::Callsite'} eq 'call_level_param') {
-	my $cop = Devel::Callsite::callsite($frame_num);
-        $proc->msg(sprintf "  OP address: 0x%x.", $cop);
-    }
+    my $cop = Devel::Callsite::callsite($frame_num);
+    $proc->msg(sprintf "  OP address: 0x%x.", $cop);
     if ($is_last) {
         $proc->msg("  Bottom-most (least recent) frame");
 	return

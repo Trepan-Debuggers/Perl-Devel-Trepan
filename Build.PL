@@ -79,6 +79,7 @@ my $builder = Module::Build->new(
         'Array::Columnize'                  => '1.04',
         # 'Capture::Tiny'                     => 0,
         'Data::Dumper'                      => 0,
+        'Devel::Callsite'                   => 0.08,
 	'File::HomeDir'                     => 0.54,
         'Getopt::Long'                      => '2.36',
         'Digest::SHA'                       => 0,

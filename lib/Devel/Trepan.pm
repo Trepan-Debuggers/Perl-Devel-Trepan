@@ -568,12 +568,6 @@ modules are present. If so, additional capabilies are available.
 =over 4
 
 =item *
-
-L<Devel::Callsite> allows you to see the exact location of where you
-are stopped. Location reporting changes by default to show the current
-OP address, when this module is present.
-
-=item *
 L<Enbugger> allows you to enter the debugger without previously having your program compiled for debugging.
 
 =item *

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -29,18 +29,20 @@ B<set display op>
 
 Set to show the I<OP> address in location status.
 
-The OP address is the address of the Perl Tree Opcode that is about
-to be run. It gives the most precise indication of where you are.
-This can be useful in disambiguating where among Perl several
-statements in a line you are at.
+The OP address is the address of the Perl opcode tree that is about
+to be run. It gives the most precise indication of where you are, and
+can be useful in disambiguating where among Perl several
+statements in a line you.
 
-In the future we may also allow a breakpoint at a COP address.
+In a mult-statement line, the C<deparse> command will print just the
+current command.
 
 =head2 See also:
 
 L<C<show display op>|Devel::Trepan::CmdProcessor::Command::Show::Display::OP>,
-L<C<show line>|Devel::Trepan::CmdProcessor::Command::Show::Line>,
-L<C<show program>|Devel::Trepan::CmdProcessor::Command::Show::Program>, and
+L<C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>,
+L<C<info line>|Devel::Trepan::CmdProcessor::Command::Info::Line>,
+L<C<info program>|Devel::Trepan::CmdProcessor::Command::Info::Line> and
 L<C<disassemble>|Devel::Trepan::CmdProcessor::Command::Disassemble>
 (via plugin L<Devel::Trepan::Disassemble>).
 =cut
@@ -50,16 +52,6 @@ HELP
 our $MIN_ABBREV   = length('co');
 use constant MAX_ARGS => 1;
 our $SHORT_HELP   = "Set to show OP address in locations";
-
-sub run($$)
-{
-    my ($self, $args) = @_;
-    if ($DB::HAVE_MODULE{'Devel::Callsite'}) {
-        $self->SUPER::run($args);
-    } else {
-        $self->{proc}->errmsg("You need Devel::Callsite installed to run this");
-    }
-}
 
 unless (caller) {
     # Demo it.

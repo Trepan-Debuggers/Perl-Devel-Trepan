@@ -45,6 +45,7 @@
          "requires" : {
             "Array::Columnize" : "1.04",
             "Data::Dumper" : "0",
+            "Devel::Callsite" : "0.08",
             "Digest::SHA" : "0",
             "File::HomeDir" : "0.54",
             "Getopt::Long" : "2.36",
@@ -77,5 +78,6 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.60"
+   "version" : "0.70",
+   "x_serialization_backend" : "JSON::PP version 2.27203"
 }

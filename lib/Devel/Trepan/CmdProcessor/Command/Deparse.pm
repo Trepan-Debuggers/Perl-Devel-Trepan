@@ -45,11 +45,11 @@ B::Deparse options:
 
 Deparse Perl source code using L<B::Deparse>.
 
-Without arguments, prints the current subroutine if there is one.
+Without arguments, deparses the current statement, if we can
 
 =head2 Examples:
 
-  deparse            # deparse current subroutine or main file
+  deparse            # deparse current statement
   deparse file.pm
   deparse -l file.pm
 

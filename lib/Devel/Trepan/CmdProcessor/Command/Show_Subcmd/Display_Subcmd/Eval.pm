@@ -50,7 +50,7 @@ sub run($$)
 	my @args = @{$args};
 	if (scalar @args > 3 && $args[3] eq 'long') {
 	    $proc->msg("Data::Printer options:");
-	    my $opts = Data::Printer::p(Data::Printer::_merge());
+	    my $opts = Data::Printer::p($Data::Printer::properties);
 	    $proc->msg($opts);
 	}
     }

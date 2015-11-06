@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use rlib '../lib';
 
-use B::Deparse;
+use B::DeparseTree;
 use Data::Printer;
 use B::Concise;
 
@@ -19,11 +19,9 @@ B::Concise::walk_output(\my $buf);
 $walker->();			# walks and renders into $buf;
 print($buf);
 
-my $deparse = B::Deparse->new("-p", "-l", "-c", "-sC");
+my $deparse = B::DeparseTree->new("-p", "-l", "-c", "-sC");
 
-my @exprs = $deparse->coderef2list(\&fib);
-import Data::Printer colored => 0;
-Data::Printer::p(@exprs);
+#my @exprs = $deparse->coderef2list(\&fib);
+# import Data::Printer colored => 0;
+# Data::Printer::p(@exprs);
 print $deparse->coderef2text(\&fib);
-print "\n", '-' x 30, "\n";
-print $deparse->coderef2text_new(\&fib);

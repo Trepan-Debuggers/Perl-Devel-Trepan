@@ -3,6 +3,7 @@
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 use rlib '../../../..';
+use B::DeparseTree;
 use B::Deparse;
 
 # require_relative '../../app/condition'
@@ -87,6 +88,18 @@ sub parse_options($$)
     @opts;
 }
 
+sub show_addr($$) {
+    my ($deparse, $addr) = @_;
+    return unless $addr;
+    my $op_info = $deparse->{optree}{$addr};
+    if ($op_info) {
+	# use Data::Printer; Data::Printer::p $op_info;
+	my $text = $deparse->indent_info($op_info);
+	return $op_info, $text;
+    }
+    return (undef, undef);
+}
+
 # This method runs the command
 sub run($$)
 {
@@ -98,25 +111,29 @@ sub run($$)
     my $filename = $proc->{list_filename};
     my $frame    = $proc->{frame};
     my $funcname = $proc->{frame}{fn};
-    my $have_func;
+    my $want_runtime_position = 0;
     if (scalar @args == 0) {
 	# Use function if there is one. Otherwise use
 	# the current file.
 	if ($proc->{stack_size} > 0 && $funcname) {
-	    $have_func = 1;
+	    $want_runtime_position = 1;
 	}
     } elsif (scalar @args == 1) {
-	$filename = $args[0];
-	my $subname = $filename;
-	$subname = "main::$subname" if index($subname, '::') == -1;
-	my @matches = $self->{dbgr}->subs($subname);
-	if (scalar(@matches) >= 1) {
-	    $funcname = $subname;
-	    $have_func = 1;
+	if ($args[0] =~ /^0x/) {
+	    $want_runtime_position = 1;
 	} else {
-	    my $canonic_name = map_file($filename);
-	    if (is_cached($canonic_name)) {
-		$filename = $canonic_name;
+	    $filename = $args[0];
+	    my $subname = $filename;
+	    $subname = "main::$subname" if index($subname, '::') == -1;
+	    my @matches = $self->{dbgr}->subs($subname);
+	    if (scalar(@matches) >= 1) {
+		$funcname = $subname;
+		$want_runtime_position = 1;
+	    } else {
+		my $canonic_name = map_file($filename);
+		if (is_cached($canonic_name)) {
+		    $filename = $canonic_name;
+		}
 	    }
 	}
     } else {
@@ -126,38 +143,55 @@ sub run($$)
 
     my $text;
     # FIXME: we assume func below, add parse options like filename, and
-    if ($have_func) {
+    if ($want_runtime_position) {
+	my $deparse = B::DeparseTree->new("-p", "-l", "-sC");
 	if (scalar @args == 0 && $proc->{op_addr}) {
-	    my $deparse = B::Deparse->new("-p", "-l", "-sC");
-	    my (@exprs, $cop_addr);
 	    if ($funcname eq "DB::DB") {
-		$proc->errmsg("Can't handle outside of a function yet");
-		return;
+		$deparse->deparse_root(B::main_root);
 	    } else {
-		my $coderef = \&$funcname;
-		my $cv = B::svref_2object($coderef);
-		$cop_addr = find_op_addr($cv->ROOT, $proc->{op_addr});
-		if (!$cop_addr) {
-		    my $msg = sprintf "Can't find COP for address 0x%x", $proc->{op_addr};
-		    $proc->errmsg($msg);
+		$deparse->coderef2list(\&$funcname);
+	    }
+	    my ($op_info, $mess) = show_addr($deparse, $proc->{op_addr});
+	    if ($op_info) {
+		my ($dummy, $mess2) = show_addr($deparse, $op_info->{parent});
+		if ($mess2) {
+		    $proc->msg($mess . ' # contained inside...');
+		    $proc->msg($mess2);
 		    return;
 		}
-		@exprs = $deparse->coderef2list($coderef);
-	    }
-	    for (my $i = 0; $i < scalar @exprs; $i++) {
-		my $tuple_ref = $exprs[$i];
-		my $addr = hex($tuple_ref->[0]);
-		if ($addr == $cop_addr) {
-		    $text = $tuple_ref->[1];
-		    if ($i+1 < scalar @exprs) {
-			$text .= ("\n" . $exprs[$i+1][1]);
-		    }
-		    goto DONE;
-		}
+		$proc->msg($mess);
 	    }
 	    return;
+	} elsif (scalar @args == 1 and ($args[0]) =~ /^0x/) {
+	    my $addr = $args[0];
+	    my $coderef = \&$funcname;
+	    my $info = $deparse->coderef2list($coderef);
+	    my ($op_info, $mess) = show_addr($deparse, hex($addr));
+	    if ($op_info) {
+		my ($dummy, $mess2) = show_addr($deparse, $op_info->{parent});
+		if ($mess2) {
+		    $proc->msg($mess . ' # contained inside...');
+		    $proc->msg($mess2);
+		    return;
+		}
+		$proc->msg($mess);
+	    } else {
+		while (my($key, $value) = each %{$deparse->{optree}}) {
+		    my $parent_op_name = 'undef';
+		    if ($value->{parent}) {
+			my $parent = $deparse->{optree}{$value->{parent}};
+			$parent_op_name = $parent->{op}->name if $parent->{op};
+		    }
+		    printf("0x%x %s/%s of %s |\n%s",
+			   $key, $value->{op}->name, $value->{type},
+			   $parent_op_name, $deparse->indent_info($value));
+		    printf " ## line %s\n", $value->{cop} ? $value->{cop}->line : 'undef';
+		    print '-' x 30, "\n";
+		}
+		print join(', ', map sprintf("0x%x", $_), sort keys %{$deparse->{optree}}), "\n";
+	    }
 	} else {
-	    my $deparse = B::Deparse->new('-p', '-l',  @options);
+	    my $deparse = B::DeparseTree->new('-p', '-l',  @options);
 	    my @package_parts = split(/::/, $funcname);
 	    my $prefix = '';
 	    $prefix = join('::', @package_parts[0..scalar(@package_parts) - 1])
@@ -198,279 +232,6 @@ unless (caller) {
     $proc->{frame}{fn} = 'run';
     $proc->{settings}{highlight} = 'dark';
     $cmd->run([$NAME]);
-}
-
-1;
-
-sub B::OP::check_op($) {
-    my $op = shift;
-    no strict;
-    if ($op->name eq 'dbstate') {
-	# printf "setting cop 0x%s\n", $$op;
-	$last_cop = $op;
-    }
-    if ($$op == $find_addr) {
-	$found_op = $op;
-	$found_cop = $last_cop;
-	# printf "WOOT 0x%x 0x%x\n", $$found_op, $$found_cop;
-    }
-}
-
-sub find_op($$) {
-    my ($cv, $addr) = @_;
-    no strict;
-    local ($find_addr, $found_op, $found_cop, $last_cop);
-    $find_addr = $addr;
-    require B::Debug;
-    # B::walkoptree($cv, "debug");
-    B::walkoptree($cv, 'check_op');
-    return $found_cop;
-}
-
-sub find_op_addr($$) {
-    my ($cv, $addr) = @_;
-    my $cop = find_op($cv, $addr);
-    return $cop ? $$cop : undef;
-}
-
-package B::Deparse;
-
-sub coderef2list {
-    my ($self, $coderef) = @_;
-    croak "Usage: ->coderef2list(CODEREF)" unless UNIVERSAL::isa($coderef, "CODE");
-    $self->init();
-    return $self->deparse_sub_list(svref_2object($coderef));
-}
-
-sub walk_lineseq {
-    my ($self, $op, $kids, $callback) = @_;
-    my @kids = @$kids;
-    for (my $i = 0; $i < @kids; $i++) {
-	my $expr = "";
-	if (is_state $kids[$i]) {
-	    $expr = $self->deparse($kids[$i++], 0);
-	    if ($i > $#kids) {
-		$callback->($expr, $i);
-		last;
-	    }
-	}
-	if (is_for_loop($kids[$i])) {
-	    $callback->($expr . $self->for_loop($kids[$i], 0),
-		$i += $kids[$i]->sibling->name eq "unstack" ? 2 : 1);
-	    next;
-	}
-	$expr .= $self->deparse($kids[$i], (@kids != 1)/2);
-	$expr =~ s/;\n?\z//;
-	$expr =~ s/\((.+)\)$/$1/;
-	$callback->($expr, $i);
-    }
-}
-
-sub walk_lineseq_list {
-    my ($self, $op, $kids, $callback) = @_;
-    my @kids = @$kids;
-    my @exprs = ();
-    my $expr;
-    for (my $i = 0; $i < @kids; $i++) {
-	if (is_state $kids[$i]) {
-	    $expr = ($self->deparse($kids[$i], 0));
-	    $callback->(\@exprs, $i, $expr);
-	    $i++;
-	    if ($i > $#kids) {
-		last;
-	    }
-	}
-	if (is_for_loop($kids[$i])) {
-	    my $loop_expr = $self->for_loop($kids[$i], 0);
-	    $callback->(\@exprs,
-			$i += $kids[$i]->sibling->name eq "unstack" ? 2 : 1,
-			$loop_expr);
-	    next;
-	}
-	$expr = $self->deparse($kids[$i], (@kids != 1)/2);
-	$callback->(\@exprs, $i, $expr);
-    }
-    return @exprs;
-}
-
-sub deparse_sub_list {
-    my ($self, $cv) = @_;
-    my $proto = "";
-    Carp::confess("NULL in deparse_sub_list") if !defined($cv) || $cv->isa("B::NULL");
-    Carp::confess("SPECIAL in deparse_sub_list") if $cv->isa("B::SPECIAL");
-    local $self->{'curcop'} = $self->{'curcop'};
-    if ($cv->FLAGS & SVf_POK) {
-	$proto = "(". $cv->PV . ") ";
-    }
-    if ($cv->CvFLAGS & (CVf_METHOD|CVf_LOCKED|CVf_LVALUE)) {
-        $proto .= ": ";
-        $proto .= "lvalue " if $cv->CvFLAGS & CVf_LVALUE;
-        $proto .= "locked " if $cv->CvFLAGS & CVf_LOCKED;
-        $proto .= "method " if $cv->CvFLAGS & CVf_METHOD;
-    }
-
-    local($self->{'curcv'}) = $cv;
-    local($self->{'curcvlex'});
-    local(@$self{qw'curstash warnings hints hinthash'})
-		= @$self{qw'curstash warnings hints hinthash'};
-    my @body = ([sprintf("0x%x", $$cv), $proto]);
-    my $root = $cv->ROOT;
-    local $B::overlay = {};
-    if (not null $root) {
-	$self->pessimise($root, $cv->START);
-	my $lineseq = $root->first;
-	if ($lineseq->name eq "lineseq") {
-	    my @ops;
-	    for(my$o=$lineseq->first; $$o; $o=$o->sibling) {
-		push @ops, $o;
-	    }
-	    push @body, $self->lineseq_list(undef, 0, @ops);
-	    my $scope_en = $self->find_scope_en($lineseq);
-	}
-	else {
-	    push @body, $self->deparse($root->first, 0);
-	}
-    }
-    else {
-	my $sv = $cv->const_sv;
-	if ($$sv) {
-	    # uh-oh. inlinable sub... format it differently
-	    return ($proto . "{ " . $self->const($sv, 0) . ") }");
-	} else { # XSUB? (or just a declaration)
-	    return ("$proto");
-	}
-    }
-    return @body;
-}
-
-sub lineseq_list {
-    my($self, $root, $cx, @ops) = @_;
-
-    my $out_cop = $self->{'curcop'};
-    my $out_seq = defined($out_cop) ? $out_cop->cop_seq : undef;
-    my $limit_seq;
-    if (defined $root) {
-	$limit_seq = $out_seq;
-	my $nseq;
-	$nseq = $self->find_scope_st($root->sibling) if ${$root->sibling};
-	$limit_seq = $nseq if !defined($limit_seq)
-			   or defined($nseq) && $nseq < $limit_seq;
-    }
-    $limit_seq = $self->{'limit_seq'}
-	if defined($self->{'limit_seq'})
-	&& (!defined($limit_seq) || $self->{'limit_seq'} < $limit_seq);
-    local $self->{'limit_seq'} = $limit_seq;
-
-    my $fn = sub {
-	my ($exprs, $i, $text) = @_;
-	$text =~ s/\f//;
-	$text =~ s/\n$//;
-	$text =~ s/;\n?\z//;
-	$text =~ s/^\((.+)\)$/$1/;
-	my $op = $ops[$i];
-	push @$exprs, [sprintf("0x%x", $$op), $text];
-    };
-    return $self->walk_lineseq_list($root, \@ops, $fn);
-    # $self->walk_lineseq($root, \@ops,
-    # 		       sub { push @exprs, $_[0]} );
-}
-
-# Notice how subs and formats are inserted between statements here;
-# also $[ assignments and pragmas.
-sub pp_nextstate {
-    my $self = shift;
-    my($op, $cx) = @_;
-    $self->{'curcop'} = $op;
-    my @text;
-    push @text, $self->cop_subs($op);
-    my $stash = $op->stashpv;
-    if ($stash ne $self->{'curstash'}) {
-	push @text, "package $stash;\n";
-	$self->{'curstash'} = $stash;
-    }
-
-    if (OPpCONST_ARYBASE && $self->{'arybase'} != $op->arybase) {
-	push @text, '$[ = '. $op->arybase .";\n";
-	$self->{'arybase'} = $op->arybase;
-    }
-
-    my $warnings = $op->warnings;
-    my $warning_bits;
-    if ($warnings->isa("B::SPECIAL") && $$warnings == 4) {
-	$warning_bits = $warnings::Bits{"all"} & WARN_MASK;
-    }
-    elsif ($warnings->isa("B::SPECIAL") && $$warnings == 5) {
-        $warning_bits = $warnings::NONE;
-    }
-    elsif ($warnings->isa("B::SPECIAL")) {
-	$warning_bits = undef;
-    }
-    else {
-	$warning_bits = $warnings->PV & WARN_MASK;
-    }
-
-    if (defined ($warning_bits) and
-       !defined($self->{warnings}) || $self->{'warnings'} ne $warning_bits) {
-	push @text, declare_warnings($self->{'warnings'}, $warning_bits);
-	$self->{'warnings'} = $warning_bits;
-    }
-
-    my $hints = $] < 5.008009 ? $op->private : $op->hints;
-    my $old_hints = $self->{'hints'};
-    if ($self->{'hints'} != $hints) {
-	push @text, declare_hints($self->{'hints'}, $hints);
-	$self->{'hints'} = $hints;
-    }
-
-    my $newhh;
-    if ($] > 5.009) {
-	$newhh = $op->hints_hash->HASH;
-    }
-
-    if ($] >= 5.015006) {
-	# feature bundle hints
-	my $from = $old_hints & $feature::hint_mask;
-	my $to   = $    hints & $feature::hint_mask;
-	if ($from != $to) {
-	    if ($to == $feature::hint_mask) {
-		if ($self->{'hinthash'}) {
-		    delete $self->{'hinthash'}{$_}
-			for grep /^feature_/, keys %{$self->{'hinthash'}};
-		}
-		else { $self->{'hinthash'} = {} }
-		$self->{'hinthash'}
-		    = _features_from_bundle($from, $self->{'hinthash'});
-	    }
-	    else {
-		my $bundle =
-		    $feature::hint_bundles[$to >> $feature::hint_shift];
-		$bundle =~ s/(\d[13579])\z/$1+1/e; # 5.11 => 5.12
-		push @text, "no feature;\n",
-			    "use feature ':$bundle';\n";
-	    }
-	}
-    }
-
-    if ($] > 5.009) {
-	push @text, declare_hinthash(
-	    $self->{'hinthash'}, $newhh,
-	    $self->{indent_size}, $self->{hints},
-	);
-	$self->{'hinthash'} = $newhh;
-    }
-
-    # This should go after of any branches that add statements, to
-    # increase the chances that it refers to the same line it did in
-    # the original program.
-    if ($self->{'linenums'}) {
-	my $line = sprintf("# line %s '%s' 0x%x\n",
-			   $op->line, $op->file, $$op);
-	push @text, $line;
-    }
-
-    push @text, $op->label . ": " if $op->label;
-
-    return join("", @text);
 }
 
 1;

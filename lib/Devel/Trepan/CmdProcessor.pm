@@ -41,7 +41,7 @@ BEGIN {
     @DB::D = ();  # Place to save eval results;
 }
 
-sub new($;$$$) {
+sub new {
     my ($class, $interfaces, $dbgr, $settings) = @_;
     my $intf;
     if (defined $interfaces) {

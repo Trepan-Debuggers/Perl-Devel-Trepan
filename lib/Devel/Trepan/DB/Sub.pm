@@ -257,13 +257,15 @@ sub DB::sub {
 	}
 
         # Pop the single-step value back off the stack.
-        $DB::single |= $stack[ $stack_depth-- ];
-        if ($single & RETURN_EVENT) {
-            $DB::return_type = 'array';
-            @DB::return_value = @ret;
-            DB::DB($DB::sub) ;
-            return @DB::return_value;
-        }
+	if ($stack[$stack_depth]) {
+	    $DB::single |= $stack[ $stack_depth-- ];
+	    if ($single & RETURN_EVENT) {
+		$DB::return_type = 'array';
+		@DB::return_value = @ret;
+		DB::DB($DB::sub) ;
+		return @DB::return_value;
+	    }
+	}
         @ret;
     } else {
         # Called in array context. call sub and capture output.

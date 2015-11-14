@@ -555,6 +555,11 @@ L<Devel::Trepan::Shell> adds a debugger C<shell> command support via L<Devel::RE
 
 =item *
 
+L<Devel::Trepan::Deparse> adds deparsing the code you are running. With this, you can find out I<exactly> where you are stopped. See
+L<Exact Perl location with B::Deparse (and Devel::Callsite)|http://blogs.perl.org/users/rockyb/2015/11/exact-perl-location-with-bdeparse-and-develcallsite.html>
+
+=item *
+
 L<Devel::Trepan::Disassemble> adds a debugger C<disassemble> command
 support via L<B::Concise>
 

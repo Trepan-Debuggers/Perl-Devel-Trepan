@@ -218,7 +218,7 @@ sub process_command_and_quit($)
         $self->errmsg("internal error: $EVAL_ERROR")
     } else {
         # Save it to the history.
-        $intf->save_history($self->{last_command}) if
+        $intf->add_history($self->{last_command}) if
             $self->{last_command};
     }
 }

@@ -1,6 +1,60 @@
+2015-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, README.md, example/fib.pl, example/multiline.pl,
+	lib/Devel/Trepan.pm, lib/Devel/Trepan/CmdProcessor.pm,
+	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/Interface/User.pm,
+	lib/Devel/Trepan/Version.pm: Fix history saving. Get ready for
+	release 0.71
+
+2015-11-12  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor.pm: Remove prototype in new.
+	Exporter seems to complain.
+
+2015-11-09  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Deparse is now
+	its own plugin/repo since it uses B::DeparseTree
+
+2015-11-06  Rocky Bernstein <rocky@cpan.org>
+
+	* example/fib.pl, example/multiline.pl,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: First use of
+	DeparseTree
+
+2015-11-04  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Ev
+	al.pm: show display ddp: was not getting Data::Printer options
+	correctly.
+
 2015-10-31  Rocky Bernstein <rocky@cpan.org>
 
-	* .travis.yml, Build.PL, lib/Devel/Trepan.pm,
+	* META.json, META.yml,
+	lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm: Update deparse
+	comment
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Colors.pm: Tweak colors
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Processor/Frame.pm: Show address after frame
+	commands?
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: travis 5.22 no known yet
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: We no longer support perl 5.8, try in travis 5.22
+
+2015-10-31  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml, Build.PL, ChangeLog, Changes, lib/Devel/Trepan.pm,
 	lib/Devel/Trepan/CmdProcessor/Frame.pm, lib/Devel/Trepan/Version.pm: 
 	Get ready for release 0.70 and fix travis requirements.
 

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel-Trepan) [![Join the chat at https://gitter.im/rocky/Perl-Devel-Trepan](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rocky/Perl-Devel-Trepan?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel-Trepan)
 
 Devel::Trepan &mdash; A new Perl debugger
 ====================================

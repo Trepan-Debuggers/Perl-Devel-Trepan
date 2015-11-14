@@ -47,7 +47,6 @@ lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm
 lib/Devel/Trepan/CmdProcessor/Command/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Delete.pm
-lib/Devel/Trepan/CmdProcessor/Command/Deparse.pm
 lib/Devel/Trepan/CmdProcessor/Command/Disable.pm
 lib/Devel/Trepan/CmdProcessor/Command/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Down.pm
@@ -134,6 +133,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Except.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Macro.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Debug_Subcmd/Skip.pm
+lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Different.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display.pm
 lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Eval.pm

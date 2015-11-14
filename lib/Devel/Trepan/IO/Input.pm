@@ -53,6 +53,7 @@ sub new($;$$) {
     my ($class, $inp, $opts) = @_;
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
+    $self->{histfile} = undef;
     if ($opts->{readline} && $HAVE_TERM_READLINE) {
         my $rc = 0;
         $rc = eval {
@@ -100,7 +101,7 @@ sub rl_filename_list($$)  {
     if ($HAVE_TERM_READLINE eq 'Perl5') {
 	Term::ReadLine::Perl5::readline::rl_filename_list($prefix);
     } elsif ($HAVE_TERM_READLINE eq 'Gnu') {
-	Term::ReadLine::Gnu::XS::rl_filename_list($prefix);
+	eval {Term::ReadLine::Gnu::XS::rl_filename_list($prefix)};
     # } elsif ($HAVE_TERM_READLINE eq 'Perl') {
 	# FIXME: how does one do this for Perl?
     }
@@ -122,6 +123,16 @@ sub readline($;$) {
         $line = CORE::readline $self->{input};
     }
     return $line;
+}
+
+sub write_history($$)
+{
+    my ($self, $histfile) = @_;
+    $self->{readline}->StifleHistory($self->{histsize}) if
+	$self->{readline}->can("StifleHistory");
+    if ($self->{readline}->can("WriteHistory")) {
+	$self->{readline}->WriteHistory($self->{histfile})
+    }
 }
 
 # Demo

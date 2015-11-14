@@ -321,7 +321,7 @@ L<Cancel some expressions to be displayed when program stops
 
 =item *
 
-L<Deparse source code via B::Deparse (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
+L<Deparse source code via B::DeparseTree (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
 
 =item *
 
@@ -538,6 +538,9 @@ L<Devel::Trepan Debugger evaluation of Perl statements|http://blogs.perl.org/use
 =item *
 
 L<Location, Location, Location|http://blogs.perl.org/users/rockyb/2012/08/location-location-location.html>
+
+=item *
+L<Exact Perl location with B::DeparseTree (and Devel::Callsite)|http://blogs.perl.org/users/rockyb/2015/11/exact-perl-location-with-bdeparse-and-develcallsite.html>
 
 =item *
 

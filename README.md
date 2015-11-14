@@ -21,7 +21,7 @@ Features:
 * comes with extensive tests
 * is not as ugly as _perl5db_
 
-SYNOPSIS
+Synopsis
 --------
 
 From a shell:
@@ -60,7 +60,7 @@ Inside the debugger tracing is turned on using the command `set trace print`.
 There is extensive help from the `help` command.
 
 
-INSTALLATION
+Installation
 ------------
 
 To install this Devel::Trepan from source code:
@@ -74,11 +74,20 @@ or to install from CPAN:
 
     $ cpanm Devel::Trepan
 
+See Also
+--------
 
-LICENSE AND COPYRIGHT
+* [On writing a new Perl Debugger (Part 1 - Why?)](http://blogs.perl.org/users/rockyb/2012/07/on-writing-a-new-perl-debugger-part-1---why.html)
+* [Devel::Trepan Debugger command aliases and command completion](http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-command-aliases-and-command-completion.html)
+* [Devel::Trepan Debugger evaluation of Perl statements](http://blogs.perl.org/users/rockyb/2012/08/develtrepan-debugger-evaluation-of-perl-statements.html)
+* [Location, Location, Location](http://blogs.perl.org/users/rockyb/2012/08/location-location-location.html)
+* [Exact Perl location with B::DeparseTree (and Devel::Callsite)](http://blogs.perl.org/users/rockyb/2015/11/exact-perl-location-with-bdeparse-and-develcallsite.html)
+* [wiki](https://github.com/rocky/Perl-Devel-Trepan/wiki)
+
+Licence and Copyright
 ---------------------
 
-Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

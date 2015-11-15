@@ -74,6 +74,7 @@ require Exporter;
              clear_cache update_cache
              file_list getlines
              filename_is_eval getline map_file is_cached
+             highlight_string cache_file
              load_file map_script map_file_line remap_file
              remap_dbline_to_file remap_string_to_tempfile %script_cache
              trace_line_numbers update_script_cache

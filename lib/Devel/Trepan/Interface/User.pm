@@ -58,15 +58,20 @@ sub new
 sub add_history($$)
 {
     my ($self, $command) = @_;
-    return unless ($self->{input}{readline});
+    return unless ($self->{input}{readline}) or !($self->can('add_history'));
     $self->{input}{readline}->add_history($command) ;
 
-    # my $now = localtime;
-    # $self->{input}{readline}->add_history_time($now);
+    if ($self->can('add_history_time')) {
+	my $now = localtime;
+	$self->{input}{readline}->add_history_time($now);
+    }
 
     # Having problems with setting destroy to write history.
     # So write it after each add. Ugh.
-    $self->{input}{readline}->write_history($self->{histfile}, $command);
+    # Use Term::ReadLine::Gnu name WriteHistory, since Gnu doesn't have
+    # write_history().
+    $self->{input}{readline}->WriteHistory($self->{histfile}, $command)
+	if $self->can('WriteHistory');
 }
 
 sub remove_history($;$)

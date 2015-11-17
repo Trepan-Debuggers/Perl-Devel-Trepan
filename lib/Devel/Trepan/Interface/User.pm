@@ -58,7 +58,7 @@ sub new
 sub add_history($$)
 {
     my ($self, $command) = @_;
-    return unless ($self->{input}{readline}) or !($self->can('add_history'));
+    return unless ($self->{input}{readline}) and $self->can('add_history');
     $self->{input}{readline}->add_history($command) ;
 
     if ($self->can('add_history_time')) {

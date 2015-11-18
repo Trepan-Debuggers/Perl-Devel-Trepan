@@ -2,10 +2,6 @@
 ++
 -- main::(eval.pl:1)
 $var = '
-# This line is not a comment of the above $var assignment
-$x = 2;
-$y = 3;
-$z = 4';
 Eval result display style is dumper.
 set max width is 300.
 set auto eval is on.

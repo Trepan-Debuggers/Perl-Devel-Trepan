@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 Breakpoint 1 set in gcd.pl at line 18
 Breakpoint 2 set in gcd.pl at line 8
 Breakpoint 3 set in gcd.pl at line 11
@@ -17,5 +16,4 @@ Use 'info file XXX brkpts' to see breakpoints I know about
 *** Subroutine gcd1 not found.
 -> main::(gcd.pl:8)
 { 
-    my ($a, $b) = @_;
 trepan.pl: That's all, folks...

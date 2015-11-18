@@ -59,16 +59,16 @@ unless (caller) {
     require Devel::Trepan::CmdProcessor;
     my $cmdproc = Devel::Trepan::CmdProcessor->new();
     my $subcmd  =  Devel::Trepan::CmdProcessor::Command::Set->new($cmdproc, 'set');
-    my $dispcmd =  Devel::Trepan::CmdProcessor::Command::Set::Display->new($subcmd, 'display');
-    my $opcmd   =  Devel::Trepan::CmdProcessor::Command::Set::Display::OP->new($dispcmd, 'op');
+    my $parent_cmd =  Devel::Trepan::CmdProcessor::Command::Set::Display->new($subcmd, 'display');
+    my $cmd   =  __PACKAGE__->new($parent_cmd, 'op');
     # Add common routine
     foreach my $field (qw(min_abbrev name)) {
-	printf "Field %s is: %s\n", $field, $opcmd->{$field};
+	printf "Field %s is: %s\n", $field, $cmd->{$field};
     }
     my @args = qw(set display op on);
-    $opcmd->run(\@args);
+    $cmd->run(\@args);
     @args = qw(set display op off);
-    $opcmd->run(\@args);
+    $cmd->run(\@args);
 }
 
 1;

@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 basename is on.
 Line 18, file gcd.pl
 OP address: 0x12345678.

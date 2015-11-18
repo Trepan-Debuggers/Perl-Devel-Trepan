@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../..';
+use rlib '../../../../../..';
 
 # eval "use Data::Dumper::Perltidy";
 
@@ -115,18 +115,18 @@ sub run($$)
 
 unless (caller) {
     require Devel::Trepan::CmdProcessor;
-    # my $cmdproc = Devel::Trepan::CmdProcessor->new();
-    # my $subcmd  =  Devel::Trepan::CmdProcessor::Command::Set->new($cmdproc, 'set');
-    # my $dispcmd =  Devel::Trepan::CmdProcessor::Command::Set::Display->new($subcmd, 'display');
-    # my $evalcmd =  Devel::Trepan::CmdProcessor::Command::Set::Display::Eval->new($dispcmd, 'eval');
-    # # Add common routine
-    # foreach my $field (qw(min_abbrev name)) {
-    # 	printf "Field %s is: %s\n", $field, $evalcmd->{$field};
-    # }
-    # my @args = qw(set display eval ddp);
-    # $evalcmd->run(\@args);
-    # @args = qw(set display eval ddp colored => 0);
-    # $evalcmd->run(\@args);
+    my $cmdproc = Devel::Trepan::CmdProcessor->new();
+    my $subcmd  =  Devel::Trepan::CmdProcessor::Command::Set->new($cmdproc, 'set');
+    my $parent_cmd =  Devel::Trepan::CmdProcessor::Command::Set::Display->new($subcmd, 'display');
+    my $cmd   =  __PACKAGE__->new($parent_cmd, 'eval');
+    # Add common routine
+    foreach my $field (qw(min_abbrev name)) {
+	printf "Field %s is: %s\n", $field, $cmd->{$field};
+    }
+    my @args = qw(set display eval dumper);
+    $cmd->run(\@args);
+    @args = qw(set display eval concise);
+    $cmd->run(\@args);
 }
 
 1;

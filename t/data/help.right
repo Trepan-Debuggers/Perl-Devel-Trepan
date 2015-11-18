@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 *** No info subcommands found matching /^{ff}/. Try "help info *".
   Subcommands of *info* matching /^f/:
 

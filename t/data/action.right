@@ -1,6 +1,5 @@
 -- main::(action-bug.pl:4)
 while (my $l = <DATA>) {
-    chomp $l;
 basename is on.
 output set to not use terminal escape sequences
 As I was saying

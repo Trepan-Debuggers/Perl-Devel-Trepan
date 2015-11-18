@@ -79,6 +79,7 @@ use constant DEFAULT_SETTINGS => {
     highlight     => Devel::Trepan::Options::default_term(),
                              # Use terminal highlight? 0 or undef if off.
 
+    maxlines      => 1,      # Number of context lines in location,
     maxlist       => 10,     # Number of source lines to list
     maxstack      => 10,     # backtrace limit
     maxstring     => 150,    # Strings which are larger than this

@@ -417,7 +417,7 @@ sub getline($$;$)
     my $max_index = scalar(@$lines) - 1;
     my $index = $line_number - 1;
     if (defined $lines && @$lines && $index >= 0 && $index <= $max_index) {
-        my $max_continue = $opts->{max_continue} || 1;
+        my $max_continue = $opts->{maxlines} || 1;
         my $line = $lines->[$index];
         return undef unless defined $line;
         if ($max_continue > 1) {
@@ -1260,12 +1260,12 @@ unless (caller) {
     #       "\n");
     $line = getline(__FILE__, __LINE__,
                     {output=>'term',
-                     max_continue => 6});
+                     maxlines => 6});
     print '-' x 30, "\n";
     print "$line\n";
     $line = getline(__FILE__, __LINE__,
                     {output=>'plain',
-                     max_continue => 5});
+                     maxlines => 5});
     print '-' x 30, "\n";
     print "$line\n";
     print '-' x 30, "\n";

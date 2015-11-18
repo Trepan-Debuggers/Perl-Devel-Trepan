@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 set max width is 80.
 *** You must alias to a command name, and 'foo' isn't one.
 New alias 'yy' for command string 'step' created.

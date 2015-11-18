@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 Breakpoint 1 set in gcd.pl at line 9
 set trace print is on.
 -- main::(gcd.pl:20)

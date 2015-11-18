@@ -1,6 +1,5 @@
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 basename is on.
 output set to not use terminal escape sequences
 set auto eval is on.
@@ -23,7 +22,6 @@ $DB::D[2] = 1
 Leaving nested debug level 1
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 $DB::D[3] = <undef>
 -- main::((eval 1955)[Eval.pm:73] remapped bogus.pl:6)
 gcd(1,1)
@@ -55,5 +53,4 @@ $DB::D[7] = 1
 Leaving nested debug level 1
 -- main::(gcd.pl:18)
 die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
-    @ARGV == 2;
 trepan.pl: That's all, folks...

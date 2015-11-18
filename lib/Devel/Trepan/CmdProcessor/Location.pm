@@ -76,7 +76,7 @@ sub min($$) {
 sub current_source_text(;$)
 {
     my ($self, $opts) = @_;
-    $opts = {max_continue => 5} unless defined $opts;
+    $opts = {maxlines => 5} unless defined $opts;
     my $filename    = $self->{frame}{file};
     my $line_number = $self->{frame}{line};
     my $text        = (getline($filename, $line_number, $opts)) || '';
@@ -157,7 +157,7 @@ sub print_location($;$)
     my ($self,$opts) = @_;
     $opts = {
         output => $self->{settings}{highlight},
-        max_continue => 5,
+        max_continue => $self->{settings}{lines},
     } unless defined $opts;
     my $loc  = $self->format_location;
     $self->msg(${loc});

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../../..';
 
@@ -29,7 +29,7 @@ Set number of characters the debugger thinks are in a line.
 
 =head2 See also:
 
-L<C<set max width>|Devel::Trepan::CmdProcessor::Set::Max::Width>
+L<C<show max width>|Devel::Trepan::CmdProcessor::Show::Max::Width>
 
 =cut
 HELP

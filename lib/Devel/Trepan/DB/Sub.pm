@@ -393,6 +393,7 @@ sub subs {
     my(@ret) = ();
     while (@_) {
       my $name = shift;
+      next unless $name;
       push @ret, [$DB::sub{$name} =~ /^(.*)\:(\d+)-(\d+)$/]
         if exists $DB::sub{$name};
     }

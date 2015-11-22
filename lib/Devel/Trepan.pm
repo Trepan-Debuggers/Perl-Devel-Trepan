@@ -103,7 +103,7 @@ L<trepanning debuggers|http://github.com/rocky/rb-trepanning/wiki>.
 
 =item *
 
-extensive pod-formmated online-help
+extensive pod-formatted online-help
 
 =item *
 
@@ -326,10 +326,6 @@ L<Cancel some expressions to be displayed when program stops
 =head3 Specifying and examining files
 
 =over
-
-=item *
-
-L<Deparse source code via B::DeparseTree (deparse)|Devel::Trepan::CmdProcessor::Command::Deparse>
 
 =item *
 

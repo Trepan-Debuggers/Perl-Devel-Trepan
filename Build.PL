@@ -49,7 +49,7 @@ my $builder = Module::Build->new(
     },
 
     configure_requires  => {
-        'Module::Build' => '0.32',
+        'Module::Build' => '0.4214',
 
     },
     build_requires => {
@@ -64,6 +64,7 @@ my $builder = Module::Build->new(
         'B::CodeLines'                      => 1.1,
         'Data::Printer'                     => 0,
         'Data::Dumper::Concise'             => 0,
+        'Devel::Trepan::Deparse'            => '2.1.0',
         'Devel::Trepan::Disassemble'        => '1.9',
         'Devel::Trepan::Shell'              => '1.4.1',
         'Eval::WithLexicals'                => 0,

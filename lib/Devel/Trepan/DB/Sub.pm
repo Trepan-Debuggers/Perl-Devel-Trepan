@@ -235,6 +235,7 @@ sub DB::sub {
 
     if (defined($DB::running) && $DB::running == 1) {
 	local @DB::_ = @_;
+	local(*DB::dbline) = "::_<$DB::filename";
 	check_for_stop();
     }
 
@@ -333,6 +334,7 @@ sub DB::lsub : lvalue {
     local $stack_depth = $stack_depth + 1;    # Protect from non-local exits
     push_DB_single_and_set();
 
+    local(*DB::dbline) = "::_<$DB::filename";
     check_for_stop();
 
     if (wantarray) {

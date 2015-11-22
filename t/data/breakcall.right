@@ -3,4 +3,5 @@ if (scalar @ARGV) {
 -> main::(callbug.pl:4)
 sub iamnotok {
 $DB::D[0] = foo
+Breakpoint 2 set in callbug.pl at line 6
 trepan.pl: That's all, folks...

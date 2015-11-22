@@ -1,5 +1,6 @@
 use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
+use B;
 
 =pod
 
@@ -76,7 +77,8 @@ sub backtrace($;$$$) {
     }
 
     $count += $i;
-    # print "++count: $count, i $i\n";
+    # print "++count: $count, i $i $DB::event\n"; # XX debug
+    $i -= 2 if $DB::event eq 'call';
 
     my ( @a, $args_ary );
     my @callstack = ();
@@ -97,7 +99,7 @@ sub backtrace($;$$$) {
     {
 	my $addr = Devel::Callsite::callsite($i);
 
-        ## print "++file: $file, line $line $fn\n" if $DB::DEBUGME;
+        ## print "++file: $file, line $line $fn\n"; # XX if $DB::DEBUGME;
         $i++;
         next if $pkg eq 'DB' && ($fn eq 'sub' || $fn eq 'lsub' ||
 				 $file =~ m{Devel/Trepan/DB/Sub\.pm$});
@@ -188,18 +190,36 @@ sub backtrace($;$$$) {
         # last if $signal;
     } ## end for ($i = $skip ; $i < ...
 
+    ## use Data::Printer; Data::Printer::p @callstack; # XXX
+
     # The function and args for the stopped line is DB::DB,
     # but we want it to be the function and args of the last call.
+    # Se we need to adjust those in @callstack.
     # And the function and args for the file and line that called us
     # should also be the prior function and args.
     if ($scan_for_DB_sub) {
-        for (my $i=1; $i <= $#callstack; $i++) {
-            $callstack[$i-1]->{args} = $callstack[$i]->{args};
-            $callstack[$i-1]->{fn} = $callstack[$i]->{fn};
-        }
-        $callstack[$i]{args} = undef;
-        $callstack[$i]{fn}   = undef;
+	my $len = @callstack;
+	if ($len) {
+	    for (my $i=1; $i < $len; $i++) {
+		$callstack[$i-1]->{args} = $callstack[$i]->{args};
+		$callstack[$i-1]->{fn} = $callstack[$i]->{fn};
+	    }
+	    # $callstack[$len]->{args} = undef;
+	    # $callstack[$len]->{fn}   = undef;
+	}
     }
+
+    if ($DB::event eq 'call') {
+        unshift @callstack, {
+	    addr      => $DB::addr,
+	    file      => $DB::filename,
+	    fn        => $DB::subroutine,
+	    line      => $DB::lineno,
+	    pkg       => $DB::package,
+	    wantarray => $DB::wantarray ? $DB::wantarray : '',
+	};
+    }
+    # use Data::Printer; Data::Printer::p @callstack;
 
     @callstack;
 }

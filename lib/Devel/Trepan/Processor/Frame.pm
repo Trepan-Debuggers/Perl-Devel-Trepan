@@ -105,18 +105,7 @@ sub frame_setup($$)
 		$self->{gave_stack_trunc_warning} = 1;
 	    }
 	    $stack_size = $computed_stack_depth;
-	    if ($self->{event} eq 'call') {
-		no warnings 'once';  # for DB:: names below
-		$frames[0] =
-		     {
-			 file      => $DB::filename,
-			 fn        => $DB::subroutine,
-			 line      => $DB::lineno,
-			 pkg       => $DB::package,
-			 # FIXME: more later...
-		     };
-
-	    }
+	    $stack_size++ if $self->{event} eq 'call';
         }
         $self->{frames} = \@frames;
         $self->{stack_size}    = $stack_size;

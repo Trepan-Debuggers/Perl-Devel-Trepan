@@ -6,6 +6,7 @@ use warnings; no warnings 'redefine'; use utf8;
 no warnings 'once';
 use English qw( -no_match_vars );
 use version;
+use B;
 
 use constant SINGLE_STEPPING_EVENT =>   1;
 use constant NEXT_STEPPING_EVENT   =>   2;
@@ -236,9 +237,14 @@ sub DB::sub {
     if (defined($DB::running) && $DB::running == 1) {
 	local @DB::_ = @_;
 	local(*DB::dbline) = "::_<$DB::filename";
+
+	# FIXME: this isn't quite right;
+	$DB::addr = +B::svref_2object(\$DB::subroutine);
+
 	check_for_stop();
     }
 
+    $DB::wantarray = wantarray;
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
         &$DB::sub;
@@ -335,6 +341,10 @@ sub DB::lsub : lvalue {
     push_DB_single_and_set();
 
     local(*DB::dbline) = "::_<$DB::filename";
+
+    # FIXME: this isn't quite right;
+    $DB::addr = +B::svref_2object(\$DB::subroutine);
+
     check_for_stop();
 
     if (wantarray) {

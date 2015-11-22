@@ -62,7 +62,7 @@ sub print_stack_entry()
     }
 
     my $lineno = $frame->{line} || '??';
-    my $addr = $opts->{displayop} ? sprintf("0x%x ", $frame->{addr}) : '';
+    my $addr = $opts->{displayop} && $frame->{addr} ? sprintf("0x%x ", $frame->{addr}) : '';
     if ($opts->{short}) {
         my $fn = $s; # @_ >= 4 ? $_[3] : $s;
 	my $msg = sprintf("%s%s%s%s from %s:%d",

@@ -175,6 +175,7 @@ sub new($$$$$$)
             'CANCEL'  => 1,
             'TRAP'    => 1,
             'TERM'    => 1,
+            'TSTP'    => 1,
             'QUIT'    => 1,
             'ILL'     => 1
         };
@@ -501,7 +502,18 @@ sub handle
 	    } elsif ($self->{old_handler}) {
 		eval {$self->{old_handler}($signame)}; warn $@ if $@ and $^W;
 	    }
-        }
+        } else {
+	    # Set default and reraise
+	    if ($signame eq 'TSTP') {
+		# in principle, SIGSTOP cannot be trapped.
+		# This also might not work on Windows
+		return kill 'STOP', $$;
+	    } else {
+		$SIG{$signame} = 'DEFAULT';
+		kill $signame, $$;
+	    }
+	    # $SIG{$signame} = $self->{handle};
+	}
     }
 }
 

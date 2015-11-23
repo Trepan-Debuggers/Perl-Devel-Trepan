@@ -97,7 +97,8 @@ sub save_vars();
 # to Perl bug RT #115742 and advisement from Ben Morrow, we shouldn't
 # use lexical variables on versions of Perl before 5.18.0.
 #
-sub DB {
+sub DB
+{
 
     # print "+++ in DB single: ${DB::single}\n";
 
@@ -342,7 +343,8 @@ then as hexadecimal values.
 
 =cut
 
-sub set_list {
+sub set_list
+{
     my ( $stem, @list ) = @_;
     my $val;
 

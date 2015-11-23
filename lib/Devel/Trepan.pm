@@ -27,6 +27,19 @@ sub show_version() {
     PROGRAM . ", version $Devel::Trepan::VERSION";
 }
 
+
+# Access to stopping point.
+sub addr()
+{
+    $DB::OP_addr
+}
+
+# Access to stopping point return a hex string.
+sub haddr()
+{
+    sprintf "0x%x", $DB::OP_addr;
+}
+
 # =head2 debugger
 # Allows program to make an explicit call to the debugger.
 # B<Example:>
@@ -636,8 +649,8 @@ use some parts of this along with C<perl5db>.
 L<Devel::Hdb>
 
 A Perl debugger that uses HTML and javascript to implement the
-GUI. The front end talks via a REST service. It too uses ideas from
-L<DB>.
+GUI. The front end talks via a REST service. (via Websocket would be
+cooler though.) It too uses ideas from L<DB>.
 
 =back
 

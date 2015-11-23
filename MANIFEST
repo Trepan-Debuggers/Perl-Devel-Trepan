@@ -28,6 +28,7 @@ example/nexting.pl
 example/our.pl
 example/selfloadtest.pl
 example/signal.pl
+example/square.pl
 example/test-module.pm
 example/test-require.pl
 gpl-2.0.txt

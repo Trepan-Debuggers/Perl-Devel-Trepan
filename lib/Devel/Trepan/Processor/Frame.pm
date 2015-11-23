@@ -61,7 +61,7 @@ sub frame_setup($$)
 	# $stack_size contains the stack ignoring frames
 	# of this debugger.
         my $stack_size = $DB::stack_depth;
-        my @frames = $self->{dbgr}->backtrace(0);
+        my @frames = $self->{dbgr}->tbacktrace(0);
         @frames = splice(@frames, 2) if $self->{dbgr}{caught_signal};
 
         if ($self->{event} eq 'post-mortem') {
@@ -156,7 +156,7 @@ sub get_frame($$$)
 
     my $frames = $self->{frames};
     unless ($frames->[$frame_num]) {
-        my @new_frames = $self->{dbgr}->backtrace(0);
+        my @new_frames = $self->{dbgr}->tbacktrace(0);
         $self->{frames}[$frame_num] = $new_frames[$frame_num];
     }
     $self->{frame} = $frames->[$frame_num];

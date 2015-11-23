@@ -4,7 +4,7 @@ use B;
 
 =pod
 
-=head2 backtrace(skip[,count,scan_for_DB])
+=head2 tbacktrace(skip[,count,scan_for_DB])
 
 Collect the traceback information available via C<caller()>.  Some
 filtering and cleanup of the data is done.
@@ -51,7 +51,7 @@ C<evaltext> - eval text if we are in an eval.
 
 # NOTE: this routine needs to be in package DB for us to be able to pick up the
 # subroutine args.
-sub backtrace($;$$$) {
+sub tbacktrace($;$$$) {
     my ($self, $skip, $count, $scan_for_DB_sub) = @_;
     $skip = 0 unless defined($skip);
     $count = 1e9 unless defined($count);
@@ -228,24 +228,24 @@ unless (caller) {
     require Data::Dumper;
     import Data::Dumper;
     $DB::frame = 0;
-    our @callstack = backtrace(undef,undef,undef,0);
+    our @callstack = tbacktrace(undef,undef,undef,0);
     our $sep = '-' x 20 . "\n";
     # print Dumper(@callstack), "\n";
     # print $sep;
     sub five {
-        @callstack = backtrace(undef,undef,undef,0);
+        @callstack = tbacktrace(undef,undef,undef,0);
         print Dumper(@callstack), "\n";
         print $sep;
-        @callstack = backtrace(undef,1,undef,0);
+        @callstack = tbacktrace(undef,1,undef,0);
         print Dumper(@callstack), "\n";
         print $sep;
-        @callstack = backtrace(1,0,undef,0);
+        @callstack = tbacktrace(1,0,undef,0);
         print Dumper(@callstack), "\n";
         print $sep;
         5;
     }
     my $five = five();
-    # $five = eval "@callstack = backtrace(undef, undef, undef, 0)";
+    # $five = eval "@callstack = tbacktrace(undef, undef, undef, 0)";
     # print Dumper(@callstack), "\n";
     print $sep;
     $five = eval "five";

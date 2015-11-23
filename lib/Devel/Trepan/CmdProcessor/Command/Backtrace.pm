@@ -82,7 +82,7 @@ sub run($$)
         return unless defined $count;
     }
     $opts->{count} = $count;
-    my @frames = $self->{dbgr}->backtrace($count-1);
+    my @frames = $self->{dbgr}->tbacktrace($count-1);
     $self->{proc}->print_stack_trace(\@frames, $opts);
 }
 

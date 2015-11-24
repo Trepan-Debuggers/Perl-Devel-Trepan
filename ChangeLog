@@ -1,10 +1,96 @@
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get
+	ready for release 0.72
+
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/DB/Sub.pm,
+	lib/Devel/Trepan/Processor/Frame.pm, t/data/breakcall.cmd,
+	t/data/breakcall.right: Fix bugs in showing backtrace when stopped
+	in a call
+
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm, t/data/breakcall.cmd,
+	t/data/breakcall.right: Fix bug in setting breakpoint when stopped
+	inside a subroutine call.
+
+2015-11-20  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm: Guard against undefined variable in
+	DB:subs; dunno why this happens though
+
+2015-11-18  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Lines.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Max_Subcmd/Lines.
+	pm: Forgot new files in last commit
+
+2015-11-18  Rocky Bernstein <rocky@cpan.org>
+
+	*
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
+	l.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
+	pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.p
+	m, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/DB/LineCache.pm, t/data/__FILE__.right,
+	t/data/action.right, t/data/alias.right, t/data/autoeval.right,
+	t/data/autolist.right, t/data/break.right, t/data/break2.right,
+	t/data/breakcall.right, t/data/cont.right, t/data/debug.right,
+	t/data/display.right, t/data/dollar0.right, t/data/eval.right,
+	t/data/eval2.right, t/data/eval3.right, t/data/fin.right,
+	t/data/fin2.right, t/data/fin3.right, t/data/help.right,
+	t/data/line.right, t/data/list4.right, t/data/macro.right,
+	t/data/next.right, t/data/seq1.right, t/data/trace1.right,
+	t/data/trace2.right, t/data/trace3.right, t/data/watch1.right,
+	t/data/watch2.right: Add set max lines to give how many contact
+	lines after a location to show
+
+2015-11-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/User.pm: Oops - wrong method
+
+2015-11-17  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Interface/User.pm: Wrong logic in last commit
+
+2015-11-17  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit ba8ce39847cb64acc78f9c41f67330a36358c0ef Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Tue Nov 17 00:30:12 2015 -0500
+
+2015-11-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/LineCache.pm: More exports
+
+2015-11-14  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB/Sub.pm: Squelch a warning that happens via
+	Carp::confess (or a post-mortem dump?)
+
 2015-11-13  Rocky Bernstein <rocky@cpan.org>
 
-	* MANIFEST, README.md, example/fib.pl, example/multiline.pl,
-	lib/Devel/Trepan.pm, lib/Devel/Trepan/CmdProcessor.pm,
-	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/Interface/User.pm,
-	lib/Devel/Trepan/Version.pm: Fix history saving. Get ready for
-	release 0.71
+	* README.md, lib/Devel/Trepan.pm: Revise overviews
+
+2015-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml, lib/Devel/Trepan.pm: Note
+	Devel::Trepan::Deparse
+
+2015-11-13  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, MANIFEST, README.md, example/fib.pl,
+	example/multiline.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor.pm, lib/Devel/Trepan/IO/Input.pm,
+	lib/Devel/Trepan/Interface/User.pm, lib/Devel/Trepan/Version.pm: Fix
+	history saving. Add "info display" Get ready for release 0.71
 
 2015-11-12  Rocky Bernstein <rocky@cpan.org>
 

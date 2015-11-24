@@ -76,6 +76,7 @@ sub tbacktrace($;$$$) {
         }
     }
 
+    $scan_for_DB_sub = $i;
     $count += $i;
     # print "++count: $count, i $i $DB::event\n"; # XX debug
     $i -= 2 if $DB::event eq 'call';
@@ -143,7 +144,7 @@ sub tbacktrace($;$$$) {
         # If $wantarray is false, this is scalar ($) context.
         # If neither, $wantarray isn't defined. (This is apparently a 'can't
         # happen' trap.)
-        $wantarray = $wantarray ? '@' : ( defined $wantarray ? "\$" : '.' );
+        $wantarray = $wantarray ? '@' : ( defined $wantarray ? '$' : '.' );
 
         # if the sub has args ($hasargs true), make an anonymous array of the
         # dumped args.
@@ -203,6 +204,7 @@ sub tbacktrace($;$$$) {
 	    for (my $i=1; $i < $len; $i++) {
 		$callstack[$i-1]->{args} = $callstack[$i]->{args};
 		$callstack[$i-1]->{fn} = $callstack[$i]->{fn};
+		$callstack[$i-1]->{wantarray} = $callstack[$i]->{wantarray};
 	    }
 	    # $callstack[$len]->{args} = undef;
 	    # $callstack[$len]->{fn}   = undef;
@@ -211,13 +213,14 @@ sub tbacktrace($;$$$) {
 
     if ($DB::event eq 'call') {
         unshift @callstack, {
-	    addr      => $DB::addr,
-	    file      => $DB::filename,
-	    fn        => $DB::subroutine,
-	    line      => $DB::lineno,
-	    pkg       => $DB::package,
-	    wantarray => $DB::wantarray ? $DB::wantarray : '',
-	};
+    	    addr      => $DB::addr,
+    	    file      => $DB::filename,
+    	    fn        => $DB::subroutine,
+    	    line      => $DB::lineno,
+    	    pkg       => $DB::package,
+	    args      => $DB::hasargs,
+    	    wantarray => $DB::wantarray ? $DB::wantarray : '',
+    	};
     }
     # use Data::Printer; Data::Printer::p @callstack;
 

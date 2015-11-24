@@ -27,18 +27,11 @@ sub show_version() {
     PROGRAM . ", version $Devel::Trepan::VERSION";
 }
 
+# Access to stopping point as an integer.
+sub addr() { $DB::OP_addr };
 
-# Access to stopping point.
-sub addr()
-{
-    $DB::OP_addr
-}
-
-# Access to stopping point return a hex string.
-sub haddr()
-{
-    sprintf "0x%x", $DB::OP_addr;
-}
+# Access to stopping point as a hex string.
+sub haddr() { sprintf "0x%x", $DB::OP_addr }
 
 # =head2 debugger
 # Allows program to make an explicit call to the debugger.

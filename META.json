@@ -4,7 +4,7 @@
       "Rocky Bernstein <rocky@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4206",
+   "generated_by" : "Module::Build version 0.4214",
    "license" : [
       "gpl_1"
    ],
@@ -28,7 +28,7 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.32"
+            "Module::Build" : "0.4214"
          }
       },
       "runtime" : {
@@ -36,6 +36,7 @@
             "B::CodeLines" : "1.1",
             "Data::Dumper::Concise" : "0",
             "Data::Printer" : "0",
+            "Devel::Trepan::Deparse" : "v2.1.0",
             "Devel::Trepan::Disassemble" : "1.9",
             "Devel::Trepan::Shell" : "v1.4.1",
             "Eval::WithLexicals" : "0",
@@ -72,12 +73,12 @@
          "web" : "https://github.com/rocky/Perl-Devel-Trepan/issues"
       },
       "license" : [
-         "http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt"
+         "http://opensource.org/licenses/gpl-license.php"
       ],
       "repository" : {
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.71",
+   "version" : "0.72",
    "x_serialization_backend" : "JSON::PP version 2.27203"
 }

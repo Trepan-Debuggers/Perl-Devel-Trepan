@@ -133,7 +133,8 @@ sub subcall_debugger {
     }
 }
 
-sub check_for_stop() {
+sub check_for_stop()
+{
     my $brkpts = $DB::fn_brkpt{$sub};
     if ($brkpts) {
 	my @action = ();
@@ -244,7 +245,11 @@ sub DB::sub {
 	check_for_stop();
     }
 
-    $DB::wantarray = wantarray;
+    # FIXME: this isn't quite right. For mysterious reasons $DB::wantarray
+    # is tracking the wrong frame and is always @
+    # $DB::wantarray = $DB::wantarray ? '@' : ( defined $wantarray ? '$' : '.' );
+    $DB::wantarray = '?';
+
     if ($DB::sub eq 'DESTROY' or
         substr($DB::sub, -9) eq '::DESTROY' or not defined wantarray) {
         &$DB::sub;

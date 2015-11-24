@@ -1,4 +1,14 @@
 Revision history for Devel-Trepan
+0.72 2015-11-22
+
+- Add "set max lines" to give how many source-code context
+  lines after a location to show. The default reduced from 5 to one.
+  Not that we have deparse, I think that will be more useful
+- Fix bug in showing backtrace when stopped at a call
+- Fix bug finding breakpoint lines when stopped at a call
+- other small bugs fixed
+
+Revision history for Devel-Trepan
 0.71 2015-11-13 - Friday the 13th
 
 - Remove deparse - is now installable separately

@@ -7,9 +7,9 @@ build_requires:
   Time::HiRes: '1.9721'
   rlib: '0.02'
 configure_requires:
-  Module::Build: '0.32'
+  Module::Build: '0.4214'
 dynamic_config: 1
-generated_by: 'Module::Build version 0.4206, CPAN::Meta::Converter version 2.150005'
+generated_by: 'Module::Build version 0.4214, CPAN::Meta::Converter version 2.150005'
 license: gpl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -24,6 +24,7 @@ recommends:
   B::CodeLines: '1.1'
   Data::Dumper::Concise: '0'
   Data::Printer: '0'
+  Devel::Trepan::Deparse: v2.1.0
   Devel::Trepan::Disassemble: '1.9'
   Devel::Trepan::Shell: v1.4.1
   Eval::WithLexicals: '0'
@@ -45,7 +46,7 @@ requires:
   version: '0'
 resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
-  license: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
+  license: http://opensource.org/licenses/gpl-license.php
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: '0.71'
+version: '0.72'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.012'

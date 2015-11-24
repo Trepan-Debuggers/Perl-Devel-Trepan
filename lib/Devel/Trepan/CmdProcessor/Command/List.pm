@@ -92,8 +92,9 @@ disabled.
 L<C<set
 autolist>|Devel::Trepan::CmdProcessor::Command::Set::Auto::List>,
 L<C<help syntax
-location>|Devel::Trepan::CmdProcessor::Command::Help::location>, and
-L<C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>.
+location>|Devel::Trepan::CmdProcessor::Command::Help::location>,
+L<C<disassemble>|Devel::Trepan::CmdProcessor::Command::Disassemble>,
+and L<C<deparse>|Devel::Trepan::CmdProcessor::Command::Deparse>.
 
 =cut
 HELP

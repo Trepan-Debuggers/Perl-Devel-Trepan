@@ -48,5 +48,5 @@ resources:
   bugtracker: https://github.com/rocky/Perl-Devel-Trepan/issues
   license: http://opensource.org/licenses/gpl-license.php
   repository: http://github.com/rocky/Perl-Devel-Trepan
-version: '0.72'
+version: '0.73'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.012'

@@ -3,7 +3,7 @@ language: perl
 sudo: false
 
 env:
-  - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Devel::Callsite Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker"
+  - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Devel::Callsite Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker Module::Build"
 
 after_failure:
   - cat /home/travis/.cpanm/work/*/build.log

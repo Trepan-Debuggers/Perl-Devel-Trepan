@@ -1,3 +1,10 @@
+Revision history for Devel-Trepan Johnish
+0.73 2015-11-24
+
+- Allow Signal TSTP to stop by default.
+- DB::bracktrace -> DB::tbacktrace to avoid conflicts with standard DB::backtrace
+- Add Devel::Trepan::addr and haddr for access to current OP address.
+
 Revision history for Devel-Trepan
 0.72 2015-11-22
 

@@ -1,3 +1,32 @@
+2015-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, Changes, META.json, META.yml, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm, lib/Devel/Trepan/DB/Sub.pm,
+	t/data/breakcall.right: Workaround a bug in return-type in a call.
+	More return-type bugs remain.
+
+2015-11-23  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/SigHandler.pm: Allow TSTP (STOP) stop by default.
+
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/DB/Backtrace.pm,
+	lib/Devel/Trepan/Processor/Frame.pm: DB::backtrace ->
+	DB::tbracktrace to avoid conflicts with standard B::backtrace
+
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, example/square.pl, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/DB.pm: Add Devel::Trepan::addr and haddr for access
+	to current OP address.
+
+2015-11-22  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm: Typo and remove dup listing
+
 2015-11-22  Rocky Bernstein <rocky@cpan.org>
 
 	* Build.PL, lib/Devel/Trepan.pm, lib/Devel/Trepan/Version.pm: Get

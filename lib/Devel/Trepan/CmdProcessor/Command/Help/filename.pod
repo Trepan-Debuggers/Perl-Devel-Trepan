@@ -1,5 +1,5 @@
 # syntax for indicating a filename
-# Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2014-2015 Rocky Bernstein <rocky@cpan.org>
 
 =begin comment
 
@@ -8,6 +8,8 @@ part of on-line help documentation
 lib/Devel/Trepan/CmdProcess/Command/Help/...
 
 =end comment
+
+=encoding utf8
 
 =head1 Filename Syntax
 

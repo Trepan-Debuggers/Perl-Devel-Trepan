@@ -28,7 +28,7 @@
       },
       "configure" : {
          "requires" : {
-            "Module::Build" : "0.4214"
+            "Module::Build" : "0.4211"
          }
       },
       "runtime" : {
@@ -37,7 +37,7 @@
             "Data::Dumper::Concise" : "0",
             "Data::Printer" : "0",
             "Devel::Trepan::Deparse" : "v2.1.0",
-            "Devel::Trepan::Disassemble" : "1.9",
+            "Devel::Trepan::Disassemble" : "v2.0.2",
             "Devel::Trepan::Shell" : "v1.4.1",
             "Eval::WithLexicals" : "0",
             "Pod::Text::Color" : "2.06",
@@ -79,6 +79,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.73",
-   "x_serialization_backend" : "JSON::PP version 2.27203"
+   "version" : "0.73"
 }

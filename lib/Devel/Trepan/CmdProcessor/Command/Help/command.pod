@@ -1,5 +1,5 @@
 # Overall Debugger Command Syntax
-# Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2014-2015 Rocky Bernstein <rocky@cpan.org>
 
 =begin comment
 
@@ -9,12 +9,14 @@ lib/Devel/Trepan/CmdProcess/Command/Help/...
 
 =end comment
 
+=encoding utf8
+
 =head1 Overall Debugger Command Syntax
 
 If the first non-blank character of a line starts with #,
 the command is ignored.
 
-Commands are split at whereever C<;;> appears. This process disregards
+Commands are split at wherever C<;;> appears. This process disregards
 any quotes or other symbols that have meaning in Perl. The strings
 after the leading command string are put back on a command queue.
 
@@ -66,7 +68,7 @@ abbreviations are on.
 
 If after all of the above, we still don't find a command, the line
 may be evaluated as a Perl statement in the current context of the
-program at the point it is stoppped. However this is done only if
+program at the point it is stopped. However this is done only if
 "autoeval" is on.  (It is on by default.)
 
 =back

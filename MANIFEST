@@ -43,6 +43,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Action.pm
 lib/Devel/Trepan/CmdProcessor/Command/Alias.pm
 lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm
 lib/Devel/Trepan/CmdProcessor/Command/Break.pm
+lib/Devel/Trepan/CmdProcessor/Command/Clear.pm
 lib/Devel/Trepan/CmdProcessor/Command/Complete.pm
 lib/Devel/Trepan/CmdProcessor/Command/Condition.pm
 lib/Devel/Trepan/CmdProcessor/Command/Continue.pm

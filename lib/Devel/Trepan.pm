@@ -274,6 +274,10 @@ L<Add or modify a condition on a breakpoint (condition)|Devel::Trepan::CmdProces
 
 =item *
 
+L<Clear some breakpoints by line number (clear)|Devel::Trepan::CmdProcessor::Command::Clear>
+
+=item *
+
 L<Delete some breakpoints (delete)|Devel::Trepan::CmdProcessor::Command::Delete>
 
 =item *

@@ -79,6 +79,5 @@
          "url" : "http://github.com/rocky/Perl-Devel-Trepan"
       }
    },
-   "version" : "0.73",
-   "x_serialization_backend" : "JSON::PP version 2.27203"
+   "version" : "0.73"
 }

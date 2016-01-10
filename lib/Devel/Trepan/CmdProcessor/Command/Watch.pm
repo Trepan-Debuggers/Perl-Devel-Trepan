@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2016 Rocky Bernstein <rocky@cpan.org>
 use warnings; use utf8;
 use rlib '../../../..';
 
@@ -36,7 +36,7 @@ our $HELP = <<'HELP';
 
 B<watch> I<Perl-expression>
 
-Stop very time I<Perl-expression> changes from its prior value.
+Stop every time I<Perl-expression> changes from its prior value.
 
 =head2 Examples:
 

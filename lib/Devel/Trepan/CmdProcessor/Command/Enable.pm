@@ -69,7 +69,8 @@ get a list of breakpoints, and
 L<C<disable>|<Devel::Trepan::CmdProcessor::Command::Disable> to
 disable breakpoints.
 
-=cut HELP
+=cut
+HELP
 
 ### FIXME: parameterize and combine these. Also combine with disable.
 sub enable_breakpoint($$) {
@@ -153,11 +154,11 @@ sub run($$)
         my $i = $proc->get_an_int($num_str);
         if (defined $i) {
             if ('a' eq $type) {
-                disable_action($proc, $i);
+                enable_action($proc, $i);
             } elsif ('b' eq $type) {
-                disable_breakpoint($proc, $i);
+                enable_breakpoint($proc, $i);
             } elsif ('w' eq $type) {
-                disable_watchpoint($proc, $i);
+                enable_watchpoint($proc, $i);
             }
         }
     }

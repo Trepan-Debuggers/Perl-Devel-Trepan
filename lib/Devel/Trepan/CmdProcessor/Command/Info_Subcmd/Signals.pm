@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2016 Rocky Bernstein <rocky@cpan.org>
 
 use warnings;
 use rlib '../../../../..';
@@ -46,7 +46,7 @@ corresponding positive number.
 
 =head2 See also:
 
-L<C<handle>|Devel::Trepan::CmdProcessor::Handle> for descriptions of the settable fields shown.
+L<C<handle>|Devel::Trepan::CmdProcessor::Command::Handle> for descriptions of the settable fields shown.
 =cut
 HELP
 

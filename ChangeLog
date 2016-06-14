@@ -1,3 +1,32 @@
+2015-12-02  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 947e45588ea91b775796deb6d19fd3ad6a4e2246 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Wed Dec 2 18:46:30 2015 -0500
+
+2015-11-28  Rocky Bernstein <rocky@cpan.org>
+
+	* META.json, META.yml,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod: utf-8 and
+	spellcheck pods
+
+2015-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Lower Another attempt to fix travis
+
+2015-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, META.json, META.yml: Lower Moudle::Build number to make
+	travis happy
+
+2015-11-24  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, Changes, MANIFEST, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for release 0.73
+
 2015-11-24  Rocky Bernstein <rocky@cpan.org>
 
 	* ChangeLog, Changes, META.json, META.yml, lib/Devel/Trepan.pm,

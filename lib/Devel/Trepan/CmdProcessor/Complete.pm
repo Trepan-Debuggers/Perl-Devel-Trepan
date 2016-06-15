@@ -22,7 +22,7 @@ sub list_complete($$$)
     my $cw = $self->{completions};
     for (; $_list_complete_i <= $#{$cw}; $_list_complete_i++) {
         return $cw->[$_list_complete_i]
-            if ($cw->[$_list_complete_i] =~ /^\Q$text/);
+            if defined $cw->[$_list_complete_i] and ($cw->[$_list_complete_i] =~ /^\Q$text/);
     }
     return undef;
 };

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2016 Rocky Bernstein <rocky@cpan.org>
 # Interface when communicating with the user.
 
 use warnings; no warnings 'redefine';
@@ -58,7 +58,8 @@ sub new
 sub add_history($$)
 {
     my ($self, $command) = @_;
-    return unless ($self->{input}{readline}) and $self->{input}->can('add_history');
+    return unless (($self->{input}{readline})
+		   and $self->{input}{readline}->can('add_history'));
     $self->{input}{readline}->add_history($command) ;
 
     if ($self->can('add_history_time')) {

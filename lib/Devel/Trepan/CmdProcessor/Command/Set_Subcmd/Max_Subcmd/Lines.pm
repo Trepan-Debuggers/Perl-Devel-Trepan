@@ -36,6 +36,7 @@ HELP
 
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('lin');
+our $SHORT_HELP   = 'Set maximum trailing context lines';
 
 sub run($$)
 {

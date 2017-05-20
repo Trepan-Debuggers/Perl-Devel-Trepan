@@ -36,6 +36,7 @@ HELP
 
 our $IN_LIST      = 1;
 our $MIN_ABBREV   = length('wid');
+our $SHORT_HELP   = 'Set maximum width of a line';
 
 sub run($$)
 {

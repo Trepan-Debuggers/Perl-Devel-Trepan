@@ -1,4 +1,4 @@
-#  Copyright (C) 2011, 2013 Rocky Bernstein <rocky@cpan.org>
+#  Copyright (C) 2011, 2013, 2017 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,95 +25,98 @@ GIT2CL ?= git2cl
 all:
 	perl Build --makefile_env_macros 1
 
+Build: Build.PL
+	perl Build.PL
+
 #: Build program, e.g. copy to blib
-build:
+build: Build
 	perl Build --makefile_env_macros 1 build
 
 #: Remove automatically generated files
-clean:
+clean: Build
 	perl Build --makefile_env_macros 1 clean
 
-code:
+code: Build
 	perl Build --makefile_env_macros 1 code
 
-config_data:
+config_data: Build
 	perl Build --makefile_env_macros 1 config_data
 
-diff:
+diff: Build
 	perl Build --makefile_env_macros 1 diff
 
 #: Create distribution tarball
-dist:
+dist: Build
 	perl Build --makefile_env_macros 1 dist
 
-distcheck:
+distcheck: Build
 	perl Build --makefile_env_macros 1 distcheck
 
-distclean:
+distclean: Build
 	perl Build --makefile_env_macros 1 distclean
 
-distdir:
+distdir: Build
 	perl Build --makefile_env_macros 1 distdir
 
-distmeta:
+distmeta: Build
 	perl Build --makefile_env_macros 1 distmeta
 
-distsign:
+distsign: Build
 	perl Build --makefile_env_macros 1 distsign
 
-disttest:
+disttest: Build
 	perl Build --makefile_env_macros 1 disttest
 
 #: Create documentation (in blib/libdoc) via perlpod
-docs:
+docs: Build
 	perl Build --makefile_env_macros 1 docs
 
-fakeinstall:
+fakeinstall: Bulid
 	perl Build --makefile_env_macros 1 fakeinstall
 
 #: Show help
-help:
+help: Build
 	perl Build --makefile_env_macros 1 help
 
-html:
+html: Build
 	perl Build --makefile_env_macros 1 html
 
 #: Install this puppy
-install:
+install: Build
 	perl Build --makefile_env_macros 1 install
 
 #: Install other Perl packages that this package needs
-installdeps:
+installdeps: Build
 	perl Build --makefile_env_macros 1 installdeps
 
 #: Make a MANIFEST file
-manifest:
+manifest: Build
 	perl Build --makefile_env_macros 1 manifest
 
 #: Generate manual pages
-manpages:
+manpages: Build
 	perl Build --makefile_env_macros 1 manpages
 
-ppd:
+ppd: Build
 	perl Build --makefile_env_macros 1 ppd
 
-ppmdist:
+ppmdist: Build
 	perl Build --makefile_env_macros 1 ppmdist
 
-prereq_report:
+prereq_report: Build
 	perl Build --makefile_env_macros 1 prereq_report
 
-pure_install:
+pure_install: Build
 	perl Build --makefile_env_macros 1 pure_install
 
-skipcheck :
+skipcheck : Build
 	perl Build --makefile_env_macros 1 skipcheck
 
 #: Same as "test". "check" is the usual autoconf name
 check: test
 
 #: Run all unit tests
-test:
+test: Build
 	perl Build --makefile_env_macros 1 test
 
 #: Check code coverage

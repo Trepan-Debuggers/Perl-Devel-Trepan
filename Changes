@@ -1,11 +1,18 @@
-Revision history for Devel-Trepan Johnish
-0.73 2015-11-24
+Revision history for Devel-Trepan
+0.74 2017-07-15
+
+- Add set max lines, and set maxwidth
+- Fix "enable" command
+- More correcgt GNUMakefile which will cause Build to get created
+- Fix bug in adding commands to history
+- Misc bug fixes and spelling corrections
+
+0.73 2015-11-24 Johnish
 
 - Allow Signal TSTP to stop by default.
 - DB::bracktrace -> DB::tbacktrace to avoid conflicts with standard DB::backtrace
 - Add Devel::Trepan::addr and haddr for access to current OP address.
 
-Revision history for Devel-Trepan
 0.72 2015-11-22
 
 - Add "set max lines" to give how many source-code context
@@ -15,7 +22,6 @@ Revision history for Devel-Trepan
 - Fix bug finding breakpoint lines when stopped at a call
 - other small bugs fixed
 
-Revision history for Devel-Trepan
 0.71 2015-11-13 - Friday the 13th
 
 - Remove deparse - is now installable separately
@@ -23,7 +29,6 @@ Revision history for Devel-Trepan
 - fix history saving
 - fix some small bugs
 
-Revision history for Devel-Trepan
 0.70 2015-10-31 - Jedi
 
 - "deparse" in a function will show which line of a multi-line statement you are at;

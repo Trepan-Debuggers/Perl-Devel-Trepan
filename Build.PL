@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#  Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
+#  Copyright (C) 2011-2015,2017 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,11 @@ my $builder = Module::Build->new(
     meta_merge => {
         resources => {
             bugtracker  => 'https://github.com/rocky/Perl-Devel-Trepan/issues',
-            repository  => 'http://github.com/rocky/Perl-Devel-Trepan',
+            repository  => {
+		type => 'git',
+		url => 'git://github.com/rocky/Perl-Devel-Trepan.git',
+		web => 'http://github.com/rocky/Perl-Devel-Trepan',
+	    }
         }
     },
 

@@ -1,3 +1,40 @@
+2017-07-15  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, ChangeLog, MANIFEST, example/five.pl, example/four.pm,
+	example/gcd-dbg2.pl, example/multi.pl, lib/Devel/Trepan/Version.pm,
+	t/data/caller.cmd, t/data/caller.right, t/test-aggregate.pl: Get
+	ready for release 0.74
+
+2017-05-20  Rocky Bernstein <rocky@cpan.org>
+
+	* GNUmakefile,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Lines.p
+	m,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Max_Subcmd/Width.p
+	m: Short document for some commands ...  set max lines, and set maxwidth More correct GNUmakfile which will causes Build to get created.
+
+2016-06-15  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Complete.pm,
+	lib/Devel/Trepan/Interface/User.pm: Fix bug in adding commands to
+	history
+
+2016-06-13  Rocky Bernstein <rocky@cpan.org>
+
+	* ChangeLog, lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Signals.pm: Small
+	chhanges.
+
+2016-06-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Enable.pm: Fix botched
+	"enable" command
+
+2016-01-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Watch.pm: watch misspelling.
+	Fixes #40
+
 2015-12-02  Rocky Bernstein <rocky@cpan.org>
 
 	* : commit 947e45588ea91b775796deb6d19fd3ad6a4e2246 Author: Rocky

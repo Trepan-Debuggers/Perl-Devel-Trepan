@@ -1,0 +1,33 @@
+-- main::(gcd.pl:18)
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+    @ARGV == 2;
+set auto eval is on.
+Eval result display style is dumper.
+-- main::(gcd.pl:20)
+my ($a, $b) = @ARGV[0,1];
+$DB::D[0] =
+@{[
+  'DB',
+  '/src/external-vcs/github/Perl-Devel-Trepan/t/../bin/../lib/Devel/Trepan/DB/Eval.pm',
+  70
+]}
+$DB::D[1] =
+@{[
+  'DB',
+  '/src/external-vcs/github/Perl-Devel-Trepan/t/../bin/../lib/Devel/Trepan/DB/Eval.pm',
+  70,
+  '(eval)',
+  0,
+  undef,
+  'package main;
+@_ = @DB::_;
+# line 20 "/src/external-vcs/github/Perl-Devel-Trepan/t/../example/gcd.pl"
+ @DB::eval_result=@x = caller(0)
+
+;',
+  '',
+  256,
+  'TUUEUUUUUUUUU',
+  undef
+]}
+trepan.pl: That's all, folks...

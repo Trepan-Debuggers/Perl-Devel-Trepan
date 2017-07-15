@@ -17,18 +17,24 @@ example/action-bug.pl
 example/callbug.pl
 example/eval.pl
 example/except-bug1.pl
+example/five.pl
 example/fns.pl
+example/four.pm
 example/gcd-dbcall.pl
 example/gcd-dbg.pl
+example/gcd-dbg2.pl
 example/gcd.pl
 example/lsub.pl
+example/multi.pl
 example/my.pl
 example/next2.pl
 example/nexting.pl
 example/our.pl
 example/selfloadtest.pl
 example/signal.pl
+example/signature.pl
 example/square.pl
+example/sub-brkpt-bug.pl
 example/test-module.pm
 example/test-require.pl
 gpl-2.0.txt
@@ -220,11 +226,11 @@ lib/Devel/Trepan/Version.pm
 lib/Devel/Trepan/WatchMgr.pm
 t/00test-pod.t
 t/10test-brkptmgr.t		Note: t/10*.t tests are unit tests
-t/10test-cmd.t
 t/10test-cmd-break.t
 t/10test-cmd-complete.t
 t/10test-cmd-kill.t
 t/10test-cmd-macro.t
+t/10test-cmd.t
 t/10test-complete.t
 t/10test-condition.t
 t/10test-core-bug.t
@@ -299,6 +305,8 @@ t/data/break2.cmd
 t/data/break2.right
 t/data/breakcall.cmd
 t/data/breakcall.right
+t/data/caller.cmd
+t/data/caller.right
 t/data/cont.cmd
 t/data/cont.right
 t/data/debug.cmd

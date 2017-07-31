@@ -28,6 +28,7 @@ our $NAME       = set_name();
 =head2 Synopsis:
 
 =cut
+
 our $HELP = <<'HELP';
 =pod
 
@@ -44,8 +45,7 @@ Type C<help info *> for a list of C<info> subcommands.
 
 =head2 See also:
 
-L<C<info
-breakpoints>|Devel::Trepan::CmdProcessor::Command::Info::Breakpoints>,
+L<C<info breakpoints>|Devel::Trepan::CmdProcessor::Command::Info::Breakpoints>,
 L<C<info files>|Devel::Trepan::CmdProcessor::Command::Info::Files>,
 L<C<info frame>|Devel::Trepan::CmdProcessor::Command::Info::Frame>,
 L<C<info functions>|Devel::Trepan::CmdProcessor::Command::Info::Functions>,
@@ -59,7 +59,6 @@ L<C<info variables>|Devel::Trepan::CmdProcessor::Command::Info::Variables>,
 and
 L<C<info watch>|Devel::Trepan::CmdProcessor::Command::Info::Watch>
 =cut
-
 HELP
 
 unless (caller) {

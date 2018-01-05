@@ -101,7 +101,6 @@ sub save_vars();
 # Under advisement from Ben Morrow, we shouldn't use lexical
 # variables on versions of Perl before 5.18.0.
 #
-# The following change using &myDB is thanks to KES in Issue 47:
 sub DB
 {
 

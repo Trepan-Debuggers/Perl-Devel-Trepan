@@ -91,12 +91,17 @@ END {
 sub save_vars();
 
 ####
-# This is called by Perl for every statement
+# DB is called by Perl for every statement
 #
-# IMPORTANT NOTE: We allow DB:DB() to get called recursively and due
-# to Perl bug RT #115742 and advisement from Ben Morrow, we shouldn't
-# use lexical variables on versions of Perl before 5.18.0.
+# IMPORTANT NOTE: We allow DB:DB() to get called recursively and as
+# Father Chrysostomos notes in Perl bug RT #115742 , without the use
+# of& myDB below, the inner call shares the same pad as the outer
+# call.
 #
+# Under advisement from Ben Morrow, we shouldn't use lexical
+# variables on versions of Perl before 5.18.0.
+#
+# The following change using &myDB is thanks to KES in Issue 47:
 sub DB
 {
 
@@ -513,7 +518,6 @@ sub cont {
     if (scalar @_ > 0) {
         my ($file, $line);
         if (2 == scalar @_) {
-            print @_, "\n";
             ($file, $line) =  @_;
         } else {
             ($file, $line) = ($DB::filename, $_[0]);

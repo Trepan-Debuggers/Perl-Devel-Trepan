@@ -3,7 +3,7 @@ language: perl
 sudo: false
 
 env:
-  - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Devel::Callsite Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker Module::Build"
+  - AUTOMATED_TESTING=1 PREREQS="rlib File::HomeDir File::Spec Array::Columnize Data::Dumper Devel::Callsite Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker LEONT/Module-Build-0.4224.tar.gz"
 
 after_failure:
   - cat /home/travis/.cpanm/work/*/build.log
@@ -11,6 +11,8 @@ after_failure:
 install:
   # Prerequisites
   - "cpanm $PREREQS"
+  - perl ./Build.PL
+  - "GIT2CL='./git2cl' make ChangeLog distmeta distcheck"
 
 perl:
   - "5.20"

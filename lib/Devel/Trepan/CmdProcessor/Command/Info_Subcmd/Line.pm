@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014, 2017 Rocky Bernstein <rocky@cpan.org>
 use warnings; use utf8;
 use rlib '../../../../..';
 package Devel::Trepan::CmdProcessor::Command::Info::Line;
@@ -35,7 +35,7 @@ Show line information about the selected frame of debugged program.
 
 =head2 See also:
 
-L<C<info line>|Devel::Trepan::CmdProcessor::Command::Info::Line> and C<info program|Devel::Trepan::CmdProcessor::Command::Info::Program>.
+L<C<info pc>|Devel::Trepan::CmdProcessor::Command::Info::PC> and C<info program|Devel::Trepan::CmdProcessor::Command::Info::Program>.
 =cut
 HELP
 

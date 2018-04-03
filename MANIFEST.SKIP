@@ -111,3 +111,6 @@ how-to-make-a-release\.txt
 
 # Avoid Devel::Cover files.
 \bcover_db\b
+
+# git2cl is part of administrivia
+\bgit2cl$

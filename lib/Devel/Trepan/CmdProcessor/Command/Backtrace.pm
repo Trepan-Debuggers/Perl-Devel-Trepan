@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 use rlib '../../../..';
@@ -31,8 +31,9 @@ our $HELP = <<'HELP';
 
 B<backtrace> [I<count>]
 
-Print a stack trace, with the most recent frame at the top. With a
-positive number, print at most many entries.
+Print backtrace of all stack frames, or innermost *count* frames.
+
+With a negative argument, print outermost -I<count> frames.
 
 In the listing produced, an arrow, C<--E<gt>>, indicates the 'current
 frame'. The current frame determines the context used for many
@@ -42,8 +43,9 @@ L<C<edit>|Devel::Trepan::CmdProcessor::Command::Edit> command.
 
 =head2 Examples:
 
- backtrace    # Print a full stack trace
- backtrace 2  # Print only the top two entries
+ backtrace      # Print a full stack trace
+ backtrace 2    # Print only the top two entries
+ backtrace -1   # Print a stack trace except the initial (least recent) call.
 
 =head2 See also:
 
@@ -78,7 +80,8 @@ sub run($$)
         $count =
             $proc->get_an_int($args->[1],
                               {cmdname   => $self->name,
-                               min_value => 1});
+                               min_value => -$stack_size,
+			      });
         return unless defined $count;
     }
     $opts->{count} = $count;
@@ -97,6 +100,7 @@ unless(caller) {
     $proc->{stack_size} = 0;
     my $cmd = __PACKAGE__->new($proc);
     $cmd->run([$NAME]);
+    $cmd->run([$NAME, 1000]);
 }
 
 1;

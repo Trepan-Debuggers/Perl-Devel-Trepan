@@ -2,7 +2,7 @@
 # Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings;
 use rlib '../../..';
-use Devel::Trepan::DB::LineCache; # for map_file
+use Devel::Trepan::DB::LineCache; # for map_file and getline
 use Devel::Trepan::Complete;
 
 package Devel::Trepan::CmdProcessor;
@@ -82,6 +82,10 @@ sub print_stack_entry()
             $self->msg("\t" . $file_line);
         }
     }
+    if ($opts->{source}) {
+        my $line  = getline($file, $lineno, $opts);
+        $self->msg($line) if $line;
+    }
 }
 
 sub print_stack_trace_from_to($$$$$)
@@ -99,17 +103,28 @@ sub print_stack_trace($$$)
 {
     my ($self, $frames, $opts)=@_;
     $opts ||= {maxstack=>1e9, count=>1e9};
-    # $opts  = DEFAULT_STACK_TRACE_SETTINGS.merge(opts);
+    my $start = 0;
+    my $n     = scalar @{$frames};
     my $halfstack = $opts->{maxstack} / 2;
-    my $n         = scalar @{$frames};
-    $n            = $opts->{count} if $opts->{count} < $n;
+
+    my $count = $opts->{count};
+    if ($count < 0) {
+	$start = $n + $count;
+	$count = $n;
+    } elsif ($count < $n) {
+	$n = $count;
+	$halfstack = $n;
+    }
+
+    # $opts  = DEFAULT_STACK_TRACE_SETTINGS.merge(opts);
+    $n            = $count if $opts->{count} < $n;
     if ($n > ($halfstack * 2)) {
-        $self->print_stack_trace_from_to(0, $halfstack-1, $frames, $opts);
+        $self->print_stack_trace_from_to($start, $halfstack-1, $frames, $opts);
         my $msg = sprintf "... %d levels ...",  ($n - $halfstack*2);
         $self->msg($msg);
         $self->print_stack_trace_from_to($n - $halfstack, $n-1, $frames, $opts);
     } else {
-        $self->print_stack_trace_from_to(0, $n-1, $frames, $opts);
+        $self->print_stack_trace_from_to($start, $n-1, $frames, $opts);
     }
 }
 

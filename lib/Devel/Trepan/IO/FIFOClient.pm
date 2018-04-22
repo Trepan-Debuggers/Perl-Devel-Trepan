@@ -31,9 +31,7 @@ use constant DEFAULT_INIT_OPTS => {
 
 #   attr_reader :state
 
-sub open($;$);
-
-sub new($;$)
+sub new
 {
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
@@ -54,11 +52,12 @@ sub new($;$)
     return $self;
 }
 
-sub is_interactive($)  {
+sub is_interactive
+{
     0
 }
 
-sub have_term_readline($)
+sub have_term_readline
 {
     return 0;
 }
@@ -78,13 +77,13 @@ sub close
 }
 
 
-sub is_disconnected($)
+sub is_disconnected
 {
     my $self = shift;
     return 'disconnected' eq $self->{state};
 }
 
-sub open($;$)
+sub open
 {
     my ($self, $opts) = @_;
     $opts = hash_merge($self, $opts);
@@ -112,9 +111,8 @@ sub open($;$)
 
 # Read one message unit.
 # EOFError will be raised on EOF.
-sub read_msg($)
+sub read_msg($self)
 {
-    my($self) = @_;
     unless ($self->{input}) {
 	sysopen($self->{input}, $self->{input_name}, O_RDONLY) or
 	    die "Can't open $self->{input_name} for reading";
@@ -133,18 +131,16 @@ sub read_msg($)
 # writeline, no newline is added to the end of to `str'. Also
 # $msg doesn't have to be a string.
 # FIXME dry with FIFOServer by making a common FIFO routine
-sub write($$)
+sub write($self, str $msg)
 {
-    my($self, $msg) = @_;
     # print "+++ client self output ($self->{output_name})\n";
     syswrite($self->{output}, pack_msg($msg) . "\n");
 }
 
 
 # FIXME dry with FIFOServer by making a common FIFO routine
-sub writeline($$)
+sub writeline($self, str $msg)
 {
-    my ($self, $msg) = @_;
     $self->write($msg . "\n");
 }
 

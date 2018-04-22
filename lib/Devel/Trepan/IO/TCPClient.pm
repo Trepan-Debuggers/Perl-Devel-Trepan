@@ -24,9 +24,7 @@ use constant CLIENT_SOCKET_OPTS => {
 
 #   attr_reader :state
 
-sub open($;$);
-
-sub new($;$)
+sub new
 {
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, CLIENT_SOCKET_OPTS);
@@ -45,9 +43,8 @@ sub new($;$)
 }
 
 # Closes both input and output
-sub close($)
+sub close($self)
 {
-    my $self = shift;
     $self->{state} = 'closing';
     if ($self->{inout}) {
         $self->{inout}->shutdown(2);
@@ -58,13 +55,12 @@ sub close($)
     print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 
-sub is_disconnected($)
+sub is_disconnected($self)
 {
-    my $self = shift;
     return 'disconnected' eq $self->{state};
 }
 
-sub open($;$)
+sub open
 {
     my ($self, $opts) = @_;
     $opts = hash_merge($opts, CLIENT_SOCKET_OPTS);
@@ -86,9 +82,8 @@ sub open($;$)
     }
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my($self) = @_;
     0 == length($self->{buf});
 }
 
@@ -96,9 +91,8 @@ sub is_empty($)
 # more than one message will be set in a receive, so we will
 # have to buffer that for the next read.
 # EOFError will be raised on EOF.
-sub read_msg($)
+sub read_msg($self)
 {
-    my($self) = @_;
     if ($self->{state} eq 'connected') {
         if (!$self->{buf} || is_empty($self)) {
             $self->{input}->recv($self->{buf}, TCP_MAX_PACKET);
@@ -116,22 +110,20 @@ sub read_msg($)
     }
 }
 
-sub have_term_readline($)
+sub have_term_readline
 {
     return 0;
 }
 
 # This method the debugger uses to write a message unit.
-sub write($$)
+sub write($self, str $msg)
 {
-    my ($self, $msg) = @_;
     # FIXME: do we have to check the size of msg and split output?
     $self->{output}->send(pack_msg($msg));
 }
 
-sub writeline($$)
+sub writeline($self, str $msg)
 {
-    my ($self, $msg) = @_;
     $self->write($msg . "\n");
 }
 

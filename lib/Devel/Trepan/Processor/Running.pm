@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings;
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings; use types;
 use rlib '../../..';
 
 use Devel::Trepan::Position;
@@ -13,8 +13,7 @@ use constant NEXT_STEPPING_EVENT   =>  2;
 use constant DEEP_RECURSION_EVENT  =>  4;
 use constant RETURN_EVENT          => 32;
 
-sub continue($$) {
-    my ($self, $args) = @_;
+sub continue($self, $args) {
     $self->{skip_count} = -1;
     if ($self->{settings}{traceprint}) {
         $self->step();
@@ -49,9 +48,8 @@ sub continue($$) {
 #     @commands['quit'].run([cmd]);
 # }
 
-sub parse_next_step_suffix($$)
+sub parse_next_step_suffix($self, $step_cmd)
 {
-    my ($self, $step_cmd) = @_;
     my $opts = {};
     my $sigil = substr($step_cmd, -1);
     if ('-' eq $sigil) {
@@ -77,17 +75,15 @@ sub parse_next_step_suffix($$)
 
 # Does whatever setup needs to be done to set to ignore stepping
 # to the finish of the current method.
-sub finish($$) {
-    my ($self, $level_count) = @_;
+sub finish($self, $level_count) {
     $self->{leave_cmd_loop} = 1;
     $self->{skip_count} = -1;
     $self->{DB_running} = 1;
     $self->{dbgr}->finish($level_count);
 }
 
-sub next($$)
+sub next($self, $opts)
 {
-    my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
     # NEXT_STEPPING_EVENT is sometimes broken.
@@ -97,9 +93,8 @@ sub next($$)
     $self->{DB_running} = 1;
 }
 
-sub step($$)
+sub step($self, $opts)
 {
-    my ($self, $opts) = @_;
     $self->{different_pos} = $opts->{different_pos};
     $self->{leave_cmd_loop} = 1;
     $self->{DB_single}  = SINGLE_STEPPING_EVENT;
@@ -107,9 +102,8 @@ sub step($$)
     $self->{DB_running} = 1;
 }
 
-sub running_initialize($)
+sub running_initialize($self)
 {
-    my $self = shift;
     $self->{stop_condition}  = undef;
     $self->{stop_events}     = undef;
     $self->{to_method}       = undef;
@@ -123,10 +117,9 @@ sub running_initialize($)
 # -  step count was given.
 # - We want to make sure we stop on a different line
 # - We want to stop only when some condition is reached (step until ...).
-sub is_stepping_skip($)
+sub is_stepping_skip($self)
 {
 
-    my $self = shift;
     if ($self->{skip_count} < 0) {
         return 1;
     } elsif ($self->{skip_count} > 0) {
@@ -193,8 +186,7 @@ sub is_stepping_skip($)
     return $skip_val;
 }
 
-sub restart_args($$) {
-    my $self = shift;
+sub restart_args($self) {
     my @flags = ();
     # If warn was on before, turn it on again.
     no warnings 'once';

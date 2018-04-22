@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2014 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../../..';
+use types;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Packages;
+use rlib '../../../../..';
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 use Getopt::Long qw(GetOptionsFromArray);
 
-use strict;
-our (@ISA, @SUBCMD_VARS);
+use strict; use types;
+our (@ISA);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -72,8 +73,7 @@ HELP
 our $SHORT_HELP = 'All function names, or those matching REGEXP';
 our $MIN_ABBREV = length('pa');
 
-sub complete($$) {
-    my ($self, $prefix) = @_;
+sub complete($self, $prefix) {
     my @pkgs = Devel::Trepan::Complete::complete_packages($prefix);
     my @opts = (qw(-r --regexp -p --prefix -s --subs -f --files),
 		@pkgs);
@@ -88,9 +88,8 @@ my $DEFAULT_OPTIONS = {
     funcs   => 0,
 };
 
-sub parse_options($$)
+sub parse_options($self, $args)
 {
-    my ($self, $args) = @_;
     my %opts = %$DEFAULT_OPTIONS;
     my $result = &GetOptionsFromArray($args,
           '-e'        => \$opts{exact},
@@ -124,9 +123,8 @@ sub parse_options($$)
 
 # FIXME combine with Command::columnize_commands
 use Array::Columnize;
-sub columnize_pkgs($$)
+sub columnize_pkgs($proc, $commands)
 {
-    my ($proc, $commands) = @_;
     my $width = $proc->{settings}->{maxwidth};
     my $r = Array::Columnize::columnize($commands,
                                        {displaywidth => $width,
@@ -137,9 +135,8 @@ sub columnize_pkgs($$)
     return $r;
 }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my @args = @$args;
     my $options = parse_options($self, \@args);
     my $proc = $self->{proc};
@@ -220,20 +217,20 @@ sub run($$)
 
 unless (caller) {
     # Demo it.
+    require Devel::Trepan::CmdProcessor;
     require Devel::Trepan::CmdProcessor::Mock;
-    my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
-    my $cmd = __PACKAGE__->new($proc);
-    $cmd->{proc} = $proc;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $cmd = __PACKAGE__->new($parent, 'packages');
+
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, "\n";
+
     my $frame_ary = Devel::Trepan::CmdProcessor::Mock::create_frame();
     $proc->frame_setup($frame_ary);
     $proc->{settings}{highlight} = 0;
     %DB::sub = qw(main::gcd 1);
     $cmd->run([]);
-
-    # require_relative '../../mock'
-    # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
-    # $cmd = __PACKAGE__->new(parent_cmd);
-    # $cmd->run(@$cmd->prefix);
 }
 
 # Suppress a "used-once" warning;

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # Nukes output. Used for example in sourcing where you don't want
 # to see output.
-# 
-
-# require_relative 'base_io'
+#
 
 use warnings; use strict;
 use Exporter;
@@ -18,7 +16,8 @@ use Devel::Trepan::IO;
 use vars qw(@EXPORT @ISA);
 @ISA = qw(Devel::Trepan::IO::OutputBase Exporter);
 
-sub new($;$$) {
+sub new
+{
     my ($class, $out, $opts) = @_;
     $opts ||= {};
     my $self = {closed => 0};
@@ -27,26 +26,25 @@ sub new($;$$) {
     return $self;
 }
 
-sub close($) {
-    my($self) = @_;
+sub close($self)
+{
     $self->{closed} = 1;
 }
 
-sub is_closed($) {
-    my($self) = @_;
+sub is_closed($self) {
     $self->{closed};
 }
 
-sub flush($) {;}
+sub flush {;}
 
-# Use this to set where to write to. output can be a 
+# Use this to set where to write to. output can be a
 # file object or a string. This code raises IOError on error.
-sub write($) {;}
+sub write {;}
 
 # used to write to a debugger that is connected to this
 # `str' written will have a newline added to it
 #
-sub writeline($$) { ; }
+sub writeline { ; }
 
 # Demo it
 if( __FILE__ eq $0)  {

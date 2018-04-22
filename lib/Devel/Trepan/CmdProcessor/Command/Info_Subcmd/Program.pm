@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings;
-use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Program;
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-use strict;
+use rlib '../../../../..';
+
+use strict; use warnings; use types;
 use vars qw(@ISA @SUBCMD_VARS);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
@@ -31,9 +32,8 @@ Information about debugged program and its environment.
 HELP
 
 no warnings 'redefine';
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my $proc     = $self->{proc};
     my $frame    = $proc->{frame};
     my $line     = $frame->{line};
@@ -69,7 +69,7 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan;
+    # require Devel::Trepan;
     # Demo it.
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');

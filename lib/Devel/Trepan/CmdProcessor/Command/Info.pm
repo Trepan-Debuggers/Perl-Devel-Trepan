@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor::Command::Info;
@@ -17,7 +17,7 @@ use constant NEED_STACK => 0;
 EOE
 }
 
-use strict;
+use strict; use types;
 use vars qw(@ISA);
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::SubcmdMgr);
 use vars @CMD_VARS;

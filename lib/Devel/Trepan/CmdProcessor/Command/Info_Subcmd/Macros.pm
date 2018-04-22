@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 
-use warnings;
-use rlib '../../../../..';
-
-# For highight_string
-use Devel::Trepan::DB::LineCache;
+use warnings; use utf8;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Macros;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+use rlib '../../../../..';
+# For highight_string
+use if !@ISA, Devel::Trepan::DB::LineCache;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
+use strict; use types;
+
+our @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -58,8 +60,7 @@ our $SHORT_HELP = "Show defined macros";
 # }
 
 no warnings 'redefine';
-sub run($$) {
-    my ($self, $args) = @_;
+sub run($self, $args) {
     my $proc = $self->{proc};
     my @args = @$args;
     if (scalar(@args) > 2) {
@@ -99,9 +100,12 @@ sub run($$) {
 
 unless(caller) {
     # Demo it.
-    # require_relative '../../mock';
-    # my $cmd = MockDebugger::sub_setup(__PACKAGE__);
-    # my $cmd->run($cmd->{prefix} + %w(u foo));
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $cmd = __PACKAGE__->new($parent, 'macros');
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, "\n";
 }
 
 1;

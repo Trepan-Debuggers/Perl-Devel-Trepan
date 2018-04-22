@@ -141,7 +141,7 @@ sub tbacktrace($;$$$) {
         } ## end for $arg (@args)
 
         # If $wantarray is true, this is array (@)context.
-        # If $wantarray is false, this is scalar ($) context.
+        # If $wantarray is false, this is a scalar (sigial "$") context.
         # If neither, $wantarray isn't defined. (This is apparently a 'can't
         # happen' trap.)
         $wantarray = $wantarray ? '@' : ( defined $wantarray ? '$' : '.' );

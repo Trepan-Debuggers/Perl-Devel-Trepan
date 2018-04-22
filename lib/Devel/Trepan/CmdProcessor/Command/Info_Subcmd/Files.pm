@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
-use warnings;
-use rlib '../../../../..';
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use warnings; use types;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Files;
+
+use rlib '../../../../..';
+
 use Cwd 'abs_path';
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
-use Devel::Trepan::DB::LineCache;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use if !@ISA, Devel::Trepan::DB::LineCache;
+
+unless (@ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
+EOE
+}
 
 use strict;
-our (@ISA, @SUBCMD_VARS);
+our (@ISA);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -19,12 +27,6 @@ our $DEFAULT_FILE_ARGS = join(' ', @DEFAULT_FILE_ARGS);
 
 ## FIXME: do automatically.
 our $CMD = "info files";
-
-unless (@ISA) {
-    eval <<"EOE";
-    use constant MAX_ARGS => 8;  # Need at most this many - undef -> unlimited.
-EOE
-}
 
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 =pod
@@ -95,16 +97,14 @@ our $SHORT_HELP = 'Show information about the current loaded file(s)';
 our $MIN_ABBREV = length('fi');
 
 no warnings 'redefine';
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     my @completions = ('.', DB::LineCache::file_list());
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my $proc = $self->{proc};
     my @args = @$args; shift @args; shift @args;
     push(@args, '.') if scalar @args == 0;
@@ -242,11 +242,18 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan;
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $cmd = __PACKAGE__->new($parent, 'packages');
+
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, ", max_args: ", $cmd->MAX_ARGS, "\n";
     require Devel::Trepan::DB::LineCache;
     cache_file(__FILE__);
     print join(', ', file_list), "\n";
     # Demo it.
+
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
     # $cmd = __PACKAGE__->new(parent_cmd);
@@ -254,4 +261,4 @@ unless (caller) {
 }
 
 # Suppress a "used-once" warning;
-$HELP || scalar @SUBCMD_VARS;
+1;

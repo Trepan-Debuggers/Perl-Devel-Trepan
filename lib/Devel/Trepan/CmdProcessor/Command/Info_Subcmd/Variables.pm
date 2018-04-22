@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings;
-use rlib '../../../../..';
-use strict;
-use vars qw(@ISA @SUBCMD_VARS);
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Variables;
 
-use Devel::Trepan::CmdProcessor::Command;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
-use vars qw(@ISA @SUBCMD_VARS);
+use rlib '../../../../..';
+use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::SubsubMgr;
+
+use strict; use types;
+
+use vars qw(@ISA);
 our $MIN_ABBREV = length('va');
 =pod
 

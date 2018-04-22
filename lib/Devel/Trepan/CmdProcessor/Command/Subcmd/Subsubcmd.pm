@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013, 2018 Rocky Bernstein <rocky@cpan.org>
 # A base class for debugger subcommands.
 #
 use Exporter;
@@ -17,7 +17,7 @@ BEGIN {
                       $NAME $SHORT_HELP @SUBCMD_VARS
                       @SUBCMD_ISA);
 }
-use strict;
+use strict; use types;
 
 my $NotImplementedMessage =
     "This method must be overridden in a subsubclass";
@@ -81,13 +81,14 @@ sub new($$$)
 }
 
 # Convenience short-hand for @proc.confirm
-sub confirm($$;$) {
+sub confirm
+{
     my ($self, $msg, $default) = @_;
     return($self->{proc}->confirm($msg, $default));
 }
 
 # Set a Boolean-valued debugger setting.
-sub run_set_bool($$;$)
+sub run_set_bool
 {
     my ($self, $args, $default) = @_;
     $default = 1 if scalar @_ < 3;
@@ -98,7 +99,7 @@ sub run_set_bool($$;$)
 }
 
 # set an Integer-valued debugger setting.
-sub run_set_int($$$;$$)
+sub run_set_int
 {
     my ($self, $arg, $msg_on_error, $min_value, $max_value) = @_;
     my $proc = $self->{proc};
@@ -119,7 +120,7 @@ sub run_set_int($$$;$$)
 }
 
 # Generic subcommand showing a boolean-valued debugger setting.
-sub run_show_bool($;$)
+sub run_show_bool
 {
     my ($self, $what) = @_;
     my $proc = $self->{proc};
@@ -130,7 +131,7 @@ sub run_show_bool($;$)
 }
 
 # Generic subcommand integer value display
-sub run_show_int($;$)
+sub run_show_int
 {
     my ($self, $what) = @_;
     my $proc = $self->{proc};
@@ -153,7 +154,7 @@ sub run_show_int($;$)
 #   :value - a String value associated with "what" above. If none
 #            is given, then we pick up the value from settings.
 #
-sub run_show_val($;$)
+sub run_show_val
 {
     my ($self, $opts) = @_;
     $opts ||= {};
@@ -168,24 +169,21 @@ sub run_show_val($;$)
 #   ["${subcmd_prefix_string} ${settings[subcmd_setting_key]}"]
 # }
 
-sub subcmd_prefix_string($)
+sub subcmd_prefix_string($self)
 {
-    my $self = shift;
     join(' ', $self->{prefix});
 }
 
-sub subcmd_setting_key($)
+sub subcmd_setting_key($self)
 {
-    my $self = shift;
     return $self->{subcmd_setting_key} if $self->{subcmd_setting_key};
     my @prefix = @{$self->{prefix}}; shift @prefix;
     $self->{subcmd_setting_key} = join('', @prefix);
 }
 
 # Return 'on' for true and 'off' for false, and ?? for anything else.
-sub show_onoff($$)
+sub show_onoff($self, $bool)
 {
-    my ($self, $bool) = @_;
     if (!defined($bool)) {
         return 'unset';
     } elsif ($bool) {
@@ -195,9 +193,8 @@ sub show_onoff($$)
     }
 }
 
-sub set_name_prefix($$)
+sub set_name_prefix($self, $class)
 {
-    my ($self, $class) = @_;
     my @prefix = split(/::/, $class);
     splice(@prefix, 0, 4); # Remove Devel::Trepan::CmdProcessor::Command
     @prefix = map {lc $_} @prefix;
@@ -206,16 +203,14 @@ sub set_name_prefix($$)
     $self->{subcmd_setting_key} = "$prefix[1]$prefix[2]";
 }
 
-sub string_in_show($)
+sub string_in_show($self, $bool)
 {
-    my ($self, $bool) = @_;
     my $skip_len = length('Show ');
     ucfirst substr($self->{short_help}, $skip_len);
 }
 
-sub summary_help($$)
+sub summary_help($self, $subcmd_name)
 {
-    my ($self, $subcmd_name) = @_;
     my $msg = sprintf("%-12s: %s", $subcmd_name, $self->{short_help});
     $self->msg_nocr($msg);
 }
@@ -228,20 +223,17 @@ use vars qw(@ISA);
 our $MIN_ARGS = 0;
 our $MAX_ARGS = 1;
 
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     Devel::Trepan::Complete::complete_token(['on', 'off'],
 					    $prefix);
 }
 
-sub run($$) {
-    my ($self, $args) = @_;
+sub run($self, $args) {
     $self->run_set_bool($args);
 }
 
-sub save_command($) {
-    my ($self) = @_;
+sub save_command($self) {
     my %settings = $self->{settings};
     my $val    = $settings{$self->subcmd_setting_key()} ? 'on' : 'off';
     [$self->subcmd_prefix_string . " ${val}"];
@@ -251,9 +243,8 @@ package Devel::Trepan::CmdProcessor::Command::ShowBoolSubsubcmd;
 use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
-sub run($)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     $self->run_show_bool($self->string_in_show());
 }
 
@@ -261,8 +252,7 @@ package Devel::Trepan::CmdProcessor::Command::ShowIntSubsubcmd;
 use vars qw(@ISA);
 @ISA = qw(Exporter Devel::Trepan::CmdProcessor::Command::Subsubcmd);
 
-sub run($) {
-    my ($self, $args) = @_;
+sub run($self, $args) {
     my $doc = $self->{short_help};
     my $len = length($doc) - 5;
     $doc = ucfirst substr($doc, 5, $len);
@@ -271,15 +261,15 @@ sub run($) {
 
 unless (caller) {
     # Demo it.
-    # require Devel::Trepan::CmdProcessor::Mock;
-    # my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
-    # my %cmds = %{$proc->{commands}};
-    # print join(', ', keys %cmds), "\n";
-    # my $subcmd =
-    #   Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
-    # print join(', ', keys %{$subcmd->{settings}}), "\n";
-    # print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";
-    # $subcmd->run_set_int($proc, 'Just a test');
+    require Devel::Trepan::CmdProcessor::Mock;
+    my $proc = Devel::Trepan::CmdProcessor::Mock::setup();
+    my %cmds = %{$proc->{commands}};
+    print join(', ', keys %cmds), "\n";
+    my $subcmd =
+      Devel::Trepan::CmdProcessor::Command::Subcmd->new($cmds{'quit'});
+    print join(', ', keys %{$subcmd->{settings}}), "\n";
+    print $subcmd->show_onoff($subcmd->{settings}{autoeval}), "\n";
+    $subcmd->run_set_int($proc, 'Just a test');
 }
 
 1;

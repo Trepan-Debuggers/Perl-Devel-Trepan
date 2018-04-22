@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Client;
-use strict;
+use strict; use warnings; use types;
 use English qw( -no_match_vars );
 
 BEGIN {
@@ -29,17 +29,13 @@ sub new
     bless $self, $class;
 }
 
-sub handle_server_reponse($$$);
-
-sub errmsg($$)
+sub errmsg($self, str $msg)
 {
-    my ($self, $msg) = @_;
     $self->{intf}{user}->errmsg($msg);
 }
 
-sub msg($$)
+sub msg($self, str $msg)
 {
-    my ($self, $msg) = @_;
     chomp $msg;
     $self->{intf}{user}->msg($msg);
 }
@@ -48,15 +44,14 @@ sub list_complete {
     print "List complete called\n", join(", ", @_), "\n";
 }
 
-sub complete($$$$$) {
-    my ($self, $text, $line, $start, $end) = @_;
+sub complete($self, $text, $line, $start, $end) {
     my $intf = $self->{intf};
     # print "complete called: text: $text, line: " .
     #       $line, start: $start, end: $end\n");
     eval {
         $intf->write_remote(COMMAND, "complete " . $line);
     };
-    my ($control_code, $line);
+    my ($control_code);
     my @complete;
     eval {
 	($control_code, $line) = $intf->read_remote;
@@ -75,7 +70,7 @@ sub complete($$$$$) {
     return @complete;
 }
 
-sub run_command($$$$)
+sub run_command
 {
     my ($self, $current_command) = @_;
     my $intf = $self->{intf};
@@ -105,8 +100,7 @@ sub run_command($$$$)
     return 1;
 }
 
-sub handle_server_reponse($$$) {
-    my ($self, $control_code, $line) = @_;
+sub handle_server_reponse($self, $control_code, $line) {
     my $intf = $self->{intf};
     my $options = $self->{options};
 
@@ -169,9 +163,8 @@ sub handle_server_reponse($$$) {
     }
 }
 
-sub start_client($)
+sub start_client($options)
 {
-    my $options = shift;
     printf "Client option given\n";
     my $client = Devel::Trepan::Client->new($options);
 
@@ -208,7 +201,7 @@ unless (caller) {
     # Devel::Trepan::Client::start_client(
     # {client =>['tty'], logger => \*STDOUT});
     Devel::Trepan::Client::start_client(
-	{client=>['tty', '/dev/pts/4', '/dev/pts/2'],
+	{client=>['tcp', '/dev/pts/4', '/dev/pts/2'],
 	 logger => \*STDOUT});
 }
 1;

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2015, 2018 Rocky Bernstein <rocky@cpan.org>
 # I/O related command processor methods
 
 use warnings;
@@ -32,7 +32,6 @@ $HAVE_TERM_ANSIColor = eval "use Term::ANSIColor; 1";
 
 sub confirm($self, $msg, $default)
 {
-    my ($self, $msg, $default) = @_;
     my $intf = $self->{interfaces}[-1];
     my $confirmed = $self->{settings}{confirm} ?
         $intf->confirm($msg, $default) : 1;

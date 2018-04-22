@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2013, 2018 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine';
 
@@ -13,7 +13,7 @@ use File::Spec;
 ## FIXME core is not exporting properly.
 use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
 
-use strict;
+use strict; use types;
 ## FIXME: @SUBCMD_ISA and @SUBCMD_VARS should come from Core.
 use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES
             @SUBCMD_ISA @SUBCMD_VARS);
@@ -31,9 +31,8 @@ use constant NEED_STACK => 0;
 # Initialize show subcommands. Note: instance variable name
 # has to be setcmds ('set' + 'cmds') for subcommand completion
 # to work.
-sub new($$$)
+sub new($class, $parent, $name)
 {
-    my ($class, $parent, $name) = @_;
     my @prefix = split('::', $class);
     shift @prefix; shift @prefix; shift @prefix; shift @prefix;
     my $self = {
@@ -76,9 +75,8 @@ sub new($$$)
 # those files and for each class name, we will create an instance of
 # that class. The set of TrepanCommand class instances form set of
 # possible debugger commands.
-sub load_debugger_subsubcommands($$)
+sub load_debugger_subsubcommands($self, $parent)
 {
-    my ($self,$parent) = @_;
     $self->{cmd_names}     = ();
     $self->{subcmd_names}  = ();
     $self->{cmd_basenames} = ();
@@ -117,9 +115,8 @@ sub load_debugger_subsubcommands($$)
     }
 }
 
-sub setup_subsubcommand($$$$)
+sub setup_subsubcommand($self, $parent, $cmd_prefix, $name)
 {
-    my ($self, $parent, $cmd_prefix, $name) = @_;
     my $parent_name = $parent->{name};
     my $cmd_obj;
     my $cmd_name = lc $name;
@@ -138,19 +135,17 @@ sub setup_subsubcommand($$$$)
 }
 
 # Find subcmd in self->subcmds
-sub lookup($$;$)
+sub lookup
 {
     my ($self, $subcmd_prefix, $use_regexp) = @_;
     $use_regexp = 0 if scalar @_ < 3;
     my $compare;
     if (!$self->{proc}{settings}{abbrev}) {
-        $compare = sub($) { my $name = shift; $name eq $subcmd_prefix};
+        $compare = sub(str $name) { $name eq $subcmd_prefix};
     } elsif ($use_regexp) {
-        $compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
+        $compare = sub(str $name) { $name =~ /^${subcmd_prefix}/};
     } else {
-        $compare = sub($) {
-            my $name = shift; 0 == index($name, $subcmd_prefix)
-        };
+        $compare = sub(str $name) { 0 == index($name, $subcmd_prefix) };
     }
     my @candidates = ();
     while (my ($subcmd_name, $subcmd) = each %{$self->{subcmds}}) {
@@ -166,7 +161,7 @@ sub lookup($$;$)
 }
 
 # Show short help for a subcommand.
-sub short_help($$$;$)
+sub short_help
 {
     my ($self, $subcmd_cb, $subcmd_name, $label) = @_;
     $label = 0 unless defined $label;
@@ -190,7 +185,7 @@ sub short_help($$$;$)
 # show command will be run when giving a list of all sub commands
 # of this object. Some commands have long output like "show commands"
 # so we might not want to show that.
-sub add($$;$)
+sub add
 {
     my ($self, $subcmd_cb, $subcmd_name) = @_;
     $subcmd_name ||= $subcmd_cb->{name};
@@ -202,9 +197,8 @@ sub add($$;$)
 # FIXME: remove this completely.
 # help for subcommands
 # Note: format of help is compatible with ddd.
-sub help($$)
+sub help($self, $args)
 {
-    my ($self, $args) = @_;
     if (scalar @$args <= 3) {
         # "help cmd subcmd". Give the general help for the command part.
         return $self->{help};
@@ -254,8 +248,7 @@ sub help($$)
     }
 }
 
-sub list($) {
-    my $self = shift;
+sub list($self) {
     sort keys %{$self->{subcmds}};
 }
 
@@ -266,17 +259,15 @@ sub list($) {
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
 
-sub complete_token_with_next($)
+sub complete_token_with_next($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     my $subcmds = $self->{subcmds};
     return Devel::Trepan::Complete::complete_token_with_next($subcmds,
                                                              $prefix);
   }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     $self->{last_args} = $args;
     # require Enbugger; Enbugger->stop;
     my $args_len = scalar @$args;
@@ -303,8 +294,8 @@ unless(caller) {
     # Demo it.
     require Devel::Trepan::CmdProcessor;
     require Devel::Trepan::CmdProcessor::Command::Set;
-    my $proc = Devel::Trepan::CmdProcessor->new(undef, 'bogus');
-    my $set_cmd = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'Set');
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $set_cmd = Devel::Trepan::CmdProcessor::Command::Set->new($proc, 'set');
     my $mgr = __PACKAGE__->new($proc, $set_cmd);
     print $mgr, "\n";
     print join(', ', %{$mgr->{subcmds}}), "\n";

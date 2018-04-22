@@ -9,7 +9,7 @@ use File::Basename;
 use File::Spec;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
 
-use strict;
+use strict; use warnings; use types;
 use vars qw(@ISA @EXPORT $HELP $NAME @ALIASES);
 @ISA = @CMD_ISA;
 use vars @CMD_VARS;  # Value inherited from parent
@@ -40,9 +40,8 @@ sub AUTOLOAD
 # Initialize show subcommands. Note: instance variable name
 # has to be setcmds ('set' + 'cmds') for subcommand completion
 # to work.
-sub new($$)
+sub new($class, $proc, $name)
 {
-    my ($class, $proc, $name) = @_;
     my @prefix = split('::', $class);
     shift @prefix; shift @prefix; shift @prefix; shift @prefix;
     my $self = {
@@ -80,10 +79,8 @@ sub new($$)
     $self;
 }
 
-sub load_debugger_subcommand($$)
+sub load_debugger_subcommand($self, $parent_name, $pm)
 {
-    my ($self, $parent_name, $pm) = @_;
-
     return unless -r $pm;
     my $rc = '';
     eval { $rc = do $pm; };
@@ -113,9 +110,8 @@ sub load_debugger_subcommand($$)
 # those files and for each class name, we will create an instance of
 # that class. The set of TrepanCommand class instances form set of
 # possible debugger commands.
-sub load_debugger_subcommands($)
+sub load_debugger_subcommands($self)
 {
-    my ($self) = @_;
     $self->{cmd_names}     = ();
     $self->{subcmd_names}  = ();
     $self->{cmd_basenames} = ();
@@ -131,9 +127,8 @@ sub load_debugger_subcommands($)
     }
 }
 
-sub setup_subcommand($$$$)
+sub setup_subcommand($self, $parent_name, $name)
 {
-    my ($self, $parent_name, $name) = @_;
     my $cmd_obj;
     my $cmd_name = lc $name;
     my $new_cmd = "\$cmd_obj=Devel::Trepan::CmdProcessor::Command::" .
@@ -152,19 +147,17 @@ sub setup_subcommand($$$$)
 }
 
 # Find subcmd in self.subcmds
-sub lookup($$;$)
+sub lookup
 {
     my ($self, $subcmd_prefix, $use_regexp) = @_;
     $use_regexp = 0 if scalar @_ < 3;
     my $compare;
     if (!$self->{proc}{settings}{abbrev}) {
-        $compare = sub($) { my $name = shift; $name eq $subcmd_prefix};
+        $compare = sub(str $name) { $name eq $subcmd_prefix};
     } elsif ($use_regexp) {
-        $compare = sub($) { my $name = shift; $name =~ /^${subcmd_prefix}/};
+        $compare = sub(str $name) { $name =~ /^${subcmd_prefix}/};
     } else {
-        $compare = sub($) {
-            my $name = shift; 0 == index($name, $subcmd_prefix)
-        };
+        $compare = sub(str $name) { 0 == index($name, $subcmd_prefix) };
     }
     my @candidates = ();
     while (my ($subcmd_name, $subcmd) = each %{$self->{subcmds}}) {
@@ -180,7 +173,7 @@ sub lookup($$;$)
 }
 
 # Show short help for a subcommand.
-sub short_help($$$;$)
+sub short_help
 {
     my ($self, $subcmd_cb, $subcmd_name, $label) = @_;
     $label = 0 unless defined $label;
@@ -204,7 +197,7 @@ sub short_help($$$;$)
 # show command will be run when giving a list of all sub commands
 # of this object. Some commands have long output like "show commands"
 # so we might not want to show that.
-sub add($$;$)
+sub add
 {
     my ($self, $subcmd_cb, $subcmd_name) = @_;
     $subcmd_name ||= $subcmd_cb->{name};
@@ -213,9 +206,8 @@ sub add($$;$)
     push @{$self->{cmdlist}}, $subcmd_name;
 }
 
-sub help($$)
+sub help($self, $args)
 {
-    my ($self, $args) = @_;
     if (scalar @$args <= 2) {
         # "help cmd". Give the general help for the command part.
         return $self->{help};
@@ -263,8 +255,7 @@ sub help($$)
     }
 }
 
-sub list($) {
-    my $self = shift;
+sub list($self) {
     sort keys %{$self->{subcmds}};
 }
 
@@ -275,16 +266,15 @@ sub list($) {
 #     Trepan::Complete.complete_token(@subcmds.subcmds.keys, prefix)
 #   }
 
-sub complete_token_with_next($$;$)
+sub complete_token_with_next
 {
     my ($self, $prefix, $cmd_prefix) = @_;
     my $subcmds = $self->{subcmds};
     Devel::Trepan::Complete::complete_token_with_next($subcmds, $prefix);
 }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     $self->{last_args} = $args;
     my $args_len = scalar @$args;
     if ($args_len < 2 || $args_len == 2 && $args->[-1] eq '*') {

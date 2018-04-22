@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 # Subsidiary routines used to "pack" and "unpack" TCP messages.
 use strict; use warnings; no warnings 'redefine';
 
@@ -13,17 +13,15 @@ our (@ISA, @EXPORT);
 use constant TCP_MAX_PACKET => 8192;
 use constant LOG_MAX_MSG => ceil(log10(TCP_MAX_PACKET));
 
-sub pack_msg($)
+sub pack_msg(str $msg)
 {
-    my $msg = shift;
     # A funny way of writing: '%04d'
     my $fmt = sprintf '%%0%dd' , LOG_MAX_MSG;
     return sprintf($fmt, length($msg)) . $msg;
 }
 
-sub unpack_msg($)
+sub unpack_msg(str $buf)
 {
-    my $buf = shift;
     unless ($buf) {
 	die "Protocol error - no text"
     }

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # A debugger command processor. This includes the debugger commands
 # and ties together the debugger core and I/O interface.
@@ -104,9 +104,8 @@ sub new {
     return $self;
 }
 
-sub set_prompt($)
+sub set_prompt($self)
 {
-    my $self = shift;
     my $thread_str = '';
     # if (1 == Thread.list.size) {
     #   $thread_str = '';
@@ -120,9 +119,8 @@ sub set_prompt($)
     return $prompt;
 }
 
-sub terminated($)
+sub terminated($self)
 {
-    my $self = shift;
     $self->msg(sprintf("%sThat's all, folks...",
 		       (defined($Devel::Trepan::PROGRAM) ?
 			"${Devel::Trepan::PROGRAM}: " : '')));
@@ -133,8 +131,7 @@ sub terminated($)
 }
 
 # Check that we meet the criteria that cmd specifies it needs
-sub ok_for_running ($$$$) {
-    my ($self, $cmd, $name, $nargs) = @_;
+sub ok_for_running ($self, $cmd, $name, $nargs) {
     # TODO check execution_set against execution status.
     # Check we have frame is not null
     my $min_args = eval { $cmd->MIN_ARGS } || 0;
@@ -168,9 +165,8 @@ sub ok_for_running ($$$$) {
 }
 
 # Run one debugger command. 1 is returned if we want to quit.
-sub process_command_and_quit($)
+sub process_command_and_quit($self)
 {
-    my $self = shift;
     my $intf_ary = $self->{interfaces};
     my $intf = $intf_ary->[-1];
     my $intf_size = scalar @{$intf_ary};
@@ -223,9 +219,8 @@ sub process_command_and_quit($)
     }
 }
 
-sub skip_if_next($$)
+sub skip_if_next($self, $event)
 {
-    my ($self, $event) = @_;
     return 0 if ('line' ne $event);
     return 0 if $self->{terminated};
     return 0 if eval { no warnings; $DB::tid ne $self->{last_tid} };
@@ -235,7 +230,7 @@ sub skip_if_next($$)
 }
 
 # This is the main entry point.
-sub process_commands($$$;$)
+sub process_commands
 {
     my ($self, $frame, $event, $arg) = @_;
 
@@ -346,9 +341,8 @@ sub process_commands($$$;$)
 
 # run current_command, a string. @last_command is set after the
 # command is run if it is a command.
-sub run_command($$)
+sub run_command($self, $current_command)
 {
-    my ($self, $current_command) = @_;
     my $eval_command = undef;
     my $cmd_name = undef;
     my @cmd_queue = @{$self->{cmd_queue}};
@@ -466,8 +460,7 @@ sub run_command($$)
 }
 
 # Error message when a command doesn't exist
-sub undefined_command($$) {
-    my ($self, $cmd_name) = @_;
+sub undefined_command($self, $cmd_name) {
     my $msg = sprintf 'Undefined command: "%s". Try "help".', $cmd_name;
     eval { $self->errmsg($msg); };
     print STDERR $msg  if $EVAL_ERROR;

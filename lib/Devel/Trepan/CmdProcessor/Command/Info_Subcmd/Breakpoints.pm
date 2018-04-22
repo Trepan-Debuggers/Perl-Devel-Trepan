@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; use utf8;
-use rlib '../../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::Info::Breakpoints;
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use rlib '../../../../..';
 
-use strict;
-use vars qw(@ISA @SUBCMD_VARS);
-@ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
+use strict; use warnings; use types;
+
+our @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 # Values inherited from parent
 use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 
@@ -59,14 +60,13 @@ HELP
 our $MIN_ABBREV  = length('br');
 
 no warnings 'redefine';
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     my @completions = $self->{proc}{brkpts}->ids;
     Devel::Trepan::Complete::complete_token(\@completions, $prefix);
 }
 
-sub bpprint($$;$)
+sub bpprint
 {
     my ($self, $bp, $verbose) = @_;
     my $proc = $self->{proc};
@@ -94,7 +94,7 @@ sub bpprint($$;$)
     }
 }
 
-sub action_print($$;$)
+sub action_print
 {
     my ($self, $action, $verbose) = @_;
     my $proc = $self->{proc};
@@ -119,9 +119,8 @@ sub action_print($$;$)
 }
 
 
-# sub save_command($)
+# sub save_command($self)
 # {
-#     my $self = shift;
 #     my $proc = $self->{proc};
 #     my $bpmgr = $proc->{brkpts};
 #     my @res = ();
@@ -131,8 +130,7 @@ sub action_print($$;$)
 #    return @res;
 # }
 
-sub run($$) {
-    my ($self, $args) = @_;
+sub run($self, $args) {
     my $verbose = 0;
     my $proc = $self->{proc};
     unless (scalar @$args) {
@@ -227,34 +225,35 @@ sub run($$) {
 }
 
 if (caller) {
-  # Demo it.
-  # use rlib '../../mock'
-  # name = File.basename(__FILE__, '.rb')
-  # dbgr, cmd = MockDebugger::setup('info')
-  # subcommand = Trepan::Subcommand::InfoBreakpoints.new(cmd)
+    # Demo it.
+    # require Devel::Trepan;
+    # use rlib '../../mock'
+    # name = File.basename(__FILE__, '.rb')
+    # dbgr, cmd = MockDebugger::setup('info')
+    # subcommand = Trepan::Subcommand::InfoBreakpoints.new(cmd)
 
-  # print '-' * 20
-  # subcommand.run(%w(info break))
-  # print '-' * 20
-  # subcommand.summary_help(name)
-  # print
-  # print '-' * 20
+    # print '-' * 20
+    # subcommand.run(%w(info break))
+    # print '-' * 20
+    # subcommand.summary_help(name)
+    # print
+    # print '-' * 20
 
-  # require 'thread_frame'
-  # tf = RubyVM::ThreadFrame.current
-  # pc_offset = tf.pc_offset
-  # sub foo
-  #   5
-  # end
+    # require 'thread_frame'
+    # tf = RubyVM::ThreadFrame.current
+    # pc_offset = tf.pc_offset
+    # sub foo
+    #   5
+    # end
 
-  # brk_cmd = dbgr.core.processor.commands['break']
-  # brk_cmd.run(['break', "O${pc_offset}"])
-  # cmd.run(%w(info break))
-  # print '-' * 20
-  # brk_cmd.run(['break', 'foo'])
-  # subcommand.run(%w(info break))
-  # print '-' * 20
-  # print subcommand.save_command
+    # brk_cmd = dbgr.core.processor.commands['break']
+    # brk_cmd.run(['break', "O${pc_offset}"])
+    # cmd.run(%w(info break))
+    # print '-' * 20
+    # brk_cmd.run(['break', 'foo'])
+    # subcommand.run(%w(info break))
+    # print '-' * 20
+    # print subcommand.save_command
 }
 
 1;

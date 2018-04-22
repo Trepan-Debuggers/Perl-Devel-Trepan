@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings; use utf8;
-use rlib '../../../../..';
+use warnings; use utf8; use types;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Frame;
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use rlib '../../../../..';
+
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
+unless (@ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
+EOE
+}
 
 use strict;
 our (@ISA, @SUBCMD_VARS);
@@ -15,11 +22,6 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 ## FIXME: do automatically.
 our $CMD = "info frame";
 
-unless (@ISA) {
-    eval <<"EOE";
-    use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
-EOE
-}
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 
 =pod
@@ -47,15 +49,13 @@ our $SHORT_HELP = 'Show information about the selected frame';
 our $MIN_ABBREV = length('fr');
 
 no warnings 'redefine';
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     $self->{proc}->frame_complete($prefix, 1);
 }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my $proc = $self->{proc};
     my ($frame, $frame_num);
 
@@ -105,8 +105,15 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan;
     # Demo it.
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $cmd = __PACKAGE__->new($parent, 'frame');
+
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, ", max_args: ", $cmd->MAX_ARGS, "\n";
+
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');
     # $cmd = __PACKAGE__->new(parent_cmd);

@@ -88,7 +88,7 @@ sub is_interactive($self)
     $self->{input}->is_interactive;
 }
 
-sub has_completion($)
+sub has_completion
 {
     0
 }

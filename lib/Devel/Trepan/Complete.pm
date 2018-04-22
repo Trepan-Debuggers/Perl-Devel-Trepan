@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; use strict; use utf8;
 use Exporter;
 
@@ -63,9 +63,8 @@ Return an list of string,  I<$complete_ary>, which start out with
 String I<$prefix>.
 
 =cut
-sub complete_token($$)
+sub complete_token($complete_ary, $prefix)
 {
-    my ($complete_ary, $prefix) = @_;
     my @result = ();
     for my $cmd (@$complete_ary) {
 	if (0 == index($cmd, $prefix)) {
@@ -75,7 +74,7 @@ sub complete_token($$)
     sort @result;
 }
 
-sub complete_token_with_next($$;$)
+sub complete_token_with_next
 {
     my ($complete_hash, $prefix, $cmd_prefix) = @_;
     $cmd_prefix ='' if scalar(@_) < 3;
@@ -95,9 +94,8 @@ Find all starting matches in Hash I<$aliases+>that start with
 I<$prefix>, but filter out any matches already in I<$expanded>.
 
 =cut
-sub complete_token_filtered($$$)
+sub complete_token_filtered($aliases, $prefix, $expanded)
 {
-    my ($aliases, $prefix, $expanded) = @_;
     my @complete_ary = keys %{$aliases};
     my @result = ();
     for my $cmd (@complete_ary) {
@@ -113,9 +111,8 @@ Find all starting matches in hash I<$aliases> that start with I<$prefix>,
 but filter out any matches already in I<$expanded>.
 
 =cut
-sub complete_token_filtered_with_next($$$$)
+sub complete_token_filtered_with_next($aliases, $prefix, $expanded, $commands)
 {
-    my ($aliases, $prefix, $expanded, $commands) = @_;
     # require Enbugger; Enbugger->stop;
     my @complete_ary = keys %{$aliases};
     my %expanded = %{$expanded};
@@ -136,9 +133,8 @@ length($str) if this is the last token. Tokens are delimited by
 white space.
 
 =cut
-sub next_token($$)
+sub next_token($str, $start_pos)
 {
-    my ($str, $start_pos) = @_;
     my $look_at = substr($str, $start_pos);
     my $strlen = length($look_at);
     return (1, '') if 0 == $strlen;
@@ -169,7 +165,7 @@ restore the default of filename matching if they'd changed it
 earlier, either directly or via I<&rl_basic_commands>.
 
 =cut
-sub filename_list(;$$)
+sub filename_list
 {
     my ($pattern, $add_suffix) = @_;
     $pattern = '' unless defined $pattern;
@@ -194,8 +190,7 @@ sub filename_list(;$$)
 
 # Custom completion routines
 my @signal_complete_completions=();
-sub signal_complete($) {
-    my ($prefix) = @_;
+sub signal_complete($prefix) {
     unless(@signal_complete_completions) {
         @signal_complete_completions = keys %SIG;
         my $last_sig = scalar @signal_complete_completions;
@@ -207,9 +202,8 @@ sub signal_complete($) {
     complete_token(\@signal_complete_completions, $prefix);
 }
 
-sub complete_builtins($)
+sub complete_builtins($prefix)
 {
-    my ($prefix) = @_;
     my @builtin_fns = BUILTIN_FNS;
     if (0 == index($prefix ,'CORE::'))    {
 	map { 'CORE::' . $_ }
@@ -219,9 +213,8 @@ sub complete_builtins($)
     }
 }
 
-sub complete_subs($)
+sub complete_subs($prefix)
 {
-    my ($prefix) = @_;
     no warnings 'once';
     my @all_fns = sort((keys(%DB::sub),
 			BUILTIN_FNS, BUILTIN_CORE_FNS, BUILTIN_CONST));
@@ -246,9 +239,8 @@ sub complete_subs($)
     return sort @functions;
 }
 
-sub complete_packages($)
+sub complete_packages($prefix)
 {
-    my ($prefix) = @_;
     my %pkgs;
     no warnings 'once';
     foreach my $function (keys %DB::sub) {

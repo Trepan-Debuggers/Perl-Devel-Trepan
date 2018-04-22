@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2015 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings; use utf8;
+# Copyright (C) 2012-2015, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings; use utf8; use types;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
 use Devel::Trepan::Complete;
@@ -13,9 +13,8 @@ use vars qw(@EXPORT @ISA);
 
 use English qw( -no_match_vars );
 
-sub adjust_frame($$$)
+sub adjust_frame($self, int $frame_num, int $absolute_pos)
 {
-    my ($self, $frame_num, $absolute_pos) = @_;
     my $frame;
     ($frame, $frame_num) = $self->get_frame($frame_num, $absolute_pos);
     if ($frame) {
@@ -39,7 +38,7 @@ sub adjust_frame($$$)
     }
 }
 
-sub frame_low_high($;$)
+sub frame_low_high
 {
     my ($self, $direction) = @_;
     $direction = 1 unless defined $direction;
@@ -49,10 +48,8 @@ sub frame_low_high($;$)
     return ($low, $high);
 }
 
-sub frame_setup($$)
+sub frame_setup($self, $frame_aref)
 {
-    my ($self, $frame_aref) = @_;
-
     if (defined $frame_aref) {
         $self->{frames} = $frame_aref;
         $self->{stack_size}    = $#{$self->{frames}}+1;
@@ -118,9 +115,8 @@ sub frame_setup($$)
     $self->{list_filename} = $self->filename();
 }
 
-sub filename($)
+sub filename($self)
 {
-    my $self = shift;
     my $filename = $self->{frame}{file};
     if (filename_is_eval($filename)) {
 	return $filename;
@@ -129,15 +125,13 @@ sub filename($)
     }
 }
 
-sub funcname($)
+sub funcname($self)
 {
-    my $self = shift;
     $self->{frame}{fn};
 }
 
-sub get_frame($$$)
+sub get_frame($self, $frame_num, $absolute_pos)
 {
-    my ($self, $frame_num, $absolute_pos) = @_;
     my $stack_size = $self->{stack_size};
 
     if ($absolute_pos) {
@@ -163,9 +157,8 @@ sub get_frame($$$)
     return ($self->{frame}, $frame_num);
 }
 
-sub line($)
+sub line($self)
 {
-    my $self = shift;
     $self->{frame}{line};
 }
 
@@ -174,13 +167,13 @@ sub print_stack_entry()
     die "This should have been implemented somewhere else"
 }
 
-sub print_stack_trace_from_to($$$$$)
+sub print_stack_trace_from_to
 {
     die "This should have been implemented somewhere else"
 }
 
 # Print `count' frame entries
-sub print_stack_trace($$$)
+sub print_stack_trace
 {
     die "This should have been implemented somewhere else"
 }

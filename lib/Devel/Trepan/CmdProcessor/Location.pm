@@ -1,5 +1,5 @@
-# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
-use strict;
+# Copyright (C) 2011-2015, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use types;
 use Exporter;
 use warnings;
 no warnings 'redefine'; no warnings 'once';
@@ -44,7 +44,7 @@ our $EVENT2ICON = {
     'watch'          => 'wa'
 };
 
-sub canonic_file($$;$)
+sub canonic_file
 {
     my ($self, $filename, $resolve) = @_;
     return undef unless defined $filename;
@@ -64,8 +64,7 @@ sub canonic_file($$;$)
     }
 }
 
-sub min($$) {
-    my ($a, $b) = @_;
+sub min($a, $b) {
     return $a < $b ? $a : $b;
 }
 
@@ -73,7 +72,7 @@ sub min($$) {
 # information to try to retrieve all of the current source line up
 # to some limit of lines. The lines returned may be colorized.
 # Devel::Trepan::DB:LineCache::getline actually does the retrieval.
-sub current_source_text(;$)
+sub current_source_text
 {
     my ($self, $opts) = @_;
     $opts = {maxlines => 5} unless defined $opts;
@@ -84,9 +83,8 @@ sub current_source_text(;$)
     return $text;
 }
 
-sub resolve_file_with_dir($$)
+sub resolve_file_with_dir($self, $path_suffix)
 {
-    my ($self, $path_suffix) = @_;
     my @dirs = @$self->{settings}{directory};
     for my $dir (split(/:/, @dirs)) {
         if ('$cwd' eq $dir) {
@@ -101,7 +99,7 @@ sub resolve_file_with_dir($$)
     return undef;
 }
 
-sub text_at($;$)
+sub text_at
 {
     my ($self, $opts) = @_;
     $opts = {
@@ -132,7 +130,7 @@ sub text_at($;$)
     $text;
   }
 
-sub format_location($;$$$)
+sub format_location
 {
     my ($self, $event, $frame, $frame_index) = @_;
     $event       = $self->{event} unless defined $event;
@@ -152,7 +150,7 @@ sub format_location($;$$$)
     "${ev} ${pkg}::(${loc})$suffix";
 }
 
-sub print_location($;$)
+sub print_location
 {
     my ($self,$opts) = @_;
     $opts = {
@@ -168,9 +166,8 @@ sub print_location($;$)
     }
   }
 
-sub source_location_info($)
+sub source_location_info($self)
 {
-    my $self = shift;
     # if (@frame.eval?)
     my $canonic_filename;
     #    'eval ' + safe_repr(@frame.eval_string.gsub("\n", ';').inspect, 20)

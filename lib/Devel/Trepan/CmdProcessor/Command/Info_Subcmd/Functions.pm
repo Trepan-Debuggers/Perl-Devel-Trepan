@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
-use warnings; no warnings 'redefine'; no warnings 'once';
-use rlib '../../../../..';
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use warnings; no warnings 'redefine'; no warnings 'once'; use types;
 
 package Devel::Trepan::CmdProcessor::Command::Info::Functions;
 
-use Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+use if !@ISA, Devel::Trepan::CmdProcessor::Command::Subcmd::Core;
+
+use rlib '../../../../..';
+
+unless (@ISA) {
+    eval <<"EOE";
+    use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
+EOE
+}
 
 use strict;
 our (@ISA, @SUBCMD_VARS);
@@ -15,11 +22,6 @@ use vars @Devel::Trepan::CmdProcessor::Command::Subcmd::SUBCMD_VARS;
 ## FIXME: do automatically.
 our $CMD = "info functions";
 
-unless (@ISA) {
-    eval <<"EOE";
-    use constant MAX_ARGS => 1;  # Need at most this many - undef -> unlimited.
-EOE
-}
 @ISA = qw(Devel::Trepan::CmdProcessor::Command::Subcmd);
 =pod
 
@@ -39,15 +41,13 @@ HELP
 our $SHORT_HELP = 'All function names, or those matching REGEXP';
 our $MIN_ABBREV = length('fu');
 
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     Devel::Trepan::Complete::complete_subs($prefix);
 }
 
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $regexp = undef;
 
@@ -90,7 +90,12 @@ sub run($$)
 }
 
 unless (caller) {
-    require Devel::Trepan;
+    require Devel::Trepan::CmdProcessor;
+    my $proc = Devel::Trepan::CmdProcessor->new;
+    my $parent = Devel::Trepan::CmdProcessor::Command::Info->new($proc, 'info');
+    my $cmd = __PACKAGE__->new($parent, 'return');
+    print $cmd->{help}, "\n";
+    print "min args: ", $cmd->MIN_ARGS, ", max_args: ", $cmd->MAX_ARGS, "\n";
     # Demo it.
     # require_relative '../../mock'
     # my($dbgr, $parent_cmd) = MockDebugger::setup('show');

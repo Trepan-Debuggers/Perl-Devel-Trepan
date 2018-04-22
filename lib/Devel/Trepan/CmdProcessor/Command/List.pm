@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../..';
 
@@ -120,9 +120,8 @@ sub adjust_end($$)
     return ($start < $end ) ? $start + $end - 1 : $end;
 }
 
-sub no_frame_msg($)
+sub no_frame_msg($self)
 {
-    my $self = shift;
     $self->errmsg("No Perl program loaded.");
     return (undef, undef, undef);
 }

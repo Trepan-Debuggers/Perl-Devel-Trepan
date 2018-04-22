@@ -103,7 +103,9 @@ sub new
 }
 
 # List command names aligned in columns
-sub columnize_commands($self, $commands, $opts) {
+sub columnize_commands
+{
+    my ($self, $commands, $opts) = @_;
     my $width = $self->{settings}{maxwidth};
     $opts = {} unless $opts;
     $opts = hash_merge($opts,  {displaywidth => $width,

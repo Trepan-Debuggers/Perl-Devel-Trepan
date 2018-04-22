@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # Part of Devel::Trepan::CmdProcessor that loads up debugger commands from
 # builtin and user directories.
@@ -24,9 +24,8 @@ Loads in our built-in commands.
 Called from Devel::Trepan::CmdProcessor->new in CmdProcessor.pm
 =cut
 
-sub load_cmds_initialize($)
+sub load_cmds_initialize($self)
 {
-    my $self = shift;
     $self->{commands} = {};
     $self->{aliases}  = {};
     $self->{macros}   = {};

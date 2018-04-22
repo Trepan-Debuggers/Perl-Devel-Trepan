@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; use utf8;
 use rlib '../../..';
 
@@ -84,8 +84,7 @@ $Data::Dumper::Terse = 1;
 
 my $last_eval_value = 0;
 
-sub handle_eval_result($) {
-    my ($self) = @_;
+sub handle_eval_result($self) {
     my $val_str;
     my $prefix="\$DB::D[$last_eval_value] =";
 

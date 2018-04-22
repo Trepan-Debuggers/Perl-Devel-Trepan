@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use Exporter;
 use warnings;
 
@@ -8,7 +8,7 @@ use File::Basename;
 
 use rlib '../../..';
 use if !defined Devel::Trepan::CmdProcessor, Devel::Trepan::CmdProcessor;
-use strict;
+use strict; use types;
 
 package Devel::Trepan::CmdProcessor::Command;
 no warnings 'redefine';
@@ -27,9 +27,8 @@ sub AUTOLOAD
 sub DESTROY {}
 
 use Array::Columnize;
-sub declared ($) {
+sub declared (str $name) {
     use constant 1.01;              # don't omit this!
-    my $name = shift;
     $name =~ s/^::/main::/;
     my $pkg = caller;
     my $full_name = $name =~ /::/ ? $name : "${pkg}::$name";
@@ -70,7 +69,8 @@ sub set_name() {
     lc(File::Basename::basename($file, '.pm'));
 }
 
-sub new($$) {
+sub new
+{
     my($class, $proc)  = @_;
     my $self = {
         proc     => $proc,
@@ -103,8 +103,7 @@ sub new($$) {
 }
 
 # List command names aligned in columns
-sub columnize_commands($$$) {
-    my ($self, $commands, $opts) = @_;
+sub columnize_commands($self, $commands, $opts) {
     my $width = $self->{settings}{maxwidth};
     $opts = {} unless $opts;
     $opts = hash_merge($opts,  {displaywidth => $width,
@@ -116,8 +115,7 @@ sub columnize_commands($$$) {
     return $r;
 }
 
-sub columnize_numbers($$) {
-    my ($self, $commands) = @_;
+sub columnize_numbers($self, $commands) {
     my $width = $self->settings->{maxwidth};
     my $r = Array::Columnize::columnize($commands,
                                         {displaywidth => $width,
@@ -131,12 +129,12 @@ sub columnize_numbers($$) {
 # FIXME: probably there is a way to do the delegation to proc methods
 # without having type it all out.
 
-sub confirm($$$) {
-    my ($self, $message, $default) = @_;
+sub confirm($self, $message, $default) {
     $self->{proc}->confirm($message, $default);
 }
 
-sub errmsg($$;$) {
+sub errmsg
+{
     my ($self, $message, $opts) = @_;
     $opts ||= {};
     $self->{proc}->errmsg([$message], $opts);
@@ -148,14 +146,16 @@ sub errmsg($$;$) {
 # }
 
 # Convenience short-hand for $self->{proc}->msg
-sub msg($$;$) {
+sub msg
+{
     my ($self, $message, $opts) = @_;
     $opts ||= {};
     $self->{proc}->msg($message, $opts);
 }
 
 # Convenience short-hand for $self->{proc}->msg_nocr
-sub msg_nocr($$;$) {
+sub msg_nocr
+{
     my ($self, $message, $opts) = @_;
     $opts ||= {};
     $self->{proc}->msg_nocr($message, $opts);
@@ -166,19 +166,18 @@ sub run {
     Carp::croak "RuntimeError: You need to define this method elsewhere";
 }
 
-sub section($$;$) {
+sub section
+{
     my ($self, $message, $opts) = @_;
     $opts ||={};
     $self->{proc}->section($message, $opts);
 }
 
-sub settings($) {
-    my ($self) = @_;
+sub settings($self) {
     $self->{proc}{settings};
 }
 
-sub short_help($) {
-    my ($self) = @_;
+sub short_help($self) {
     return $self->{short_help} if defined $self->{short_help};
     my @ary = split("\n", $self->{help});
     $self->{short_help} = $ary[0];

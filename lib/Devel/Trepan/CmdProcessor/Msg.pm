@@ -3,7 +3,7 @@
 
 use warnings;
 no warnings 'redefine';
-use strict;
+use strict; use types;
 use Exporter;
 
 
@@ -30,7 +30,7 @@ $HAVE_TERM_ANSIColor = eval "use Term::ANSIColor; 1";
 
 # attr_accessor :ruby_highlighter
 
-sub confirm($$$)
+sub confirm($self, $msg, $default)
 {
     my ($self, $msg, $default) = @_;
     my $intf = $self->{interfaces}[-1];
@@ -79,8 +79,7 @@ sub msg_nocr($$;$) {
 
   }
 
-sub read_command($) {
-    my $self = shift;
+sub read_command($self) {
     $self->{interfaces}[-1]->read_command($self->{prompt});
   }
 

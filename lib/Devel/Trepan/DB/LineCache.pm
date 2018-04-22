@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 #
-#   Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+#   Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 #
 #
 use Digest::SHA;
@@ -17,9 +17,8 @@ package Devel::Trepan::DB::LineCache;
 #
 # Evaluate I<$code> and return true if there's no error.
 # *cut
-sub eval_ok ($)
+sub eval_ok ($code)
 {
-    my $code = shift;
     no strict; no warnings;
     $DB::namespace_package = 'package main' unless $DB::namespace_package;
     my $wrapped = "$DB::namespace_package; sub { $code }";
@@ -84,7 +83,7 @@ $VERSION = "1.0";
 use English qw( -no_match_vars );
 use vars qw(%file_cache %script_cache);
 
-use strict; use warnings;
+use strict; use warnings; use types;
 no warnings 'once';
 no warnings 'redefine';
 
@@ -163,7 +162,7 @@ is not given, clear all files in the cache.
 
 =cut
 
-sub clear_file_cache(;$)
+sub clear_file_cache
 {
     if (scalar @_ == 1) {
         my $filename = shift;
@@ -243,7 +242,7 @@ returned if a filename was given but not found cached.
 
 =cut
 
-sub checkcache(;$$)
+sub checkcache
 {
     my ($filename, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -292,7 +291,7 @@ Cache psuedo eval-string for a pseudo eval-string if it's not already cached.
 
 =cut
 
-sub cache_script($;$)
+sub cache_script
 {
     my ($script, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -316,7 +315,7 @@ or the script, or I<undef> if we can't find the file.
 
 =cut
 
-sub cache($;$)
+sub cache
 {
     my ($file_or_script, $reload_on_change) = @_;
     cache_file($file_or_script, $reload_on_change)
@@ -335,7 +334,7 @@ cache or I<undef> if we can't find it.
 
 =cut
 
-sub cache_file($;$$)
+sub cache_file
 {
     my ($filename, $reload_on_change, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -362,23 +361,20 @@ Return I<true> if I<$file_or_script> is cached.
 
 =cut
 
-sub is_cached($)
+sub is_cached($file_or_script)
 {
-    my $file_or_script = shift;
     return undef unless defined $file_or_script;
     exists $file_cache{map_file($file_or_script)};
 }
 
-sub is_cached_script($)
+sub is_cached_script(str $filename)
 {
-    my $filename = shift;
     my $name = map_file($filename);
     scalar @{"_<$name"};
 }
 
-sub is_empty($)
+sub is_empty(str $filename)
 {
-    my $filename = shift;
     $filename=map_file($filename);
     my $ref = $file_cache{$filename};
     $ref->{lines_href}{plain};
@@ -404,7 +400,7 @@ function will look for it in the I<@INC> array.
 
 =cut
 
-sub getline($$;$)
+sub getline
 {
     my ($file_or_script, $line_number, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -459,8 +455,7 @@ B<Examples:>
 
 =cut
 
-sub getlines($;$);
-sub getlines($;$)
+sub getlines
 {
     my ($filename, $opts) = @_;
     $opts = {use_perl_d_file => 1} unless defined $opts;
@@ -522,9 +517,8 @@ given in L<Devel::Trepan::DB::Colors>.
 
 =cut
 
-sub highlight_string($)
+sub highlight_string(str $string)
 {
-    my ($string) = shift;
     $string = $perl_formatter->format_string($string);
     chomp $string;
     $string;
@@ -538,9 +532,8 @@ Return full filename path for I<$filename>.
 
 =cut
 
-sub path($)
+sub path(str $filename)
 {
-    my $filename = shift;
     $filename = map_file($filename);
     return undef unless exists $file_cache{$filename};
     $file_cache{$filename}->path();
@@ -569,16 +562,14 @@ gives:
 
 =cut
 
-sub remap_file($$)
+sub remap_file(str $from_file, str $to_file)
 {
-    my ($from_file, $to_file) = @_;
     $file2file_remap{$from_file} = $to_file;
     cache_file($to_file);
 }
 
-sub remap_string_to_tempfile($)
+sub remap_string_to_tempfile(str $string)
 {
-    my $string = shift;
     my ($fh, $tempfile) = tempfile('XXXX', SUFFIX=>'.pl',
                                    TMPDIR => 1);
     push @tempfiles, $tempfile;
@@ -611,9 +602,8 @@ sub remap_dbline_to_file()
     remap_file('-e', $tempfile);
 }
 
-sub remap_file_lines($$$$)
+sub remap_file_lines($from_file, $to_file, $range_ref, $start)
 {
-    my ($from_file, $to_file, $range_ref, $start) = @_;
     my @range = @$range_ref;
     $to_file = $from_file unless $to_file;
     my $ary_ref = ${$file2file_remap_lines{$to_file}};
@@ -646,9 +636,8 @@ gives:
 
 =cut
 
-sub Devel::Trepan::DB::LineCache::sha1($)
+sub Devel::Trepan::DB::LineCache::sha1(str $filename)
 {
-    my $filename = shift;
     $filename = map_file($filename);
     return undef unless exists $file_cache{$filename};
     my $sha1 = $file_cache{$filename}{sha1};
@@ -685,9 +674,8 @@ gives:
 
 =cut
 
-sub size($)
+sub size(str $file_or_script)
 {
-    my $file_or_script = shift;
     $file_or_script = map_file($file_or_script);
     cache($file_or_script);
     return undef unless exists $file_cache{$file_or_script};
@@ -724,7 +712,7 @@ gives:
 
 =cut
 
-sub Devel::Trepan::DB::LineCache::stat($)
+sub Devel::Trepan::DB::LineCache::my_stat
 {
     my $filename = shift;
     return undef unless exists $file_cache{$filename};
@@ -748,11 +736,12 @@ this set up.
 
 =cut
 
-sub trace_line_numbers($;$)
+sub trace_line_numbers
 {
     my ($filename, $reload_on_change) = @_;
     my $fullname = update_cache($filename, $reload_on_change);
     return undef unless $fullname;
+    my %cache_info =  %{$file_cache{$filename}};
     return sort {$a <=> $b} keys %{$file_cache{$filename}{trace_nums}};
   }
 
@@ -769,7 +758,7 @@ needs to take place for this to work.
 
 =cut
 
-sub is_trace_line($$;$)
+sub is_trace_line
 {
     my ($filename, $line_num, $reload_on_change) = @_;
     my $fullname = cache($filename, $reload_on_change);
@@ -789,9 +778,8 @@ name that I<$filename> was mapped into. Otherwise we return I<$filename>
 
 =cut
 
-sub map_file($)
+sub map_file(str $filename)
 {
-    my $filename = shift;
     return undef unless defined($filename);
     if ($file2file_remap{$filename}) {
 	$file2file_remap{$filename};
@@ -816,7 +804,7 @@ Return the temporary file name that I<$script> was mapped to.
 =cut
 
 use File::Temp qw(tempfile);
-sub map_script($$;$)
+sub map_script
 {
     my ($script, $string, $opts) = @_;
     if (exists $script2file{$script}) {
@@ -836,9 +824,8 @@ sub map_script($$;$)
     return $tempfile;
 }
 
-sub map_file_line($$)
+sub map_file_line(str $file, int $line)
 {
-    my ($file, $line) = @_;
     if (exists $file2file_remap_lines{$file}) {
         my $triplet_ref = $file2file_remap_lines{$file};
         for my $triplet (@$triplet_ref) {
@@ -864,9 +851,8 @@ that get created for by I<eval()>.
 
 =cut
 
-sub filename_is_eval($)
+sub filename_is_eval($filename)
 {
-    my $filename = shift;
     return 0 unless defined $filename;
     return !!
 	($filename =~ /^\(eval \d+\)|-e$/
@@ -887,9 +873,8 @@ I<false> if not.
 
 =cut
 
-sub update_script_cache($$)
+sub update_script_cache($script, $opts)
 {
-    my ($script, $opts) = @_;
     return 0 unless filename_is_eval($script);
     my $string = $opts->{string};
     my $lines_href = {};
@@ -950,7 +935,8 @@ B<dualvar_lines($file_or_string, $is_file, $mark_trace)> =>
 # FIXME: $mark_trace may be something of a hack. Without it we can
 # get into infinite regress in marking %INC modules.
 
-sub dualvar_lines($$;$$) {
+sub dualvar_lines
+{
     my ($file_or_string, $dualvar_lines, $is_file, $mark_trace) = @_;
     my @break_line = ();
     local $INPUT_RECORD_SEPARATOR = "\n";
@@ -1008,7 +994,8 @@ a debugger is called via Enbugger which turn on debugging late so source
 files might not have been read in.
 
 =cut
-sub load_file($;$) {
+sub load_file
+{
     my ($filename, $eval_string) = @_;
 
     # The symbols by which we'll know ye.
@@ -1038,9 +1025,8 @@ I<$filename> retun I<undef>. Each line will have a "\n" at the end.
 
 =cut
 
-sub readlines($)
+sub readlines(str $path)
 {
-    my $path = shift;
     if (-r $path) {
         my $fh;
         open($fh, '<', $path);
@@ -1064,7 +1050,7 @@ lines of the file.
 
 =cut
 
-sub update_cache($;$)
+sub update_cache
 {
     my ($filename, $opts) = @_;
     my $read_file = 0;
@@ -1209,11 +1195,11 @@ unless (caller) {
     printf("%s has %d lines via size\n",
            $script_name,  scalar @$lines);
     do __FILE__;
-    my @line_nums = trace_line_numbers(__FILE__);
+    # my @line_nums = trace_line_numbers(__FILE__);
 
-    ### FIXME: add more of this stuff into unit test.
-    printf("Breakpoints for: %s:\n%s\n",
-           __FILE__, join(', ', @line_nums[0..30]));
+    # ### FIXME: add more of this stuff into unit test.
+    # printf("Breakpoints for: %s:\n%s\n",
+    #        __FILE__, join(', ', @line_nums[0..30]));
     $lines = getlines(__FILE__);
     printf "%s has %d lines\n",  __FILE__,  scalar @$lines;
     my $full_file = abs_path(__FILE__);
@@ -1273,6 +1259,7 @@ unless (caller) {
     my $dirname = File::Basename::dirname(__FILE__);
     my $colors_file = File::Spec->catfile($dirname, 'Colors.pm');
     load_file($colors_file);
+    my @line_nums;
     @line_nums = trace_line_numbers($colors_file);
     print join(', ', @line_nums, "\n");
 }

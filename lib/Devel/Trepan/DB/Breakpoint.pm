@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 # largely rewritten from perl5db.
 
 use Class::Struct;
-use strict;
+use strict; use types;
 
 struct DBBreak => {
     id          => '$', # breakpoint/action number
@@ -18,9 +18,8 @@ struct DBBreak => {
 };
 
 package DBBreak;
-sub inspect($)
+sub inspect($self)
 {
-    my $self = shift;
     sprintf("id %d, file %s, line %s, type: %s, enabled: %d, negate %s, hits: %s, cond: %s",
             $self->id,
             $self->filename, $self->line_num,
@@ -31,9 +30,8 @@ sub inspect($)
         );
 };
 
-sub icon_char($)
+sub icon_char($self)
 {
-    my $self = shift;
     if ('tbrkpt' eq $self->type) {
         return 'T';
     } elsif ('brkpt' eq $self->type) {
@@ -72,7 +70,8 @@ sub line_events {
 
 # Find a subroutine. Return ($filename, $fn_name, $start_line);
 # If not found, return (undef, undef, undef);
-sub find_subline($;$) {
+sub find_subline
+{
     my $fn_name = shift;
     $fn_name =~ s/\'/::/;
     $fn_name = "${DB::package}\:\:" . $fn_name if $fn_name !~ /::/;
@@ -222,8 +221,8 @@ sub set_tbreak {
     return set_break($s, $filename, $lineno, $cond, $id, 'tbrkpt');
 }
 
-sub delete_bp($$) {
-    my ($s, $bp) = @_;
+sub delete_bp($s, $bp)
+{
     my $i = $bp->line_num;
     my $file_key = '_<' . $bp->filename;
     return unless exists $main::{ $file_key };

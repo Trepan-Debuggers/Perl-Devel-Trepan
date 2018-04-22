@@ -5,6 +5,7 @@
 #
 
 use rlib '../..';
+use types;
 
 use Devel::Callsite;
 
@@ -487,8 +488,7 @@ sub register {
   push @clients, $s;
 }
 
-sub done {
-  my $s = shift;
+sub done($s) {
   $s = _clientname($s) if ref($s);
   @clients = grep {$_ ne $s} @clients;
   $s->cleanup;
@@ -496,14 +496,12 @@ sub done {
   exit(0) unless @clients;
 }
 
-sub _clientname {
-    my $name = shift;
+sub _clientname($name) {
     "$name" =~ /^(.+)=[A-Z]+\(.+\)$/;
     return $1;
 }
 
-sub step {
-    my $s = shift;
+sub step($s) {
     $DB::single  = SINGLE_STEPPING_EVENT;
     $DB::running = 1;
 }
@@ -512,8 +510,7 @@ sub step {
 # cont fn_or_line
 # cont file line
 #
-sub cont {
-    my $s = shift;
+sub cont($s) {
     if (scalar @_ > 0) {
         my ($file, $line);
         if (2 == scalar @_) {
@@ -537,7 +534,7 @@ sub cont {
 }
 
 # stop before finishing the current subroutine
-sub finish($;$$) {
+sub finish {
     my $s = shift;
     # how many levels to get to DB sub?
     my $count = scalar @_ >= 1 ?  shift : 1;
@@ -567,7 +564,7 @@ sub finish($;$$) {
     $DB::running = 1;
 }
 
-sub return_value($)
+sub return_value()
 {
     if ('undef' eq $DB::return_type) {
         return undef;
@@ -578,7 +575,7 @@ sub return_value($)
     }
 }
 
-sub return_type($)
+sub return_type()
 {
     $DB::return_type;
 }

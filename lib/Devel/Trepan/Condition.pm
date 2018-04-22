@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
-# NOTE: this does syntax checking and has problems on MS Windows. 
+# Copyright (C) 2011, 2018 Rocky Bernstein <rocky@cpan.org>
+# NOTE: this does syntax checking and has problems on MS Windows.
 # More specific context checking can be had in DB::Eval::eval_not_ok()
 # and that is gnereally (I think) we will be using.
 use strict; use warnings;
@@ -10,8 +10,7 @@ use vars qw(@EXPORT @ISA);
 @EXPORT    = qw( is_valid_condition );
 @ISA = qw(Exporter);
 
-sub is_valid_condition($) {
-    my ($expr) = @_;
+sub is_valid_condition($expr) {
     return 1 if ($OSNAME eq 'MSWin32');
     my $pid = fork();
     if ($pid) {

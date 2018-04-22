@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013, 2018 Rocky Bernstein <rocky@cpan.org>
 # FIXME: Could combine manager code from breakpoints and display
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
@@ -16,9 +16,8 @@ struct DBDisplay => {
 };
 
 package DBDisplay;
-sub inspect($)
+sub inspect($self)
 {
-    my $self = shift;
     sprintf("number %s, enabled: %d, fmt: %s, arg: %s",
             $self->number, $self->enabled, $self->fmt, $self->arg);
 };
@@ -26,9 +25,8 @@ sub inspect($)
 
 package Devel::Trepan::DB::DisplayMgr;
 
-sub new($$)
+sub new($class, $dbgr)
 {
-    my ($class,$dbgr) = @_;
     my $self = {max => 0};
     $self->{dbgr} = $dbgr;
     bless $self, $class;
@@ -36,17 +34,15 @@ sub new($$)
     $self;
 }
 
-sub clear($)
+sub clear($self)
 {
-    my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
 }
 
-sub inspect($)
+sub inspect($self)
 {
-    my $self = shift;
-    my $str = '';
+    my str $str = '';
     for my $display (@{$self->{list}}) {
         next unless defined $display;
         $str .= $display->inspect . "\n";
@@ -55,17 +51,15 @@ sub inspect($)
 }
 
 # Remove all breakpoints that we have recorded
-sub DESTROY() {
-    my $self = shift;
+sub DESTROY($self) {
     for my $disp (@{$self->{list}}) {
         $self->delete_by_display($disp) if defined($disp);
     }
     $self->{clear};
 }
 
-sub find($$)
+sub find($self, $index)
 {
-    my ($self, $index) = @_;
     for my $display (@{$self->{list}}) {
         next unless $display;
         return $display if $display->number eq $index;
@@ -73,9 +67,8 @@ sub find($$)
     return undef;
 }
 
-sub delete($$)
+sub delete($self, $index)
 {
-    my ($self, $index) = @_;
     my $display = $self->find($index);
     if (defined ($display)) {
         $self->delete_by_display($display);
@@ -85,9 +78,8 @@ sub delete($$)
     }
 }
 
-sub delete_by_display($$)
+sub delete_by_display($self, $delete_display)
 {
-    my ($self, $delete_display) = @_;
     for my $candidate (@{$self->{list}}) {
         next unless defined $candidate;
         if ($candidate eq $delete_display) {
@@ -98,7 +90,7 @@ sub delete_by_display($$)
     return undef;
 }
 
-sub add($$;$)
+sub add
 {
     my ($self, $display,$return_type) = @_;
     $self->{max}++;
@@ -114,9 +106,8 @@ sub add($$;$)
     return $disp;
 }
 
-sub compact($)
+sub compact($self)
 {
-    my $self = shift;
     my @new_list = ();
     for my $display (@{$self->{list}}) {
         next unless defined $display;
@@ -126,51 +117,45 @@ sub compact($)
     return $self->{list};
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar(0 == @{$self->{list}});
 }
 
-sub find($$)
+sub find($self, $num)
 {
-    my ($self, $num) = @_;
     for my $display (@{$self->{list}}) {
         return $display if $display->number == $num;
     }
     return undef;
 }
 
-sub max($)
+sub max($self)
 {
-    my $self = shift;
-    my $max = 0;
+    my int $max = 0;
     for my $display (@{$self->{list}}) {
         $max = $display->number if $display->number > $max;
     }
     return $max;
 }
 
-sub size($)
+sub size($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar @{$self->{list}};
 }
 
-sub reset($)
+sub reset($self)
 {
-    my $self = shift;
     $self->{list} = [];
 }
 
 
 unless (caller) {
 
-    sub display_status($$)
+    sub display_status($displays, $i)
     {
-        my ($displays, $i) = @_;
         printf "list size: %s\n", $displays->size();
         my $max = $displays->max();
         $max = -1 unless defined $max;

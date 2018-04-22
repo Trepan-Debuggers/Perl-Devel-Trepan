@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # This line is for testing purposes \
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # Module for reading debugger scripts
 
@@ -17,7 +17,7 @@ use if !@ISA, Devel::Trepan::Interface::ComCodes;
 use Devel::Trepan::IO::Input;
 use Devel::Trepan::IO::StringArray;
 use Devel::Trepan::Util qw(hash_merge);
-use strict; 
+use strict; use types;
 use vars qw(@EXPORT @ISA);
 @ISA = qw(Devel::Trepan::Interface Exporter);
 
@@ -26,7 +26,7 @@ use constant DEFAULT_OPTS => {
     confirm_val    => 0,
     verbose        => 0
 };
-  
+
 sub new
 {
     my ($class, $script_name, $out, $opts) = @_;
@@ -36,7 +36,7 @@ sub new
 
     my $self = {};
     #  FIXME if $script_name is invalid, we get undef $fh and then
-    # Interface->new uses STDIN. 
+    # Interface->new uses STDIN.
     my $fh = IO::File->new($script_name, 'r');
     $self = Devel::Trepan::Interface->new($fh, $out, $opts);
     $self->{script_name}   = $script_name;
@@ -44,14 +44,14 @@ sub new
     $self->{buffer_output} = [];
     unless ($opts->{verbose} or $out) {
         $self->{output} = Devel::Trepan::IO::StringArrayOutput->new($self->{buffer_output});
-    }    
+    }
     bless $self, $class;
     $self;
 }
 
 
 # Closes input only.
-sub close($)
+sub close
 {
     my $self = shift;
     $self->{input}->close;
@@ -62,15 +62,14 @@ sub close($)
 #
 # Could look also look for interactive input and
 # use that. For now, though we'll simplify.
-sub confirm($$$)
+sub confirm($self, $prompt, $default)
 {
-    my ($self, $prompt, $default) = @_;
     $self->{opts}{default_confirm};
 }
 
 # Common routine for reporting debugger error messages.
-# 
-sub errmsg($$;$)
+#
+sub errmsg
 {
     my ($self, $msg, $prefix) = @_;
     $prefix = '*** ' unless defined $prefix;
@@ -81,20 +80,19 @@ sub errmsg($$;$)
 
     if ($self->{opts}{verbose}) {
         my $location = sprintf("%s:%s: Error in source command file",
-                               $self->{script_name}, 
+                               $self->{script_name},
                                $self->{input_lineno});
         $mess = sprintf("%s:\n%s%s", $prefix, $location, $prefix, $msg);
     }
-    
+
     $self->msg($mess);
     # FIXME: should we just set a flag and report eof? to be more
     # consistent with File and IO?
     die if $self->{opts}{abort_on_error};
 }
 
-sub msg($$)
+sub msg($self, $msg)
 {
-    my ($self, $msg) = @_;
     ## FIXME: there must be a better way to do this...
     if ($self->{output}->isa('Devel::Trepan::IO::TCPServer')) {
         $self->{output}->writeline(PRINT . $msg);
@@ -105,25 +103,24 @@ sub msg($$)
 
 sub is_interactive() { 0; }
 
-sub is_closed($) 
+sub is_closed($self)
 {
-    my($self)  = shift;
     $self->{input}->eof;
 }
 
 sub has_completion() { 0; }
-sub has_term_readline($) { 0; }
+sub has_term_readline() { 0; }
 
-# Script interface to read a command. `prompt' is a parameter for 
+# Script interface to read a command. `prompt' is a parameter for
 # compatibilty and is ignored.
-sub read_command($;$)
+sub read_command
 {
     my ($self, $prompt)=@_;
     $prompt = '' unless defined $prompt;
     $self->{input_lineno} += 1;
     my $last = $self->readline();
     my $line = '';
-    while ('\\' eq substr($last, -1)) { 
+    while ('\\' eq substr($last, -1)) {
         $line .= substr($last, 0, -1) . "\n";
         $last = $self->readline();
     }
@@ -131,7 +128,7 @@ sub read_command($;$)
 
     if ($self->{opts}{verbose}) {
         my $location = sprintf("%s line %s",
-                               $self->{script_name}, 
+                               $self->{script_name},
                                $self->{input_lineno});
         my $mess = sprintf '+ %s: %s', $location, $line;
         $self->msg($mess);
@@ -140,11 +137,11 @@ sub read_command($;$)
     return $line;
 }
 
-# Script interface to read a line. `prompt' is a parameter for 
+# Script interface to read a line. `prompt' is a parameter for
 # compatibilty and is ignored.
 #
 # Could decide make this look for interactive input?
-sub readline($;$)
+sub readline
 {
     my ($self, $prompt) = @_;
     $prompt = '' unless defined $prompt;
@@ -153,13 +150,12 @@ sub readline($;$)
     return $line;
 }
 
-sub remove_history($;$)
+sub remove_history
 {
 }
 
-# sub DESTROY($) 
+# sub DESTROY($self)
 # {
-#     my $self = shift;
 #     Devel::Trepan::Interface::DESTROY($self);
 # }
 

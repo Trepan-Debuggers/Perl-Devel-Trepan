@@ -157,9 +157,8 @@ sub eval_with_return {
 
 # Evaluate the argument and return 0 if there's no error.
 # If there is an error we return the error message.
-sub eval_not_ok ($)
+sub eval_not_ok ($code)
 {
-    my $code = shift;
     my $wrapped = "$DB::namespace_package; sub { $code }";
     no strict;
     eval $wrapped;
@@ -175,8 +174,7 @@ sub eval_not_ok ($)
 
 unless (CORE::caller) {
     eval {
-        sub doit($) {
-            my $code = shift;
+        sub doit($code) {
             my $msg = eval_not_ok($code);
             print "code: $code\n";
             if ($msg) {

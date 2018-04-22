@@ -1,6 +1,5 @@
 #!/usr/bin/env perl
-use Sub::Signatures;
-sub load_file($filename) {
+sub load_file(str $filename) {
     return 1
 }
 my $x = load_file("foo");

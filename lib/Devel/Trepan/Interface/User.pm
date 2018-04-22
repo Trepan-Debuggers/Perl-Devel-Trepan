@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014-2016 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2016, 2018 Rocky Bernstein <rocky@cpan.org>
 # Interface when communicating with the user.
 
 use warnings; no warnings 'redefine';
@@ -15,7 +15,7 @@ use if !@ISA, Devel::Trepan::IO::Input;
 use if !@ISA, Devel::Trepan::Interface;
 
 @ISA = qw(Devel::Trepan::Interface Exporter);
-use strict;
+use strict; use types;
 # Interface when communicating with the user.
 
 use constant DEFAULT_USER_OPTS => {
@@ -55,9 +55,8 @@ sub new
     return $self;
 }
 
-sub add_history($$)
+sub add_history($self, $command)
 {
-    my ($self, $command) = @_;
     return unless (($self->{input}{readline})
 		   and $self->{input}{readline}->can('add_history'));
     $self->{input}{readline}->add_history($command) ;
@@ -75,7 +74,7 @@ sub add_history($$)
 	if $self->can('WriteHistory');
 }
 
-sub remove_history($;$)
+sub remove_history
 {
     my ($self, $which) = @_;
     $which = -1 unless defined($which);
@@ -88,9 +87,8 @@ sub remove_history($;$)
         $self->{input}{readline}->can("remove_history");
 }
 
-sub is_closed($)
+sub is_closed($self)
 {
-    my($self)  = shift;
     $self->{input}->is_eof && $self->{output}->is_eof;
 }
 
@@ -99,8 +97,7 @@ sub is_closed($)
 # suffixed with a question mark and the default value.  The user
 # response converted to a boolean is returned.
 # FIXME: make common routine for this and server.rb
-sub confirm($$$) {
-    my($self, $prompt, $default)  = @_;
+sub confirm($self, $prompt, $default) {
     my $default_str = $default ? 'Y/n' : 'N/y';
     my $response;
     while (1) {
@@ -123,9 +120,8 @@ use File::Spec;
 # Read a saved Readline history file into Readline. The history
 # file will be created if it doesn't already exist.
 # Much of this code follows what's done in ruby-debug.
-sub read_history($)
+sub read_history($self)
 {
-    my $self = shift;
     my %opts = %{$self->{opts}};
     unless ($self->{histfile}) {
         my $dirname = $ENV{'HOME'} || $ENV{'HOMEPATH'} || glob('~');
@@ -141,32 +137,29 @@ sub read_history($)
     }
 }
 
-sub is_interactive($)
+sub is_interactive($self)
 {
-    my $self = shift;
     $self->{input}->is_interactive;
 }
 
-sub rl_filename_list($$)
+sub rl_filename_list($self, $prefix)
 {
-    my ($self,$prefix) = @_;
     $self->{input}->rl_filename_list($prefix);
 }
 
-sub has_completion($)
+sub has_completion($self)
 {
-    my $self = shift;
     $self->{input}{term_readline};
 }
 
-sub want_term_readline($)
+sub want_term_readline($self)
 {
-    my $self = shift;
     defined($self->{opts}{readline}) && $self->{input}{term_readline};
 }
 
 # read a debugger command
-sub read_command($;$) {
+sub read_command
+{
     my($self, $prompt)  = @_;
     $prompt = '(trepanpl) ' unless defined $prompt;
     my $last = $self->readline($prompt);
@@ -181,7 +174,8 @@ sub read_command($;$) {
     return $line;
 }
 
-sub readline($;$) {
+sub readline
+{
     my($self, $prompt)  = @_;
     $self->{output}->flush;
     if ($self->want_term_readline) {
@@ -192,9 +186,8 @@ sub readline($;$) {
     }
 }
 
-sub set_completion($$$)
+sub set_completion($self, $completion_fn, $list_completion_fn)
 {
-    my ($self, $completion_fn, $list_completion_fn) = @_;
     return unless $self->has_completion;
     my $attribs = $self->{input}{readline}->Attribs;
 

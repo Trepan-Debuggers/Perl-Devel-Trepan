@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rockyb@rubyforge.net>
+# Copyright (C) 2011, 2018 Rocky Bernstein <rockyb@rubyforge.net>
 use strict; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 use rlib '../..';
 
 use Class::Struct;
 use strict;
+use types;
 
 struct WatchPoint => {
     id          => '$', # watchpoint number
@@ -17,9 +18,8 @@ struct WatchPoint => {
 };
 
 package WatchPoint;
-sub inspect($)
+sub inspect($self)
 {
-    my $self = shift;
     sprintf("watchpoint %d, expr %s, old_value: %s, current_value %s",
             $self->id, $self->expr, $self->old_value // 'undef',
             $self->current_val // 'undef',
@@ -28,7 +28,7 @@ sub inspect($)
 
 package Devel::Trepan::WatchMgr;
 
-sub new($$) 
+sub new
 {
     my ($class, $dbgr) = @_;
     my $self = {};
@@ -38,43 +38,38 @@ sub new($$)
     $self;
 }
 
-sub clear($) 
+sub clear($self)
 {
-    my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
-}    
+}
 
-sub inspect($) 
+sub inspect($self)
 {
-    my $self = shift;
-    my $str = '';
+    my str $str = '';
     for my $watchpoint ($self->list) {
         next unless defined $watchpoint;
         $str .= $watchpoint->inspect . "\n";
     }
     $str;
-}    
+}
 
-sub list($)
+sub list($self)
 {
-    my $self = shift;
     return @{$self->{list}};
-    
+
 }
 
 # Remove all breakpoints that we have recorded
-sub DESTROY() {
-    my $self = shift;
+sub DESTROY($self) {
     for my $id ($self->list) {
         $self->delete_by_object($id) if defined($id);
     }
     $self->{clear};
 }
 
-sub find($$)
+sub find($self, $index)
 {
-    my ($self, $index) = @_;
     for my $object ($self->list) {
         next unless $object;
         return $object if $object->id eq $index;
@@ -82,9 +77,8 @@ sub find($$)
     return undef;
 }
 
-sub delete($$)
+sub delete($self, $index)
 {
-    my ($self, $index) = @_;
     my $object = $self->find($index);
     if (defined ($object)) {
         $self->delete_by_object($object);
@@ -94,9 +88,8 @@ sub delete($$)
     }
 }
 
-sub delete_by_object($$)
+sub delete_by_object($self, $delete_object)
 {
-    my ($self, $delete_object) = @_;
     my @list = $self->list;
     my $i = 0;
     for my $candidate (@list) {
@@ -110,23 +103,21 @@ sub delete_by_object($$)
     return undef;
 }
 
-sub add($$)
+sub add($self, $expr)
 {
-    my ($self, $expr) = @_;
     my $watchpoint = WatchPoint->new(
         id       => $self->{next_id}++,
         enabled => 1,
         hits    => 0,
-        expr    => $expr, 
+        expr    => $expr,
         );
-        
+
     push @{$self->{list}}, $watchpoint;
     return $watchpoint;
 }
 
-sub compact($)
+sub compact($self)
 {
-    my $self = shift;
     my @new_list = ();
     for my $watchpoint ($self->list) {
         next unless defined $watchpoint;
@@ -136,16 +127,14 @@ sub compact($)
     return $self->{list};
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar(0 == $self->list);
 }
 
-sub max($)
+sub max($self)
 {
-    my $self = shift;
     my $max = 0;
     for my $watchpoint ($self->list) {
         $max = $watchpoint->id if $watchpoint->id > $max;
@@ -153,16 +142,14 @@ sub max($)
     return $max;
 }
 
-sub size($)
+sub size($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar $self->list;
 }
 
-sub reset($)
+sub reset($self)
 {
-    my $self = shift;
     for my $id ($self->list) {
         $self->{dbgr}->delete_object($id);
      }
@@ -174,7 +161,7 @@ unless (caller) {
 
     eval <<'EOE';
     sub wp_status($$)
-    { 
+    {
         my ($watchpoints, $i) = @_;
         printf "list size: %s\n", $watchpoints->size();
         printf "max: %d\n", $watchpoints->max() // -1;

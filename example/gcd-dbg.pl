@@ -3,10 +3,9 @@ use strict; use warnings;
 use rlib '../lib';
 use Enbugger 'trepan';
 # GCD. We assume positive numbers
-sub gcd($$)
+sub gcd(int $a, int $b)
 {
     Enbugger->stop;
-    my ($a, $b) = @_;
     # Make: a <= b
     ($a, $b) = ($b, $a) if ($a > $b);
 

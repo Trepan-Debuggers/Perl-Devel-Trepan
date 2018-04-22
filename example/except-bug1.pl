@@ -1,6 +1,5 @@
-sub foo($)
+sub foo(int $a)
 {
-    my ($a) = @_;
     1/0;
 }
 

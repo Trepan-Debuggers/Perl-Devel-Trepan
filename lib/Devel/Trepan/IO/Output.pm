@@ -2,15 +2,15 @@
 # classes to support communication to and from the debugger.  This
 # communcation might be to/from another process or another computer.
 # And reading may be from a debugger command script.
-# 
+#
 # For example, we'd like to support Sockets, and serial lines and file
 # reading, as well a readline-type input. Encryption and Authentication
 # methods might decorate some of the communication channels.
-# 
+#
 # Some ideas originiated as part of Matt Fleming's 2006 Google Summer of
 # Code project.
 
-use strict;
+use strict; use types;
 use Exporter;
 use warnings;
 
@@ -23,7 +23,8 @@ package Devel::Trepan::IO::Output;
 
 use vars qw(@EXPORT @EXPORT_OK);
 
-sub new($;$$) {
+sub new
+{
     my($class, $output, $opts) = @_;
     $opts ||= {};
     unless ($output) {
@@ -39,38 +40,32 @@ sub new($;$$) {
     return $self;
 }
 
-sub is_closed($) {
-    my($self) = @_;
+sub is_closed($self) {
     ! $self->{output} || $self->is_eof;
 }
-sub close($) {
-    my($self) = @_;
+sub close($self) {
     close $self->{output} unless $self->is_closed;
     $self->{eof} = 1;
 }
 
-sub is_eof($) {
-    my($self) = @_;
+sub is_eof($self) {
     return $self->{eof};
 }
 
-sub flush($) {
-    my($self) = @_;
+sub flush($self) {
     $self->{output}->autoflush(1);
 }
 
-# Use this to set where to write to. output can be a 
+# Use this to set where to write to. output can be a
 # file object or a string. This code raises IOError on error.
-sub write($$) {
-    my ($self, $msg) = @_;
+sub write($self, str $msg) {
     print {$self->{output}} $msg;
 }
 
 # used to write to a debugger that is connected to this
 # `str' written will have a newline added to it
 #
-sub writeline($$) {
-    my ($self, $msg) = @_;
+sub writeline($self, str $msg) {
     print {$self->{output}} $msg . "\n" unless $self->is_closed();
 }
 

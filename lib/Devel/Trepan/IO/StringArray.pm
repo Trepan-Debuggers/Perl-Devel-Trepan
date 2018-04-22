@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # Simulate I/O using lists of strings.
 use rlib '../../..';
 
 use rlib '../../..';
 package Devel::Trepan::IO::StringArrayInput;
-use warnings; use strict;
+use warnings; use strict; use types;
 
 use Devel::Trepan::IO;
 
@@ -16,7 +16,7 @@ use vars qw(@ISA);
 # Simulate I/O using an array of strings. Sort of like StringIO, but
 # even simplier.
 
-sub new($$;$)
+sub new
 {
     my ($class, $inp, $opts) = @_;
     $opts = {} unless defined $opts;
@@ -27,32 +27,28 @@ sub new($$;$)
 }
 
 # this close() interface is defined for class compatibility
-sub close($) 
+sub close($self)
 {
-    my $self = shift;
     $self->{closed} = 1;
 }
 
-sub is_closed($) 
+sub is_closed($self)
 {
-    my $self = shift;
     $self->{closed};
 }
 
-sub is_eof($) 
+sub is_eof($self)
 {
-    my $self = shift;
     $self->{closed} || !@{$self->{input}};
 }
 
 # Nothing to do here. Interface is for compatibility
-sub flush($) { ; }
+sub flush { ; }
 
-# Read a line of input. undef is returned on EOF.  
+# Read a line of input. undef is returned on EOF.
 # Note that we don't support prompting.
-sub readline($)
+sub readline($self)
 {
-    my $self = shift;
     return undef if $self->is_eof;
     unless (@{$self->{input}}) {
         return undef;
@@ -61,7 +57,7 @@ sub readline($)
     return $line ;
   }
 
-sub have_term_readline($) 
+sub have_term_readline
 {
     return 0;
 }
@@ -87,7 +83,7 @@ use vars qw(@ISA);
 sub new
 {
     my ($class, $out, $opts) = @_;
-    $out = []  unless defined $out; 
+    $out = []  unless defined $out;
     $opts = {} unless defined $opts;
     my $self = Devel::Trepan::IO::OutputBase->new($out, $opts);
     $self->{closed} = 0;
@@ -96,51 +92,47 @@ sub new
 }
 
 # Nothing to do here. Interface is for compatibility
-sub close($)
+sub close($self)
 {
-    my $self = shift;
     $self->{closed} = 1;
 }
 
-sub is_closed($)
+sub is_closed($self)
 {
-    my $self = shift;
     $self->{closed};
   }
 
-sub is_eof()
+sub is_eof
 {
     my $self = shift;
     $self->{close} || !$self->{output};
 }
 
 # Nothing to do here. Interface is for compatibility
-sub flush() { ; }
+sub flush { ; }
 
 # This method the debugger uses to write. In contrast to
 # writeline, no newline is added to the } to `str'.
 #
-sub write($$)
+sub write($self, str $msg)
 {
-    my ($self, $msg) = @_;
     return undef if $self->{closed};
     push @{$self->{output}}, $msg;
 }
-  
+
 # used to write to a debugger that is connected to this
 # server; Here, we use the null string '' as an indicator of a
 # newline.
-sub writeline($$)
+sub writeline($self, str $msg)
 {
-    my ($self, $msg) = @_;
     $self->write($msg);
     $self->write('');
 }
 
 #   class << self
-#     # Use this to set where to write to. output can be a 
+#     # Use this to set where to write to. output can be a
 #     # file object or a string. This code raises IOError on error.
-#     # 
+#     #
 #     # If another file was previously open upon calling this open,
 #     # that will be stacked and will come back into use after
 #     # a close_write().
@@ -148,7 +140,7 @@ sub writeline($$)
 #       if output.is_a?(Array)
 #         return self.new(output)
 #       else
-#         raise IOError, ("Invalid output type (%s) for %s" % 
+#         raise IOError, ("Invalid output type (%s) for %s" %
 #                         [output.class, output])
 #       }
 #     }

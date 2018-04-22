@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011, 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 
 package Devel::Trepan::Util;
 use strict; use warnings; use English qw( -no_match_vars );
@@ -15,29 +15,26 @@ use constant YES => qw(y yes oui si yep ja);
 use constant NO => qw(n no non nope nein);
 push(@YN, NO);
 
-sub YN($)
+sub YN(str $response)
 {
-    my $response = shift;
     !!grep(/^${response}$/i, @YN);
 }
 
 # Return 'Yes' for True and 'No' for False, and ?? for anything else
-sub bool2YN($)
+sub bool2YN($bool)
 {
-    my $bool = shift;
     $bool ? 'Yes' : 'No';
 }
 
 # Hash merge like Ruby has.
-sub hash_merge($$) {
-    my ($config, $default_opts) = @_;
+sub hash_merge($config, $default_opts) {
     while (my ($field, $default_value) = each %$default_opts) {
         $config->{$field} = $default_value unless defined $config->{$field};
     };
     $config;
 }
 
-sub safe_repr($$;$)
+sub safe_repr
 {
     my ($str, $max, $elipsis) = @_;
     $elipsis = '... ' unless defined $elipsis;
@@ -55,9 +52,8 @@ sub safe_repr($$;$)
 # name is String and list is an Array of String.
 # If name is a unique leading prefix of one of the entries of list,
 # then return that. Otherwise return name.
-sub uniq_abbrev($$)
+sub uniq_abbrev($list, $name)
 {
-    my ($list, $name) = @_;
     my @candidates = ();
     for my $try_name (@$list) {
         push @candidates, $try_name if 0 == index($try_name, $name);
@@ -79,9 +75,8 @@ sub uniq_abbrev($$)
 #   local (...) = (expression) -> (...) = (expression
 #   local ... = expression -> expression
 #   $... = expression -> expression
-sub extract_expression($)
+sub extract_expression($text)
 {
-    my $text = shift;
     if ($text =~ /^\s*(?:if|elsif|unless)\s*\(/) {
         $text =~ s/^\s*(?:if|elsif|unless)\s*\(//;
         $text =~ s/\s*\)\s*\{?\s*$//;
@@ -111,9 +106,8 @@ sub extract_expression($)
     return $text;
 }
 
-sub invalid_filename($)
+sub invalid_filename(str $filename)
 {
-    my $filename = shift;
     return "Command file '$filename' doesn't exist"   unless -f $filename;
     return "Command file '$filename' is not readable" unless -r $filename;
     return undef;
@@ -121,7 +115,7 @@ sub invalid_filename($)
 
 # Return 'undef' arg $cmd_str is ok. If not return the message a Perl -c
 # gives, dropping off the "-e had complation errors" message.
-sub invalid_perl_syntax($;$)
+sub invalid_perl_syntax
 {
     my ($cmd_str, $have_e_opt) = @_;
     my $cmd = sprintf("$EXECUTABLE_NAME -c %s",
@@ -135,16 +129,14 @@ sub invalid_perl_syntax($;$)
     return join("\n", @errmsg);
 }
 
-sub parse_eval_suffix($)
+sub parse_eval_suffix($cmd)
 {
-    my $cmd = shift;
     my $suffix = substr($cmd, -1);
     return ( index('%@$;>', $suffix) != -1) ? $suffix : '';
 }
 
-sub parse_eval_sigil($)
+sub parse_eval_sigil($cmd)
 {
-    my $cmd = shift;
     return ($cmd =~ /^\s*([%\$\@>;])/) ? $1 : ';';
 }
 

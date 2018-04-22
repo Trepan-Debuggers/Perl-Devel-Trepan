@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 # Interface for client (i.e. user to communication-device) interaction.
 # The debugged program is at the other end of the communcation.
 
@@ -11,6 +11,7 @@ use rlib '../../..';
 # could be on the same computer in a different process or on a remote
 # computer.
 package Devel::Trepan::Interface::Client;
+
 our (@ISA);
 use if !@ISA, Devel::Trepan::Interface;
 use if !@ISA, Devel::Trepan::Interface::ComCodes;
@@ -63,9 +64,8 @@ sub new
 
 }
 
-sub is_closed($)
+sub is_closed($self)
 {
-    my ($self) = @_;
     $self->{input}->is_closed
 }
 
@@ -78,21 +78,18 @@ sub confirm($;$$)
     $self->{user}->confirm($prompt, $default);
 }
 
-sub has_completion($)
+sub has_completion($self)
 {
-    my ($self) = @_;
     $self->{user}->has_completion;
 }
 
-sub set_completion($$$)
+sub set_completion($self, $completion_fn, $list_completion_fn)
 {
-    my ($self, $completion_fn, $list_completion_fn) = @_;
     $self->{user}->set_completion($completion_fn, $list_completion_fn);
 }
 
-sub read_command($$)
+sub read_command($self, $prompt)
 {
-    my ($self, $prompt) = @_;
     $self->{user}->read_command($prompt);
 }
 
@@ -112,9 +109,8 @@ sub read_remote
 
 # Send a message back to the server (in contrast to the local user
 # output channel).
-sub write_remote($$$)
+sub write_remote($self, $code, str $msg)
 {
-    my ($self, $code, $msg) = @_;
     # FIXME change into write_xxx
     $self->{output}->writeline($code . $msg);
 }

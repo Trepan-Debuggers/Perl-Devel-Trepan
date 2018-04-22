@@ -1,5 +1,5 @@
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
-use warnings; use strict;
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use warnings; use strict; use types;
 
 use Class::Struct;
 no strict 'subs';
@@ -18,8 +18,7 @@ sub eq($$)
             && $self->event eq $other->event)
 }
 
-sub inspect($) {
-    my $self = shift;
+sub inspect($self) {
     return sprintf("pkg: %s, file: %s, line: %s, event: %s",
                    $self->pkg, $self->filename, $self->line, $self->event);
 }

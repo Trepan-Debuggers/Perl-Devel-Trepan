@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2013, 2018 Rocky Bernstein <rocky@cpan.org>
 # Debugger Server Input/Output interface.
 
 use warnings; use strict;
@@ -30,7 +30,7 @@ use constant SERVER_SOCKET_OPTS => {
     # Python has: 'posix' == os.name
 };
 
-sub new($;$)
+sub new
 {
     my ($class, $opts) = @_;
     $opts    = hash_merge($opts, DEFAULT_INIT_OPTS);
@@ -48,21 +48,19 @@ sub new($;$)
     return $self;
 }
 
-sub is_connected($)
+sub is_connected($self)
 {
-    my $self = shift;
     $self->{state} = 'connected' if
         $self->{inout} and $self->{inout}->connected;
     return $self->{state} eq 'connected';
 }
 
-sub is_interactive($)  {
-    my $self = shift;
+sub is_interactive($self)  {
     return -t $self->{input};
 }
 
 
-sub have_term_readline($)
+sub have_term_readline
 {
     return 0;
 }
@@ -79,7 +77,7 @@ sub close
     print {$self->{logger}} "Disconnected\n" if $self->{logger};
 }
 
-sub open($;$)
+sub open
 {
     my ($self, $opts) = @_;
     $opts = hash_merge($opts, SERVER_SOCKET_OPTS);
@@ -101,9 +99,8 @@ sub open($;$)
     $self->{state} = 'listening';
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my($self) = @_;
     0 == length($self->{buf});
 }
 
@@ -111,9 +108,8 @@ sub is_empty($)
 # more than one message will be set in a receive, so we will
 # have to buffer that for the next read.
 # EOFError will be raised on EOF.
-sub read_msg($)
+sub read_msg($self)
 {
-    my($self) = @_;
     $self->wait_for_connect unless $self->is_connected;
     my ($buf, $data, $info);
     while (!$self->{buf} || is_empty($self)) {
@@ -147,17 +143,15 @@ sub wait_for_connect
 # This method the debugger uses to write. In contrast to
 # writeline, no newline is added to the } to `str'. Also
 # msg doesn't have to be a string.
-sub write($$)
+sub write($self, str $msg)
 {
-    my($self, $msg) = @_;
     $self->wait_for_connect unless $self->is_connected;
     # FIXME: do we have to check the size of msg and split output?
     $self->{session}->print(pack_msg($msg));
 }
 
-sub writeline($$)
+sub writeline($self, str $msg)
 {
-    my($self, $msg) = @_;
     $self->write($msg . "\n");
 }
 

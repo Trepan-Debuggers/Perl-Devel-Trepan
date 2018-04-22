@@ -6,7 +6,7 @@ Devel::Trepan::DB::Colors - Set up L<Devel::Trepan>'s formatter to do ANSI color
 
 =cut
 
-use warnings; use strict;
+use warnings; use strict; use types;
 use Syntax::Highlight::Perl::Improved;
 
 use vars qw(%ANSI_colors);

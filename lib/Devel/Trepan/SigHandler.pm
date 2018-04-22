@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#   Copyright (C) 2011, 2014-2015 Rocky Bernstein <rocky@gnu.org>
+#   Copyright (C) 2011, 2014-2015, 2018 Rocky Bernstein <rocky@gnu.org>
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,8 @@ use vars qw(@EXPORT %signo @signame);
 @EXPORT    = qw( lookup_signum lookup_signame %signo @signame);
 @ISA = qw(Exporter);
 
-use warnings; use strict;
+use warnings; use strict; use types;
+use types;
 
 our %signo;
 our @signame;
@@ -47,9 +48,8 @@ for my $name (split(' ', $Config{sig_name})) {
 
 # Find the corresponding signal name for 'num'. Return undef
 # if 'num' is invalid.
-sub lookup_signame($)
+sub lookup_signame($num)
 {
-    my $num = shift;
     $num = abs($num);
     return undef unless $num < scalar @signame;
     return $signame[$num];
@@ -57,10 +57,9 @@ sub lookup_signame($)
 
 # Find the corresponding signal number for 'name'. Return under
 #  if 'name' is invalid.
-sub lookup_signum($)
+sub lookup_signum(str $name)
 {
-    my $name = shift;
-    my $uname = uc $name;
+    my str $uname = uc $name;
     $uname = substr($uname, 3) if 0 == index($uname, 'SIG');
     return $signo{$uname} if exists $signo{$uname};
     return undef;
@@ -70,9 +69,8 @@ sub lookup_signum($)
 # number.  Return undef is $name_num is an int but not a valid signal
 # number and undef if $name_num is a not number. If $name_num is a
 # signal name or signal number, the canonic if name is returned.
-sub canonic_signame($)
+sub canonic_signame(str $name_num)
 {
-    my $name_num = shift;
     my $signum = lookup_signum($name_num);
     my $signame;
     unless (defined $signum) {
@@ -154,7 +152,7 @@ my %SIGNAL_DESCRIPTION = (
 #     All the methods which change these attributes return None on error, or
 #     True/False if we have set the action (pass/print/stop) for a signal
 #     handler.
-sub new($$$$$$)
+sub new
 {
     my ($class, $handler, $print_fn, $errprint_fn, $secprint_fn,
         $ignore_list) = @_;
@@ -213,9 +211,8 @@ sub new($$$$$$)
     $self;
 }
 
-sub initialize_handler($$)
+sub initialize_handler($self, $sig)
 {
-    my ($self, $sig) = @_;
     my $signame = canonic_signame($sig);
     return 0 unless defined($signame);
     return 0 if exists($FATAL_SIGNALS{$signame});
@@ -246,9 +243,8 @@ sub initialize_handler($$)
 # has changed or has not been set initially. On return self->{sigs}{$signame}
 # should have our signal handler. True is returned if the same or adjusted,
 # False or undef if error or not found.
-sub check_and_adjust_sighandler($$)
+sub check_and_adjust_sighandler($self, $signame)
 {
-    my ($self, $signame) = @_;
     my $sigs = $self->{sigs};
     # try:
     my $current_handler = $SIG{$signame};
@@ -276,18 +272,16 @@ sub check_and_adjust_sighandler($$)
 
 # Check to see if any of the signal handlers we are interested in have
 # changed or is not initially set. Change any that are not right.
-sub check_and_adjust_sighandlers($)
+sub check_and_adjust_sighandlers($self)
 {
-    my $self = shift;
     for my $signame (keys %{$self->{sigs}}) {
         last unless ($self->check_and_adjust_sighandler($signame));
     }
 }
 
 # Print status for a single signal name (signame)
-sub print_info_signal_entry($$)
+sub print_info_signal_entry($self, $signame)
 {
-    my ($self, $signame) = @_;
     my $description = (exists $SIGNAL_DESCRIPTION{$signame}) ?
         $SIGNAL_DESCRIPTION{$signame} : '';
     my $msg;
@@ -308,9 +302,8 @@ sub print_info_signal_entry($$)
 }
 
 # Print information about a signal
-sub info_signal($$)
+sub info_signal($self, $args)
 {
-    my ($self, $args) = @_;
     my @args = @$args;
     my $print_fn = $self->{print_fn};
     my $secprint_fn = $self->{secprint_fn};
@@ -328,9 +321,8 @@ sub info_signal($$)
 
 # Delegate the actions specified in string $arg to another
 # method.
-sub action($$)
+sub action($self, $arg)
 {
-    my ($self, $arg) = @_;
     if (!defined($arg)) {
         $self->info_signal(['handle']);
         return 1;
@@ -381,18 +373,16 @@ sub action($$)
 # Set whether we stop or not when this signal is caught.
 # If 'set_stop' is True your program will stop when this signal
 # happens.
-sub handle_print_stack($$$)
+sub handle_print_stack($self, $signame, $print_stack)
 {
-    my ($self, $signame, $print_stack) = @_;
     $self->{sigs}{$signame}{print_stack} = $print_stack;
 }
 
 # Set whether we stop or not when this signal is caught.
 # If 'set_stop' is True your program will stop when this signal
 # happens.
-sub handle_stop($$$)
+sub handle_stop($self, $signame, $set_stop)
 {
-    my ($self, $signame, $set_stop) = @_;
     if ($set_stop) {
         $self->{sigs}{$signame}{b_stop} = 1;
         # stop keyword implies print AND nopass
@@ -406,9 +396,8 @@ sub handle_stop($$$)
 # Set whether we pass this signal to the program (or not)
 # when this signal is caught. If set_pass is True, Dbgr should allow
 # your program to see this signal.
-sub handle_pass($$$)
+sub handle_pass($self, $signame, $set_pass)
 {
-    my ($self, $signame, $set_pass) = @_;
     $self->{sigs}{$signame}{pass_along} = $set_pass;
     if ($set_pass) {
         # Pass implies nostop
@@ -418,16 +407,14 @@ sub handle_pass($$$)
 
 # 'pass' and 'noignore' are synonyms. 'nopass and 'ignore' are
 # synonyms.
-sub handle_ignore($$$)
+sub handle_ignore($self, $signame, $set_ignore)
 {
-    my ($self, $signame, $set_ignore) = @_;
     $self->handle_pass($signame, !$set_ignore);
 }
 
 # Set whether we print or not when this signal is caught.
-sub handle_print($$$)
+sub handle_print($self, $signame, $set_print)
 {
-    my ($self, $signame, $set_print) = @_;
     if ($set_print) {
         $self->{sigs}{$signame}{print_fn} = $self->{print_fn};
     } else {
@@ -448,7 +435,7 @@ sub handle_print($$$)
 #        pass_along: True is signal is to be passed to user's handler
 package Devel::Trepan::SigHandler;
 
-sub new($$$$$;$$)
+sub new
 {
     my($class, $print_fn, $signame, $handler,
        $b_stop, $print_stack, $pass_along) = @_;
@@ -538,22 +525,21 @@ unless (caller) {
 
     my $h; # Is used in myhandler.
     eval <<'EOE';  # Have to eval else fns defined when caller() is false
-    sub do_action($$$) {
+
+    sub do_action
+    {
         my ($h, $arg, $sig) = @_;
         print "$arg\n";
         $h->action($arg);
     }
-    sub myprint($) {
-        my $msg = shift;
+    sub myprint($msg) {
         print "$msg\n";
     }
-    sub orig_sighandler($) {
-        my $name = shift;
+    sub orig_sighandler($name) {
         print "++ Orig Signal $name caught\n";
         $h->info_signal(["USR1"]);
     }
-    sub stop_sighandler($) {
-        my $name = shift;
+    sub stop_sighandler($name) {
         print "++ Stop Signal $name caught\n";
         $h->info_signal(["USR1"]);
     }

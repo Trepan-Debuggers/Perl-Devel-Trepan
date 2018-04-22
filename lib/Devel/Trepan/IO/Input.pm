@@ -5,7 +5,7 @@
 # input or GNU Readline.
 #
 
-use warnings; use strict;
+use warnings; use strict; use types;
 use Exporter;
 
 package Devel::Trepan::IO::Input;
@@ -49,7 +49,8 @@ sub term_readline_capability() {
 
 $HAVE_TERM_READLINE = term_readline_capability();
 
-sub new($;$$) {
+sub new
+{
     my ($class, $inp, $opts) = @_;
     $inp ||= *STDIN;
     my $self = Devel::Trepan::IO::InputBase->new($inp, $opts);
@@ -79,25 +80,21 @@ sub new($;$$) {
     return $self;
 }
 
-sub have_term_readline($)
+sub have_term_readline($self)
 {
-    my $self = shift;
     $self->{term_readline} && (exists($ENV{'TERM'}) && $ENV{'TERM'} ne 'dumb');
 }
 
-sub want_term_readline($)
+sub want_term_readline($self)
 {
-    my $self = shift;
     $self->{term_readline};
 }
 
-sub is_interactive($)  {
-    my $self = shift;
+sub is_interactive($self)  {
     return -t $self->{input};
 }
 
-sub rl_filename_list($$)  {
-    my ($self, $prefix) = @_;
+sub rl_filename_list($self, $prefix)  {
     if ($HAVE_TERM_READLINE eq 'Perl5') {
 	Term::ReadLine::Perl5::readline::rl_filename_list($prefix);
     } elsif ($HAVE_TERM_READLINE eq 'Gnu') {
@@ -110,7 +107,8 @@ sub rl_filename_list($$)  {
 # Read a line of input. EOFError will be raised on EOF.
 # Prompt is ignored if we don't have GNU readline. In that
 # case, it should have been handled prior to this call.
-sub readline($;$) {
+sub readline
+{
     my ($self, $prompt) = @_;
     $prompt = '' unless defined($prompt);
     my $line;
@@ -125,9 +123,8 @@ sub readline($;$) {
     return $line;
 }
 
-sub write_history($$)
+sub write_history($self, $histfile)
 {
-    my ($self, $histfile) = @_;
     $self->{readline}->StifleHistory($self->{histsize}) if
 	$self->{readline}->can("StifleHistory");
     if ($self->{readline}->can("WriteHistory")) {

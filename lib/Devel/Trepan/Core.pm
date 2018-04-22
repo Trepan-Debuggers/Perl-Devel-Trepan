@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 # Top-level require that pulls in the rest of the debugger.
 # It's also the thing that gets called from DB:: hooks
 
-use warnings; use utf8;
+use warnings; use utf8; use types;
 # FIXME: Can't use strict;
 
 package Devel::Trepan::Core;
@@ -37,7 +37,7 @@ use constant HAVE_BULLWINKLE => eval q(use Devel::Trepan::BWProcessors; 1) ? 1 :
 
 @ISA = qw(DB);
 
-sub add_startup_files($$;$) {
+sub add_startup_files {
     my ($cmdproc, $startup_file, $nowarn) = @_;
     my $errmsg = Devel::Trepan::Util::invalid_filename($startup_file);
     if ($errmsg) {
@@ -69,9 +69,8 @@ sub new {
 
 # Called when debugger is ready for reading commands. Main
 # entry point.
-sub idle($$$)
+sub idle($self, $event, $args)
 {
-    my ($self, $event, $args) = @_;
     my $proc = $self->{proc};
     $event = 'terminated' if $DB::package eq 'Devel::Trepan::Terminated';
     if ($self->{need_e_remap} && $DB::filename eq '-e') {
@@ -86,7 +85,7 @@ sub idle($$$)
 # Called on catching a signal that SigHandler says
 # we should enter the debugger for. That it there is 'stop'
 # set on that signal.
-sub signal_handler($$$)
+sub signal_handler
 {
     my ($self, $signame) = @_;
     $DB::running = 0;
@@ -101,23 +100,22 @@ sub signal_handler($$$)
     $DB::signal |= 2;
 }
 
-sub output($)
+sub output($self, $msg)
 {
-    my ($self, $msg) = @_;
     my $proc = $self->{proc};
     chomp($msg);
     $proc->msg($msg);
 }
 
-sub warning($)
+sub warning($self, $msg)
 {
-    my ($self, $msg) = @_;
     my $proc = $self->{proc};
     chomp($msg);
     $proc->errmsg($msg);
 }
 
-sub awaken($;$) {
+sub awaken
+{
     my ($self, $opts) = @_;
     no warnings 'once';
     # Process options
@@ -240,9 +238,8 @@ sub awaken($;$) {
                                    sub {$proc->section(@_)});
 }
 
-sub display_lists ($)
+sub display_lists($self)
 {
-    my $self = shift;
     return $self->{proc}{displays}{list};
 }
 

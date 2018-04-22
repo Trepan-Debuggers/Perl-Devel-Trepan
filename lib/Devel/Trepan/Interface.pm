@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2018 Rocky Bernstein <rocky@cpan.org>
 
 # A base class for a debugger interface.
 
-use strict;
+use strict; use types;
 use Exporter;
 use warnings;
 use Carp ();
@@ -19,7 +19,7 @@ use Devel::Trepan::IO::Output;
 
 # A debugger interface handles the communication or interaction with between
 # the program and the outside portion which could be
-#  - a user, 
+#  - a user,
 #  - a front-end that talks to a user, or
 #  - another interface in another process or computer
 
@@ -45,11 +45,10 @@ sub new {
     $self;
 }
 
-sub add_history($$) {}
+sub add_history {}
 
 # Closes all input and/or output.
-sub close($) {
-    my($self) = shift;
+sub close($self) {
     eval {
         $self->{input}->close if
             defined($self->{input}) && !$self->{input}->is_closed;
@@ -60,13 +59,13 @@ sub close($) {
 
 # Called when a dangerous action is about to be done to make sure
 # it's okay. `prompt' is printed; user response is returned.
-sub confirm($;$) {
+sub confirm {
     my($self, $prompt, $default) = @_;
     Carp::croak "RuntimeError, Trepan::NotImplementedMessage";
 }
 
 # Common routine for reporting debugger error messages.
-sub errmsg($;$$) {
+sub errmsg {
     my($self, $str, $prefix) = @_;
     $prefix = '** ' unless defined $prefix;
     if (ref($str) eq 'ARRAY') {
@@ -80,7 +79,7 @@ sub errmsg($;$$) {
     }
 }
 
-sub is_input_eof($) {
+sub is_input_eof {
     my $self = shift;
     return 1 unless defined $self->{input};
     my $input = $self->{input};
@@ -91,13 +90,12 @@ sub is_input_eof($) {
 #     def interactive?
 #       # Default false and making subclasses figure out how to determine
 #       # interactiveness.
-#       false 
+#       false
 #     end
 
 # used to write to a debugger that is connected to this
 # server; `str' written will have a newline added to it.
-sub msg($$) {
-    my($self, $str) = @_;
+sub msg($self, $str) {
     # if (str.is_a?(Array)) {
     #   foreach my $s (@$str) {
     #       errmsg($s);
@@ -109,21 +107,20 @@ sub msg($$) {
 
 # used to write to a debugger that is connected to this
 # server; `str' written will not have a newline added to it
-sub msg_nocr($$) {
-    my($self, $msg) = @_;
+sub msg_nocr($self, $msg) {
     $self->{output}->write($msg);
 }
 
-sub read_command($;$) {
+sub read_command {
     my($self, $prompt) = @_;
     my $line = readline($prompt);
     # FIXME: Do something with history?
     return $line;
 }
 
-sub read_history($$) {}
+sub read_history {}
 
-sub readline($;$) {
+sub readline {
     my($self, $prompt) = @_;
     ## FIXME
     ## $self->{output}->flush;
@@ -131,14 +128,14 @@ sub readline($;$) {
     $self->{input}->readline();
 }
 
-sub save_history($$) {}
+sub save_history {}
 
 #sub DESTROY {
 #    my $self = shift;
 #    if ($self->{output} && defined($self->{output}) && ! $self->{output}->is_closed) {
 #       eval {
 #           $self->msg(sprintf("%sThat's all, folks...",
-#                              (defined($Devel::Trepan::PROGRAM) ? 
+#                              (defined($Devel::Trepan::PROGRAM) ?
 #                               "${Devel::Trepan::PROGRAM}: " : '')));
 #       };
 #    }

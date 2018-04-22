@@ -13,17 +13,15 @@ our (@ISA, @EXPORT);
 use constant TCP_MAX_PACKET => 8192;
 use constant LOG_MAX_MSG => ceil(log10(TCP_MAX_PACKET));
 
-sub pack_msg($)
+sub pack_msg(str $msg)
 {
-    my $msg = shift;
     # A funny way of writing: '%04d'
     my $fmt = sprintf '%%0%dd' , LOG_MAX_MSG;
     return sprintf($fmt, length($msg)) . $msg;
 }
 
-sub unpack_msg($)
+sub unpack_msg(str $buf)
 {
-    my $buf = shift;
     my $length  = int(substr($buf, 0, LOG_MAX_MSG));
     my $data    = substr($buf, LOG_MAX_MSG, LOG_MAX_MSG + $length);
     $buf        = substr($buf, LOG_MAX_MSG + $length);

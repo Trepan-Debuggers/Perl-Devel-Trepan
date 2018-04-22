@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2012, 2014-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2012, 2014-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 # -*- coding: utf-8 -*-
 
 use rlib '../../../..';
@@ -10,7 +10,7 @@ use Devel::Trepan::Pod2Text qw(pod2string help2podstring);
 use Devel::Trepan::Complete qw(complete_token);
 
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
-use strict;
+use strict; use types;
 
 use vars qw(@ISA);
 unless (@ISA) {
@@ -73,9 +73,8 @@ use File::Spec;
 my $ROOT_DIR = dirname(__FILE__);
 my $HELP_DIR = File::Spec->catfile($ROOT_DIR, 'Help');
 
-sub command_names($)
+sub command_names($self)
 {
-    my ($self) = @_;
     my $proc = $self->{proc};
     my %cmd_hash = %{$proc->{commands}};
     my @commands = keys %cmd_hash;
@@ -90,9 +89,8 @@ sub command_names($)
     }
 }
 
-sub complete($$)
+sub complete($self, $prefix)
 {
-    my ($self, $prefix) = @_;
     my $proc = $self->{proc};
     my @candidates = (keys %{CATEGORIES()}, qw(* all),
                       $self->command_names());
@@ -104,14 +102,13 @@ sub complete($$)
     sort @matches;
 }
 
-sub complete_syntax($$) {
-    my ($self, $prefix) = @_;
+sub complete_syntax($self, $prefix) {
     my @candidates = @{$self->syntax_files()};
     my @matches = complete_token(\@candidates, $prefix);
     sort @matches;
 }
 
-sub complete_token_with_next($$;$)
+sub complete_token_with_next
 {
     my ($self, $prefix, $cmd_prefix) = @_;
     my $proc = $self->{proc};
@@ -134,8 +131,7 @@ sub complete_token_with_next($$;$)
 }
 
 # List the command categories and a short description of each.
-sub list_categories($) {
-    my $self = shift;
+sub list_categories($self) {
     $self->section('Help classes:');
     for my $cat (sort(keys %{CATEGORIES()})) {
         $self->msg(sprintf "%-13s -- %s", $cat, CATEGORIES->{$cat});
@@ -153,18 +149,16 @@ Type "help" followed by a command name for full documentation.
     $self->msg($final_msg);
 }
 
-sub show_aliases($)
+sub show_aliases($self)
 {
-    my $self = shift;
     $self->section('All alias names:');
     my @aliases = sort(keys(%{$self->{proc}{aliases}}));
     $self->msg($self->columnize_commands(\@aliases));
 }
 
 # Show short help for all commands in `category'.
-sub show_category($$$)
+sub show_category($self, $category, $args)
 {
-    my ($self, $category, $args) = @_;
     if (scalar @$args == 1 && $args->[0] eq '*') {
         $self->section("Commands in class $category:");
         my @commands = ();
@@ -186,9 +180,8 @@ sub show_category($$$)
     }
 }
 
-sub syntax_files($)
+sub syntax_files($self)
 {
-    my $self = shift;
     return $self->{syntax_files} if $self->{syntax_files};
     my @pods = glob(File::Spec->catfile($HELP_DIR, "/*.pod"));
     my @result = map({ $_ = basename($_, '.pod') }  @pods);
@@ -196,9 +189,8 @@ sub syntax_files($)
     return \@result;
 }
 
-sub show_command_syntax($$)
+sub show_command_syntax($self, $args)
 {
-    my ($self, $args) = @_;
     if (scalar @$args == 2) {
         $self->{syntax_summary_help} ||= {};
         $self->section("List of syntax help");
@@ -233,9 +225,8 @@ sub show_command_syntax($$)
 }
 
 # This method runs the command
-sub run($$)
+sub run($self, $args)
 {
-    my ($self, $args) = @_;
     my $proc = $self->{proc};
     my $cmd_name = $args->[1];
     if (scalar(@$args) > 1) {
@@ -308,7 +299,8 @@ sub run($$)
     }
 }
 
-sub readlines($$$) {
+sub readlines
+{
     my($self, $filename) = @_;
     unless (open(FH, $filename)) {
         $self->errmsg("Can't open $filename: $!");
@@ -358,6 +350,7 @@ unless (caller) {
     $proc->{terminated} = 1;
     $help_cmd->run([$NAME, '*']);
     print $sep;
+
 #   $help_cmd->run %W(${$NAME} s.*)
 #   print $sep;
 #   $help_cmd->run %W(${$NAME} s<>)

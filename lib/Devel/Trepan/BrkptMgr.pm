@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2013 Rocky Bernstein <rocky@cpan.org>
-use strict; use warnings; no warnings 'redefine';
+# Copyright (C) 2011-2013, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use types; use warnings; no warnings 'redefine';
 use English qw( -no_match_vars );
 
 BEGIN {
@@ -23,16 +23,14 @@ sub new($$)
     $self;
 }
 
-sub clear($)
+sub clear($self)
 {
-    my $self = shift;
     $self->{list} = [];
     $self->{next_id} = 1;
 }
 
-sub inspect($)
+sub inspect($self)
 {
-    my $self = shift;
     my $str = '';
     for my $brkpt ($self->list) {
         next unless defined $brkpt;
@@ -41,30 +39,26 @@ sub inspect($)
     $str;
 }
 
-sub ids($)
+sub ids($self)
 {
-    my $self = shift;
     map $_->id, @{$self->compact()};
 }
 
-sub list($)
+sub list($self)
 {
-    my $self = shift;
     map defined($_) ? $_ : (),  @{$self->{list}}
 }
 
 # Remove all breakpoints that we have recorded
-sub DESTROY() {
-    my $self = shift;
+sub DESTROY($self) {
     for my $bp ($self->list) {
         $self->delete_by_brkpt($bp);
     }
     $self->{clear};
 }
 
-sub find($$)
+sub find($self, $index)
 {
-    my ($self, $index) = @_;
     return undef unless $index =~ /^\d+$/;
     for my $bp (@{$self->{list}}) {
         next unless $bp;
@@ -73,9 +67,8 @@ sub find($$)
     return undef;
 }
 
-sub delete($$)
+sub delete($self, $index)
 {
-    my ($self, $index) = @_;
     my $bp = $self->find($index);
     if (defined ($bp)) {
         $self->delete_by_brkpt($bp);
@@ -85,9 +78,8 @@ sub delete($$)
     }
 }
 
-sub delete_by_brkpt($$)
+sub delete_by_brkpt($self, $delete_bp)
 {
-    my ($self, $delete_bp) = @_;
     for my $candidate (@{$self->{list}}) {
         next unless defined $candidate;
         if ($candidate eq $delete_bp) {
@@ -99,16 +91,14 @@ sub delete_by_brkpt($$)
     return undef;
 }
 
-sub add($$)
+sub add($self, $brkpt)
 {
-    my ($self, $brkpt) = @_;
     push @{$self->{list}}, $brkpt;
     return $brkpt;
 }
 
-sub compact($)
+sub compact($self)
 {
-    my $self = shift;
     my @new_list = ();
     for my $brkpt (@{$self->{list}}) {
         next unless defined $brkpt;
@@ -118,16 +108,14 @@ sub compact($)
     return $self->{list};
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar(0 == @{$self->{list}});
 }
 
-sub max($)
+sub max($self)
 {
-    my $self = shift;
     my $max = 0;
     for my $brkpt (@{$self->{list}}) {
         $max = $brkpt->id if $brkpt->id > $max;
@@ -135,16 +123,14 @@ sub max($)
     return $max;
 }
 
-sub size($)
+sub size($self)
 {
-    my $self = shift;
     $self->compact();
     return scalar @{$self->{list}};
 }
 
-sub reset($)
+sub reset($self)
 {
-    my $self = shift;
     for my $bp (@{$self->{list}}) {
         $self->{dbgr}->delete_bp($bp);
      }

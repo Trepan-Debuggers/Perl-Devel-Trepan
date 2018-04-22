@@ -87,7 +87,7 @@ sub close($self)
 
 sub is_eof { $_->[0]->{eof} || $_->[0]->eof }
 
-## sub flush($) { $_->[0]->{output}->flush }
+## sub flush() { $_->[0]->{output}->flush }
 ## FIXME: this isn't quite right.
 sub flush {$_->[0]->{output}->autoflush = 1 }
 

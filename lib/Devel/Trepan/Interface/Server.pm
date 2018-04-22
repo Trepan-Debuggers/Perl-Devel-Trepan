@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
 
 use warnings; no warnings 'redefine'; use utf8;
 
@@ -65,9 +65,8 @@ sub new
 }
 
   # Closes both input and output
-sub close($)
+sub close($self)
 {
-    my ($self) = @_;
     $self->{output}->write(QUIT . 'bye');
     # FIXME: remove sleep and figure out to find when above worked.
     sleep 1;
@@ -79,15 +78,13 @@ sub close($)
     }
 }
 
-sub is_closed($)
+sub is_closed($self)
 {
-    my ($self) = @_;
     $self->{input}->is_closed && $self->{output}->is_closed
 }
 
-sub is_interactive($)
+sub is_interactive($self)
 {
-    my $self = shift;
     $self->{input}->is_interactive;
 }
 
@@ -99,7 +96,7 @@ sub has_completion($)
 # Called when a dangerous action is about to be done to make sure
 # it's okay. `prompt' is printed; user response is returned.
 # FIXME: make common routine for this and user.rb
-sub confirm($;$$)
+sub confirm
 {
     my ($self, $prompt, $default) = @_;
 
@@ -126,23 +123,20 @@ sub confirm($;$$)
 }
 
 # Return 1 if we are connected
-sub is_connected($)
+sub is_connected($self)
 {
-    my ($self) = @_;
     'connected' eq $self->{inout}->{state};
 }
 
-sub is_input_eof($)
+sub is_input_eof($self)
 {
-    my ($self) = @_;
     0;
 }
 
 # used to write to a debugger that is connected to this
 # server; `str' written will have a newline added to it
-sub msg($;$)
+sub msg($self, str $msg)
 {
-    my ($self, $msg) = @_;
     my @msg = split(/\n/, $msg);
     foreach my $line (@msg) {
 	$self->{inout}->writeline(PRINT . $line);
@@ -151,7 +145,7 @@ sub msg($;$)
 
 # used to write to a debugger that is connected to this
 # server; `str' written will have a newline added to it
-sub errmsg($;$)
+sub errmsg
 {
     my ($self, $msg) = @_;
     my @msg = split(/\n/, $msg);
@@ -162,26 +156,23 @@ sub errmsg($;$)
 
 # used to write to a debugger that is connected to this
 # server; `str' written will not have a newline added to it
-sub msg_nocr($$)
+sub msg_nocr($self, $msg)
 {
-    my ($self, $msg) = @_;
     $self->{inout}->write(PRINT .  $msg);
 }
 
 # read a debugger command
-sub read_command($$)
+sub read_command($self, $prompt)
 {
-    my ($self, $prompt) = @_;
     $self->readline($prompt);
 }
 
-sub read_data($)
+sub read_data($self, $prompt)
 {
-    my ($self, $prompt) = @_;
     $self->{inout}->read_data;
 }
 
-sub readline($;$)
+sub readline
 {
     my ($self, $prompt, $add_to_history) = @_;
     # my ($self, $prompt, $add_to_history) = @_;
@@ -207,7 +198,7 @@ sub readline($;$)
     }
 }
 
-sub remove_history($;$)
+sub remove_history
 {
     my ($self, $which) = @_;
     return unless ($self->{input}{readline});
@@ -216,21 +207,18 @@ sub remove_history($;$)
 }
 
 # Return connected
-sub state($)
+sub state($self)
 {
-    my ($self) = @_;
     $self->{inout}->{state};
 }
 
-sub write_prompt($$)
+sub write_prompt($self, $prompt)
 {
-    my ($self, $prompt) = @_;
     $self->{inout}->write(PROMPT . $prompt);
 }
 
-sub write_confirm($$$)
+sub write_confirm($self, $prompt, $default)
 {
-    my ($self, $prompt, $default) = @_;
     my $code = $default ? CONFIRM_TRUE : CONFIRM_FALSE;
     $self->{inout}->write($code . $prompt)
 }

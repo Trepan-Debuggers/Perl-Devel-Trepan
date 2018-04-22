@@ -1,5 +1,5 @@
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
-use strict;
+# Copyright (C) 2011-2014, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use types;
 use warnings;
 package Devel::Trepan::Options;
 use Getopt::Long qw(GetOptionsFromArray);
@@ -65,7 +65,8 @@ sub show_version()
     exit 10;
 }
 
-sub check_tcp_opts($$) {
+sub check_tcp_opts
+{
     my ($server_client, $opts) = @_;
     my ($protocol, $host, $port) = @$opts;
     $opts->[1] = $host || $DEFAULT_OPTIONS->{host};
@@ -77,8 +78,7 @@ sub check_tcp_opts($$) {
     $opts;
 }
 
-sub bad_tty_opts($$) {
-    my ($server_client, $opts) = @_;
+sub bad_tty_opts($server_client, $opts) {
     if (scalar @$opts != 3) {
 	return "For now, you need to specify an input and output pseudo tty";
     }
@@ -94,9 +94,8 @@ sub bad_tty_opts($$) {
     return undef;
 }
 
-sub check_protocol($)
+sub check_protocol($opts)
 {
-    my ($opts) = @_;
     my $server_type = $opts->[0];
     if ($server_type !~ /^tcp|^tty/) {
 	print STDERR
@@ -105,9 +104,8 @@ sub check_protocol($)
     }
 }
 
-sub parse_client_server_opts($$$)
+sub parse_client_server_opts($server_client, $opts, $server_opts)
 {
-    my ($server_client, $opts, $server_opts) = @_;
     if (scalar @$server_opts == 1) {
 	if (!$server_opts->[0]) {
 	    $server_opts->[0] = 'tcp';
@@ -126,10 +124,9 @@ sub parse_client_server_opts($$$)
     }
 }
 
-sub process_options($)
+sub process_options($argv)
 {
     $Getopt::Long::autoabbrev = 1;
-    my ($argv) = @_;
     my ($show_version, $help, $man);
     my $opts = $DEFAULT_OPTIONS;
 
@@ -195,10 +192,8 @@ sub process_options($)
 
 # Do a shell-like path lookup for prog_script and return the results.
 # If we can't find anything return the string given.
-sub whence_file($)
+sub whence_file($prog_script)
 {
-    my $prog_script = shift;
-
     # If we have an relative or absolute file name, don't do anything.
     return $prog_script if
         File::Spec->file_name_is_absolute($prog_script);

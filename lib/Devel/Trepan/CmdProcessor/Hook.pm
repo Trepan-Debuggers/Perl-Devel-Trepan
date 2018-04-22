@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2012 Rocky Bernstein <rocky@cpan.org> 
-use strict; use warnings;
+# Copyright (C) 2011-2012, 2018 Rocky Bernstein <rocky@cpan.org>
+use strict; use warnings; use types;
 use rlib '../../..';
 
 use Class::Struct;
@@ -16,8 +16,8 @@ struct CmdProcessorHook => {
 package Devel::Trepan::CmdProcessor::Hook;
 #  attr_accessor :list
 
-sub new($;$)
-{    
+sub new
+{
     my ($class, $list) = @_;
     my $self = {};
     $list = [] unless defined $list;
@@ -26,9 +26,8 @@ sub new($;$)
     $self;
 }
 
-sub delete_by_name($)
+sub delete_by_name($self, $delete_name)
 {
-    my ($self, $delete_name) = @_;
     my @new_list = ();
     for my $elt (@{$self->{list}}) {
         push(@new_list, $elt) unless $elt->name eq $delete_name;
@@ -36,15 +35,13 @@ sub delete_by_name($)
     $self->{list} = \@new_list;
 }
 
-sub is_empty($)
+sub is_empty($self)
 {
-    my $self = shift;
     return 0 == scalar(@{$self->{list}});
 }
 
-sub insert($$$$)
+sub insert($self, $priority, $name, $hook)
 {
-    my ($self, $priority, $name, $hook) = @_;
     my $insert_loc;
     my @list = $self->{list};
     for ($insert_loc=0; $insert_loc < $#list; $insert_loc++) {
@@ -57,9 +54,8 @@ sub insert($$$$)
     splice(@{$self->{list}}, $insert_loc, 0, $new_item);
 }
 
-sub insert_if_new($$$$)
-{ 
-    my ($self, $priority, $name, $hook) = @_;
+sub insert_if_new($self, $priority, $name, $hook)
+{
     my $found = 0;
     for my $item (@{$self->{list}}) {
         if ($item->name eq $name) {
@@ -71,7 +67,7 @@ sub insert_if_new($$$$)
 }
 
 # Run each function in `hooks' with args
-sub run($)
+sub run
 {
     my $self = shift;
     for my $hook (@{$self->{list}}) {
@@ -93,35 +89,34 @@ package Devel::Trepan::CmdProcessor;
 # # Used to time how long a debugger action takes
 # attr_accessor :time_last
 
-sub hook_initialize($)
+sub hook_initialize($self)
 {
-    my ($self) = @_;
     my $commands = $self->{commands};
     $self->{cmdloop_posthooks}      = Devel::Trepan::CmdProcessor::Hook->new;
     $self->{cmdloop_prehooks}       = Devel::Trepan::CmdProcessor::Hook->new;
     $self->{unconditional_prehooks} = Devel::Trepan::CmdProcessor::Hook->new;
 
     my $list_cmd = $commands->{'list'};
-    $self->{autolist_hook}  = ['autolist', 
+    $self->{autolist_hook}  = ['autolist',
                                sub{ $list_cmd->run(['list']) if $list_cmd}];
-    
-    $self->{timer_hook}     = ['timer', 
+
+    $self->{timer_hook}     = ['timer',
                                sub{
                                    my $now = Time::HiRes::time;
-                                   $self->{time_last} = $now unless 
+                                   $self->{time_last} = $now unless
                                        defined $self->{time_last};
                                    my $mess = sprintf("%g seconds", $now - $self->{time_last});
                                    $self->msg($mess);
                                    $self->{time_last} = $now;
                                }];
-    $self->{timer_posthook} = ['timer', 
+    $self->{timer_posthook} = ['timer',
                                sub{
                                    $self->{time_last} = Time::HiRes::time}];
-    $self->{trace_hook}     = ['trace', 
-                               sub{ 
-                                   $self->print_location unless 
+    $self->{trace_hook}     = ['trace',
+                               sub{
+                                   $self->print_location unless
                                        $self->{terminated} } ];
-    $self->{tracebuf_hook}  = ['tracebuffer', 
+    $self->{tracebuf_hook}  = ['tracebuffer',
                                sub{
                                    push(@{$self->{eventbuf}},
                                         ($self->{event}, $self->{frame}));
@@ -132,8 +127,7 @@ unless (caller) {
     # Demo it.
     my $hooks = Devel::Trepan::CmdProcessor::Hook->new();
     $hooks->run(5);
-    my $hook1 = sub($$) { 
-        my ($name, $a) = @_;
+    my $hook1 = sub($name, $a) {
         my $args = join(', ', @$a);
         print "${name} called with $args\n";
     };

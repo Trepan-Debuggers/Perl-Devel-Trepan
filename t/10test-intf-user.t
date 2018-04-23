@@ -11,7 +11,7 @@ use_ok( 'Devel::Trepan::Interface::User' );
 }
 
 package Devel::Trepan::Interface::User;
-sub readline($;$) {
+sub readline {
     my ($self, $response) = @_;
     return $main::response;
 }

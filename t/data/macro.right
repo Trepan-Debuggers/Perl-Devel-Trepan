@@ -1,5 +1,5 @@
 -- main::(gcd.pl:18)
-die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
 set max width is 80.
 output set to not use terminal escape sequences
 No macros defined.
@@ -10,8 +10,8 @@ gcd.pl [14-21]
  14    	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}
- 17    	
- 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+ 17
+ 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
  19    	    @ARGV == 2;
  20    	my ($a, $b) = @ARGV[0,1];
  21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
@@ -24,14 +24,14 @@ gcd.pl [14-21]
  14    	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}
- 17    	
- 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless 
+ 17
+ 18  ->	die sprintf "Need two integer arguments, got %d", scalar(@ARGV) unless
  19    	    @ARGV == 2;
  20    	my ($a, $b) = @ARGV[0,1];
  21    	printf "The GCD of %d and %d is %d\n", $a, $b, gcd($a, $b);
 List of macro names currently defined:
 --------------------------------------
   bar    foo
-bar: sub($) { my $count=shift; ['list ' . $count] }
+bar: sub($count) { ['list ' . $count] }
 foo: sub { 'list' }
 trepan.pl: That's all, folks...

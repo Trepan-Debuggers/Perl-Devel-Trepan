@@ -15,9 +15,8 @@ my $cmdproc = Devel::Trepan::CmdProcessor->new;
 my $count = scalar(keys %{$cmdproc->{commands}});
 my $cmd = Devel::Trepan::CmdProcessor::Command::Kill->new($cmdproc);
 
-sub complete_it($)
+sub complete_it(str $str)
 {
-    my $str = shift;
     my @c = $cmd->complete($str, $str, 0, length($str));
     return @c;
 }

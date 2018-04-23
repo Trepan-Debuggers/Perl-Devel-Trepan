@@ -1,14 +1,13 @@
 use English qw( -no_match_vars );
 my $leave_loop = 0;
-sub hup_handler($)
+sub hup_handler($sig)
 {
-    my $sig = shift;
     print "Got signal $sig in debugged program handler\n";
     $leave_loop = 1;
 }
 $SIG{'HUP'} = \&hup_handler;
 my $tempfile;
-if (1 == scalar @ARGV) { 
+if (1 == scalar @ARGV) {
     $tempfile = $ARGV[0]
 } else {
     $tempfile = "/tmp/signal.$$";

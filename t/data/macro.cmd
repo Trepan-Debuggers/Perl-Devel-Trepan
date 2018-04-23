@@ -6,9 +6,8 @@ macro foo
 macro foo sub { 'list' }
 foo
 info macro
-macro bar sub($) { my $count=shift; ['list ' . $count] }
+macro bar sub($count ) { ['list ' . $count] }
 bar .
 info macro
 info macro *
 quit!
-

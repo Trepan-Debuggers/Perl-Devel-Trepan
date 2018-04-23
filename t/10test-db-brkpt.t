@@ -19,17 +19,15 @@ sub new() {
 }
 
 my @warnings = ();
-sub warning($)
+sub warning($self, str $msg)
 {
-    my ($self, $msg) = @_;
     push @warnings, $msg;
 }
 
 
 my @output = ();
-sub output($)
+sub output($self, str $msg)
 {
-    my ($self, $msg) = @_;
     push @output, $msg;
 }
 

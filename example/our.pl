@@ -1,12 +1,14 @@
 #!/usr/bin/env perl
 use strict; use warnings;
 our $a = 1;
-sub bar($) {
+sub bar
+{
     our $h = shift;
     return $h;
 }
 
-sub foo($) {
+sub foo
+{
     our $a = shift;
     our @b = (1, "b");
     our %h = (1 =>'foo', 'food' => 'fight');

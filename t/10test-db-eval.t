@@ -8,18 +8,19 @@ package DB;
 use vars qw(@saved);
 
 sub save() {
-  @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR, 
-             $OUTPUT_FIELD_SEPARATOR, 
-             $INPUT_RECORD_SEPARATOR, 
+  @saved = ( $EVAL_ERROR, $ERRNO, $EXTENDED_OS_ERROR,
+             $OUTPUT_FIELD_SEPARATOR,
+             $INPUT_RECORD_SEPARATOR,
              $OUTPUT_RECORD_SEPARATOR, $WARNING );
 
-  $OUTPUT_FIELD_SEPARATOR  = ""; 
+  $OUTPUT_FIELD_SEPARATOR  = "";
   $INPUT_RECORD_SEPARATOR  = "\n";
-  $OUTPUT_RECORD_SEPARATOR = "";  
+  $OUTPUT_RECORD_SEPARATOR = "";
   $WARNING = 0;       # warnings off
 }
 
-sub _warnall($) {
+sub _warnall
+{
     print shift, "\n";
 }
 
@@ -50,7 +51,7 @@ is($DB::eval_result{'foo'}, 'bar');
 my @keys = keys(%DB::eval_result);
 is(scalar @keys, 2);
 
-sub test_code($$) 
+sub test_code($$)
 {
     my ($code, $is_good) = @_;
     my $msg = DB::eval_not_ok($code);

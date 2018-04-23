@@ -19,9 +19,8 @@ my $cmdproc = Devel::Trepan::CmdProcessor->new([$user_intf]);
 my $count = scalar(keys %{$cmdproc->{commands}});
 cmp_ok($count, '>', 0, 'commands populated');
 
-sub complete_it($)
+sub complete_it(str $str)
 {
-    my $str = shift;
     my @c = $cmdproc->complete($str, $str, 0, length($str));
     return @c;
 }

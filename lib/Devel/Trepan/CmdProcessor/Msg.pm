@@ -12,15 +12,15 @@ require Devel::Trepan::Util;
 require Devel::Trepan::CmdProcessor;
 package Devel::Trepan::CmdProcessor;
 
-# Because we use Exporter we want to silence:
-#   Use of inherited AUTOLOAD for non-method ... is deprecated
-sub AUTOLOAD
-{
-    my $name = our $AUTOLOAD;
-    $name =~ s/.*:://;  # lose package name
-    my $target = "DynaLoader::$name";
-    goto &$target;
-}
+# # Because we use Exporter we want to silence:
+# #   Use of inherited AUTOLOAD for non-method ... is deprecated
+# sub AUTOLOAD
+# {
+#     my $name = our $AUTOLOAD;
+#     $name =~ s/.*:://;  # lose package name
+#     my $target = "DynaLoader::$name";
+#     goto &$target;
+# }
 
 
 use vars qw(@EXPORT @ISA $HAVE_TERM_ANSIColor);

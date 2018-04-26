@@ -21,5 +21,4 @@ is($brkpts->find(1), $brkpt1, 'Should find breakpoint 1');
 is($brkpts->find(2), undef, 'Should not find breakpoint 2');
 is($brkpts->find('a'), undef, 'Should tolerate bad find value: a');
 
-
 done_testing;

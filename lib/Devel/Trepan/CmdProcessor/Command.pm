@@ -14,19 +14,19 @@ package Devel::Trepan::CmdProcessor::Command;
 no warnings 'redefine';
 use Devel::Trepan::Util qw(hash_merge);
 
-BEGIN {
-    if ($] <= 5.022) {
-	# Because we use Exporter we want to silence:
-	#   Use of inherited AUTOLOAD for non-method ... is deprecated
-	sub AUTOLOAD
-	{
-	    my $name = our $AUTOLOAD;
-	    $name =~ s/.*:://;  # lose package name
-	    my $target = "DynaLoader::$name";
-	    goto &$target;
-	}
-    }
-}
+# BEGIN {
+#     if ($] < 5.022) {
+# 	# Because we use Exporter we want to silence:
+# 	#   Use of inherited AUTOLOAD for non-method ... is deprecated
+# 	sub AUTOLOAD
+# 	{
+# 	    my $name = our $AUTOLOAD;
+# 	    $name =~ s/.*:://;  # lose package name
+# 	    my $target = "DynaLoader::$name";
+# 	    goto &$target;
+# 	}
+#     }
+# }
 
 sub DESTROY {}
 

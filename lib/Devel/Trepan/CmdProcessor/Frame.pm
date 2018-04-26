@@ -8,6 +8,9 @@ use Devel::Trepan::Complete;
 package Devel::Trepan::CmdProcessor;
 use English qw( -no_match_vars );
 
+my $have_deparse = eval q(use Devel::Trepan::Deparse; 1);
+my $have_deparsed = 0;
+
 sub frame_complete($$;$)
 {
     my ($self, $prefix, $direction) = @_;
@@ -86,8 +89,18 @@ sub print_stack_entry
         my $line  = getline($canonic_file, $lineno, $opts);
         $self->msg($line) if $line;
     }
-    if ($opts->{deparse}) {
-	$self->msg("To be filled in...")
+    if ($opts->{deparse} && $have_deparse && exists($frame->{fn}) && $addr) {
+	if (!$have_deparsed) {
+	    eval "use Devel::Trepan::CmdProcessor::Command::Deparse";
+	    $have_deparsed = 1;
+	}
+	my $int_addr = $addr;
+        $int_addr =~ s/\s+$//g;
+	$int_addr = hex($int_addr);
+	my ($op_info) = deparse_offset($frame->{fn}, $int_addr);
+	if ($op_info) {
+	    pmsg_info($self, [], '', $op_info);
+	}
     }
 
 }

@@ -10,13 +10,17 @@ package Devel::Trepan::CmdProcessor;
 
 # Because we use Exporter we want to silence:
 #   Use of inherited AUTOLOAD for non-method ... is deprecated
-sub AUTOLOAD
-{
-    my $name = our $AUTOLOAD;
-    $name =~ s/.*:://;  # lose package name
-    my $target = "DynaLoader::$name";
-    goto &$target;
-}
+# if ($] < 5.022) {
+#     eval {
+# 	sub AUTOLOAD
+# 	{
+# 	    my $name = our $AUTOLOAD;
+# 	    $name =~ s/.*:://;  # lose package name
+# 	    my $target = "DynaLoader::$name";
+# 	    goto &$target;
+# 	};
+#     }
+# }
 
 sub DESTROY{}
 

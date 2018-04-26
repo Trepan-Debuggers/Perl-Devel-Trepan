@@ -17,7 +17,7 @@ sub frame_complete($$;$)
     Devel::Trepan::Complete::complete_token(\@ary, $prefix);
 }
 
-sub print_stack_entry()
+sub print_stack_entry
 {
     my ($self, $frame, $i, $prefix, $opts) = @_;
     $opts->{maxstack} = 1e9 unless defined $opts->{maxstack};
@@ -25,11 +25,11 @@ sub print_stack_entry()
     local $LIST_SEPARATOR = ', ';
 
     # Get the file name.
-    my $file = $self->canonic_file($frame->{file});
-    $file = '??' unless defined $file;
+    my $canonic_file = $self->canonic_file($frame->{file});
+    $canonic_file = '??' unless defined $canonic_file;
 
     # Put in a filename header if short is off.
-    $file = ($file eq '-e') ? $file : "file `$file'" unless $opts->{short};
+    my $file = ($canonic_file eq '-e') ? $canonic_file : "file `$canonic_file'" unless $opts->{short};
 
     my $not_last_frame = $i != ($self->{stack_size}-1);
     my $s = '';
@@ -83,9 +83,13 @@ sub print_stack_entry()
         }
     }
     if ($opts->{source}) {
-        my $line  = getline($file, $lineno, $opts);
+        my $line  = getline($canonic_file, $lineno, $opts);
         $self->msg($line) if $line;
     }
+    if ($opts->{deparse}) {
+	$self->msg("To be filled in...")
+    }
+
 }
 
 sub print_stack_trace_from_to($$$$$)

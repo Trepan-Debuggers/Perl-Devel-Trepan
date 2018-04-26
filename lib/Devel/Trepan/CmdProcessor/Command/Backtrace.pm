@@ -6,6 +6,8 @@ use rlib '../../../..';
 package Devel::Trepan::CmdProcessor::Command::Backtrace;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command ;
 
+use Getopt::Long qw(GetOptionsFromArray);
+
 unless (@ISA) {
     eval <<"EOE";
 use constant ALIASES    => qw(bt where T);
@@ -29,7 +31,7 @@ our $NAME = set_name();
 our $HELP = <<'HELP';
 =pod
 
-B<backtrace> [I<count>]
+B<backtrace> [I<options>] [I<count>]
 
 Print backtrace of all stack frames, or innermost *count* frames.
 
@@ -41,11 +43,23 @@ debugger commands such as source-line listing
 (L<C<list>|Devel::Trepan::CmdProcessor::Command::List>) or the
 L<C<edit>|Devel::Trepan::CmdProcessor::Command::Edit> command.
 
+I<optionss> are:
+
+   -d | --deparse - show deparsed call position
+   -s | --source  - show source code line
+   -f | --full    - locals of each frame
+   -h | --help    - give this help
+
 =head2 Examples:
 
- backtrace      # Print a full stack trace
- backtrace 2    # Print only the top two entries
- backtrace -1   # Print a stack trace except the initial (least recent) call.
+   backtrace      # Print a full stack trace
+   backtrace 2    # Print only the top two entries
+   backtrace -1   # Print a stack trace except the initial (least recent) call.
+   backtrace -s   # show source lines in listing
+   backtrace -d   # show deparsed source lines in listing
+   backtrace -f   # show with locals
+   backtrace -df  # show with deparsed calls and locals
+   backtrace --deparse --full   # same as above
 
 =head2 See also:
 
@@ -62,18 +76,50 @@ sub complete($$)
     $self->{proc}->frame_complete($prefix);
 }
 
+my $DEFAULT_OPTIONS = {
+    help      => 0,       # show source line in backtrace?
+    deparse   => 0,       # show deparse in backtrace?
+    full      => 0,       # show "locals"?
+    source    => 0,       # show source line in backtrace?
+
+};
+
+sub parse_options($$)
+{
+    my ($self, $args) = @_;
+    $Getopt::Long::autoabbrev = 1;
+    my %opts = %{$DEFAULT_OPTIONS};
+    my $result = &GetOptionsFromArray($args,
+          'h|help' =>    \$opts{help},
+          'd|deparse' => \$opts{deparse},
+          's|source' => \$opts{source},
+          'f|full'   => \$opts{full},
+        );
+    %opts;
+}
+
 # This method runs the command
 sub run($$)
 {
     my ($self, $args) = @_;
     my $proc = $self->{proc};
+    my %cmd_opts = $self->parse_options($args);
     my $opts = {
         basename    => $proc->{settings}{basename},
         current_pos => $proc->{frame_index},
         maxstack    => $proc->{settings}{maxstack},
         maxwidth    => $proc->{settings}{maxwidth},
         displayop   => $proc->{settings}{displayop},
+        deparse     => $cmd_opts{deparse},
+        source      => $cmd_opts{source},
+        full        => $cmd_opts{full},
     };
+    if ($cmd_opts{help}) {
+	my $help_cmd = $proc->{commands}{help};
+	$help_cmd->run( ['help', 'backtrace'] );
+	return
+    }
+
     my $stack_size = $proc->{stack_size};
     my $count = $stack_size;
     if (scalar @$args > 1) {

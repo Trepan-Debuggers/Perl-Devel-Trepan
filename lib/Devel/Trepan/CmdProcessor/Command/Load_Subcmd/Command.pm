@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012, 2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012, 2014, 2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine';
 use rlib '../../../../..';
 
@@ -57,8 +57,11 @@ sub run($$)
     my @args = @$args; shift @args; shift @args;
     foreach my $file_or_dir (@args) {
         my @errs = $proc->load_debugger_commands($file_or_dir);
-	unless(@errs) {
-	    $proc->msg("Devel::Trepan command $file_or_dir loaded ok")
+	if(@errs) {
+	    $proc->msg("Devel::Trepan command $file_or_dir loaded ok");
+	} else {
+	    $proc->errmsg("Devel::Trepan command $file_or_dir failed");
+	    $proc->errmsg(join("\n", @errs));
 	}
     }
 }

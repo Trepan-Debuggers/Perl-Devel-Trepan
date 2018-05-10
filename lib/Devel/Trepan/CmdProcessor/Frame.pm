@@ -90,10 +90,11 @@ sub print_stack_entry
         $self->msg($line) if $line;
     }
     if ($opts->{deparse} && $have_deparse && exists($frame->{fn}) && $addr) {
-	if (!$have_deparsed) {
-	    eval "use Devel::Trepan::CmdProcessor::Command::Deparse";
-	    $have_deparsed = 1;
-	}
+	## Comment out  while testing Deparse
+	# if (!$have_deparsed) {
+	#     eval "use Devel::Trepan::CmdProcessor::Command::Deparse";
+	#     $have_deparsed = 1;
+	# }
 	my $int_addr = $addr;
         $int_addr =~ s/\s+$//g;
 	$int_addr = hex($int_addr);

@@ -58,10 +58,10 @@ sub run($$)
     foreach my $file_or_dir (@args) {
         my @errs = $proc->load_debugger_commands($file_or_dir);
 	if(@errs) {
-	    $proc->msg("Devel::Trepan command $file_or_dir loaded ok");
-	} else {
 	    $proc->errmsg("Devel::Trepan command $file_or_dir failed");
 	    $proc->errmsg(join("\n", @errs));
+	} else {
+	    $proc->msg("Devel::Trepan command $file_or_dir loaded ok");
 	}
     }
 }

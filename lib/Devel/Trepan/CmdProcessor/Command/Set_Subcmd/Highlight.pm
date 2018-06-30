@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015, 2017 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -42,7 +42,7 @@ terminal background is light; this is the default
 
 =item B<dark>
 
-terminal background is dark or light forgeground text
+terminal background is dark or light foreground text
 
 =back
 

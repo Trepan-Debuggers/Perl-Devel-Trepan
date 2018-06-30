@@ -34,7 +34,7 @@ my $builder = Module::Build->new(
     add_to_cleanup      => [ 'Devel-Trepan-*', 'tmp*', '*.got'  ],
     create_makefile_pl  => 'passthrough',
     dist_abstract       =>
-    'Modular Perl Debugger (akin to Ruby "Trepanning" Debuggers).',
+    'Modular Perl Debugger (akin to Python "Trepanning" Debuggers).',
     dist_author         => 'Rocky Bernstein <rocky@cpan.org>',
     dist_version_from   => 'lib/Devel/Trepan/Version.pm',
     license             => 'gpl',

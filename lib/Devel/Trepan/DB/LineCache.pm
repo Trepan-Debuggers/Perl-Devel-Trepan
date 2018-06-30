@@ -798,7 +798,11 @@ sub map_file($)
     } elsif ($script2file{$filename}) {
 	$script2file{$filename};
     } else {
-	$filename
+	return $filename if -r $filename;
+	my $testpath = glob $filename;
+	return $testpath if defined $testpath && -r $testpath;
+
+	return $filename;
     }
   }
 

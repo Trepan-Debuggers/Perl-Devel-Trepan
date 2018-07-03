@@ -180,6 +180,7 @@ lib/Devel/Trepan/CmdProcessor/Load.pm
 lib/Devel/Trepan/CmdProcessor/Location.pm
 lib/Devel/Trepan/CmdProcessor/Mock.pm
 lib/Devel/Trepan/CmdProcessor/Msg.pm
+lib/Devel/Trepan/CmdProcessor/Parse/Range.pm
 lib/Devel/Trepan/CmdProcessor/Validate.pm
 lib/Devel/Trepan/Complete.pm
 lib/Devel/Trepan/Condition.pm
@@ -247,6 +248,7 @@ t/10test-linecache.t
 t/10test-load.t
 t/10test-location.t
 t/10test-options.t
+t/10test-parse-range.t
 t/10test-pod2text.t
 t/10test-position.t
 t/10test-proc-default.t

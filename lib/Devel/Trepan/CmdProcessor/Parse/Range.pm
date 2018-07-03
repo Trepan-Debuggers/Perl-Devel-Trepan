@@ -120,9 +120,6 @@ sub position_build
     if (substr($pos, 0, 1) =~ /^[+-]$/) {
 	return {offset => $pos}
     } else {
-	unless ($pos =~ /^\d+$/) {
-	    use Enbugger 'trepan'; Enbugger->stop;
-	}
 	return {line_num => $pos};
     }
 }

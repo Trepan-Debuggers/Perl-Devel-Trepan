@@ -9,7 +9,7 @@ use Marpa::R2 4.000;
 
 use Exporter;
 
-my $dsl = <<'END_OF_DSL';
+my $grammar_rules = <<'END_OF_GRAMMAR';
 
 # Use longest acceptable token match
 lexeme default = latm => 1
@@ -44,18 +44,18 @@ NUMBER ~ number
 OFFSET ~ [+-] digits
 number ~ digits
 digits ~ [\d]+
-DIRECTION ~ '+' | '-'
+DIRECTION ~ '+' | '-' | '.'
 whitespace ~ [\s]+
-FILENAME ~ name
+FILENAME ~ [^:\s]+
 FUNCNAME ~ name '()'
 name ~ name_first_char name_later_chars
 name_first_char ~ [A-Za-z_]
-name_later_chars ~ name_later_char+
+name_later_chars ~ name_later_char*
 name_later_char ~ [\w]
 
-END_OF_DSL
+END_OF_GRAMMAR
 
-my $range_grammar = Marpa::R2::Scanless::G->new( { source => \$dsl } );
+my $range_grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_rules } );
 
 package Devel::Trepan::CmdProcessor::Parse::Range;
 use English qw( -no_match_vars );
@@ -163,53 +163,59 @@ sub range_build
 }
 
 ## Demo/test ###
-unless (caller()) {
-    eval {use Test::More};
+# unless (caller()) {
+#     eval {use Test::More};
+#     eval {use Data::Dumper};
 
-    my @test = (
-	[ 'abc()', 'OK', [ 'range', [ 'location',  'abc()' ] ] ],
-	[ '+',   'OK', [ 'range', [ 'direction', '+' ] ] ],
-	[ '-',   'OK', [ 'range', [ 'direction', '-' ] ] ],
-	[ '+9', 'OK', [ 'range', [ 'location', [ 'offset', '+9' ] ] ] ],
-	[ '-2', 'OK', [ 'range', [ 'location', [ 'offset', '-2' ] ] ] ],
-	[ 'xyz:3,9', 'OK', [ 'range', [ 'location', 'xyz:3' ], ',', '9' ] ],
-	[ ',42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
-	[ ', 42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
-	[ '42,', 'OK', [ 'range', [ 'location', '42' ], ',' ] ],
-	);
+#     my @test = (
+# 	[ 'List.pm:1', 'OK', [ 'range', [ 'location',  'List.pm:1' ] ] ],
+# 	[ 'abc()', 'OK', [ 'range', [ 'location',  'abc()' ] ] ],
+# 	[ '+',   'OK', [ 'range', [ 'direction', '+' ] ] ],
+# 	[ '-',   'OK', [ 'range', [ 'direction', '-' ] ] ],
+# 	[ '+9', 'OK', [ 'range', [ 'location', [ 'offset', '+9' ] ] ] ],
+# 	[ '-2', 'OK', [ 'range', [ 'location', [ 'offset', '-2' ] ] ] ],
+# 	[ 'xyz:3,9', 'OK', [ 'range', [ 'location', 'xyz:3' ], ',', '9' ] ],
+# 	[ ',42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
+# 	[ ', 42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
+# 	[ '42,', 'OK', [ 'range', [ 'location', '42' ], ',' ] ],
+# 	);
 
-    for my $ix (0 .. $#test) {
-	my ($input, $expected_result, $expected_value) = @{$test[$ix]};
-	my $i = $ix + 1;
-	say "\n** Test #$i: ", $input;
+#     for my $ix (0 .. $#test) {
+# 	my ($input, $expected_result, $expected_value) = @{$test[$ix]};
+# 	my $i = $ix + 1;
+# 	say "\n** Test #$i: ", $input;
 
-	my $value_ref;
-	my $result = 'OK';
+# 	my $value_ref;
+# 	my $result = 'OK';
 
-	# Parse input and build tree
-	my $eval_ok = eval { $value_ref = parse_range( \$input ); 1; };
-	if ( !$eval_ok ) {
-	    my $eval_error = $EVAL_ERROR;
-	  PARSE_EVAL_ERROR: {
-	      $result = "Error: $EVAL_ERROR";
-	      Test::More::diag($result);
-	    }
-	}
-	if ($result ne $expected_result) {
-	    Test::More::fail(qq{Result of "$input" "$result"; expected "$expected_result"});
-	} else {
-	    Test::More::pass(qq{Result of "$input" matches});
-	}
-	my $value = '[fail]';
-	my $dump_expected = '[fail]';
-	my %range;
-	if ($value ne $dump_expected) {
-	    Test::More::fail(qq{Test of "$input" value was "$value"; expected "$dump_expected"});
-	} else {
-	    Test::More::pass(qq{Value of "$input" matches});
-	}
-    }
-    done_testing();
+# 	# Parse input and build tree
+# 	my $eval_ok = eval { $value_ref = parse_range( \$input ); 1; };
+# 	if ( !$eval_ok ) {
+# 	    my $eval_error = $EVAL_ERROR;
+# 	  PARSE_EVAL_ERROR: {
+# 	      $result = "Error: $EVAL_ERROR";
+# 	      Test::More::diag($result);
+# 	    }
+# 	    $result = "no parse";
+# 	}
+# 	if ($result ne $expected_result) {
+# 	    Test::More::fail(qq{Parse of "$input" "$result"; expected "$expected_result"});
+# 	} else {
+# 	    Test::More::pass(qq{Parse of "$input" okay});
+# 	}
 
-}
+# 	my $value = '[fail]';
+# 	my $dump_expected = '[fail]';
+# 	if ($value_ref) {
+# 	    $value         = Data::Dumper::Dumper($value_ref);
+# 	    $dump_expected = Data::Dumper::Dumper(\$expected_value);
+# 	}
+# 	if ($value ne $dump_expected) {
+# 	    Test::More::fail(qq{Test of "$input" value was "$value"; expected "$dump_expected"});
+# 	} else {
+# 	    Test::More::pass(qq{Parsed Value of "$input" matches});
+# 	}
+#     }
+#     done_testing();
+# }
 1;

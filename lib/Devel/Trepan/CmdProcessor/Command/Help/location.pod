@@ -1,5 +1,5 @@
 # Location syntax
-# Copyright (C) 2014-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2014-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 
 =begin comment
 
@@ -22,6 +22,8 @@ L<C<break>|Devel::Trepan::CmdProcessor::Command::break>,
 L<C<tbreak>|Devel::Trepan::CmdProcessor::Command::TBreak> and
 L<C<continue>|Devel::Trepan::CmdProcessor::Command::Continue>.
 
+To a large extent we emulate gdb's concept of a location.
+
 A location is either some sort of "container" and a position inside
 that container. A container is either a file name or a method
 name. And a position is either a line number or a bytecode offset.
@@ -41,12 +43,6 @@ I<gcd()>.
 
 Line numbers in methods are not relative to the beginning of the
 method but relative the beginning of source text that contains the
-method. This is also how Ruby stores line numbers for methods which
+method. This is also how Perl stores line numbers for methods which
 are shown for example in a backtrace. So all of this hopefully will
 feel familiar and consistent.
-
-Instead of using a colon to separate the container and the position,
-you can also use spaces. So C<gcd 5> is the same as C<gcd:5>.
-
-If the filename has an embedded blank in it, you can indicate that by
-using a backslash escape. For example: C<file\ with\ blanks.rb>.

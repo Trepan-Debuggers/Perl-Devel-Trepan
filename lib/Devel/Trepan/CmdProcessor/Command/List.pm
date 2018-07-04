@@ -7,6 +7,7 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::List;
 use English qw( -no_match_vars );
+use 5.010;
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
@@ -32,8 +33,6 @@ our $NAME = set_name();
 =cut
 our $HELP = <<'HELP';
 =pod
-
-B<list>[E<gt>] [I<filename>] [I<first> [I<number>]]
 
 B<list>[E<gt>] I<location> [I<number>]
 
@@ -64,10 +63,8 @@ number of lines to list instead.
 =head2 Examples:
 
  list 5            # List centered around line 5
- list 5>           # List starting at line 5
- list foo.pl 5     # Same as above.
- list foo.pl  5 6  # list lines 5 and 6 of foo.pl
- list foo.pl  5 2  # Same as above, since 2 < 5.
+ list foo.pl:5     # List foo.pl at line 5
+ list , 16         # list lines ending in line 16
  list .            # List lines centered from where we currently are stopped
  list . 3          # List 3 lines starting from where we currently are stopped
                      # if . > 3. Otherwise we list from . to 3.
@@ -170,7 +167,7 @@ sub parse_list_cmd($$$$)
 	my $start_symbol_name = shift @ary;
 	unless ($start_symbol_name eq 'range') {
 	    $proc->errmsg("List expecting a range parse");
-	    return undef, undef undef;
+	    return undef, undef, undef;
 	}
 
 	my %range = range_build(@ary);
@@ -190,15 +187,19 @@ sub parse_list_cmd($$$$)
 		$filename     = $frame->{file};
 		$start        = $frame->{line} - ($listsize / 2);
 	    } else {
-		$proc->errmsg("List expecting a range parse");
-		return undef, undef undef;
+		$proc->errmsg("List command expecting a range parse");
+		return undef, undef, undef;
 	    }
         } else {
 	    my $loc_start = $range{start};
 	    if (defined $loc_start) {
 		if (ref $loc_start eq 'HASH') {
 		    my $location = $loc_start->{location};
-		    die unless $location;
+		    unless (defined $location) {
+			$proc->errmsg("List command parse expected a location");
+			return undef, undef, undef;
+
+		    };
 		    $filename = $location->{filename} if $location->{filename};
 		    $start = $location->{line_num} if $location->{line_num};
 		    $start = $location->{offset} if $location->{offset};
@@ -239,13 +240,14 @@ sub run($$)
         (substr($args->[0], -1, 1) eq '>') ? 0 : int(($listsize-1) / 2);
 
     my ($filename, $start, $end) = parse_list_cmd($self, $args, $listsize,
-                                                  $center_correction);
+						  $center_correction);
+
     return unless $filename;
 
     # We now have range information. Do the listing.
     my $max_line = Devel::Trepan::DB::LineCache::size($filename);
     $filename = map_file($filename);
-    unless (defined $max_line) {
+    unless (defined $max_line && -r $filename) {
         $proc->errmsg("File \"$filename\" not found.");
         return;
     }

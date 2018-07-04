@@ -99,7 +99,7 @@ sub location_build
     } else {
 	if (substr($loc, -2, 2) eq '()') {
 	    return {'funcname' => $loc }
-	} elsif ($loc =~ /(\S+):([\d+])$/) {
+	} elsif ($loc =~ /(\S+):(\d+)$/) {
 	    return {location => {
 		filename => $1,
 		line_num => $2,

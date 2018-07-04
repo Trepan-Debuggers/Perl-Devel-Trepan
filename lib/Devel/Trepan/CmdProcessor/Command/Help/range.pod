@@ -1,0 +1,43 @@
+=begin comment
+
+The intent of this file is to live in both in the github wiki and as
+part of on-line help documentation
+lib/Devel/Trepan/CmdProcess/Command/Help/...
+
+=end comment
+
+=encoding utf8
+
+=head1 Syntax for List Ranges
+
+List ranges are used in the C<list> and C<disassemble> commands.
+
+A list range is in one of the following forms:
+
+    location       # starting line only
+    first, last    # starting and ending line
+    , last         # ending line only
+
+
+A I<location> is described elsewhere. I<first> can also be a
+location but they aflso may be a number. And finally I<last> can be an
+offset.
+
+A number is just a decimal number. An offset is a number prefaced with "+" and
+indicates the number to increment the line number found in *first*.
+
+=head2  Examples
+
+    5                           # start from line 5 of current file
+    5 ,                         # Same as above.
+    5                           # listsize lines before and up to 5
+    foo.pl:5                    # start from line 5 of file foo.py
+    foo()                       # start from function foo
+    File::Basename:5            # start from line 5 of module File::Basename
+    File::Basename:5            # Same as above.
+    File::Basename:5, 6         # list lines 5 and 6 of File::Basename
+    File::Basename:5, +1        # Same as above. +1 is an offset
+    File::Basename:5, 1         # Same as above, since 1 < 5.
+    File::Basename:5, +6        # lines 5-11
+    File::Basename.join()       # lines starting with the os.join.path function.
+    "c:\foo.pl":10,             # listsize lines starting from line 10 of c:\foo.py

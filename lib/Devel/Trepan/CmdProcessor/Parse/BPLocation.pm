@@ -47,9 +47,10 @@ SYMBOL ~ [^:\d]
 
 END_OF_GRAMMAR
 
-my $range_grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_rules } );
+my $range_grammar = Marpa::R2::Scanless::G->new(
+    { source => \$grammar_rules } );
 
-package Devel::Trepan::CmdProcessor::Parse::Range;
+package Devel::Trepan::CmdProcessor::Parse::BPLocation;
 use English qw( -no_match_vars );
 
 use vars qw(@EXPORT @ISA);
@@ -130,13 +131,30 @@ sub location_build
 
 #     my @test = (
 # 	[ 'List.pm:1', 'OK',
-# 	  [ 'location_if', [ 'location',  'List.pm:1' ] ] ],
+# 	  {
+# 	      filename => "List.pm",
+# 	      is_conditional =>  0,
+# 	      line_num => 1
+# 	  }],
 # 	[ 'abc()', 'OK',
-# 	  [ 'location_if', [ 'location',  'abc()' ] ] ],
+# 	  {
+# 	      funcname => "abc()",
+# 	      is_conditional => 0,
+# 	  },
+# 	],
 # 	[ 'abs() if 1',   'OK',
-# 	  [ 'location_if', [ 'location', '+' ] ] ],
+# 	  {
+# 	      funcname => "abs()",
+# 	      is_conditional => 1,
+# 	  }
+# 	],
 # 	[ 'List.pm:10 if y > 3', 'OK',
-# 	  [ 'location_if', [ 'location', '-' ] ] ],
+# 	  {
+# 	      filename => "List.pm",
+# 	      is_conditional => 1,
+# 	      line_num => 10
+# 	  }
+# 	]
 # 	);
 
 #     for my $ix (0 .. $#test) {
@@ -163,21 +181,16 @@ sub location_build
 # 	    Test::More::pass(qq{Parse of "$input" okay});
 # 	}
 
-# 	use Data::Printer;
 # 	# say Data::Dumper::Dumper($value_ref);
-# 	my $bp_location = bp_location_build($value_ref);
-# 	p $bp_location;
-# 	# my $value = '[fail]';
-# 	# my $dump_expected = '[fail]';
-# 	# if ($value_ref) {
-# 	#     $value         = Data::Dumper::Dumper($value_ref);
-# 	#     $dump_expected = Data::Dumper::Dumper(\$expected_value);
-# 	# }
-# 	# if ($value ne $dump_expected) {
-# 	#     Test::More::fail(qq{Test of "$input" value was "$value"; expected "$dump_expected"});
-# 	# } else {
-# 	#     Test::More::pass(qq{Parsed Value of "$input" matches});
-# 	# }
+# 	my %bp_location = %{bp_location_build($value_ref)};
+# 	# use Data::Printer;
+# 	# p $bp_location;
+# 	my %expected_value = %$expected_value;
+# 	if (%bp_location ne %expected_value) {
+# 	    Test::More::fail(qq{Test of "$input" value was "%bp_location"; expected "%expected_value"});
+# 	} else {
+# 	    Test::More::pass(qq{Parsed Value of "$input" matches});
+# 	}
 #     }
 #     done_testing();
 # }

@@ -8,8 +8,7 @@ use Devel::Trepan::Complete;
 package Devel::Trepan::CmdProcessor;
 use English qw( -no_match_vars );
 
-my $have_deparse = eval q(use Devel::Trepan::Deparse; 1);
-my $have_deparsed = 0;
+my $have_deparse = eval q(use B::DeparseTree::Fragment; use Devel::Trepan::Deparse; 1);
 
 sub frame_complete($$;$)
 {
@@ -89,18 +88,27 @@ sub print_stack_entry
         my $line  = getline($canonic_file, $lineno, $opts);
         $self->msg($line) if $line;
     }
-    if ($opts->{deparse} && $have_deparse && exists($frame->{fn}) && $addr) {
-	## Comment out  while testing Deparse
-	# if (!$have_deparsed) {
-	#     eval "use Devel::Trepan::CmdProcessor::Command::Deparse";
-	#     $have_deparsed = 1;
-	# }
+
+
+    if ($opts->{deparse} && $have_deparse && $addr) {
+	my $funcname = $not_last_frame ? $frame->{fn} : "DB::DB";
 	my $int_addr = $addr;
         $int_addr =~ s/\s+$//g;
+	no warnings 'portable';
 	$int_addr = hex($int_addr);
-	my ($op_info) = deparse_offset($frame->{fn}, $int_addr);
+	my ($op_info) = deparse_offset($funcname, $int_addr);
 	if ($op_info) {
-	    pmsg_info($self, [], '', $op_info);
+	    if ($i != 0) {
+		# All frames except the current frame we need to
+		# back up the op_info;
+		$op_info = get_prev_addr_info($op_info);
+	    }
+	    my $extract_texts = extract_node_info($op_info);
+	    if ($extract_texts) {
+		pmsg($self, join("\n", @$extract_texts))
+	    } else {
+		pmsg($self, $op_info->{text});
+	    }
 	}
     }
 

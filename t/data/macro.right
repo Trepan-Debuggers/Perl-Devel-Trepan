@@ -19,8 +19,9 @@ List of macro names currently defined:
 --------------------------------------
 foo
 Macro "bar" defined.
-gcd.pl [14-21]
+gcd.pl [13-21]
 --------------
+ 13    	    return undef if $a <= 0;
  14    	    return $a if ($a == 1) or ($b-$a == 0);
  15    	    return gcd($b-$a, $a);
  16    	}

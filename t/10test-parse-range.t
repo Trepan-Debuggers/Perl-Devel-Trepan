@@ -11,15 +11,23 @@ note( "Testing Devel::CmdProcessor::Parse::Range" );
 use Devel::Trepan::CmdProcessor::Parse::Range;
 
 my @test = (
-    [ 'abc()', 'OK', [ 'range', [ 'location',  'abc()' ] ] ],
-    [ '+',   'OK', [ 'range', [ 'direction', '+' ] ] ],
+    [ 'List.pm:1', 'OK',
+      [ 'range', [ 'location',  'List.pm:1' ] ] ],
+    [ '+',   'OK',
+      [ 'range', [ 'direction', '+' ] ] ],
     [ '-',   'OK', [ 'range', [ 'direction', '-' ] ] ],
-    [ '+9', 'OK', [ 'range', [ 'location', [ 'offset', '+9' ] ] ] ],
-    [ '-2', 'OK', [ 'range', [ 'location', [ 'offset', '-2' ] ] ] ],
-    [ 'xyz:3,9', 'OK', [ 'range', [ 'location', 'xyz:3' ], ',', '9' ] ],
-    [ ',42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
-    [ ', 42',     'OK', [ 'range', ',', [ 'location', '42' ] ] ],
-    [ '42,', 'OK', [ 'range', [ 'location', '42' ], ',' ] ],
+    [ '+9', 'OK',
+      [ 'range', [ 'location', [ 'offset', '+9' ] ] ] ],
+    [ '-2', 'OK',
+      [ 'range', [ 'location', [ 'offset', '-2' ] ] ] ],
+    [ 'xyz:3,9', 'OK',
+      [ 'range', [ 'location', 'xyz:3' ], ',', '9' ] ],
+    [ ',42',     'OK',
+      [ 'range', ',', [ 'location', '42' ] ] ],
+    [ ', 42',     'OK',
+      [ 'range', ',', [ 'location', '42' ] ] ],
+    [ '42,', 'OK',
+      [ 'range', [ 'location', '42' ], ',' ] ],
     );
 
 for my $ix (0 .. $#test) {
@@ -38,11 +46,12 @@ for my $ix (0 .. $#test) {
 	  $result = "Error: $EVAL_ERROR";
 	  Test::More::diag($result);
 	}
+	$result = "no parse";
     }
     if ($result ne $expected_result) {
-	Test::More::fail(qq{Result of "$input" "$result"; expected "$expected_result"});
+	Test::More::fail(qq{Parse of "$input" "$result"; expected "$expected_result"});
     } else {
-	Test::More::pass(qq{Result of "$input" matches});
+	Test::More::pass(qq{Parse of "$input" okay});
     }
     my $value = '[fail]';
     my $dump_expected = '[fail]';
@@ -51,7 +60,8 @@ for my $ix (0 .. $#test) {
 	$value         = Data::Dumper::Dumper($value_ref);
 	$dump_expected = Data::Dumper::Dumper(\$expected_value);
 	my @ary = @$$value_ref;
-	my $fn_name = shift @ary;
+	my $start_symbol = shift @ary;
+	is($start_symbol, 'range');
 	%range = range_build(@ary);
 	# use Data::Printer; p %range;
     }

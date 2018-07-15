@@ -14,6 +14,6 @@ break 14
 c
 s
 list
-# Se that break shows watch expression
+# See that break shows watch expression
 info break
 quit!

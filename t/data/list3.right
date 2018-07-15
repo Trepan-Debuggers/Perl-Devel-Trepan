@@ -17,16 +17,16 @@ test-module.pm [5-6]
   5    	my $x = 1;
   6    	my $y = 2;
 *** Bad line range [7...9]; file "test-module.pm" has only 6 lines
-test-module.pm [1-3]
---------------------
-  1    	package Test::Module;
-  2    	sub five { 
-  3  ->	    return 5;
 test-module.pm [2-4]
 --------------------
   2    	sub five { 
   3  ->	    return 5;
   4    	}
+test-module.pm [1-3]
+--------------------
+  1    	package Test::Module;
+  2    	sub five { 
+  3    	    return 5;
 --> #1 file `test-require.pl' at line 6
    main::(test-require.pl:6)
 my $x = Test::Module::five();

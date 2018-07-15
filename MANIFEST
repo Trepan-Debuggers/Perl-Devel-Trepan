@@ -70,6 +70,7 @@ lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod
+lib/Devel/Trepan/CmdProcessor/Command/Help/range.pod
 lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod
 lib/Devel/Trepan/CmdProcessor/Command/Info.pm
 lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Breakpoints.pm
@@ -180,6 +181,7 @@ lib/Devel/Trepan/CmdProcessor/Load.pm
 lib/Devel/Trepan/CmdProcessor/Location.pm
 lib/Devel/Trepan/CmdProcessor/Mock.pm
 lib/Devel/Trepan/CmdProcessor/Msg.pm
+lib/Devel/Trepan/CmdProcessor/Parse/BPLocation.pm
 lib/Devel/Trepan/CmdProcessor/Parse/Range.pm
 lib/Devel/Trepan/CmdProcessor/Validate.pm
 lib/Devel/Trepan/Complete.pm
@@ -248,6 +250,7 @@ t/10test-linecache.t
 t/10test-load.t
 t/10test-location.t
 t/10test-options.t
+t/10test-parse-bplocation.t
 t/10test-parse-range.t
 t/10test-pod2text.t
 t/10test-position.t

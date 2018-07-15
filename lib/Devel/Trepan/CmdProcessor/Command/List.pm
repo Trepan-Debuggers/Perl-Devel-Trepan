@@ -7,9 +7,12 @@ use rlib '../../../..';
 
 package Devel::Trepan::CmdProcessor::Command::List;
 use English qw( -no_match_vars );
+use 5.010;
 use Devel::Trepan::DB::LineCache;
 use Devel::Trepan::CmdProcessor::Validate;
 use if !@ISA, Devel::Trepan::CmdProcessor::Command;
+use Devel::Trepan::CmdProcessor::Parse::Range;
+
 unless (@ISA) {
     eval <<'EOE';
     use constant ALIASES    => qw(l list> l>);
@@ -30,8 +33,6 @@ our $NAME = set_name();
 =cut
 our $HELP = <<'HELP';
 =pod
-
-B<list>[E<gt>] [I<filename>] [I<first> [I<number>]]
 
 B<list>[E<gt>] I<location> [I<number>]
 
@@ -62,10 +63,8 @@ number of lines to list instead.
 =head2 Examples:
 
  list 5            # List centered around line 5
- list 5>           # List starting at line 5
- list foo.pl 5     # Same as above.
- list foo.pl  5 6  # list lines 5 and 6 of foo.pl
- list foo.pl  5 2  # Same as above, since 2 < 5.
+ list foo.pl:5     # List foo.pl at line 5
+ list , 16         # list lines ending in line 16
  list .            # List lines centered from where we currently are stopped
  list . 3          # List 3 lines starting from where we currently are stopped
                      # if . > 3. Otherwise we list from . to 3.
@@ -139,76 +138,85 @@ sub no_frame_msg($)
 sub parse_list_cmd($$$$)
 {
     my ($self, $args, $listsize, $center_correction) = @_;
-    my $proc = $self->{proc};
-    my $frame = $proc->{frame};
+
     my @args = @$args;
     shift @args;
 
+    my $proc = $self->{proc};
+    my $frame = $proc->{frame};
     my $filename = $proc->{list_filename};
     my $fn;
     my ($start, $end);
 
-    if (scalar @args  > 0) {
-        if ($args[0] eq '-') {
-            return $self->no_frame_msg() unless $proc->{list_line};
-            $start = $proc->{list_line} - 2*$listsize;
-            $start = 1 if $start < 1;
-        } elsif ($args[0] eq '.') {
-            return $self->no_frame_msg() unless $frame->{line};
-            $filename = $proc->filename;
-            $start    = $proc->line;
-            $start    = 1 if $start < 1;
-            if (scalar @args == 2) {
-                my $opts = {
-                    'msg_on_error' =>
-                        "${NAME} command $end or count parameter expected, " .
-                        "got: $args[2]"
-                };
-                my $second = $proc->get_an_int($args[1], $opts);
-                return (undef, undef, undef) unless $second;
-                $end = $self->adjust_end($start, $second);
-            }
+    if (scalar @args > 0) {
+
+	my $command = $proc->{current_command};
+	$command = substr($command, index($command, ' '));
+	my $value_ref;
+
+	# Parse input and build tree
+	my $eval_ok = eval { $value_ref = parse_range( \$command ); 1; };
+	if ( !$eval_ok ) {
+	    my $eval_error = $EVAL_ERROR;
+	  PARSE_EVAL_ERROR: {
+	      $self->errmsg("list parsing error: $EVAL_ERROR");
+	      return undef, undef, undef;
+	    }
+	}
+	my @ary = @$$value_ref;
+	my $start_symbol_name = shift @ary;
+	unless ($start_symbol_name eq 'range') {
+	    $proc->errmsg("List expecting a range parse");
+	    return undef, undef, undef;
+	}
+
+	my %range = range_build(@ary);
+
+	my $direction = $range{direction};
+	if (defined $direction) {
+	    if ($direction eq '-') {
+		return $self->no_frame_msg() unless $proc->{list_line};
+		$start = $proc->{list_line} - 2*$listsize;
+		$start = 1 if $start < 1;
+	    } elsif ($direction eq '+') {
+		return $self->no_frame_msg() unless $proc->{list_line};
+		$start = $proc->{list_line} - $center_correction;
+	    } elsif ($direction eq '.') {
+		my $frame     = $proc->{frame};
+		return $self->no_frame_msg() unless defined $frame;
+		$filename     = $frame->{file};
+		$start        = $frame->{line} - ($listsize / 2);
+	    } else {
+		$proc->errmsg("List command expecting a range parse");
+		return undef, undef, undef;
+	    }
         } else {
-            my ($rest, $gobble_count);
-            ($filename, $start, $fn, $gobble_count, $rest) = $proc->parse_position(\@args);
-            return (undef, undef, undef) unless defined $start;
-            shift @args if $gobble_count > 0;
-            # error should have been shown previously
-        }
-        if (scalar @args <= 1) {
-            $start = 1 if !$start and $fn;
-            $start = $start - $center_correction;
-            $start = 1 if $start < 1;
-        } elsif (scalar @args == 2 or (scalar @args == 3 and $fn)) {
-            my $opts = {
-                msg_on_error =>
-                    "${NAME} command starting line expected, got $args[-1]"
-            };
-            $end = $proc->get_an_int($args[1], $opts);
-            return (undef, undef, undef) unless $end;
-            if ($fn) {
-                if ($start) {
-                    $start = $end;
-                    if (scalar @args == 3 and $fn) {
-                        my $opts = {
-                            'msg_on_error' =>
-                            ("${NAME} command $end or count parameter expected, " .
-                             "got: ${$args[2]}.")};
-                        $end = $proc->get_an_int($args[2], $opts);
-                        return (undef, undef, undef) unless $end;
-                    }
-                }
-            }
-            $end = $self->adjust_end($start, $end);
-        } elsif (! $fn) {
-            $proc->errmsg('At most 2 parameters allowed when no module' .
-                          " name is found/given. Saw: @args parameters");
-            return (undef, undef, undef);
-        } else {
-            $proc->errmsg('At most 3 parameters allowed when a module' +
-                          " name is given. Saw: @args parameters");
-            return (undef, undef, undef);
-        }
+	    my $loc_start = $range{start};
+	    if (defined $loc_start) {
+		if (ref $loc_start eq 'HASH') {
+		    my $location = $loc_start->{location};
+		    unless (defined $location) {
+			$proc->errmsg("List command parse expected a location");
+			return undef, undef, undef;
+
+		    };
+		    $filename = $location->{filename} if $location->{filename};
+		    $start = $location->{line_num} if $location->{line_num};
+		    $start = $location->{offset} if $location->{offset};
+		} else {
+		    $start = $loc_start;
+		}
+	    }
+	    my $loc_end = $range{end};
+	    if (defined $loc_end) {
+		$end = $loc_end->{line_num} if $loc_end->{line_num};
+		# FIXME handle offset
+		# $end = $loc_end->{offset} if $loc_end->{offset};
+		if (!defined $start) {
+		    $start = $end - $listsize;
+		}
+	    }
+	}
     } elsif ($frame && !$frame->{line} and $proc->{frame}) {
         $start = $frame->{line} - $center_correction;
     }  else {
@@ -232,13 +240,14 @@ sub run($$)
         (substr($args->[0], -1, 1) eq '>') ? 0 : int(($listsize-1) / 2);
 
     my ($filename, $start, $end) = parse_list_cmd($self, $args, $listsize,
-                                                  $center_correction);
+						  $center_correction);
+
     return unless $filename;
 
     # We now have range information. Do the listing.
     my $max_line = Devel::Trepan::DB::LineCache::size($filename);
     $filename = map_file($filename);
-    unless (defined $max_line) {
+    unless (defined $max_line && -r $filename) {
         $proc->errmsg("File \"$filename\" not found.");
         return;
     }
@@ -335,10 +344,13 @@ unless (caller) {
     $proc->{settings}{highlight} = undef;
     $cmd->run([$NAME]);
     print '-' x 20, "\n";
+    $proc->{current_command} = "$NAME";
     $cmd->run([$NAME]);
     print '-' x 20, "\n";
+    $proc->{current_command} = sprintf "%s %s:%s", $NAME, __FILE__, __LINE__;
     $cmd->run(["{$NAME}>", __FILE__, __LINE__]);
     print '-' x 20, "\n";
+    $proc->{current_command} = sprintf "%s %s:1", $NAME, __FILE__;
     $cmd->run(["{$NAME}>", __FILE__, 1]);
 }
 

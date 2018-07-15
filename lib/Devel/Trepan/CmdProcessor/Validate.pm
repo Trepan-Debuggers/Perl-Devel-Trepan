@@ -137,126 +137,6 @@ sub get_int_noerr($$)
     }
 }
 
-#     sub get_thread_from_string(id_or_num_str)
-#       if id_or_num_str == '.'
-#         Thread.current
-#       elsif id_or_num_str.downcase == 'm'
-#         Thread.main
-#       else
-#         num = get_int_noerr(id_or_num_str)
-#         if num
-#           get_thread(num)
-#         else
-#           nil
-#         }
-#       }
-#     }
-
-#     # Return the instruction sequence associated with string
-#     # OBJECT_STRING or nil if no instruction sequence
-#     sub object_iseq(object_string)
-#       iseqs = find_iseqs(ISEQS__, object_string)
-#       # FIXME: do something if there is more than one.
-#       if iseqs.size == 1
-#          iseqs[-1]
-#       elsif meth = method?(object_string)
-#         meth.iseq
-#       else
-#         nil
-#       }
-#     rescue
-#       nil
-#     }
-
-#     sub position_to_line_and_offset(iseq, filename, position, offset_type)
-#       case offset_type
-#       when :line
-#         if ary = iseq.lineoffsets[position]
-#           # Normally the first offset is a trace instruction and doesn't
-#           # register as the given line, so we need to take the next instruction
-#           # after the first one, when available.
-#           vm_offset = ary.size > 1 ? ary[1] : ary[0]
-#           line_no   = position
-#         elsif found_iseq = find_iseqs_with_lineno(filename, position)
-#           return position_to_line_and_offset(found_iseq, filename, position,
-#                                              offset_type)
-#         elsif found_iseq = find_iseq_with_line_from_iseq(iseq, position)
-#           return position_to_line_and_offset(found_iseq, filename, position,
-#                                              offset_type)
-#         else
-#           errmsg("Unable to find offset for line #{position}\n\t" +
-#                  "in #{iseq.name} of file #{filename}")
-#           return [nil, nil]
-#         }
-#       when :offset
-#         position = position.position unless position.kind_of?(Fixnum)
-#         if ary=iseq.offset2lines(position)
-#           line_no   = ary.first
-#           vm_offset = position
-#         else
-#           errmsg "Unable to find line for offset #{position} in #{iseq}"
-#           return [nil, nil]
-#         }
-#       when nil
-#         vm_offset = 0
-#         line_no   = iseq.offset2lines(vm_offset).first
-#       else
-#         errmsg "Bad parse offset_type: #{offset_type.inspect}"
-#         return [nil, nil]
-#       }
-#       return [iseq, line_no, vm_offset]
-#     }
-
-#     # Parse a breakpoint position. On success return:
-#     #   - the instruction sequence to use
-#     #   - the line number - a Fixnum
-#     #   - vm_offset       - a Fixnum
-#     #   - the condition (by default 'true') to use for this breakpoint
-#     #   - true condition should be negated. Used in *condition* if/unless
-#     sub breakpoint_position(position_str, allow_condition)
-#       break_cmd_parse = if allow_condition
-#                           parse_breakpoint(position_str)
-#                         else
-#                           parse_breakpoint_no_condition(position_str)
-#                         }
-#       return [nil] * 5 unless break_cmd_parse
-#       tail = [break_cmd_parse.condition, break_cmd_parse.negate]
-#       meth_or_frame, file, position, offset_type =
-#         parse_position(break_cmd_parse.position)
-#       if meth_or_frame
-#         if iseq = meth_or_frame.iseq
-#           iseq, line_no, vm_offset =
-#             position_to_line_and_offset(iseq, file, position, offset_type)
-#           if vm_offset && line_no
-#             return [iseq, line_no, vm_offset] + tail
-#           }
-#         else
-#           errmsg("Unable to set breakpoint in #{meth_or_frame}")
-#         }
-#       elsif file && position
-#         if :line == offset_type
-#           iseq = find_iseqs_with_lineno(file, position)
-#           if iseq
-#             junk, line_no, vm_offset =
-#               position_to_line_and_offset(iseq, file, position, offset_type)
-#             return [@frame.iseq, line_no, vm_offset] + tail
-#           else
-#             errmsg("Unable to find instruction sequence for" +
-#                    " position #{position} in #{file}")
-#           }
-#         else
-#           errmsg "Come back later..."
-#         }
-#       elsif @frame.file == file
-#         line_no, vm_offset = position_to_line_and_offset(@frame.iseq, position,
-#                                                          offset_type)
-#         return [@frame.iseq, line_no, vm_offset] + tail
-#       else
-#         errmsg("Unable to parse breakpoint position #{position_str}")
-#       }
-#       return [nil] * 5
-#     }
-
 # Return true if arg is 'on' or 1 and false arg is 'off' or 0.
 # Any other value is returns undef.
 sub get_onoff($$;$$)
@@ -288,13 +168,7 @@ sub is_method($$)
     return !!$line_num;
 }
 
-#     # FIXME: this is a ? method but we return
-#     # the method value.
-#     sub method?(meth)
-#       get_method(meth)
-#     }
-
-# parse_position
+# NOTE: this is slated to disappear
 # parse: file line [rest...]
 #        line [rest..]
 #        fn [rest..]
@@ -353,28 +227,6 @@ sub parse_position($$;$)
     return ($filename, $line_num, $fn, $gobble_count, @args);
 }
 
-
-#     sub validate_initialize
-#       ## top_srcdir = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-#       ## @dbgr_script_iseqs, @dbgr_iseqs = filter_scripts(top_srcdir)
-#       @file_exists_proc = Proc.new {|filename|
-#         if LineCache.cached?(filename) || LineCache.cached_script?(filename) ||
-#             (File.readable?(filename) && !File.directory?(filename))
-#           true
-#         else
-#           matches = find_scripts(filename)
-#           if matches.size == 1
-#             LineCache.remap_file(filename, matches[0])
-#             true
-#           else
-#             false
-#           }
-#         }
-#       }
-#     }
-#   }
-# }
-
 unless (caller) {
     no strict;
     require Devel::Trepan::DB;
@@ -411,15 +263,7 @@ unless (caller) {
     my @call_values = foo();
 
     $DB::package = 'main';
-        @position = $proc->parse_position([__FILE__, __LINE__], 0);
     print_position;
-    @position = $proc->parse_position([__LINE__], 0);
-    print_position;
-#    @position = $proc->parse_position(['print_position'], 0);
-#     print cmdproc.parse_position('@8').inspect
-#     print cmdproc.parse_position('8').inspect
-#     print cmdproc.parse_position("#{__FILE__} #{__LINE__}").inspect
-
 #     print '=' * 40
 #     ['Array.map', 'Trepan::CmdProcessor.new',
 #      'foo', 'cmdproc.errmsg'].each do |str|

@@ -17,8 +17,9 @@ gcd.pl [4-13]
  12    	
  13    	    return undef if $a <= 0;
 Breakpoint 2 set in gcd.pl at line 8
-gcd.pl [4-13]
+gcd.pl [3-12]
 -------------
+  3    	use warnings;
   4    	
   5    	# GCD. We assume positive numbers
   6    	sub gcd($$);
@@ -28,7 +29,6 @@ gcd.pl [4-13]
  10    	    # Make: a <= b
  11    	    ($a, $b) = ($b, $a) if ($a > $b);
  12    	
- 13    	    return undef if $a <= 0;
 x1 main::(gcd.pl:9)
     my ($a, $b) = @_;
 gcd.pl [5-14]

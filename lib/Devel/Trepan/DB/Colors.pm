@@ -47,7 +47,7 @@ sub setup
 {
     my $perl_formatter = new Syntax::Highlight::Perl::Improved;
     $perl_formatter->unstable(1);
-    if (scalar @_ && $_[0] eq 'dark') {
+    if (scalar @_ && $_[0] eq 'darkbg') {
 	$perl_formatter->set_format(
 	    'Comment_Normal'   => [$ANSI_colors{'yellow'},   $ANSI_colors{'none'}],
 	    'Comment_POD'      => [$ANSI_colors{'yellow'},   $ANSI_colors{'none'}],

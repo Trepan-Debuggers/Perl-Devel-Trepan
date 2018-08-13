@@ -74,7 +74,7 @@ BEGIN {
 
     $DB::event         = undef;  # The reason we have entered the debugger
 
-    $DB::VERSION = '1.05';
+    $DB::VERSION = '1.1.0';
 
     # initialize private globals to avoid warnings
 

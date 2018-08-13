@@ -39,10 +39,10 @@ sub run($$)
     my $mess;
     if ('plain' eq $val) {
 	$mess = 'output set to not use terminal escape sequences';
-    } elsif ('light' eq $val) {
+    } elsif ('lightbg' eq $val) {
 	$mess = 'output set for terminal with escape sequences ' .
 	    'for a light background';
-    } elsif ('dark' eq $val) {
+    } elsif ('darkbg' eq $val) {
 	$mess = ('output set for terminal with escape sequences ' .
 		 'for a dark background')
     } else {

@@ -11,7 +11,7 @@ use File::HomeDir;
 use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME);
 our @ISA;
-$VERSION='0.53'; # To fool CPAN indexer. Is <= real version
+$VERSION='1.0.0'; # To fool CPAN indexer. Is <= real version
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';
@@ -30,7 +30,7 @@ use constant PROGRAM_NAME => $PROGRAM_NAME;
 sub default_term() {
     ($ENV{'TERM'} && ($ENV{'TERM'} ne 'dumb' ||
                      (exists($ENV{'EMACS'}) && $ENV{'EMACS'} eq 't')))
-        ?  'light' : undef
+        ?  'lightbg' : undef
 }
 
 my $HOME = File::HomeDir->my_home;

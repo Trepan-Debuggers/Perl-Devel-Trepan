@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2011-2015, 2017 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2015, 2017-2018 Rocky Bernstein <rocky@cpan.org>
 use warnings; no warnings 'redefine'; no warnings 'once';
 use rlib '../../../../..';
 
@@ -22,7 +22,7 @@ our $MIN_ABBREV = length('hi');
 our $HELP = <<'HELP';
 =pod
 
-B<set highlight> [reset | plain | light | dark | off]
+B<set highlight> [reset | plain | lightbg | darkbg | off]
 
 Set whether we use terminal highlighting; Permissable values are:
 
@@ -36,11 +36,11 @@ no terminal highlighting
 
 same as B<plain>
 
-=item B<light>
+=item B<lightbg>
 
 terminal background is light; this is the default
 
-=item B<dark>
+=item B<darkbg>
 
 terminal background is dark or light foreground text
 
@@ -51,12 +51,12 @@ and recolor all source code output.
 
 =head2 Examples:
 
-    set highlight off   # no highlight
-    set highlight plain # same as above
-    set highlight dark  # terminal has dark background
-    set highlight light # terminal has light background
-    set highlight       # same as above
-    set highlight reset light # clear source-code cache and
+    set highlight off     # no highlight
+    set highlight plain   # same as above
+    set highlight darkbg  # terminal has dark background
+    set highlight lightbg # terminal has light background
+    set highlight         # same as above
+    set highlight reset lightbg # clear source-code cache and
                               # set for light background
     set highlight reset # clear source-code cache
 
@@ -67,7 +67,7 @@ L<C<show highlight>|Devel::Trepan::CmdProcessor::Command::Show::Highlight>
 =cut
 HELP
 
-my @choices = qw(reset plain light dark off);
+my @choices = qw(reset plain lightbg darkbg off);
 sub complete($$)
 {
     my ($self, $prefix) = @_;
@@ -77,7 +77,7 @@ sub complete($$)
 sub get_highlight_type($$)
 {
     my ($self, $arg) = @_;
-    return 'light' unless $arg;
+    return 'lightbg' unless $arg;
     if (grep {$arg eq $_} @choices) {
 	return $arg;
     } else {
@@ -94,7 +94,7 @@ sub run($$)
     my ($self, $args) = @_;
 
     my $proc = $self->{proc};
-    my $highlight_type = 'light';
+    my $highlight_type = 'lightbg';
     if ((scalar @$args >= 3) && ('reset' eq $args->[2])) {
 	if (scalar @$args > 3) {
 	    $highlight_type = $self->get_highlight_type($args->[3]);

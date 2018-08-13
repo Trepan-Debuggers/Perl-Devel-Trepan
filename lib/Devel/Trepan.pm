@@ -18,7 +18,7 @@ use Exporter;
 
 
 use constant PROGRAM => 'trepan.pl';
-our $VERSION='0.73'; # To fool CPAN indexer. Is <= real version
+our $VERSION='1.0.0'; #
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 

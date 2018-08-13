@@ -1,9 +1,141 @@
+2018-08-13  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/DB/Colors.pm, lib/Devel/Trepan/DB/LineCache.pm,
+	lib/Devel/Trepan/DB/Vars.pm, lib/Devel/Trepan/Options.pm,
+	lib/Devel/Trepan/Version.pm: Get ready for release 1.0.0
+
+2018-07-15  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit dad87097bfe3b475f56c3af48cef22243fde5b24 Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Mon Jul 9 22:34:26 2018 -0400
+
+2018-07-05  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Parse/BPLocation.pm,
+	t/10test-parse-bplocation.t: Add test code for breakpoint location
+	parsing
+
+2018-07-04  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST, lib/Devel/Trepan/CmdProcessor/Command/Help/range.pod,
+	lib/Devel/Trepan/CmdProcessor/Parse/BPLocation.pm: Add grammar for
+	bp location
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod,
+	lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Parse/Range.pm: Bang on List command
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Validate.pm: Reduce parse_position
+	use
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Parse/Range.pm: Leaving in
+	Test::More can be dangerous
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/List.pm,
+	lib/Devel/Trepan/CmdProcessor/Parse/Range.pm,
+	t/10test-parse-range.t, t/data/list3.right, t/data/list4.right,
+	t/data/macro.right, t/data/watch1.cmd: Use Marpa for parsing
+	locations in the "list" command
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Try more and newer Perl versions
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Parse/Range.pm: Remove Enbugger
+	(used in debugging)
+
+2018-07-03  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml: Install Marpa on travis
+
+2018-07-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, MANIFEST, lib/Devel/Trepan/CmdProcessor/Parse/Range.pm,
+	t/10test-parse-range.t: WIP Start to plug in Marpa parser for list
+	ranges
+
+2018-06-30  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
+	lib/Devel/Trepan/DB/LineCache.pm: Use file globing in filename
+	lookup...  and some small typos
+
+2018-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Load_Subcmd/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm: Got load order backwards...  Comment out deparse for testing it for now
+
+2018-05-10  Rocky Bernstein <rocky@cpan.org>
+
+	* : commit 0ef4a781b137e02c28cc1f7b09edfe62dd1e309d Author: Rocky
+	Bernstein <rocky@cpan.org> Date:   Thu May 10 09:07:04 2018 -0400
+
+2018-04-26  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm,
+	lib/Devel/Trepan/CmdProcessor/Location.pm,
+	lib/Devel/Trepan/CmdProcessor/Msg.pm, t/10test-brkptmgr.t: Add -d
+	--deparse on backtrace command
+
+2018-04-26  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm: Add options to deparse
+	command
+
+2018-04-16  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Frame.pm: Backtrace adds gdb-style
+	negative count
+
+2018-04-03  Rocky Bernstein <rocky@cpan.org>
+
+	* MANIFEST.SKIP: Administrivia part 2.
+
+2018-04-03  Rocky Bernstein <rocky@cpan.org>
+
+	* git2cl: Administrivia: git2cl needed for Travis
+
+2018-01-05  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/DB.pm: We are not using KES's change (yet).
+
+2018-01-05  Rocky Bernstein <rocky@cpan.org>
+
+	* .travis.yml,
+	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Line.pm,
+	lib/Devel/Trepan/DB.pm: Some small fixups...  DB.pm: remove a debug statment Line.pm: Fix cut-n-paste doc mistake
+	.travis.yml: More explicit travis commands
+
+2017-07-30  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/CmdProcessor/Command/Backtrace.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Info.pm: Small fixes...  - pod formating on "info help" - alignment tidy
+
 2017-07-15  Rocky Bernstein <rocky@cpan.org>
 
-	* Build.PL, ChangeLog, MANIFEST, example/five.pl, example/four.pm,
-	example/gcd-dbg2.pl, example/multi.pl, lib/Devel/Trepan/Version.pm,
-	t/data/caller.cmd, t/data/caller.right, t/test-aggregate.pl: Get
-	ready for release 0.74
+	* Build.PL, ChangeLog, Changes, MANIFEST, example/five.pl,
+	example/four.pm, example/gcd-dbg2.pl, example/multi.pl,
+	lib/Devel/Trepan/Version.pm, t/data/caller.cmd,
+	t/data/caller.right, t/test-aggregate.pl: Get ready for release 0.74
 
 2017-05-20  Rocky Bernstein <rocky@cpan.org>
 
@@ -2186,8 +2318,7 @@
 2012-12-10  Rocky Bernstein <rocky@cpan.org>
 
 	* MANIFEST, lib/Devel/Trepan/CmdProcessor.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Restart.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Run.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/{Restart.pm => Run.pm},
 	lib/Devel/Trepan/CmdProcessor/Virtual.pm: Sync up with Bullwinkle
 	branch; Restart->Run; Remove Virtual.pm
 
@@ -2696,19 +2827,15 @@
 	* lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Auto.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Debug.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/CO
-	P.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/OP
-	.pm: show display cop ->  show display op. Demo code in subcommands.
-	More help podification.
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/{C
+	OP.pm => OP.pm}: show display cop ->  show display op. Demo code in
+	subcommands. More help podification.
 
 2012-09-10  Rocky Bernstein <rocky@cpan.org>
 
 	*
-	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/COP
-	.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/OP.
-	pm, lib/Devel/Trepan/CmdProcessor/Default.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/{CO
+	P.pm => OP.pm}, lib/Devel/Trepan/CmdProcessor/Default.pm,
 	lib/Devel/Trepan/CmdProcessor/Location.pm, lib/Devel/Trepan/DB.pm: 
 	"set display cop" -> "set display op". And use Devel::Callsite
 
@@ -2894,14 +3021,14 @@
 
 	* lib/Devel/Trepan.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Help.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/command.pod,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/command.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/{command.txt =>
+	command.pod},
 	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.pod,
 	lib/Devel/Trepan/CmdProcessor/Command/Help/examples.txt,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/filename.pod,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/filename.txt,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/location.pod,
-	lib/Devel/Trepan/CmdProcessor/Command/Help/location.txt,
+	lib/Devel/Trepan/CmdProcessor/Command/Help/{filename.txt =>
+	filename.pod},
+	lib/Devel/Trepan/CmdProcessor/Command/Help/{location.txt =>
+	location.pod},
 	lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.pod,
 	lib/Devel/Trepan/CmdProcessor/Command/Help/suffixes.txt,
 	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Variables_Subcmd/
@@ -3281,12 +3408,10 @@
 2012-08-18  rocky <rocky@cpan.org>
 
 	* Changes, MANIFEST, lib/Devel/Trepan/CmdProcessor.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Display_Subcmd/Eva
-	l.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/EvalDisplay.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Display_Subcmd/Ev
-	al.pm,
-	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/EvalDisplay.pm,
+	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/{EvalDisplay.pm =>
+	Display_Subcmd/Eval.pm},
+	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/{EvalDisplay.pm
+	=> Display_Subcmd/Eval.pm},
 	lib/Devel/Trepan/CmdProcessor/Command/Subcmd/SubsubMgr.pm,
 	lib/Devel/Trepan/CmdProcessor/Default.pm, t/data/__FILE__.cmd,
 	t/data/alias.cmd, t/data/alias.right, t/data/debug.cmd,
@@ -4686,7 +4811,7 @@
 
 2011-11-30  Rocky Bernstein <rocky@cpan.org>
 
-	* MANIFEST, README, bin/trepan.pl, bin/trepanpl,
+	* MANIFEST, README, bin/{trepanpl => trepan.pl},
 	lib/Devel/Trepan.pm, lib/Devel/Trepan/IO/Input.pm,
 	lib/Devel/Trepan/Options.pm, t/20test-trepanpl-opts.t, t/Helper.pm: 
 	trepanpl -> trepan.pl because I think that's cooler.
@@ -5062,7 +5187,7 @@
 
 2011-11-19  Rocky Bernstein <rocky@cpan.org>
 
-	* t/10test-io-tcppack.pm, t/10test-io-tcppack.t: Oopps wrong
+	* t/{10test-io-tcppack.pm => 10test-io-tcppack.t}: Oopps wrong
 	extension for test program
 
 2011-11-19  Rocky Bernstein <rocky@cpan.org>
@@ -5429,7 +5554,7 @@
 
 2011-11-06  Rocky Bernstein <rocky@cpan.org>
 
-	* GNUmakefile, MANIFEST, Makefile, lib/Devel/Trepan/IO/Input.pm,
+	* Makefile => GNUmakefile, MANIFEST, lib/Devel/Trepan/IO/Input.pm,
 	lib/Devel/Trepan/Interface/User.pm: Really truly allow
 	Term::ReadLine to be optional.
 
@@ -6011,19 +6136,19 @@
 
 2011-09-28  Rocky Bernstein <rocky@cpan.org>
 
-	* MANIFEST, MANIFEST.SKIP, t/10test-cmd-kill.t,
-	t/10test-complete.t, t/10test-condition.t, t/10test-db-brkpt.t,
-	t/10test-intf-script.t, t/10test-intf-user.t,
-	t/10test-io-stringarray.t, t/10test-linecache.t, t/10test-load.t,
-	t/10test-options.t, t/10test-position.t, t/10test-proc-load.t,
-	t/10test-util.t, t/10test-validate.t, t/test-cmd-kill.t,
-	t/test-complete.t, t/test-condition.t, t/test-db-brkpt.t,
-	t/test-intf-script.t, t/test-intf-user.t, t/test-io-stringarray.t,
-	t/test-linecache.t, t/test-load.t, t/test-options.t,
-	t/test-position.t, t/test-proc-load.t, t/test-util.t,
-	t/test-validate.t: Add first integration test for trepanpl --help
-	and --version options.  Rename tests to accomodate unit versus
-	integration tests.
+	* MANIFEST, MANIFEST.SKIP, t/{test-cmd-kill.t =>
+	10test-cmd-kill.t}, t/{test-complete.t => 10test-complete.t},
+	t/{test-condition.t => 10test-condition.t}, t/{test-db-brkpt.t =>
+	10test-db-brkpt.t}, t/{test-intf-script.t => 10test-intf-script.t},
+	t/{test-intf-user.t => 10test-intf-user.t},
+	t/{test-io-stringarray.t => 10test-io-stringarray.t},
+	t/{test-linecache.t => 10test-linecache.t}, t/{test-load.t =>
+	10test-load.t}, t/{test-options.t => 10test-options.t},
+	t/{test-position.t => 10test-position.t}, t/{test-proc-load.t =>
+	10test-proc-load.t}, t/{test-util.t => 10test-util.t},
+	t/{test-validate.t => 10test-validate.t}: Add first integration test
+	for trepanpl --help and --version options.  Rename tests to
+	accomodate unit versus integration tests.
 
 2011-09-27  Rocky Bernstein <rocky@cpan.org>
 
@@ -6473,9 +6598,9 @@
 
 2011-09-06  Rocky Bernstein <rocky@cpan.org>
 
-	* lib/Devel/Trepan/IO.pm, lib/Devel/Trepan/IO/Input.pm,
-	lib/Devel/Trepan/IO/InputBase.pm,
-	lib/Devel/Trepan/IO/StringArray.pm, lib/Devel/Trepan/Interface.pm,
+	* lib/Devel/Trepan/{IO/InputBase.pm => IO.pm},
+	lib/Devel/Trepan/IO/Input.pm, lib/Devel/Trepan/IO/StringArray.pm,
+	lib/Devel/Trepan/Interface.pm,
 	lib/Devel/Trepan/Interface/Script.pm,
 	lib/Devel/Trepan/Interface/User.pm, t/test-validate.t: In
 	preparation for the "source" command, or reading debugger scripts:
@@ -6515,7 +6640,7 @@
 
 2011-09-04  Rocky Bernstein <rocky@cpan.org>
 
-	* bin/trepanp, bin/trepanpl, lib/Devel/Trepan.pm,
+	* bin/{trepanp => trepanpl}, lib/Devel/Trepan.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Info_Subcmd/Files.pm,
 	lib/Devel/Trepan/CmdProcessor/Default.pm,
 	lib/Devel/Trepan/DB/LineCache.pm, lib/Devel/Trepan/IO/Input.pm,

@@ -6,7 +6,7 @@
 use Digest::SHA;
 use Scalar::Util;
 
-use version; $VERSION = '0.3';
+use version; $VERSION = '1.0.0';
 
 package Devel::Trepan::DB::LineCache;
 
@@ -79,7 +79,7 @@ require Exporter;
              remap_dbline_to_file remap_string_to_tempfile %script_cache
              trace_line_numbers update_script_cache
              );
-$VERSION = "1.0";
+$VERSION = "1.0.0";
 
 use English qw( -no_match_vars );
 use vars qw(%file_cache %script_cache);
@@ -134,7 +134,7 @@ my $perl_formatter;
 sub color_setup {
     $perl_formatter = Devel::Trepan::DB::Colors::setup(@_);
 }
-color_setup('light');
+color_setup('lightbg');
 
 sub remove_temps()
 {

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2012-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2012-2015, 2018 Rocky Bernstein <rocky@cpan.org>
 use strict; use warnings; use utf8;
 use rlib '../../..';
 use Devel::Trepan::DB::LineCache; # for map_file
@@ -97,13 +97,16 @@ sub frame_setup($$)
 	    # printf("+++ computed_stack_depth: %d DB::stack_depth\n", $computed_stack_depth, $DB::stack_depth);
 	    # use Carp qw(cluck); cluck('testing');
 
-	    if ((!defined $DB::stack_depth
-		 or $DB::stack_depth < $computed_stack_depth)
-		and !$self->{gave_stack_trunc_warning}) {
-		$self->errmsg(
-		    "Call stack depth recorded in DB module is short. We've adjusted it.");
-		$self->{gave_stack_trunc_warning} = 1;
-	    }
+	    ## This sometimes happens, but it confused Dmitrios, so remove
+	    ## for now...
+	    # if ((!defined $DB::stack_depth
+	    # 	 or $DB::stack_depth < $computed_stack_depth)
+	    # 	and !$self->{gave_stack_trunc_warning}) {
+	    # 	$self->errmsg(
+	    # 	    "Call stack depth recorded in DB module is short. We've adjusted it.");
+	    # 	$self->{gave_stack_trunc_warning} = 1;
+	    # }
+
 	    $stack_size = $computed_stack_depth;
 	    $stack_size++ if $self->{event} eq 'call';
         }

@@ -6,6 +6,7 @@ Devel::Trepan &mdash; A new Perl debugger
 A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki). The command set is modeled off of _gdb_, but other command sets are possible.
 
 Features:
+* precise location via decomplation,
 * has extensive online-help,
 * syntax highlighting of Perl code
 * context-sensitive command completion
@@ -65,10 +66,12 @@ Installation
 
 To install this Devel::Trepan from source code:
 
-    perl Build.PL
-    make
-    make test
-    [sudo] make install
+    $ cpan Module::Build
+    $ perl Build.PL
+    $ ./Build installdeps
+    $ make
+    $ make test
+    $ make install # May need sudo
 
 or to install from CPAN:
 

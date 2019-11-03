@@ -90,6 +90,7 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'Marpa::R2'                         => 4.000,
         'PadWalker'                         => 0,
+        'Pod::Find'                         => 1.63,
         'Pod::Text'                         => 3.13,
         'Scalar::Util'                      => 0,
         'Syntax::Highlight::Perl::Improved' => 1.01,

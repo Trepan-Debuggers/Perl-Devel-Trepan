@@ -1,6 +1,6 @@
 language: perl
 
-sudo: true
+sudo: false
 
 env:
   - AUTOMATED_TESTING=1 PREREQS="rlib Marpa::R2 File::HomeDir File::Spec Array::Columnize Data::Dumper Devel::Callsite Getopt::Long Digest::SHA Pod::Text Syntax::Highlight::Perl::Improved Scalar::Util PadWalker LEONT/Module-Build-0.4224.tar.gz"
@@ -10,17 +10,10 @@ after_failure:
 
 install:
   # Prerequisites
-  - "NONINTERACTIVE_TESTING=1 sudo cpan -Ti $PREREQS"
+  - "cpanm $PREREQS"
   - perl ./Build.PL
   - "GIT2CL='./git2cl' make ChangeLog distmeta distcheck"
 
 perl:
-  - "5.20"
-  - "5.24"
-  - "5.18"
-  - "5.14"
   - "5.26"
-  - "5.12"
-  - "5.22"
-  - "5.16"
-  - "5.10"
+  - "5.24"

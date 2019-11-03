@@ -40,7 +40,7 @@
 # Nothing in tmp
 \btmp/
 
-how-to-make-a-release\.txt
+how-to-make-a-release\.md
 
 # Avoid temp and backup files.
 ~$

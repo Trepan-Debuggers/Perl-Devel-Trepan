@@ -10,7 +10,7 @@ after_failure:
 
 install:
   # Prerequisites
-  - "sudo cpan -Ti $PREREQS"
+  - "NONINTERACTIVE_TESTING=1 sudo cpan -Ti $PREREQS"
   - perl ./Build.PL
   - "GIT2CL='./git2cl' make ChangeLog distmeta distcheck"
 

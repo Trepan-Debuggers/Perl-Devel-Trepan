@@ -1,18 +1,21 @@
 [![Build Status](https://travis-ci.org/rocky/Perl-Devel-Trepan.png)](https://travis-ci.org/rocky/Perl-Devel-Trepan)
 
-Devel::Trepan &mdash; A new Perl debugger
+[![Packaging status](https://repology.org/badge/vertical-allrepos/perl:devel-trepan.svg)](https://repology.org/project/perl:devel-trepan/versions)
+
+Devel::Trepan &mdash; A gdb-like Perl debugger
 ====================================
 
-A modular, testable debugger in the family of the Ruby ["Trepanning"](https://github.com/rocky/rb-trepanning/wiki) [debuggers](https://github.com/rocky/rb-trepanning/wiki). The command set is modeled off of _gdb_, but other command sets are possible.
+A modular, testable gdb-like debugger in the family of the "Trepanning" debuggers ([trepan3k](https://pypi.org/project/trepan3k/), [trepan-ni](https://www.npmjs.com/package/trepan-ni), [bashdb](http://bashdb.sourceforge.net), [zshdb](https://github.com/rocky/zshdb)). The command set is modeled off of _gdb_, but other command sets are possible.
 
 Features:
+* precise location via decomplation (via plugin [Trepan::Devel::Deparse](https://github.com/rocky/p5-Devel-Trepan-Deparse/)
 * has extensive online-help,
 * syntax highlighting of Perl code
 * context-sensitive command completion
 * out-of-process and remote debugging
 * interactive shell support
 * code disassembly
-* gdb syntax
+* _gdb_ syntax
 * easy extensibility at several levels
     * command aliases
     * a user-supplied command directory
@@ -65,10 +68,12 @@ Installation
 
 To install this Devel::Trepan from source code:
 
-    perl Build.PL
-    make
-    make test
-    [sudo] make install
+    $ cpan Module::Build
+    $ perl Build.PL
+    $ ./Build installdeps
+    $ make
+    $ make test
+    $ make install # May need sudo
 
 or to install from CPAN:
 
@@ -87,7 +92,7 @@ See Also
 Licence and Copyright
 ---------------------
 
-Copyright (C) 2011-2015 Rocky Bernstein <rocky@cpan.org>
+Copyright (C) 2011-2015, 2019 Rocky Bernstein <rocky@cpan.org>
 
 This program is distributed WITHOUT ANY WARRANTY, including but not
 limited to the implied warranties of merchantability or fitness for a

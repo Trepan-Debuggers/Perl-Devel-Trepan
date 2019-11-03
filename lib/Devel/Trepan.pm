@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-# Copyright (C) 2013-2015 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2013-2015, 2019 Rocky Bernstein <rocky@cpan.org>
 # Documentation is at the __END__
 eval "use feature ':5.10';";
 use strict; use warnings;
@@ -18,7 +18,7 @@ use Exporter;
 
 
 use constant PROGRAM => 'trepan.pl';
-our $VERSION='1.0.0'; #
+our $VERSION='1.0.1'; #
 $VERSION = $Devel::Trepan::Version::VERSION;
 $PROGRAM = PROGRAM;
 

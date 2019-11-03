@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-#  Copyright (C) 2011-2015,2017 Rocky Bernstein <rocky@cpan.org>
+#  Copyright (C) 2011-2015,2017,2019 Rocky Bernstein <rocky@cpan.org>
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -90,6 +90,7 @@ my $builder = Module::Build->new(
         'Digest::SHA'                       => 0,
         'Marpa::R2'                         => 4.000,
         'PadWalker'                         => 0,
+        'Pod::Find'                         => 1.63,
         'Pod::Text'                         => 3.13,
         'Scalar::Util'                      => 0,
         'Syntax::Highlight::Perl::Improved' => 1.01,

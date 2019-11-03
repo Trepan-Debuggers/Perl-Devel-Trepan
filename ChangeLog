@@ -1,6 +1,15 @@
+2019-11-02  Rocky Bernstein <rocky@cpan.org>
+
+	* Build.PL, README.md: Add Pod::Find as a dependency See Issue #51.
+
+2018-08-31  Rocky Bernstein <rocky@cpan.org>
+
+	* lib/Devel/Trepan/Processor/Frame.pm: Remove a irreconcilable
+	warning message...  for Dmitrios
+
 2018-08-13  Rocky Bernstein <rocky@cpan.org>
 
-	* lib/Devel/Trepan.pm,
+	* ChangeLog, Changes, lib/Devel/Trepan.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Set_Subcmd/Highlight.pm,
 	lib/Devel/Trepan/CmdProcessor/Command/Show_Subcmd/Highlight.pm,
 	lib/Devel/Trepan/DB/Colors.pm, lib/Devel/Trepan/DB/LineCache.pm,

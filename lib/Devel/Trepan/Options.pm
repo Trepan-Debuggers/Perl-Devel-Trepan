@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2014 Rocky Bernstein <rocky@cpan.org>
+# Copyright (C) 2011-2014, 2019 Rocky Bernstein <rocky@cpan.org>
 use strict;
 use warnings;
 package Devel::Trepan::Options;
@@ -11,7 +11,7 @@ use File::HomeDir;
 use vars qw(@EXPORT $DEFAULT_OPTIONS $PROGRAM_NAME $VERSION);
 @EXPORT = qw( process_options whence_file $DEFAULT_OPTIONS $PROGRAM_NAME);
 our @ISA;
-$VERSION='1.0.0'; # To fool CPAN indexer. Is <= real version
+$VERSION='1.0.1'; # To fool CPAN indexer. Is <= real version
 
 BEGIN {
     $PROGRAM_NAME = 'trepan.pl';

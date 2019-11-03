@@ -1,5 +1,10 @@
 Revision history for Devel-Trepan
 
+1.0.1 2019-11-03 Day of the Dead
+
+- Perl 5.30.1 Tolerance: add Pod::Find as a dependency See Issue #51.
+- Remove a irreconcilable warning message for Dmitrios
+
 1.0.0 2018-07-13 Glasgow YAPC
 
 - Use Marpa for handling "list" command

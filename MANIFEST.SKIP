@@ -114,3 +114,7 @@ how-to-make-a-release\.txt
 
 # git2cl is part of administrivia
 \bgit2cl$
+\.*not-yet
+\.*not-yet
+scope-upper-return.pl
+lib/Devel/Trepan/CmdProcessor/Command/Return.pm
